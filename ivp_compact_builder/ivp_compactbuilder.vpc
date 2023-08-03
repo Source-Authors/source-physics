@@ -36,7 +36,6 @@ $Configuration	"Debug"
 	$Compiler [$WINDOWS]
 	{
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
-		$WarningLevel						"Level 3 (/W3)"
 	}
 
 	$Compiler [$WIN32]
@@ -86,7 +85,6 @@ $Configuration	"Release"
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"ivp_physics.hxx"
-		$WarningLevel						"Level 3 (/W3)"
 	}
 
 	$Compiler [$WIN32]

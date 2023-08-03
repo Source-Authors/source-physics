@@ -36,10 +36,8 @@ $Configuration	"Debug"
 	$Compiler [$WINDOWS]
 	{
 		$Optimization						"Disabled (/Od)"
-		$EnableMinimalRebuild				"Yes (/Gm)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
 		$RuntimeLibrary						"Multi-threaded Debug (/MTd)"
-		$WarningLevel						"Level 3 (/W3)"
 		$SuppressStartupBanner				"Yes (/NOLOGO)"
 		$DebugInformationFormat				"Program Database for Edit & Continue (/ZI)"
 	}
@@ -96,7 +94,6 @@ $Configuration	"Release"
 	$Compiler [$WINDOWS]
 	{
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
-		$WarningLevel						"Level 3 (/W3)"
 	}
 
 	$Compiler [$WIN32]

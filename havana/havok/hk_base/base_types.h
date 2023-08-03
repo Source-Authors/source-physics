@@ -5,11 +5,6 @@
 #include <signal.h>
 #endif
 
-// TODO(crack): filthy hack to get around keyword bans in macros
-#ifndef _ALLOW_KEYWORD_MACROS
-# define _ALLOW_KEYWORD_MACROS
-#endif // _ALLOW_KEYWORD_MACROS
-
 // some of these are wrong
 #if defined(_DEBUG) && !defined(HK_DEBUG)
 #	define HK_DEBUG
@@ -121,14 +116,15 @@ typedef hk_int32	hk_array_index;
 typedef hk_uint16	hk_array_store_index;
 typedef hk_uint32	hk_id;
 
+// TODO(crack): disallow to redefine keywords
 #ifdef HK_HAVE_FORCE_INLINE
-#	define inline __forceinline
+//#	define inline __forceinline
 #endif
 #define HK_TEMPLATE_INLINE inline
 
-//#if defined(__i386__) || defined(WIN32)
-//#	define HK_HAVE_QUERY_PERFORMANCE_TIMER
-//#endif
+#if defined(__i386__) || defined(WIN32)
+#	define HK_HAVE_QUERY_PERFORMANCE_TIMER
+#endif
 
 #if !defined(HK_ALIGNED_VARIABLE)
 #	if defined(HK_PS2)

@@ -28,13 +28,13 @@ hk_result hk_Gauss_Elm_Solver::solve_gauss_elemination( hk_Gauss_Elm_Input &inp,
 
 void hk_Gauss_Elm_Solver::find_pivot_in_column(int col)
 {
-    hk_gauss_real best_val = hk_Math::fabsd(m_A[col*m_aligned_row_len+col]);
+    hk_gauss_real best_val = hk_Math::fabs(m_A[col*m_aligned_row_len+col]);
     int pos=-1;
     for(int i=m_n_columns-1;i > col;i--)    {
 	hk_gauss_real h=m_A[i*m_aligned_row_len+col];
 
 	if( hk_Math::fabsd(h) > best_val )	{
-	    best_val = hk_Math::fabsd(h);
+	    best_val = hk_Math::fabs(h);
 	    pos=i;
 	}
     }

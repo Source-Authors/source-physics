@@ -1,36 +1,62 @@
 
 #if defined(HK_HAVE_MSVC_INLINE_ASSEMBLY)
 
-inline void hk_query_performance_timer(hk_uint64* ticks)
-{
-	__asm {
-		mov edi, ticks
-		rdtsc
-		mov [edi  ], eax
-		mov [edi+4], edx
-	}
-}
+#include "winlite.h"
+
+#include <intrin.h>
 
 #elif defined(HK_HAVE_GNU_INLINE_ASSEMBLY)
 
-inline void hk_query_performance_timer(hk_uint64* ticks)
-{
-	__asm__ __volatile__ (	"rdtsc\n\t"
-							"movl %%eax,  (%0)\n\t"
-							"movl %%edx, 4(%0)\n\t"
-								: /* no output regs */
-								: "D" (ticks)
-								: "%eax", "%edx");
-}
+#include <x86intrin.h>
 
 #else
 #	error HK_HAVE_QUERY_PERFORMANCE_TIMER is defined, but no implementation.
 #endif
 
+inline void hk_query_performance_timer_start(hk_uint64& ticks)
+{
+	ticks = __rdtsc();
+}
+
+inline void hk_query_performance_timer_stop(hk_uint64& ticks)
+{
+	unsigned aux;
+	ticks = __rdtscp(&aux);
+}
+
 inline void hk_query_performance_timer_frequency(hk_uint64* freq)
 {
-	// assume 800 Mhz for now
-	*freq = 800000000;
+#ifdef _WIN32
+	LARGE_INTEGER waitTime, startCount, curCount;
+	hk_uint64 startTicks, endTicks; 
+
+	// Take 1/32 of a second for the measurement.
+	QueryPerformanceFrequency( &waitTime );
+	int scale = 5;
+	waitTime.QuadPart >>= scale;
+
+	QueryPerformanceCounter( &startCount );
+	hk_query_performance_timer_start(startTicks);
+	do
+	{
+		QueryPerformanceCounter( &curCount );
+	}
+	while ( curCount.QuadPart - startCount.QuadPart < waitTime.QuadPart );
+	hk_query_performance_timer_stop(endTicks);
+
+	*freq = (endTicks - startTicks) << scale;
+	if ( *freq == 0 )
+	{
+		// Steam was seeing Divide-by-zero crashes on some Windows machines due to
+		// WIN64_AMD_DUALCORE_TIMER_WORKAROUND that can cause rdtsc to effectively
+		// stop. Staging doesn't have the workaround but I'm checking in the fix
+		// anyway. Return a plausible speed and get on with our day.
+		*freq = 2000000000;
+	}
+#else
+	// assume 2000 Mhz for now
+	*freq = 2000000000;
+#endif
 }
 
 ////////////////////////
@@ -70,7 +96,7 @@ inline void hk_Stopwatch_qpt::start()
 {
 	HK_ASSERT(! m_running_flag);
 	m_running_flag = true;
-	hk_query_performance_timer(&m_ticks_at_start);
+	hk_query_performance_timer_start(m_ticks_at_start);
 	m_ticks_at_split = m_ticks_at_start;
 }
 
@@ -79,8 +105,8 @@ inline void hk_Stopwatch_qpt::stop()
 	HK_ASSERT(m_running_flag);
 
 	m_running_flag = false;
-	hk_uint64	ticks_now;
-	hk_query_performance_timer(&ticks_now);
+	hk_uint64 ticks_now;
+	hk_query_performance_timer_stop(ticks_now);
 	m_ticks_total += ticks_now - m_ticks_at_start;
 	++m_num_timings;
 }
@@ -96,15 +122,15 @@ inline void hk_Stopwatch_qpt::reset()
 
 inline hk_real hk_Stopwatch_qpt::get_elapsed_time()
 {
-	return hk_real(hk_uint32(m_ticks_total)) / hk_real(hk_uint32(s_ticks_per_second));
+	return hk_real(m_ticks_total) / hk_real(s_ticks_per_second);
 }
 
 inline hk_real hk_Stopwatch_qpt::get_split_time()
 {
 	hk_uint64 ticks_now;
-	hk_query_performance_timer(&ticks_now);
-	hk_uint32 sticks = hk_uint32(ticks_now - m_ticks_at_split);
+	hk_query_performance_timer_stop(ticks_now);
+	hk_uint64 sticks = ticks_now - m_ticks_at_split;
 	m_ticks_at_split = ticks_now;
-	return hk_real(sticks) / hk_real(hk_uint32(s_ticks_per_second));
+	return hk_real(sticks) / hk_real(s_ticks_per_second);
 }
 

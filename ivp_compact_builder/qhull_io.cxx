@@ -3738,7 +3738,7 @@ coordT *qh_readpoints(int *numpoints, int *dimension, boolT *ismalloc) {
   coordT *points, *coords, *infinity= NULL;
   realT paraboloid, maxboloid= -REALmax, value;
   realT *coordp= NULL, *offsetp= NULL, *normalp= NULL;
-  char *s, *t, firstline[qh_MAXfirst+1];
+  char *s=0, *t, firstline[qh_MAXfirst+1];
   int diminput=0, numinput=0, dimfeasible= 0, newnum, k, tempi;
   int firsttext=0, firstshort=0, firstlong=0, firstpoint=0;
   int tokcount= 0, linecount=0, maxcount, coordcount=0;

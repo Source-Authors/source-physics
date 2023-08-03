@@ -30,7 +30,6 @@ $Configuration "Debug"
 
 	$Compiler [$WINDOWS]
 	{
-		$WarningLevel						"Level 3 (/W3)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
 	}
 
@@ -74,7 +73,6 @@ $Configuration "Release"
 	$Compiler [$WINDOWS]
 	{
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
-		$WarningLevel						"Level 3 (/W3)"
 	}
 
 	$Compiler [$WIN32]

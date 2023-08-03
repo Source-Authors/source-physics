@@ -61,11 +61,11 @@ void hk_Incr_LU_Matrix::exchange_rows_l_u(int pivot_col,int exchange) {
 
 // search from col_nr|colnr down to m_n_sub|colnr
 void hk_Incr_LU_Matrix::pivot_search_l_u(int col_nr) {
-    hk_incrlu_real biggest = hk_Math::fabsd( m_U_matrix[col_nr * m_aligned_row_len + col_nr] );
+    hk_incrlu_real biggest = hk_Math::fabs( m_U_matrix[col_nr * m_aligned_row_len + col_nr] );
     int pivot_row = col_nr;
 
     for(int i=m_n_sub-1;i>col_nr;i--) {
-	hk_incrlu_real new_val = hk_Math::fabsd( m_U_matrix[i * m_aligned_row_len + col_nr] );
+	hk_incrlu_real new_val = hk_Math::fabs( m_U_matrix[i * m_aligned_row_len + col_nr] );
 	if( new_val > biggest ) {
 	    pivot_row=i;
 	    biggest = new_val;

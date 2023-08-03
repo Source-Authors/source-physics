@@ -29,7 +29,7 @@ $Configuration	"Debug"
 
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana"
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana;$SRCDIR\ivp\ivp_utility"
         $PreprocessorDefinitions			"$BASE;VPHYSICS_EXPORTS;HAVANA_CONSTRAINTS;HAVOK_MOPP;_DEBUG;_LIB;HK_DEBUG"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"hk_math/vecmath.h"
@@ -38,10 +38,8 @@ $Configuration	"Debug"
 	$Compiler [$WINDOWS]
 	{
 		$Optimization						"Disabled (/Od)"
-		$EnableMinimalRebuild				"Yes (/Gm)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
 		$RuntimeLibrary						"Multi-threaded Debug (/MTd)"
-		$WarningLevel						"Level 3 (/W3)"
 		$SuppressStartupBanner				"Yes (/NOLOGO)"
 		$DebugInformationFormat				"Program Database for Edit & Continue (/ZI)"
 	}
@@ -84,7 +82,7 @@ $Configuration	"Release"
 
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana"
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana;$SRCDIR\ivp\ivp_utility"
 		$PreprocessorDefinitions			"$BASE;VPHYSICS_EXPORTS;HAVANA_CONSTRAINTS;HAVOK_MOPP"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"hk_math/vecmath.h"
@@ -93,7 +91,6 @@ $Configuration	"Release"
 	$Compiler [$WINDOWS]
 	{
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
-		$WarningLevel						"Level 3 (/W3)"
 	}
 
 	$Compiler [$WIN32]
