@@ -464,7 +464,7 @@ IVP_Draw_Vector_Debug::IVP_Draw_Vector_Debug(){
 }
 
 IVP_Draw_Vector_Debug::~IVP_Draw_Vector_Debug(){
-    if (debug_text) P_FREE(debug_text);
+    P_FREE(debug_text);
 }
 
 void IVP_Debug_Manager::clear_debug_manager() {
@@ -502,7 +502,7 @@ void IVP_Environment::delete_draw_vector_debug(){
 
     dv=this->draw_vectors;
     while(dv!=NULL)    {
-	if(dv->debug_text)    P_FREE(dv->debug_text);
+	P_FREE(dv->debug_text);
 	next_dv=dv->next;
 	P_DELETE(dv);
 	dv=next_dv;
@@ -800,7 +800,6 @@ void ivp_dummy_func(){
     IVP_U_Set_Active<IVP_Real_Object> ivp_class_dummy2(16);
     IVP_U_Set_Active<IVP_Mindist_Base> ivp_class_dummy3(16);
     IVP_Attacher_To_Cores<IVP_Controller_Buoyancy> *ivp_class_dummy8 = new IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>(NULL);
-    ivp_class_dummy8 = ivp_class_dummy8;
 }
 
 void IVP_Time_Event_D::simulate_time_event(IVP_Environment *env) {

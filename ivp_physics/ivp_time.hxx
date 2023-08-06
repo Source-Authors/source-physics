@@ -44,6 +44,7 @@ public:
 	int mode;
 	virtual void simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time until) = 0;
 	virtual void simulate_variable_time_step(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time_Event_PSI *psi_event, IVP_FLOAT delta);
+    virtual ~IVP_Event_Manager();
 };
 
 class IVP_Event_Manager_Standard : public IVP_Event_Manager {

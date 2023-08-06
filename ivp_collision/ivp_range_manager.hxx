@@ -30,6 +30,8 @@ public:
     
     IVP_Range_Manager(IVP_Environment *env, IVP_BOOL delete_this_on_env_delete);
     virtual void environment_will_be_deleted(IVP_Environment *);
+
+    virtual ~IVP_Range_Manager();
 };
 
 

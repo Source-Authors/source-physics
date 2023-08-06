@@ -86,6 +86,7 @@ void IVP_Event_Manager::simulate_variable_time_step(IVP_Time_Manager *tman,IVP_E
   }
 };
 
+IVP_Event_Manager::~IVP_Event_Manager() {}
 
 
 IVP_Time_Manager::IVP_Time_Manager()

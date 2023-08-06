@@ -26,6 +26,8 @@ void IVP_Range_Manager::environment_will_be_deleted(IVP_Environment *){
     }
 }
 
+IVP_Range_Manager::~IVP_Range_Manager() {}
+
 void IVP_Range_Manager::get_coll_range_intra_objects( const IVP_Real_Object *obj0,const IVP_Real_Object *obj1,
 						      IVP_DOUBLE *range0, IVP_DOUBLE *range1 ){
     

@@ -2550,6 +2550,11 @@ void IVP_Incr_L_U_Matrix::debug_print_a() {
 	new_a->matrix_multiplication(inv_l->matrix_values,was_u->matrix_values);
 
 	new_a->print_great_matrix("orig_A");
+
+	delete new_a;
+	delete inv_l;
+	delete was_u;
+	delete was_l;
 }
 
 // when matrix is singular give dependences of a variable

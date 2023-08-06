@@ -111,6 +111,8 @@ IVP_Mindist::IVP_Mindist(IVP_Environment *my_env, IVP_Collision_Delegator *del):
 IVP_Mindist *g_pCurrentMindist = NULL;
 bool g_fDeferDeleteMindist = false;
 
+IVP_Time_Event::~IVP_Time_Event() {}
+
 /********************************************************************************
  *	Name:	    	~IVP_Mindist  	
  *	Description:	deletes mindist

@@ -380,7 +380,7 @@ void IVP_Compact_Ledge_Solver::calc_unscaled_qr_vals_F_space(const IVP_Compact_L
     
     result->scale = Det;
     
-    IVP_ASSERT ( sizeof( result->checks[0] == sizeof(IVP_FLOAT)));
+    IVP_ASSERT ( sizeof( result->checks[0]) == sizeof(IVP_FLOAT));
     char *res = (char *) & result->checks[0];
     ((IVP_FLOAT *)( res + ivp_uqr_mod_table[this_edge_index] ))[0] = r;
     ((IVP_FLOAT *)( res + ivp_uqr_mod_table[this_edge_index+1] ))[0] = Det - q - r;

@@ -522,8 +522,6 @@ void IVP_Real_Object::reset_time( IVP_Time offset){
  *	Description:	deletes object and revives surroundings
  **************************************************************************************/
 void IVP_Real_Object::delete_and_check_vicinity(){
-    if (!this) return;
-
     IVP_Core *my_core=this->get_core();
     if(!my_core->physical_unmoveable) {
         my_core->sim_unit_of_core->sim_unit_ensure_in_simulation();
