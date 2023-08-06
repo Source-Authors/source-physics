@@ -31,6 +31,7 @@ IVP_Compact_Edge::IVP_Compact_Edge()
 {
     start_point_index = 0;
     opposite_index = 0;
+    is_virtual = 0;
 }
 
 void IVP_Compact_Edge::byte_swap()

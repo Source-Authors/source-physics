@@ -115,7 +115,7 @@ IVP_OV_Node::~IVP_OV_Node()
 
 IVP_OV_Tree_Manager::IVP_OV_Tree_Manager()
 {
-    
+    this->collision_partners = NULL;
     this->environment = NULL;
     this->root = NULL;
     this->hash_table = new IVP_ov_tree_hash(256);
