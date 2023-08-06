@@ -93,7 +93,10 @@ IVP_Mindist_Base::IVP_Mindist_Base(IVP_Collision_Delegator *del): IVP_Collision(
      mindist_status = IVP_MD_UNINITIALIZED;
      mindist_function = IVP_MF_COLLISION;
      coll_dist_selector = IVP_MAX_STEPS_FOR_COLLDIST_DECREASE-1;
+     sum_extra_radius = 0;
+     len_numerator = 0;
 #ifdef IVP_HALFSPACE_OPTIMIZATION_ENABLED
+     contact_dot_diff_center = 0;
      disable_halfspace_optimization = IVP_FALSE;
      sum_angular_hull_time = 0.0f;
 #endif
@@ -103,6 +106,8 @@ IVP_Mindist_Base::IVP_Mindist_Base(IVP_Collision_Delegator *del): IVP_Collision(
 IVP_Mindist::IVP_Mindist(IVP_Environment *my_env, IVP_Collision_Delegator *del): IVP_Mindist_Base(del){
   IVP_ASSERT(del);
     recalc_time_stamp = 0;
+    next = 0;
+    prev = 0;
     last_visited_triangle=NULL;
     my_env->get_statistic_manager()->sum_of_mindists++;
     my_env->get_statistic_manager()->mindists_generated++;

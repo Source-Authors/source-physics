@@ -60,6 +60,7 @@ IVP_DOUBLE IVP_Material_Simple::get_adhesion()
 
 IVP_Material_Simple::IVP_Material_Simple(IVP_DOUBLE friction, IVP_DOUBLE elas){
     friction_value = friction;
+    second_friction_x = 0.0f;
     elasticity = elas;
     adhesion = 0.0f;
 }
@@ -70,6 +71,7 @@ IVP_Material_Simple::~IVP_Material_Simple(){
 
 IVP_Material_Simple::IVP_Material_Simple(){
     friction_value = 0.0f;
+    second_friction_x = 0.0f;
     elasticity = 0.5f;
     adhesion = 0.0f;
 

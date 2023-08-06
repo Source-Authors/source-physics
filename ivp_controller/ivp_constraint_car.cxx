@@ -87,6 +87,7 @@ IVP_Constraint_Solver_Car::IVP_Constraint_Solver_Car( IVP_COORDINATE_INDEX right
 {
     // P_MEM_CLEAR(this); NO !!!
 	
+    this->body_object = NULL;
     this->x_idx = right;
     this->y_idx = up;
     this->z_idx = forward;
@@ -94,6 +95,8 @@ IVP_Constraint_Solver_Car::IVP_Constraint_Solver_Car( IVP_COORDINATE_INDEX right
 	
     this->max_delta_speed = 80.0f * 3.0f;				// greater ??
     this->local_translation_in_use = IVP_FALSE;
+    this->environment = NULL;
+    this->psis_left_for_plan_B = 0;
 
     // constraint_is_disabled is inited in Builder.
 }

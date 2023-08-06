@@ -186,7 +186,6 @@ IVP_U_INTERSECT_TYPE IVP_U_Straight::calc_intersect_with(const IVP_U_Straight *s
     }else{
 	return IVP_U_INTERSECT_NO_INTERSECTION; // have distance
     }
-    CORE;
 }
 
 

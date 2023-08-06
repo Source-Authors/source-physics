@@ -650,11 +650,12 @@ IVP_Great_Matrix_Many_Zero::IVP_Great_Matrix_Many_Zero(int n) {
 }
 
 IVP_Great_Matrix_Many_Zero::IVP_Great_Matrix_Many_Zero() {
-    MATRIX_EPS=1.0f/10E8f; 
+    MATRIX_EPS = 1.0f / 10E8f;
+    columns = 0;
+    aligned_row_len=0;
     matrix_values=NULL;
     desired_vector=NULL;
     result_vector=NULL;
-    columns=0;
 }
 
 // both matrices are aligned
@@ -2532,29 +2533,23 @@ void IVP_Incr_L_U_Matrix::debug_print_l_u() {
 }
 
 void IVP_Incr_L_U_Matrix::debug_print_a() {
-	IVP_Great_Matrix_Many_Zero *was_l=new IVP_Great_Matrix_Many_Zero(n_sub);
-	IVP_Great_Matrix_Many_Zero *was_u=new IVP_Great_Matrix_Many_Zero(n_sub);
+	IVP_Great_Matrix_Many_Zero was_l(n_sub);
+	IVP_Great_Matrix_Many_Zero was_u(n_sub);
 
-	int i,j;
-	for(i=0;i<n_sub;i++) {
-	  for(j=0;j<n_sub;j++) {
-	    was_l->matrix_values[i*n_sub+j]=L_matrix[i*aligned_row_len+j];
-	    was_u->matrix_values[i*n_sub+j]=U_matrix[i*aligned_row_len+j];	    
+	for(int i=0;i<n_sub;i++) {
+	  for(int j=0;j<n_sub;j++) {
+	    was_l.matrix_values[i*n_sub+j]=L_matrix[i*aligned_row_len+j];
+	    was_u.matrix_values[i*n_sub+j]=U_matrix[i*aligned_row_len+j];	    
 	  }
 	}
 
-	IVP_Great_Matrix_Many_Zero *inv_l=new IVP_Great_Matrix_Many_Zero(n_sub);
-	was_l->invert(inv_l);
+	IVP_Great_Matrix_Many_Zero inv_l(n_sub);
+	was_l.invert(&inv_l);
 
-	IVP_Great_Matrix_Many_Zero *new_a=new IVP_Great_Matrix_Many_Zero(n_sub);
-	new_a->matrix_multiplication(inv_l->matrix_values,was_u->matrix_values);
+	IVP_Great_Matrix_Many_Zero new_a(n_sub);
+	new_a.matrix_multiplication(inv_l.matrix_values,was_u.matrix_values);
 
-	new_a->print_great_matrix("orig_A");
-
-	delete new_a;
-	delete inv_l;
-	delete was_u;
-	delete was_l;
+	new_a.print_great_matrix("orig_A");
 }
 
 // when matrix is singular give dependences of a variable

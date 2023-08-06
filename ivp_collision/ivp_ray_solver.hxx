@@ -221,7 +221,7 @@ class IVP_Ray_Solver_Min: public IVP_Ray_Solver {
     virtual void add_hit_object(IVP_Real_Object *object, const IVP_Compact_Ledge *compact_ledge, const IVP_Compact_Triangle *compact_triangle, IVP_DOUBLE hit_dist, IVP_U_Point *hit_sur_vec_os);
 
   
-  IVP_Ray_Solver_Min(const IVP_Ray_Solver_Template *templ):IVP_Ray_Solver(templ){ // inits class members
+  IVP_Ray_Solver_Min(const IVP_Ray_Solver_Template *templ):IVP_Ray_Solver(templ),ray_hit{}{ // inits class members
       min_dist = P_FLOAT_MAX;
   }
     

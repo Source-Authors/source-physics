@@ -8,6 +8,8 @@ IVP_Template_Constraint::IVP_Template_Constraint() {
 	force_factor = 1.0f;
 	damp_factor = 1.0f;
 
+	flags = IVP_CONSTRAINT_FAST;
+
     //type = IVP_CONSTRAINT_LOCAL;
     objectR = NULL; // for easier finding errors
     objectA = NULL;

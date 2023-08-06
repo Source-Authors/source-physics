@@ -161,10 +161,7 @@ int IVP_Time_Manager::get_event_count()
     return this->min_hash->counter;
 }
 
-void IVP_Event_Manager::simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env, IVP_Time time) {
-    tman=NULL;
-    env=NULL;
-    time=IVP_Time(0.0);
+void IVP_Event_Manager::simulate_time_events(IVP_Time_Manager *,IVP_Environment *, IVP_Time) {
 };
 
 void IVP_Time_Manager::event_loop(IVP_Environment *env, IVP_Time time) {

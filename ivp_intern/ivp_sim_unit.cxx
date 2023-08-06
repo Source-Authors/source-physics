@@ -261,6 +261,8 @@ IVP_Simulation_Unit::IVP_Simulation_Unit() {
     sim_unit_movement_type = IVP_MT_NOT_SIM;
     sim_unit_just_slowed_down = IVP_FALSE;
     sim_unit_has_fast_objects = IVP_FALSE;
+    prev_sim_unit = HK_NULL;
+    next_sim_unit = HK_NULL;
 }
 
 void IVP_Simulation_Unit::rem_sim_unit_controller( IVP_Controller *rem_controller ) {
@@ -773,7 +775,7 @@ void IVP_Simulation_Unit::simulate_single_sim_unit_psi(IVP_Event_Sim *es, IVP_U_
 //	check_movement_state = IVP_FALSE;   // this might be wrong if flag is set to IVP_MT_SLOW
     } else {
 	this->sim_unit_just_slowed_down = this->sim_unit_has_fast_objects;
-	if(sim_unit_just_slowed_down) {
+	if(this->sim_unit_just_slowed_down) {
 	    this->sim_unit_clear_movement_check_values();
 	}
 	sim_unit_has_fast_objects = IVP_FALSE;

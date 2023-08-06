@@ -641,7 +641,7 @@ IVP_Actuator_Torque::IVP_Actuator_Torque(IVP_Environment *env,    IVP_Template_T
     axis_in_core_coord_system.subtract(&get_actuator_anchor(1)->core_pos,&get_actuator_anchor(0)->core_pos);
     axis_in_core_coord_system.normize();
     this->torque = templ->torque;	
-    if (torque){
+    if (this->torque) {
 	ensure_actuator_in_simulation();
     }
 }

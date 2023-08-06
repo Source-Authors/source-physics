@@ -46,6 +46,7 @@ public:
 
     IVP_Clustering_Visualizer_Shortrange_Objectdata() {
 	this->real_object = NULL;
+	this->radius = 0;
     };
 };
 
@@ -428,15 +429,23 @@ IVP_Clustering_Visualizer_Shortrange::IVP_Clustering_Visualizer_Shortrange() {
     this->accept_filter_private_property = new IVP_Clustering_Visualizer_Object_Hash(64);
     this->reject_filter_private_property = new IVP_Clustering_Visualizer_Object_Hash(64);
 
+    this->private_property = NULL;
+    this->intruder = NULL;
+    this->intruder_radius = 0;
+
+    this->pipelined_private_property_data = NULL;
+
     this->use_intruder_accept_filter         = IVP_FALSE;
     this->use_intruder_reject_filter         = IVP_FALSE;
     this->use_private_property_accept_filter = IVP_FALSE;
     this->use_private_property_reject_filter = IVP_FALSE;
+    this->remove_longrange_visualization     = IVP_FALSE;
 
 //    this->remove_longrange_visualization = IVP_TRUE; //IVP_TRUE
 
     this->boxmode = TRAVERSED_BOXES; //ABORTED_BOXES TERMINALS_ONLY TRAVERSED_BOXES
 
+    this->stats_n_reported_ledges = 0;
     this->stats_n_sphere_collisiontests = 0;
     this->stats_n_box_collisiontests = 0;
 
@@ -743,6 +752,8 @@ IVP_BOOL IVP_Clustering_Visualizer_Longrange::get_state() {
 IVP_Clustering_Visualizer_Longrange::IVP_Clustering_Visualizer_Longrange() {
 
     this->enabled = IVP_FALSE;
+    this->use_accept_filter = IVP_TRUE;               // TRUE;
+    this->use_reject_filter = IVP_TRUE;             // TRUE;
     this->visualize_moveable_objects = IVP_FALSE; //TRUE;
     this->visualize_unmoveable_objects = IVP_FALSE; //TRUE;
 

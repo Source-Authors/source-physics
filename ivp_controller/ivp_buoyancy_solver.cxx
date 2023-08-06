@@ -59,6 +59,7 @@ void ivp_core_get_surface_speed_os(IVP_Core *pc,IVP_Real_Object *object, const I
 IVP_Buoyancy_Solver::IVP_Buoyancy_Solver( IVP_Core *core_, IVP_Controller_Buoyancy *cntrl, const class IVP_Template_Buoyancy *input, const IVP_U_Float_Point *resulting_speed_of_current_ws_ ){
     core = core_;
     environment = core->environment;
+    delta_time = core->i_delta_time;
 
     simulate_wing_behavior = input->simulate_wing_behavior;
     

@@ -1086,6 +1086,7 @@ int IVP_Friction_Info_For_Core::dist_number()
 
 IVP_Friction_Solver::IVP_Friction_Solver(IVP_Friction_System *fri_sys, const IVP_Event_Sim *es_in)
 {
+    correct_x_factor = 0;
     l_environment=fri_sys->l_environment;
     es = es_in;
 #ifdef DEBUG

@@ -721,12 +721,12 @@ void IVP_Car_System_Real_Wheels::update_booster(IVP_FLOAT delta_time)
 		booster_seconds_until_ready -= delta_time;
     }
 
-    if ( booster_seconds_to_go > 0.0f )
+    if ( this->booster_seconds_to_go > 0.0f )
 	{
 		this->booster_seconds_to_go -= delta_time;
 
 		// booster shut down?
-		if ( booster_seconds_to_go <= 0.0f )
+		if ( this->booster_seconds_to_go <= 0.0f )
 		{
 			set_booster_acceleration( 0.0f );
 		}
