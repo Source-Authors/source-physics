@@ -64,8 +64,9 @@ public:
     
     IVP_SurfaceManager_Ball(){
 	int size = 32;
-	compact_ledge = (IVP_Compact_Ledge *)ivp_malloc_aligned( size, 16);
+    void *buffer = ivp_malloc_aligned( size, 16);
 	memset( compact_ledge,0,size);
+    compact_ledge = (IVP_Compact_Ledge *)buffer;
     };
     
     IVP_SURMAN_TYPE get_type(){ return IVP_SURMAN_BALL;};

@@ -1137,7 +1137,7 @@ void IVP_Friction_System::delete_friction_distance(IVP_Contact_Point *old_dist) 
 	core1->sim_unit_of_core->union_find_needed_for_sim_unit=IVP_TRUE;
     }
     
-    for(int i=0;i<0;i++) {
+    for(int i=0;i<2;i++) {
 	IVP_Synapse_Friction *my_syn=old_dist->get_synapse(i);
 	if(my_syn->prev) {
 	    my_syn->prev->next=my_syn->next;
