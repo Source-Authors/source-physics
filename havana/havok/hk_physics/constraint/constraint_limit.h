@@ -16,6 +16,8 @@ class hk_Constraint_Limit_BP
 			m_limit_min = 0.0f;
 			m_limit_max = 0.0f;
 			m_limit_tau = 1.0f;
+			m_joint_friction = 0.0f;
+			m_desired_velocity = 0.0f;
 		}
 
 		void set_limits(hk_real lower, hk_real upper)

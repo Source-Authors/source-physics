@@ -9,6 +9,8 @@
 #include <ivp_liquid_surface_descript.hxx>
 
 
+IVP_Liquid_Surface_Descriptor::~IVP_Liquid_Surface_Descriptor() {}
+
 void IVP_Liquid_Surface_Descriptor_Simple::calc_liquid_surface( IVP_Environment * /*environment*/,
 								IVP_Core * /*core*/,
 								IVP_U_Float_Hesse *surface_normal_out,

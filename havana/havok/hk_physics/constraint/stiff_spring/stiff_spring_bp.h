@@ -11,6 +11,7 @@ class hk_Stiff_Spring_BP  //: public hk_Constraint_BP
 			m_length = 1.0f;
 			m_translation_os_ks[0].set(0,0,0);
 			m_translation_os_ks[1].set(0,0,0);
+			m_min_length = 0.0f;
 		}
 
 		void set_position_os ( int, hk_Vector3 &position_os);

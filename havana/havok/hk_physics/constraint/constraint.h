@@ -16,7 +16,7 @@ public:
 
 	inline hk_Constraint(hk_Environment *env, hk_Rigid_Body *a, hk_Rigid_Body *b, hk_effector_priority redundend_prio)
 		:	hk_Rigid_Body_Binary_EF( env, a, b, redundend_prio),
-			m_constraint_system (HK_NULL)
+			m_constraint_system (HK_NULL), m_client_data(HK_NULL)
 	{
 	}
 

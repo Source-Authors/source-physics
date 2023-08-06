@@ -59,6 +59,7 @@ public:
 
     IVP_Template_Surbuild_LedgeSoup()
 	{
+        force_convex_hull = HK_NULL;
 	    build_root_convex_hull = IVP_FALSE;
 		link_to_input_compact_ledges = IVP_FALSE;
 		free_input_compact_ledges = IVP_TRUE;

@@ -110,7 +110,7 @@ class hk_Dense_Matrix_3x3 : public hk_Dense_Matrix
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Dense_Matrix_3x3 )
 
 		inline	hk_Dense_Matrix_3x3 ()
-			: hk_Dense_Matrix( m_elt_buffer.get_elem_address(0,0), 3, 3, 4 )
+			: m_elt_buffer{}, hk_Dense_Matrix( m_elt_buffer.get_elem_address(0,0), 3, 3, 4 )
 		{
 		}
 
