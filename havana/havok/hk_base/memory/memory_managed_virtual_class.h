@@ -15,7 +15,7 @@ private:
 	public:
 		int m_memsize;
 	protected:
-	inline hk_Memory_Managed_Virtual_Class()	{	}
+	inline hk_Memory_Managed_Virtual_Class() : m_memsize(0)	{	}
 
 
 	public:

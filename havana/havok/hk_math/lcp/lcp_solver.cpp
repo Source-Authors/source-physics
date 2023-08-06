@@ -414,7 +414,7 @@ perform_full_setup:
 				{
 					hk_Console::get_instance()->printf("incorrect_accel %f at %d  should be zero\n",accel[idx],idx);
 				}
-				HK_LCP_IF( hk_Math::fabs( full_x[idx] < solver_eps ))
+				HK_LCP_IF( hk_Math::fabs( full_x[idx] ) < solver_eps )
 				{
 					if ( hk_Math::fabs( full_x[ignored_full_index] ) < solver_eps)
 					{
