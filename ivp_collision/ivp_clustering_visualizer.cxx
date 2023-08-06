@@ -261,9 +261,8 @@ void IVP_Clustering_Visualizer_Shortrange::analyze_collision(IVP_Real_Object *ob
 	object_cache->remove_reference();
 
 	this->pipelined_private_property_data = NULL;
-	int x;
-	for (x=0; x<this->pipelined_objects.len(); x++) {
-	    IVP_Clustering_Visualizer_Shortrange_Objectdata *objectdata = this->pipelined_objects.element_at(x);
+	for (int y=0; y<this->pipelined_objects.len(); y++) {
+	    IVP_Clustering_Visualizer_Shortrange_Objectdata *objectdata = this->pipelined_objects.element_at(y);
 	    if ( objectdata->real_object == this->private_property ) {
 		this->pipelined_private_property_data = objectdata;
 		break;

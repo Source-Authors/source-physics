@@ -65,7 +65,7 @@ public:
     IVP_SurfaceManager_Ball(){
 	int size = 32;
     void *buffer = ivp_malloc_aligned( size, 16);
-	memset( compact_ledge,0,size);
+	memset( buffer,0,size);
     compact_ledge = (IVP_Compact_Ledge *)buffer;
     };
     

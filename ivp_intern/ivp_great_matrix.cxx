@@ -1157,7 +1157,7 @@ perform_full_setup:
 		IVP_IF( IVP_Inline_Math::fabsd( accel[idx] ) > 0.01f ) {
 		    printf("incorrect_accel %f at %d  should be zero\n",accel[idx],idx);
 		}
-		IVP_IF( IVP_Inline_Math::fabsd( full_x[idx] < solver_eps )) {
+		IVP_IF( IVP_Inline_Math::fabsd( full_x[idx] ) < solver_eps ) {
 		    if ( IVP_Inline_Math::fabsd( full_x[ignored_full_index] ) < solver_eps) {
 			printf("active_var %d shouldnt be active but inactive\n",idx);
 		    }

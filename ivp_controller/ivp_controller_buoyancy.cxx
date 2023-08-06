@@ -290,8 +290,8 @@ void IVP_Controller_Buoyancy::provide_new_input_solution_combination(Attacher_In
 								     const IVP_DOUBLE d_time,
 								     const IVP_Time current_time) {
 
-	float input_data[ INPUT_VECTOR_LENGTH ];
-	float solution_data[ SOLUTION_VECTOR_LENGTH ];
+	alignas(IVP_MI_Vector) float input_data[ INPUT_VECTOR_LENGTH ];
+	alignas(IVP_MI_Vector) float solution_data[ SOLUTION_VECTOR_LENGTH ];
 	IVP_MI_Vector *future_input = (IVP_MI_Vector *)&input_data[0];
 	IVP_MI_Vector *future_solution = (IVP_MI_Vector *)&solution_data[0];
 
