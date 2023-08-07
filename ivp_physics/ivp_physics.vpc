@@ -38,8 +38,6 @@ $Configuration	"Debug"
 		$Optimization						"Disabled (/Od)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
 		$RuntimeLibrary						"Multi-threaded Debug (/MTd)"
-		$SuppressStartupBanner				"Yes (/NOLOGO)"
-		$DebugInformationFormat				"Program Database for Edit & Continue (/ZI)"
 	}
 
 	$Compiler [$WIN32]
