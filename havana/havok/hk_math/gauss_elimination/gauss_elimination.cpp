@@ -122,7 +122,7 @@ hk_result hk_Gauss_Elm_Solver::solve_lower_null_matrix()
 	}
 	hk_gauss_real left_side=*pointer_in_line;
 	if(hk_Math::fabsd(left_side) < m_gauss_eps){
-	    if(hk_Math::fabsd(right_side) < m_gauss_eps*hk_GAUSS_SOLUTION_TOLERANCE)	    {
+	    if(hk_Math::fabs(right_side) < m_gauss_eps*hk_GAUSS_SOLUTION_TOLERANCE)	    {
 		// rang(matrix) is not maximal and result space is greater 1
 		// choose an arbitrary result element (0.0f)
 		//printf("got_gauss_null %f %f\n",left_side,right_side);
