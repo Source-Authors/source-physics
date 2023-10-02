@@ -206,7 +206,7 @@ int elimcol, elimrow, check_pivot, backcol, backrow, target_row, target_col;
 int max_order_row_index;
 
 	if( dim > order_size ){
-		delete order;
+		delete[] order;
 		order = new int[ dim ]; //(int *)malloc( dim * sizeof(real) );
 		order_size = dim;
 	}
