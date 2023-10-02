@@ -5,17 +5,17 @@
 /* constructor / assignment */
 
 inline hk_Vector3::hk_Vector3(hk_real a, hk_real b, hk_real c)
-	: x(a), y(b), z(c)
+    : x(a), y(b), z(c), w(0)
 {
 }
 
 inline hk_Vector3::hk_Vector3(const double* d)
-	: x(hk_real(d[0])), y(hk_real(d[1])), z(hk_real(d[2]))
+	: x(hk_real(d[0])), y(hk_real(d[1])), z(hk_real(d[2])), w(0)
 {
 }
 
 inline hk_Vector3::hk_Vector3(const float* d)
-	: x(hk_real(d[0])), y(hk_real(d[1])), z(hk_real(d[2]))
+	: x(hk_real(d[0])), y(hk_real(d[1])), z(hk_real(d[2])), w(0)
 {
 }
 
@@ -29,6 +29,7 @@ inline void hk_Vector3::operator= (const hk_Vector3& v)
 	x = v.x;
 	y = v.y;
 	z = v.z;
+	w = v.w;
 }
 
 
