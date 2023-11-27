@@ -49,7 +49,11 @@
        Exactly DEBUG or NDEBUG has to be defined, check Makefile
 #endif
 
-#define CORE *(int *)0 = 0  /* send fatal signal */
+#ifndef WIN32
+#define CORE raise(SIGINT)  /* send fatal signal */
+#else
+#define CORE __debugbreak();
+#endif
 
 #if defined (PSXII)
 #	if defined (__MWERKS__)
