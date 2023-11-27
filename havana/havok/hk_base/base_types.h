@@ -48,30 +48,28 @@ public:
 
 
 // simple commonly used types
-typedef float hk_real;
-typedef double hk_double;
+using hk_real = float;
+using hk_double = double;
 
-typedef void* hk_client;
+using hk_client = void*;
 
-typedef signed char			hk_char;
-typedef signed short		hk_int16;
-typedef signed int			hk_int32;
+using hk_char = signed char;
+using hk_int16 = signed short;
+using hk_int32 = signed int;
+using hk_int64 = signed long long int;
 
-typedef unsigned char		hk_uchar;
-typedef unsigned short		hk_uint16;
-typedef unsigned int		hk_uint32;
+using hk_uchar = unsigned char;
+using hk_uint16 = unsigned short;
+using hk_uint32 = unsigned int;
+using hk_uint64 = unsigned long long int;
 
-#if 1 // defined(__POWERPC__) && defined(__MWERKS__)
-#include <stddef.h>
-typedef size_t 			hk_size_t;  // CK: unsigned long int ..
-#else
-typedef unsigned int 	hk_size_t;
-#endif
+#include <cstddef>
+using hk_size_t = size_t;  // CK: unsigned long int ..
 
 #ifdef _LINUX
 #define HK_BREAK raise(SIGINT)
 #else
-#define HK_BREAK (*((int *)0)) = 0
+#define HK_BREAK __debugbreak()
 #endif
 
 #define HK_PUBLIC public
@@ -79,13 +77,9 @@ typedef unsigned int 	hk_size_t;
 #if defined(__GNUC__)
 #	define HK_HAVE_PRAGMA_INTERFACE
 #	define HK_HAVE_GNU_INLINE_ASSEMBLY
-	typedef signed long long	hk_int64;
-	typedef unsigned long long	hk_uint64;
 #elif defined(WIN32)
 #	define HK_HAVE_FORCE_INLINE
 #	define HK_HAVE_MSVC_INLINE_ASSEMBLY
-	typedef signed __int64		hk_int64;
-	typedef unsigned __int64	hk_uint64;
 #endif
 
 
@@ -104,17 +98,17 @@ enum hk_result
 	HK_FAULT
 };
 
-typedef bool hk_bool;
-#define HK_FALSE false
-#define HK_TRUE  true
+using hk_bool = bool;
+constexpr inline bool HK_FALSE{false};
+constexpr inline bool HK_TRUE{true};
 
-typedef hk_real		hk_time;
-typedef hk_uint16	hk_sorted_set_store_index;
+using hk_time = hk_real;
+using hk_sorted_set_store_index = hk_uint16;
 
-typedef hk_int32	hk_sorted_set_index;
-typedef hk_int32	hk_array_index;
-typedef hk_uint16	hk_array_store_index;
-typedef hk_uint32	hk_id;
+using hk_sorted_set_index = hk_int32;
+using hk_array_index = hk_int32;
+using hk_array_store_index = hk_uint16;
+using hk_id = hk_uint32;
 
 // TODO(crack): disallow to redefine keywords
 #ifdef HK_HAVE_FORCE_INLINE
