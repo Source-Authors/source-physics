@@ -4,14 +4,15 @@
 #include <hk_base/base.h>
 #include <hk_math/types.h>
 
-#include <math.h>
+#include <cmath>
 
-#	define HK_PI        3.14159265358979323846f	/* pi */
-#	define HK_PI_2      1.57079632679489661923f	/* pi/2 */
+constexpr inline hk_real HK_PI{3.14159265358979323846f};   /* pi */
+constexpr inline hk_real HK_PI_2{1.57079632679489661923f}; /* pi/2 */
 
-#define HK_REAL_MAX 1e16f
-#define HK_REAL_EPS 1e-16f		/* the minumum resolution of real */
-#define HK_REAL_RES 1e-7f		/* resolution of hk_real of  relative to 1.0f */
+constexpr inline hk_real HK_REAL_MAX{1e16f};
+constexpr inline hk_real HK_REAL_EPS{1e-16f}; /* the minumum resolution of real */
+constexpr inline hk_real HK_REAL_RES{1e-7f};  /* resolution of hk_real of  relative to 1.0f */
+
 class hk_Math
 {
 	public:
