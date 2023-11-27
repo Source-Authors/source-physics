@@ -7,7 +7,7 @@ void hk_Hash<KV>::rehash(int new_size)
 
   // get new elements
 	m_size_mm = new_size-1;
-    m_elems = hk_allocate( hk_Hash_Element, new_size, HK_MEMORY_CLASS_HASH);
+    m_elems = hk_allocate<hk_Hash_Element>( new_size, HK_MEMORY_CLASS_HASH);
 	{
 		hk_Hash_Element *e = m_elems;
 		for ( int i = m_size_mm; i>=0; i--)
@@ -94,7 +94,7 @@ hk_Hash<KV>::hk_Hash(int size, hk_Memory *mem)
 {
  	m_size_mm = size - 1;
 	m_nelems = 0;
-    m_elems = hk_allocate( hk_Hash_Element, size, HK_MEMORY_CLASS_HASH);
+    m_elems = hk_allocate<hk_Hash_Element>( size, HK_MEMORY_CLASS_HASH);
 	hk_Hash_Element *e = m_elems;
 	for ( int i = m_size_mm; i>=0; i--)
 	{
@@ -106,5 +106,5 @@ hk_Hash<KV>::hk_Hash(int size, hk_Memory *mem)
 template<class KV>
 hk_Hash<KV>::~hk_Hash()
 {
-	hk_deallocate( hk_Hash_Element, m_elems, m_size_mm+1, HK_MEMORY_CLASS_HASH );
+	hk_deallocate( m_elems, m_size_mm+1, HK_MEMORY_CLASS_HASH );
 }

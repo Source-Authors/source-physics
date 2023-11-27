@@ -167,23 +167,17 @@ class hk_Memory
 
 #include <hk_base/memory/memory.inl>
 
+template<typename T>
+T* hk_allocate(size_t size, hk_MEMORY_CLASS memory_class) {
+	return static_cast<T *>(
+		hk_Memory::get_instance()->allocate(sizeof(T) * size, memory_class));
+	//(T*)hk_Memory::get_instance()->allocate_debug(sizeof(T)*(N),__FILE__,__LINE__)
+}
 
-#ifdef HK_DEBUG
-#	define hk_allocate(T,N,CLASS)	\
-		(T*)hk_Memory::get_instance()->allocate(sizeof(T)*(N), CLASS)
-		//(T*)hk_Memory::get_instance()->allocate_debug(sizeof(T)*(N),__FILE__,__LINE__)
-#	define hk_deallocate(T,P,N, CLASS)	\
-		hk_Memory::get_instance()->deallocate(P,sizeof(T)*(N), CLASS)
-		//hk_Memory::get_instance()->deallocate_debug(P,sizeof(T)*(N),__FILE__,__LINE__)
-#else
-
-
-#	define hk_allocate(T,N, CLASS)	\
-		(T*)hk_Memory::get_instance()->allocate(sizeof(T)*(N), CLASS)
-#	define hk_deallocate(T,P,N, CLASS)	\
-		hk_Memory::get_instance()->deallocate(P,sizeof(T)*(N), CLASS)
-#endif
-
-
+template<typename T>
+void hk_deallocate(T *buffer, size_t size, hk_MEMORY_CLASS memory_class) {
+	hk_Memory::get_instance()->deallocate(buffer, sizeof(T) * size, memory_class);
+	//hk_Memory::get_instance()->deallocate_debug(P,sizeof(T)*(N),__FILE__,__LINE__)
+}
 
 #endif // HK_BASE_MEMORY_H
