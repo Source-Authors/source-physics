@@ -30,10 +30,10 @@
 
 #define HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(a,b)
 
-#ifdef _LINUX
+#ifndef WIN32
 #define HK_BREAKPOINT() raise(SIGINT)
 #else
-#define HK_BREAKPOINT() *(int*)0=0
+#define HK_BREAKPOINT() __debugbreak();
 #endif
 
 
