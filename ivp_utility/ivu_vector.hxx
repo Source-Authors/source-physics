@@ -33,14 +33,16 @@ protected:
     //  special vector with preallocated elems
     IVP_U_Vector(void **ielems, int size){
 	IVP_ASSERT (ielems == (void **)(this +1));
+	IVP_ASSERT (size >= 0 && size <= 0xFFFFU);
 	elems = ielems;
-	memsize = size;
+	memsize = (unsigned short)size;
 	n_elems = 0;
     }
     
 public:
     IVP_U_Vector(int size = 0){
-	memsize = size;
+	IVP_ASSERT (size >= 0 && size <= 0xFFFFU);
+	memsize = (unsigned short)size;
 	n_elems = 0;
 	if (size){		// will be optimized by most compilers
 	    elems = (void **)p_malloc(size*sizeof(void *));
