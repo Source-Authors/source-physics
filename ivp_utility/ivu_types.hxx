@@ -10,7 +10,7 @@
 #endif
 
 #ifdef WIN32
-//#define IVP_PIII			/* set for P3 specific code */
+#define IVP_PIII			/* set for P3 specific code */
 //#define IVP_WILLAMETTE	/* set for Willamette specific code */
 //#define IVP_WMT_ALIGN		/* set to compile with MS but Willamette compatible */
 //#define IVP_PSXII			/* playstation II */
