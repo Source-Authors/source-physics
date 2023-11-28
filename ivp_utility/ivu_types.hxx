@@ -134,13 +134,13 @@ inline void BREAKPOINT()
 #endif
 
 
-typedef float IVP_FLOAT;
-typedef int IVP_INT32;
-typedef unsigned int IVP_UINT32;
+using IVP_FLOAT = float;
+using IVP_INT32 = int;
+using IVP_UINT32 = unsigned int;
 
 // ************************
 #ifndef IVP_NO_DOUBLE
-typedef double IVP_DOUBLE;
+using IVP_DOUBLE = double;
 class IVP_Time {
     double seconds;
 public:
@@ -159,7 +159,7 @@ public:
 
 #else
 // ************************
-typedef float IVP_DOUBLE;
+using IVP_DOUBLE = float;
 class IVP_Time {
     float seconds;
     float sub_seconds;
@@ -185,22 +185,17 @@ public:
 };
 #endif
  
-typedef IVP_FLOAT IVP_HTIME;
+using IVP_HTIME = IVP_FLOAT;
 
-typedef unsigned char	uchar; // feel free to remove these three typedefs
-typedef unsigned short	ushort;
-typedef unsigned int	uint;
+using uchar = unsigned char; // feel free to remove these three typedefs
+using ushort = unsigned short;
+using uint = unsigned int;
 
-#ifdef PLATFORM_64BITS
-typedef long long			intp;
-typedef unsigned long long	uintp;
-#else
-typedef int					intp;
-typedef unsigned int		uintp;
-#endif
+using intp = ptrdiff_t;
+using uintp = size_t;
 
-typedef const char *IVP_ERROR_STRING;
-#define IVP_NO_ERROR 0
+using IVP_ERROR_STRING = const char *;
+constexpr inline std::nullptr_t IVP_NO_ERROR{nullptr};
 
 #if defined(PSXII) || defined(LINUX) || defined(GEKKO)
 //#   define IVP_ALIGN_16  __attribute__ ((aligned(16)))
@@ -215,8 +210,8 @@ typedef const char *IVP_ERROR_STRING;
  *		    			Simple Base Types
  ********************************************************************************/
   
-typedef int IVP_Time_CODE;	// Internal enumeration for time handles.
-typedef int ivp_u_bool;		// must be int!!
+using IVP_Time_CODE = int;	// Internal enumeration for time handles.
+using ivp_u_bool = int;		// must be int!!
 
 // boolean enumeration, compatible to C++ bool, ivp_u_bool
 enum IVP_BOOL {
@@ -278,9 +273,9 @@ extern void ivp_memory_check(void *a);
 #define P_MEM_CLEAR_M4(a) memset((char*)(a)+sizeof(void*), 0, sizeof(*a)-sizeof(void *));
 #define P_MEM_CLEAR_ARRAY(clss,elems) memset((char*)(clss), 0, sizeof(*clss)*elems);
 
-#define P_FLOAT_EPS 1e-10f	// used for division checking
-#define P_FLOAT_RES 1e-6f	// float resolution for numbers < 1.0
-#define P_FLOAT_MAX 1e16f
+constexpr inline float P_FLOAT_EPS{1e-10f};  // used for division checking
+constexpr inline float P_FLOAT_RES{1e-6f};	// float resolution for numbers < 1.0
+constexpr inline float P_FLOAT_MAX{1e16f};
 
 #ifdef IVP_NO_DOUBLE
 #	define IVP_PI        3.14159265358979323846f	/* pi */
@@ -291,18 +286,18 @@ extern void ivp_memory_check(void *a);
 #	define P_DOUBLE_EPS P_FLOAT_EPS	// used for division checking
 #	define P_MAX_WORLD_DOUBLE 3000.0f // max world koords
 #else
-#	define IVP_PI        3.14159265358979323846	/* pi */
-#	define IVP_PI_2      1.57079632679489661923	/* pi/2 */
-#	define P_DOUBLE_MAX 1e20
-#	define P_DOUBLE_RES 1E-12	// double resolution for numbers < 1.0
-#	define IVP_3D_SOLVER_NULLSTELLE_EPS 1e-8
-#	define P_DOUBLE_EPS 1e-10	// used for division checking
-#	define P_MAX_WORLD_DOUBLE 10000 // max world koords
+constexpr inline double IVP_PI{3.14159265358979323846};	/* pi */
+constexpr inline double IVP_PI_2{1.57079632679489661923}; /* pi/2 */
+constexpr inline double P_DOUBLE_MAX{1e20};
+constexpr inline double P_DOUBLE_RES{1E-12};	// double resolution for numbers < 1.0
+constexpr inline double IVP_3D_SOLVER_NULLSTELLE_EPS{1e-8};
+constexpr inline double P_DOUBLE_EPS { 1e-10};    // used for division checking
+constexpr inline double P_MAX_WORLD_DOUBLE{10000};  // max world koords
 #endif
 
-#define P_MAX_OBJECT_SIZE 1000.0f 
-#define P_MIN_EDGE_LEN 0.01f	// 10 mm min edge len of polygon objects
-#define P_RES_EPS (P_MAX_WORLD_DOUBLE * P_DOUBLE_RES) // effective IVP_DOUBLE resolution for world coords
+constexpr inline float P_MAX_OBJECT_SIZE{1000.0f}; 
+constexpr inline float P_MIN_EDGE_LEN{0.01f};	// 10 mm min edge len of polygon objects
+constexpr inline float P_RES_EPS{P_MAX_WORLD_DOUBLE * P_DOUBLE_RES}; // effective IVP_DOUBLE resolution for world coords
 
 void ivp_srand(int seed);
 IVP_FLOAT ivp_rand();		// returns [0 .. 1]
