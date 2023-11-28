@@ -134,6 +134,8 @@ public:
     void hull_manager_is_going_to_be_deleted_event ();
     virtual ~IVP_OO_Watcher();	    
     IVP_OO_Watcher(IVP_Collision_Delegator *del, IVP_Real_Object *obj0, IVP_Real_Object *obj1);
+    // dimhotepus: Add missed override.
+    void simulate_time_event(IVP_Environment *) override { CORE; }
 };
 
 class IVP_Mindist_Base;
