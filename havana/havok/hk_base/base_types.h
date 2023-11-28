@@ -83,10 +83,14 @@ using hk_size_t = size_t;  // CK: unsigned long int ..
 #endif
 
 
-#define HK_NULL 0
+constexpr inline std::nullptr_t HK_NULL{nullptr};
 
 //: Note that M must be a power of two for this to work.
-#define HK_NEXT_MULTIPLE_OF(M, P)  ( ((P) + ((M)-1)) & (~((M)-1)) )
+template<typename M, typename P>
+constexpr auto HK_NEXT_MULTIPLE_OF(M m, P p) {
+	M mm{m - 1};
+	return (p + mm) & ~mm;
+}
 
 void hk_assert(bool test, const char* cond, int line, const char* file);
 void hk_check (bool test, const char* cond, int line, const char* file);
