@@ -158,10 +158,16 @@ IVP_Mindist::~IVP_Mindist(){
     }
 
     IVP_ASSERT (index == IVP_U_MINLIST_UNUSED);
-    
-    md->get_synapse(0)->get_object()->get_surface_manager()->remove_reference_to_ledge(md->get_synapse(0)->get_ledge());
-    md->get_synapse(1)->get_object()->get_surface_manager()->remove_reference_to_ledge(md->get_synapse(1)->get_ledge());
-    
+
+	// dimhotepus: remove reference only for polygons as per IVP_Mindist::init_mindist
+	IVP_Real_Object *pop0 = md->get_synapse(0)->get_object();
+	if ( pop0->get_type() == IVP_POLYGON )
+		pop0->get_surface_manager()->remove_reference_to_ledge(md->get_synapse(0)->get_ledge());
+	
+	IVP_Real_Object *pop1 = md->get_synapse(1)->get_object();
+	if ( pop1->get_type() == IVP_POLYGON )
+		pop1->get_surface_manager()->remove_reference_to_ledge(md->get_synapse(1)->get_ledge());
+
     delegator->collision_is_going_to_be_deleted_event(this);
 }
 

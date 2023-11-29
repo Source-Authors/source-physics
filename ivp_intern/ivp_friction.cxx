@@ -68,11 +68,15 @@ IVP_Contact_Point::IVP_Contact_Point( IVP_Mindist *md)
 {
     IVP_Synapse_Real *syn0 = md->get_sorted_synapse(0);
     synapse[0].init_synapse_friction(this, syn0->get_object(), syn0->edge, syn0->get_status());
+	// dimhotepus: Add reference to used ledge.  See ~IVP_Contact_Point();
+	syn0->get_object()->get_surface_manager()->add_reference_to_ledge(syn0->edge->get_compact_ledge());
 #ifdef IVP_USE_S_VALS_FOR_PRETENSION    
     s_coords[0] = s_coords[1] = 0.0f;
 #endif
     IVP_Synapse_Real *syn1 = md->get_sorted_synapse(1);
     synapse[1].init_synapse_friction(this, syn1->get_object(), syn1->edge, syn1->get_status());
+	// dimhotepus: Add reference to used ledge.  See ~IVP_Contact_Point();
+	syn1->get_object()->get_surface_manager()->add_reference_to_ledge(syn1->edge->get_compact_ledge());
 
     IVP_Environment *env = md->get_environment();
     this->last_time_of_recalc_friction_s_vals = env->get_current_time();
