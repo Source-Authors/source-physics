@@ -864,7 +864,7 @@ vertexT *qh_find_newvertex (vertexT *oldvertex, setT *vertices, setT *ridges) {
 */
 void qh_findbest_test (boolT testcentrum, facetT *facet, facetT *neighbor,
       facetT **bestfacet, realT *distp, realT *mindistp, realT *maxdistp) {
-  realT dist, mindist, maxdist;
+  realT dist, mindist = FLT_MIN, maxdist;
 
   if (testcentrum) {
     zzinc_(Zbestdist);

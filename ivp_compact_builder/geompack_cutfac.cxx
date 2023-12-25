@@ -34,14 +34,14 @@ void IVP_Geompack::cutfac_(
     double angr, cmax;
     int imin, kmax;
     double dist, nmax, dotp, tmin, ntol;
-    int a, e, f, i__, j, k, l, n;
+    int a, e, f, i__, j, k, l = -1, n;
     long int eflag;
     double s, t;
     int w;
     double iamin;
     int ccwfl;
     double dsave[3];
-    int isave;
+    int isave = 0;
     double dirsq;
     int estop, inout, estrt;
     double dir1sq;

@@ -889,7 +889,7 @@ void qh_partitionall(setT *vertices, pointT *points, int numpoints){
 void qh_partitioncoplanar (pointT *point, facetT *facet, realT *dist) {
   facetT *bestfacet;
   pointT *oldfurthest;
-  realT bestdist, dist2;
+  realT bestdist, dist2 = 0;
   int numpart= 0;
   boolT isoutside, istrace= False;
 

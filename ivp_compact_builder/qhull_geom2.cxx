@@ -2084,7 +2084,7 @@ coordT *qh_sethalfspace_all (int dim, int count, coordT *halfspaces, pointT *fea
 pointT *qh_voronoi_center (int dim, setT *points) {
   pointT *point, **pointp, *point0;
   pointT *center= (pointT*)qh_memalloc (qh center_size);
-  setT *simplex;
+  setT *simplex = 0;
   int i, j, k, size= qh_setsize(points);
   coordT *gmcoord;
   realT *diffp, sum2, *sum2row, *sum2p, det, factor;

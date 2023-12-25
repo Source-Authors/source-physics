@@ -510,7 +510,7 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	    m_fs_f_Acs.vimult3(&testimpulseA_pointR_fs, &testimpulseA_pointR_Acs);
 	    m_fs_f_ws.vimult3(&testimpulseR_pointR_fs, &testimpulseR_pointR_ws);
 	    m_fs_f_ws.vimult3(&testimpulseA_pointR_fs, &testimpulseA_pointR_ws);
-    /* So funktioniert die Berechnung unter der Annahme, daß sowohl coreR als auch coreA beweglich sind:
+    /* So funktioniert die Berechnung unter der Annahme, da?sowohl coreR als auch coreA beweglich sind:
 	    coreR->test_push_core(&pointR_Rcs, &testimpulseR_pointR_Rcs, &testimpulseR_pointR_ws, &dvR_ws, &drR_Rcs);
 	    coreR->inline_get_surface_speed_on_test(&pointR_Rcs, &dvR_ws, &drR_Rcs, &dv_pointR_ws); 
         
@@ -712,7 +712,7 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
     // oder so
 
     if (maxforce) {
-	int in_range;
+	int in_range = 0;
 	switch (norm) {
 	case IVP_NORM_MINIMUM:
 	  /// #+# avoid divisionen !!!!!
@@ -752,7 +752,7 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	    /// #+# switch ausserhalb von loop
 	    for (int i = 0; i < 3; i++) {
 		short map[5] = {0, 1, 2, 0, 1};
-		IVP_DOUBLE simplenorm_transdir, simplenorm_rotdir= 0;
+		IVP_DOUBLE simplenorm_transdir = 0, simplenorm_rotdir= 0;
 		switch (norm) {
 		case IVP_NORM_MINIMUM:
 		    simplenorm_transdir = IVP_Inline_Math::fabsd(impulseR_fs.k[0]) + IVP_Inline_Math::fabsd(impulseR_fs.k[1]) + IVP_Inline_Math::fabsd(impulseR_fs.k[2]);
