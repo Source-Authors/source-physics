@@ -11,8 +11,11 @@
 #	ifdef _XBOX
 #		include <xtl.h>
 #	else
-#		include <windows.h>
+#		include <sal.h>
 #	endif
+extern "C" __declspec(dllimport) void __stdcall OutputDebugStringA(
+	_In_opt_ const char *lpOutputString);
+
 #endif
 
 hk_Console *hk_Console::m_console = HK_NULL;
@@ -37,7 +40,7 @@ void hk_Console::printf( const char *fmt, ...)
     va_end(args);
 
 #ifdef WIN32
-    OutputDebugString(buffer);
+    OutputDebugStringA(buffer);
 #else
     fprintf(stderr, "%s", buffer);
 #endif
