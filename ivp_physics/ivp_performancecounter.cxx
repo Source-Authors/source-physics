@@ -180,21 +180,21 @@ void IVP_PerformanceCounter_Simple::pcount( IVP_PERFORMANCE_ELEMENT el){
 #	endif
 
 void IVP_PerformanceCounter_Simple::pcount( IVP_PERFORMANCE_ELEMENT el){
-    __int64	Profile_Counter;
-    __int64	Profile_Freq;
+    LARGE_INTEGER Profile_Counter;
+    LARGE_INTEGER Profile_Freq;
 
 	if (el == IVP_PE_PSI_UNIVERSE ){
 		count_PSIs++;
 	}
 
-    QueryPerformanceCounter((LARGE_INTEGER*)(&Profile_Counter));
-	QueryPerformanceFrequency( (LARGE_INTEGER*) &Profile_Freq);   // address of current frequency
+    QueryPerformanceCounter(&Profile_Counter);
+	QueryPerformanceFrequency(&Profile_Freq);   // address of current frequency
 
 
-    int diff0 = Profile_Counter - ref_counter64;
-    ref_counter64 = Profile_Counter;
+    long long diff0 = Profile_Counter.QuadPart - ref_counter64;
+    ref_counter64 = Profile_Counter.QuadPart;
 
-    counter[counting][0] += 1e6 * double(diff0) / double (Profile_Freq);
+    counter[counting][0] += 1e6 * double(diff0) / double (Profile_Freq.QuadPart);
     counting = el;
 }
 
