@@ -30,18 +30,16 @@ hk_Console *hk_Console::get_instance()
 
 void hk_Console::printf( const char *fmt, ...)
 {
-	va_list vlist;
-	va_start(vlist, fmt);
-	//XXX fixme
-	// scan format list for havok vector matrix tokens %V %M
-	vprintf(fmt, vlist);
-	va_end(vlist);
-#ifdef WIN32
+    va_list args;
     char buffer[MAX_ERROR_BUFFER_LEN];
-    va_start(vlist,fmt);	
-    vsprintf(buffer, fmt,vlist);
-    va_end(vlist);
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    va_end(args);
+
+#ifdef WIN32
     OutputDebugString(buffer);
+#else
+    fprintf(stderr, "%s", buffer);
 #endif
 }
 

@@ -320,29 +320,24 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...)
     return p_error_buffer;
 }
 
-void ivp_message(const char *templat, ...)
+void ivp_message(const char *fmt, ...)
 {
     // for general error management... z.B. p_error_message()
-    char buffer[MAX_ERROR_BUFFER_LEN];
-    char *p = buffer;
-    va_list	parg;
-    memset(buffer,0, P_MIN(1000, MAX_ERROR_BUFFER_LEN)); // only for sparc-debugging
-    sprintf (buffer,"ERROR: ");
-    p += strlen(p);
-    
-    va_start(parg,templat);	
+    char buffer[MAX_ERROR_BUFFER_LEN] = { 'E', 'R', 'R', 'O', 'R', ':', ' ', '\0' };
+    va_list	args;
+
+    va_start(args, fmt);
 #ifdef LINUX
-    vsnprintf(buffer,MAX_MAKE_STRING_LEN,templat,parg);
+    vsnprintf(buffer, MAX_MAKE_STRING_LEN, fmt, args);
 #else
-    vsprintf(buffer, templat,parg);
+    vsprintf(buffer, fmt, args);
 #endif
-    va_end(parg);
+    va_end(args);
+
 #ifdef WIN32
     OutputDebugString(buffer);
-#elif defined(LINUX)
-    printf("%s",buffer);
 #else
-    printf("%s",buffer);
+    fprintf(stderr, "%s", buffer);
 #endif
 }
 
@@ -353,7 +348,9 @@ IVP_ERROR_STRING p_get_error(){
 
 void p_print_error(){
 #ifdef WIN32
-    OutputDebugString(p_error_buffer);
+    OutputDebugString(p_get_error());
+#else
+    fprintf(stderr, "%s", p_get_error());
 #endif
 
   //char *buf = p_error_buffer;
