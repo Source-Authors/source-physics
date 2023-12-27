@@ -1,6 +1,6 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#define abs(x) ((x) >= 0 ? (x) : -(x))
+#include <algorithm>
 
 class IVP_Geompack {
 private:

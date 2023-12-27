@@ -14,6 +14,8 @@
 #include <ivp_betterdebugmanager.hxx>
 #include <geompack.hxx>
 
+using std::min;
+using std::max;
 
 int IVP_Geompack::i_sign(int a, int b) {
     int x;

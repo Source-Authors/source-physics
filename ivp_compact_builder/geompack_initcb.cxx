@@ -5,6 +5,8 @@
 
 #include <geompack.hxx>
 
+using std::min;
+using std::max;
 
 void IVP_Geompack::initcb_(double tolin) {
 

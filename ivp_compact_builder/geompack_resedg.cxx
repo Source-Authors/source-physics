@@ -6,6 +6,8 @@
 #include <ivp_betterdebugmanager.hxx>
 #include <geompack.hxx>
 
+using std::min;
+using std::max;
 
 void IVP_Geompack::resedg_(
 			   int		u_in,
