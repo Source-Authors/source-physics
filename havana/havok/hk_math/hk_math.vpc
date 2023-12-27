@@ -15,22 +15,10 @@ $Configuration	"Debug"
 		$CharacterSet						"Use Multi-Byte Character Set"
 	}
 
-	$General [$WIN32]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x86_debug\hk_math"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x86_debug\hk_math"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x64_debug\hk_math"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x64_debug\hk_math"
-	}
-
 	$Compiler
 	{
 		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana;$SRCDIR\ivp\ivp_utility"
-        $PreprocessorDefinitions			"$BASE;VPHYSICS_EXPORTS;HAVANA_CONSTRAINTS;HAVOK_MOPP;_DEBUG;_LIB;HK_DEBUG"
+		$PreprocessorDefinitions			"$BASE;VPHYSICS_EXPORTS;HAVANA_CONSTRAINTS;HAVOK_MOPP;_DEBUG;_LIB;HK_DEBUG"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"hk_math/vecmath.h"
 	}
@@ -40,22 +28,7 @@ $Configuration	"Debug"
 		$Optimization						"Disabled (/Od)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
 		$RuntimeLibrary						"Multi-threaded Debug (/MTd)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x86_debug\hk_math\hk_math.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x86_debug\hk_math\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x86_debug\hk_math\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x86_debug\hk_math\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x64_debug\hk_math\hk_math.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x64_debug\hk_math\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x64_debug\hk_math\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x64_debug\hk_math\"
+		$PrecompiledHeaderFile				"$(IntDir)/hk_math.pch"
 	}
 }
 
@@ -64,18 +37,6 @@ $Configuration	"Release"
 	$General
 	{
 		$CharacterSet						"Use Multi-Byte Character Set"
-	}
-
-	$General [$WIN32]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x86_release\hk_math"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x86_release\hk_math"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x64_release\hk_math"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x64_release\hk_math"
 	}
 
 	$Compiler
@@ -89,22 +50,7 @@ $Configuration	"Release"
 	$Compiler [$WINDOWS]
 	{
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x86_release\hk_math\hk_math.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x86_release\hk_math\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x86_release\hk_math\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x86_release\hk_math\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x64_release\hk_math\hk_math.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x64_release\hk_math\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x64_release\hk_math\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x64_release\hk_math\"
+		$PrecompiledHeaderFile				"$(IntDir)/hk_math.pch"
 	}
 }
 

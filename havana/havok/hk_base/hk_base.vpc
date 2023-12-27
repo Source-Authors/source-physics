@@ -15,22 +15,10 @@ $Configuration	"Debug"
 		$CharacterSet						"Use Multi-Byte Character Set"
 	}
 
-	$General [$WIN32]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x86_debug\hk_base"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x86_debug\hk_base"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x64_debug\hk_base"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x64_debug\hk_base"
-	}
-
 	$Compiler
 	{
 		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana"
-        $PreprocessorDefinitions			"$BASE;VPHYSICS_EXPORTS;HAVANA_CONSTRAINTS;HAVOK_MOPP"
+		$PreprocessorDefinitions			"$BASE;VPHYSICS_EXPORTS;HAVANA_CONSTRAINTS;HAVOK_MOPP"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"hk_base/base.h"
 	}
@@ -38,22 +26,7 @@ $Configuration	"Debug"
 	$Compiler [$WINDOWS]
 	{
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x86_debug\hk_base\hk_base.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x86_debug\hk_base\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x86_debug\hk_base\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x86_debug\hk_base\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x64_debug\hk_base.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x64_debug\hk_base\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x64_debug\hk_base\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x64_debug\hk_base\"
+		$PrecompiledHeaderFile				"$(IntDir)/hk_base.pch"
 	}
 }
 
@@ -62,18 +35,6 @@ $Configuration	"Release"
 	$General
 	{
 		$CharacterSet						"Use Multi-Byte Character Set"
-	}
-
-	$General [$WIN32]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x86_release\hk_base"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x86_release\hk_base"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"$SRCDIR\ivp\obj\x64_release\hk_base"
-		$IntermediateDirectory				"$SRCDIR\ivp\obj\x64_release\hk_base"
 	}
 
 	$Compiler
@@ -87,22 +48,7 @@ $Configuration	"Release"
 	$Compiler [$WINDOWS]
 	{
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x86_release\hk_base\hk_base.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x86_release\hk_base\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x86_release\hk_base\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x86_release\hk_base\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"$SRCDIR\ivp\obj\x64_release\hk_base\hk_base.pch"
-		$ASMListLocation					"$SRCDIR\ivp\obj\x64_release\hk_base\"
-		$ObjectFileName						"$SRCDIR\ivp\obj\x64_release\hk_base\"
-		$ProgramDatabaseFileName			"$SRCDIR\ivp\obj\x64_release\hk_base\"
+		$PrecompiledHeaderFile				"$(IntDir)/hk_base.pch"
 	}
 }
 

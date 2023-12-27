@@ -15,18 +15,6 @@ $Configuration	"Debug"
 		$CharacterSet						"Use Multi-Byte Character Set"
 	}
 
-	$General [$WIN32]
-	{
-		$OutputDirectory					"..\obj\x86_debug\ivp_compactbuilder"
-		$IntermediateDirectory				"..\obj\x86_debug\ivp_compactbuilder"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"..\obj\x64_debug\ivp_compactbuilder"
-		$IntermediateDirectory				"..\obj\x64_debug\ivp_compactbuilder"
-	}
-
 	$Compiler
 	{
 		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\ivp\ivp_intern;$SRCDIR\ivp\ivp_collision;$SRCDIR\ivp\ivp_physics;$SRCDIR\ivp\ivp_surface_manager;$SRCDIR\ivp\ivp_utility;$SRCDIR\ivp\ivp_controller;$SRCDIR\ivp\ivp_compact_builder;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana"
@@ -36,22 +24,7 @@ $Configuration	"Debug"
 	$Compiler [$WINDOWS]
 	{
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"..\obj\x86_debug\ivp_compactbuilder\ivp_compactbuilder_lib.pch"
-		$ASMListLocation					"..\obj\x86_debug\ivp_compactbuilder\"
-		$ObjectFileName						"..\obj\x86_debug\ivp_compactbuilder\"
-		$ProgramDatabaseFileName			"..\obj\x86_debug\ivp_compactbuilder\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"..\obj\x64_debug\ivp_compactbuilder\ivp_compactbuilder_lib.pch"
-		$ASMListLocation					"..\obj\x64_debug\ivp_compactbuilder\"
-		$ObjectFileName						"..\obj\x64_debug\ivp_compactbuilder\"
-		$ProgramDatabaseFileName			"..\obj\x64_debug\ivp_compactbuilder\"
+		$PrecompiledHeaderFile				"$(IntDir)/ivp_compactbuilder_lib.pch"
 	}
 }
 
@@ -60,18 +33,6 @@ $Configuration	"Release"
 	$General
 	{
 		$CharacterSet						"Use Multi-Byte Character Set"
-	}
-
-	$General [$WIN32]
-	{
-		$OutputDirectory					"..\obj\x86_release\ivp_compactbuilder"
-		$IntermediateDirectory				"..\obj\x86_release\ivp_compactbuilder"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"..\obj\x64_release\ivp_compactbuilder"
-		$IntermediateDirectory				"..\obj\x64_release\ivp_compactbuilder"
 	}
 
 	$Compiler
@@ -85,22 +46,7 @@ $Configuration	"Release"
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"ivp_physics.hxx"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"..\obj\x86_release\ivp_compactbuilder\ivp_compactbuilder_lib.pch"
-		$ASMListLocation					"..\obj\x86_release\ivp_compactbuilder\"
-		$ObjectFileName						"..\obj\x86_release\ivp_compactbuilder\"
-		$ProgramDatabaseFileName			"..\obj\x86_release\ivp_compactbuilder\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"..\obj\x64_release\ivp_compactbuilder\ivp_compactbuilder_lib.pch"
-		$ASMListLocation					"..\obj\x64_release\ivp_compactbuilder\"
-		$ObjectFileName						"..\obj\x64_release\ivp_compactbuilder\"
-		$ProgramDatabaseFileName			"..\obj\x64_release\ivp_compactbuilder\"
+		$PrecompiledHeaderFile				"$(IntDir)/ivp_compactbuilder_lib.pch"
 	}
 }
 

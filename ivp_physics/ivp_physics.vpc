@@ -15,18 +15,6 @@ $Configuration	"Debug"
 		$CharacterSet						"Use Multi-Byte Character Set"
 	}
 
-	$General [$WIN32]
-	{
-		$OutputDirectory					"..\obj\x86_debug\ivp_physics"
-		$IntermediateDirectory				"..\obj\x86_debug\ivp_physics"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"..\obj\x64_debug\ivp_physics"
-		$IntermediateDirectory				"..\obj\x64_debug\ivp_physics"
-	}
-
 	$Compiler
 	{
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\ivp\ivp_intern;$SRCDIR\ivp\ivp_collision;$SRCDIR\ivp\ivp_physics;$SRCDIR\ivp\ivp_surface_manager;$SRCDIR\ivp\ivp_utility;$SRCDIR\ivp\ivp_controller;$SRCDIR\ivp\ivp_compact_builder;$SRCDIR\ivp\havana\havok;$SRCDIR\ivp\havana"
@@ -38,27 +26,7 @@ $Configuration	"Debug"
 		$Optimization						"Disabled (/Od)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
 		$RuntimeLibrary						"Multi-threaded Debug (/MTd)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"..\obj\x86_debug\ivp_physics\ivp_physics_lib.pch"
-		$ASMListLocation					"..\obj\x86_debug\ivp_physics\"
-		$ObjectFileName						"..\obj\x86_debug\ivp_physics\"
-		$ProgramDatabaseFileName			"..\obj\x86_debug\ivp_physics\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"..\obj\x64_debug\ivp_physics\ivp_physics_lib.pch"
-		$ASMListLocation					"..\obj\x64_debug\ivp_physics\"
-		$ObjectFileName						"..\obj\x64_debug\ivp_physics\"
-		$ProgramDatabaseFileName			"..\obj\x64_debug\ivp_physics\"
-	}
-
-	$Librarian [$WINDOWS]
-	{
-		$SuppressStartupBanner				"Yes (/NOLOGO)"
+		$PrecompiledHeaderFile				"$(IntDir)/ivp_physics_lib.pch"
 	}
 }
 
@@ -67,18 +35,6 @@ $Configuration	"Release"
 	$General
 	{
 		$CharacterSet						"Use Multi-Byte Character Set"
-	}
-
-	$General [$WIN32]
-	{
-		$OutputDirectory					"..\obj\x86_release\ivp_physics"
-		$IntermediateDirectory				"..\obj\x86_release\ivp_physics"
-	}
-
-	$General [$WIN64]
-	{
-		$OutputDirectory					"..\obj\x64_release\ivp_physics"
-		$IntermediateDirectory				"..\obj\x64_release\ivp_physics"
 	}
 
 	$Compiler
@@ -92,22 +48,7 @@ $Configuration	"Release"
 	$Compiler [$WINDOWS]
 	{
 		$InlineFunctionExpansion			"Only __inline (/Ob1)"
-	}
-
-	$Compiler [$WIN32]
-	{
-		$PrecompiledHeaderFile				"..\obj\x86_release\ivp_physics\ivp_physics_lib.pch"
-		$ASMListLocation					"..\obj\x86_release\ivp_physics\"
-		$ObjectFileName						"..\obj\x86_release\ivp_physics\"
-		$ProgramDatabaseFileName			"..\obj\x86_release\ivp_physics\"
-	}
-
-	$Compiler [$WIN64]
-	{
-		$PrecompiledHeaderFile				"..\obj\x64_release\ivp_physics\ivp_physics_lib.pch"
-		$ASMListLocation					"..\obj\x64_release\ivp_physics\"
-		$ObjectFileName						"..\obj\x64_release\ivp_physics\"
-		$ProgramDatabaseFileName			"..\obj\x64_release\ivp_physics\"
+		$PrecompiledHeaderFile				"$(IntDir)/ivp_physics_lib.pch"
 	}
 }
 
