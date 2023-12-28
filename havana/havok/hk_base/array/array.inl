@@ -4,7 +4,7 @@ hk_Array<T>::hk_Array( int initial_size )
 	m_n_elems = 0;
 	if ( initial_size) {
 		m_memsize = initial_size;
-		m_elems = reinterpret_cast<char*>( hk_allocate<T>(initial_size, HK_MEMORY_CLASS_ARRAY ) );
+		m_elems = reinterpret_cast<char*>( hk_allocate<T>(initial_size, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY ) );
 	}else{
 		m_memsize = 0;
 		m_elems = HK_NULL;
@@ -28,7 +28,7 @@ hk_Array<T>::~hk_Array()
 	if (m_elems)
 	{
 		HK_ASSERT( get_elems() != (T *)(this+1));
-		hk_deallocate( get_elems(), m_memsize, HK_MEMORY_CLASS_ARRAY );
+		hk_deallocate( get_elems(), m_memsize, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
 	}
 }
 

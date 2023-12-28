@@ -20,7 +20,7 @@ void hk_Dense_Matrix::mult_vector( hk_real *x_vector, hk_real *result_vector ) c
 
 
 hk_Dynamic_Dense_Matrix::hk_Dynamic_Dense_Matrix(int r, int c)
-	: hk_Dense_Matrix( hk_allocate<hk_real>( HK_NEXT_MULTIPLE_OF(4,c)*r, HK_MEMORY_CLASS_DENSE_VECTOR),
+	: hk_Dense_Matrix( hk_allocate<hk_real>( HK_NEXT_MULTIPLE_OF(4,c)*r, hk_MEMORY_CLASS::HK_MEMORY_CLASS_DENSE_VECTOR),
 						r,
 						c,
 						HK_NEXT_MULTIPLE_OF(4,c) )
@@ -29,5 +29,5 @@ hk_Dynamic_Dense_Matrix::hk_Dynamic_Dense_Matrix(int r, int c)
 
 hk_Dynamic_Dense_Matrix::~hk_Dynamic_Dense_Matrix()
 {
-	hk_deallocate(m_elt, HK_NEXT_MULTIPLE_OF(4,m_cols)*m_rows, HK_MEMORY_CLASS_DENSE_VECTOR);
+	hk_deallocate(m_elt, HK_NEXT_MULTIPLE_OF(4,m_cols)*m_rows, hk_MEMORY_CLASS::HK_MEMORY_CLASS_DENSE_VECTOR);
 }

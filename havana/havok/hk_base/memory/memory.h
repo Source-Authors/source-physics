@@ -2,11 +2,11 @@
 #define HK_BASE_MEMORY_H
 
 #define HK_MEMORY_MAX_ROW				12
-#define HK_MEMORY_MAX_SIZE_SMALL_BLOCK	512
-#define HK_MEMORY_EXTRA_BLOCK_SIZE		8192
+#define HK_MEMORY_MAX_SIZE_SMALL_BLOCK	512U
+#define HK_MEMORY_EXTRA_BLOCK_SIZE		8192U
 
-#define HK_MEMORY_MAGIC_NUMBER			0x3425234
-#define HK_MEMORY_CACHE_ALIGNMENT 64
+#define HK_MEMORY_MAGIC_NUMBER			0x3425234U
+#define HK_MEMORY_CACHE_ALIGNMENT 64U
 
 #define HK_MEMORY_ENABLE_STATISTICS 
 
@@ -14,7 +14,7 @@
 
 // If you add a memory class, remember to change
 // the table in print_statistics
-enum hk_MEMORY_CLASS
+enum class hk_MEMORY_CLASS : unsigned
 {
 	HK_MEMORY_CLASS_UNKNOWN = 0,
 	HK_MEMORY_CLASS_DUMMY,
@@ -88,32 +88,32 @@ class hk_Memory
 		hk_Memory();
 		//: a really empty constructor
 
-		hk_Memory(char *buffer, int buffer_size);
+		hk_Memory(char *buffer, hk_size_t buffer_size);
 
-		void init_memory( char *buffer, int buffer_size );
+		void init_memory( char *buffer, hk_size_t buffer_size );
 		//: initialized the memory pool
 
 
 		~hk_Memory();
 
-		void* allocate(int byte_size, hk_MEMORY_CLASS );
+		void *allocate(hk_size_t byte_size, hk_MEMORY_CLASS);
 		//: allocate a piece of memory
 		//: Note: the size of that piece is not stored, so
 		//: the user has to do remember the size !!!
 		//: the memory class is currently used only for statistics
 
-		void  deallocate(void*, int byte_size, hk_MEMORY_CLASS );
+		void deallocate(void *, hk_size_t byte_size, hk_MEMORY_CLASS);
 		//: deallocate a piece of memory 
 
-		void* allocate_and_store_size(int byte_size, hk_MEMORY_CLASS );
+		void* allocate_and_store_size(hk_size_t byte_size, hk_MEMORY_CLASS );
 		//: allocate a piece of memory
 		//: Note: the size of that piece is stored, so
 		//: 16 bytes of memory are wasted
 		void  deallocate_stored_size(void*, hk_MEMORY_CLASS );
 		//: deallocate a piece of memory which has been allocated of allocate_and_store_size
 
-		void* allocate_debug(int n, const char* file, int line);
-		void  deallocate_debug(void*, int n,const char* file,int line);
+		void* allocate_debug(hk_size_t n, const char* file, int line);
+		void  deallocate_debug(void*, hk_size_t n, const char* file, int line);
 
 		static hk_Memory *get_instance();
 
@@ -122,31 +122,27 @@ class hk_Memory
 	public: // THE interfaces to the system allocate, change this if you want to add in your own big block memory allocation
 		static void *aligned_malloc( hk_size_t size, hk_size_t alignment);
 		static void aligned_free(	 void *data );
-		static inline void* memcpy(void* dest,const void* src,int size);
-		static inline void* memset(void* dest, hk_uchar val, hk_int32 size);
+		static inline void* memcpy(void* dest, const void* src, hk_size_t size);
+		static inline void* memset(void* dest, hk_uchar val, hk_size_t size);
 
 	private:
-		void* allocate_real(int size);
-		inline int size_to_row(int size);
+		void* allocate_real(hk_size_t size);
 
 	protected:
 		friend class hk_Memory_Util;
-		class hk_Memory_Elem {
-		public:
+		struct hk_Memory_Elem {
 			hk_Memory_Elem *m_next;
-			int m_magic;
+			hk_uint32 m_magic;
 		};
 
-		class hk_Memory_Statistics {
-		public:
-			int m_size_in_use;
-			int m_n_allocates;
-			int m_blocks_in_use;
-			int m_max_size_in_use;
+		struct hk_Memory_Statistics {
+			hk_size_t m_size_in_use;
+			hk_size_t m_n_allocates;
+			hk_size_t m_blocks_in_use;
+			hk_size_t m_max_size_in_use;
 		};
 
-		class hk_Memory_Block {
-		public:
+		struct hk_Memory_Block {
 			hk_Memory_Block *m_next;
 			hk_int32		m_pad[(64 - sizeof(hk_Memory_Block *))/ sizeof(hk_int32)];
 		};
@@ -155,13 +151,13 @@ class hk_Memory
 		hk_Memory_Elem *m_free_list[HK_MEMORY_MAX_ROW];
 		hk_Memory_Block *m_allocated_memory_blocks;
 
-		int  m_blocks_in_use[HK_MEMORY_MAX_ROW];
+		hk_size_t  m_blocks_in_use[HK_MEMORY_MAX_ROW];
 		char *m_memory_start;
 		char *m_memory_end;
 		char *m_used_end;
-		int m_row_to_size[HK_MEMORY_MAX_ROW];
-		hk_Memory_Statistics m_statistics[HK_MEMORY_CLASS_MAX];
-		char m_size_to_row[ HK_MEMORY_MAX_SIZE_SMALL_BLOCK+1 ];
+		hk_uint16 m_row_to_size[HK_MEMORY_MAX_ROW];
+		hk_Memory_Statistics m_statistics[static_cast<unsigned>(hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX)];
+		hk_uchar m_size_to_row[ HK_MEMORY_MAX_SIZE_SMALL_BLOCK+1 ];
 
 };
 
