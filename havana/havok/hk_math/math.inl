@@ -2,6 +2,8 @@
 #	include <hk_math/math_ps2.inl>
 #else	//HK_PS2
 
+#include <algorithm>
+
 #ifdef _WIN32
 inline hk_double hk_Math::fabsd( hk_double r ) { return hk_double(::fabs(r)); }
 
@@ -76,9 +78,7 @@ inline hk_real hk_Math::pow( hk_real r, hk_real p) { return hk_real(c_math::pow(
 inline hk_real hk_Math::clamp( hk_real r, hk_real mn, hk_real mx)
 {
 	HK_ASSERT(mn<=mx);
-	return ((r<mn)
-				? mn
-				: ((r>mx) ? mx : r));
+	return std::clamp(r, mn, mx);
 }
 
 inline int hk_Math::int_log2( hk_real ) { return 0; }
