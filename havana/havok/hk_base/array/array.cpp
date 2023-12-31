@@ -27,7 +27,7 @@ void hk_Array_Base::grow_mem( int size )
 	if( m_elems )
 		memcpy( new_array, m_elems, m_memsize * size );
 
-	if ( m_elems && ((char *)m_elems != (char *)(this + 1)))
+	if ( m_elems && (m_elems != (char *)(this + 1)))
 	{
 		hk_deallocate( m_elems, m_memsize * size, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
 	}
@@ -45,9 +45,10 @@ void hk_Array_Base::grow_mem( int size, int n_elems )
 	HK_ASSERT( new_memsize <= USHRT_MAX );
 
 	char *new_array = hk_allocate<char>( new_memsize * size, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
+	if (!new_array) HK_BREAK;
 
 	memcpy( new_array, m_elems, m_memsize * size );
-	if ( m_elems && ((char *)m_elems != (char *)(this + 1)))
+	if ( m_elems && (m_elems != (char *)(this + 1)))
 	{
 		hk_deallocate( m_elems, m_memsize * size, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
 	}
