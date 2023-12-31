@@ -13,6 +13,8 @@
 
 #ifndef WIN32
 #	pragma implementation "ivu_memory.hxx"
+
+#	include <cstdlib>
 #endif
 
 #include "ivu_memory.hxx"
@@ -20,7 +22,7 @@
 //IVP_Environment *ivp_global_env=NULL;
 
 void ivp_memory_check(void *a) {
-  if(a) return;
+  if (a) return;
 #if 0
   //if( !ivp_global_env ) {
   //        return;
@@ -41,6 +43,9 @@ void ivp_memory_check(void *a) {
 
 void ivp_byte_swap4(uint& fourbytes)
 {
+#ifdef _WIN32
+	fourbytes = _byteswap_ulong(fourbytes);
+#else
 	struct FOURBYTES {
 		union { 
 			unsigned char b[4]; 
@@ -56,10 +61,14 @@ void ivp_byte_swap4(uint& fourbytes)
 	out.b[3] = in.b[0];
 
 	fourbytes = out.v;
+#endif
 }
 
 void ivp_byte_swap2(ushort& twobytes)
 {
+#ifdef _WIN32
+	twobytes = _byteswap_ushort(twobytes);
+#else
 	struct TWOBYTES {
 		union { 
 			unsigned char b[2]; 
@@ -73,6 +82,7 @@ void ivp_byte_swap2(ushort& twobytes)
 	out.b[1] = in.b[0];
 	
 	twobytes = out.v;
+#endif
 }
 
 void *p_malloc(unsigned int size)
