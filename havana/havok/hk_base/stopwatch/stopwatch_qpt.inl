@@ -13,36 +13,35 @@
 #	error HK_HAVE_QUERY_PERFORMANCE_TIMER is defined, but no implementation.
 #endif
 
-inline void hk_query_performance_timer_start(hk_uint64& ticks)
+inline hk_uint64 hk_query_performance_timer_start()
 {
-	ticks = __rdtsc();
+	return __rdtsc();
 }
 
-inline void hk_query_performance_timer_stop(hk_uint64& ticks)
+inline hk_uint64 hk_query_performance_timer_stop()
 {
 	unsigned aux;
-	ticks = __rdtscp(&aux);
+	return __rdtscp(&aux);
 }
 
 inline void hk_query_performance_timer_frequency(hk_uint64* freq)
 {
 #ifdef _WIN32
 	LARGE_INTEGER waitTime, startCount, curCount;
-	hk_uint64 startTicks, endTicks; 
 
 	// Take 1/32 of a second for the measurement.
 	QueryPerformanceFrequency( &waitTime );
-	int scale = 5;
+	unsigned scale = 5;
 	waitTime.QuadPart >>= scale;
 
 	QueryPerformanceCounter( &startCount );
-	hk_query_performance_timer_start(startTicks);
+	hk_uint64 startTicks = hk_query_performance_timer_start();
 	do
 	{
 		QueryPerformanceCounter( &curCount );
 	}
 	while ( curCount.QuadPart - startCount.QuadPart < waitTime.QuadPart );
-	hk_query_performance_timer_stop(endTicks);
+	hk_uint64 endTicks = hk_query_performance_timer_stop();
 
 	*freq = (endTicks - startTicks) << scale;
 	if ( *freq == 0 )
@@ -51,11 +50,11 @@ inline void hk_query_performance_timer_frequency(hk_uint64* freq)
 		// WIN64_AMD_DUALCORE_TIMER_WORKAROUND that can cause rdtsc to effectively
 		// stop. Staging doesn't have the workaround but I'm checking in the fix
 		// anyway. Return a plausible speed and get on with our day.
-		*freq = 2000000000;
+		*freq = 2000000000U;
 	}
 #else
 	// assume 2000 Mhz for now
-	*freq = 2000000000;
+	*freq = 2000000000U;
 #endif
 }
 
@@ -71,7 +70,7 @@ class hk_Stopwatch_qpt
 		void stop();
 		void reset();
 
-		hk_real get_elapsed_time();
+		hk_real get_elapsed_time() const;
 		hk_real get_split_time();
 
 	private:
@@ -96,7 +95,7 @@ inline void hk_Stopwatch_qpt::start()
 {
 	HK_ASSERT(! m_running_flag);
 	m_running_flag = true;
-	hk_query_performance_timer_start(m_ticks_at_start);
+	m_ticks_at_start = hk_query_performance_timer_start();
 	m_ticks_at_split = m_ticks_at_start;
 }
 
@@ -105,8 +104,7 @@ inline void hk_Stopwatch_qpt::stop()
 	HK_ASSERT(m_running_flag);
 
 	m_running_flag = false;
-	hk_uint64 ticks_now;
-	hk_query_performance_timer_stop(ticks_now);
+	hk_uint64 ticks_now = hk_query_performance_timer_stop();
 	m_ticks_total += ticks_now - m_ticks_at_start;
 	++m_num_timings;
 }
@@ -120,15 +118,14 @@ inline void hk_Stopwatch_qpt::reset()
 	m_num_timings = 0;
 }
 
-inline hk_real hk_Stopwatch_qpt::get_elapsed_time()
+inline hk_real hk_Stopwatch_qpt::get_elapsed_time() const
 {
 	return hk_real(m_ticks_total) / hk_real(s_ticks_per_second);
 }
 
 inline hk_real hk_Stopwatch_qpt::get_split_time()
 {
-	hk_uint64 ticks_now;
-	hk_query_performance_timer_stop(ticks_now);
+	hk_uint64 ticks_now = hk_query_performance_timer_stop();
 	hk_uint64 sticks = ticks_now - m_ticks_at_split;
 	m_ticks_at_split = ticks_now;
 	return hk_real(sticks) / hk_real(s_ticks_per_second);

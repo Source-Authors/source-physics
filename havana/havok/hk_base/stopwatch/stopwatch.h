@@ -19,7 +19,7 @@ class hk_Stopwatch
 		void stop() { }
 		void reset(){ }
 
-		hk_real get_elapsed_time()	{ return 0; }
+		hk_real get_elapsed_time() const	{ return 0; }
 		hk_real get_split_time()	{ return 0; }
 };
 #endif /* special stopwatch implementation */
