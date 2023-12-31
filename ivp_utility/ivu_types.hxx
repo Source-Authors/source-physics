@@ -238,13 +238,13 @@ enum IVP_RETURN_TYPE {
 #include <string.h>
 
 
-	char * IVP_CDECL p_calloc(int nelem,int size);
-	void * IVP_CDECL p_realloc(void* memblock, int size);
-	void * IVP_CDECL p_malloc(unsigned int size);
+	char * IVP_CDECL p_calloc(size_t nelem, size_t size);
+	void * IVP_CDECL p_realloc(void* memblock, size_t size);
+	void * IVP_CDECL p_malloc(size_t size);
 	void   IVP_CDECL p_free(void *data);
 	
-	void * IVP_CDECL ivp_malloc_aligned(int size, int alignment);
-	void * IVP_CDECL ivp_calloc_aligned(int size, int alignment);
+	void * IVP_CDECL ivp_malloc_aligned(size_t size, unsigned short alignment);
+	void * IVP_CDECL ivp_calloc_aligned(size_t size, unsigned short alignment);
 	
 	void  IVP_CDECL ivp_free_aligned(void *data);
 

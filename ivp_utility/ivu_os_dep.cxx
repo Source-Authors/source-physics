@@ -28,7 +28,7 @@ int ivp_srand_read(void)
 	return IVP_RAND_SEED;
 }
 
-extern void *p_malloc(unsigned int size);
+extern void *p_malloc(size_t size);
 
 
 
