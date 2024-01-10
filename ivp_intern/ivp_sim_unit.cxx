@@ -843,12 +843,15 @@ void IVP_Simulation_Unit::reset_time( IVP_Time offset){
     IVP_PREFETCH(this->controller_cores.elems,0); \
     IVP_PREFETCH(this->sim_unit_cores.elems,0); }
 
+// dimhotepus: prefetch only when have controller cores.
 #define prefetch2_simulate_single_sim_unit_psi(this)     IVP_IF_PREFETCH_ENABLED(IVP_TRUE){	\
-	IVP_PREFETCH(this->controller_cores.element_at(this->controller_cores.len()-1),0);	\
-	IVP_PREFETCH(this->controller_cores.element_at(0),0);    \
+	if (this->controller_cores.n_elems) { \
+		IVP_PREFETCH(this->controller_cores.element_at(this->controller_cores.len()-1),0);	\
+		IVP_PREFETCH(this->controller_cores.element_at(0),0);    \
+	} \
 	IVP_PREFETCH(this->sim_unit_cores.element_at( this->sim_unit_cores.len()-1),0); \
 	this->prefetch0_init_moving_core_for_psi(this->sim_unit_cores.element_at(this->sim_unit_cores.len()-1));    \
-    }
+	}
 
 
 
