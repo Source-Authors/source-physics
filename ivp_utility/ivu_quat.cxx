@@ -1008,10 +1008,6 @@ void APIENTRY gluQuatLnDif_EXT(GL_QUAT *q1, GL_QUAT *q2, GL_QUAT *res)
 
 
 
-// cleanup stuff we changed
-#if defined (WIN32)
-#pragma warning( default : 4244 )	// set it to default again
-#endif
 #endif
 
 

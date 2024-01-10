@@ -9,10 +9,6 @@
 #pragma pack(push,16)
 #endif
 
-#ifdef WIN32
-#	pragma warning( disable : 4244 ) 
-#endif
-
 class IVP_U_Straight;
 class IVP_U_Hesse;
 class IVP_U_Quat;
