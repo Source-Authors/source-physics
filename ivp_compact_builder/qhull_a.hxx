@@ -51,13 +51,6 @@
 #include <unistd.h>
 #endif
 
-#ifdef _MSC_VER  /* Microsoft Visual C++ */
-#pragma warning( disable : 4056)  /* float constant expression.  Looks like a compiler bug */
-#pragma warning( disable : 4146)  /* unary minus applied to unsigned type */
-#pragma warning( disable : 4244)  /* conversion from 'unsigned long' to 'real' */
-#pragma warning( disable : 4305)  /* conversion from 'const double' to 'float' */
-#endif
-
 /* ======= -macros- =========== */
 
 /*-<a                             href="qh-c.htm#qhull"
