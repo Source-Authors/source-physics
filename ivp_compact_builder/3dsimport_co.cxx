@@ -113,9 +113,9 @@ void FindCentrePoints(H3dsScene * scene)
 			if(vrt->z > zmax) zmax=vrt->z;
 			if(vrt->z < zmin) zmin=vrt->z;
 		}
-		mo->centre.x = xmax-(xmax-xmin)*0.5;
-		mo->centre.y = ymax-(ymax-ymin)*0.5;
-		mo->centre.z = zmax-(zmax-zmin)*0.5;
+		mo->centre.x = xmax-(xmax-xmin)*0.5f;
+		mo->centre.y = ymax-(ymax-ymin)*0.5f;
+		mo->centre.z = zmax-(zmax-zmin)*0.5f;
 
 		if(mo->centre.x > xmaxo) xmaxo=mo->centre.x;
 		if(mo->centre.x < xmino) xmino=mo->centre.x;
@@ -124,9 +124,9 @@ void FindCentrePoints(H3dsScene * scene)
 		if(mo->centre.z > zmaxo) zmaxo=mo->centre.z;
 		if(mo->centre.z < zmino) zmino=mo->centre.z;
 	}
-	scene->centre.x = xmaxo-(xmaxo-xmino)*0.5;
-	scene->centre.y = ymaxo-(ymaxo-ymino)*0.5;
-	scene->centre.z = zmaxo-(zmaxo-zmino)*0.5;
+	scene->centre.x = xmaxo-(xmaxo-xmino)*0.5f;
+	scene->centre.y = ymaxo-(ymaxo-ymino)*0.5f;
+	scene->centre.z = zmaxo-(zmaxo-zmino)*0.5f;
 }
 
 void Move(H3dsScene * scene, float32 x, float32 y, float32 z)
