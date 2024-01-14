@@ -5,6 +5,18 @@
 #include <signal.h>
 #endif
 
+#include <DirectXMath.h>
+
+// dimhotepus: Use SSE when DirectXMath uses SSE.
+#ifdef _XM_SSE_INTRINSICS_
+#define HK_PIII_SSE
+#endif
+
+// dimhotepus: Use ARM NEON when DirectXMath uses ARM NEON.
+#ifdef _XM_ARM_NEON_INTRINSICS_
+#define HK_ARM_NEON
+#endif
+
 // some of these are wrong
 #if defined(_DEBUG) && !defined(HK_DEBUG)
 #	define HK_DEBUG
@@ -128,7 +140,7 @@ using hk_id = hk_uint32;
 #	if defined(HK_PS2)
 #		define HK_ALIGNED_VARIABLE(NAME,ALIGNMENT) NAME __attribute__((aligned(ALIGNMENT)))
 #	elif defined(HK_PIII_SSE)
-#		define HK_ALIGNED_VARIABLE(NAME,ALIGNMENT) __declspec(align(ALIGNMENT))
+#		define HK_ALIGNED_VARIABLE(NAME,ALIGNMENT) alignas(ALIGNMENT) NAME
 #	else //no special alignment
 #		define HK_ALIGNED_VARIABLE(NAME,ALIGNMENT) NAME
 #	endif 
