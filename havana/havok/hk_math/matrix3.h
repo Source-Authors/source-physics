@@ -5,7 +5,7 @@
 #error Include <hk_math/vecmath.h> Do not include this file directly.
 #endif // HK_MATH_VECMATH_H
 
-//: A generic 3x3 matrix
+//: A generic 3x4 matrix
 class hk_Matrix3
 {
 	public:
@@ -89,6 +89,20 @@ class hk_Matrix3
 		inline hk_Vector3& get_column(int x);
 
 		inline const hk_Vector3& get_column(int x) const;
+
+		// dimhotepus: Better DirectX math integration.
+		inline DirectX::XMFLOAT3X4A* XmBase()
+		{
+			static_assert(sizeof(DirectX::XMFLOAT3X4A) == sizeof(*this));
+			static_assert(alignof(DirectX::XMFLOAT3X4A) == alignof(hk_Matrix3));
+			return reinterpret_cast<DirectX::XMFLOAT3X4A*>(&m_elems);
+		}
+		inline const DirectX::XMFLOAT3X4A* XmBase() const
+		{
+			static_assert(sizeof(DirectX::XMFLOAT3X4A) == sizeof(*this));
+			static_assert(alignof(DirectX::XMFLOAT3X4A) == alignof(hk_Matrix3));
+			return reinterpret_cast<const DirectX::XMFLOAT3X4A*>(&m_elems);
+		}
 
 	protected:
 

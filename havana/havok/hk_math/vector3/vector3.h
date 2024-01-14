@@ -88,6 +88,20 @@ class hk_Vector3
 		inline       hk_real* get_real_pointer() { return &x; }
 		inline const hk_real* get_real_pointer() const { return &x; }
 
+		// dimhotepus: Better DirectX math integration.
+		inline DirectX::XMFLOAT4A* XmBase()
+		{
+			static_assert(sizeof(DirectX::XMFLOAT4A) == sizeof(*this));
+			static_assert(alignof(DirectX::XMFLOAT4A) == alignof(hk_Vector3));
+			return reinterpret_cast<DirectX::XMFLOAT4A*>(&x);
+		}
+		inline const DirectX::XMFLOAT4A* XmBase() const
+		{
+			static_assert(sizeof(DirectX::XMFLOAT4A) == sizeof(*this));
+			static_assert(alignof(DirectX::XMFLOAT4A) == alignof(hk_Vector3));
+			return reinterpret_cast<const DirectX::XMFLOAT4A*>(&x);
+		}
+
 	public:
 
 		hk_real HK_ALIGNED_VARIABLE(x,16);
