@@ -232,17 +232,18 @@ inline void IVP_VecFPU::fpu_exchange_rows(IVP_DOUBLE *target_adress1,IVP_DOUBLE 
 	} else {
         int i;
         for(i=size;i>0;i-=IVP_VECFPU_SIZE) {
-	        IVP_DOUBLE h;
 #       if IVP_VECFPU_SIZE == 2
+	        IVP_DOUBLE h;
 	        h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
 	        h=target_adress1[1];  target_adress1[1]=target_adress2[1];  target_adress2[1]=h;
 #       elif IVP_VECFPU_SIZE == 4
+	        IVP_DOUBLE h;
 	        h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
 	        h=target_adress1[1];  target_adress1[1]=target_adress2[1];  target_adress2[1]=h;
 	        h=target_adress1[2];  target_adress1[2]=target_adress2[2];  target_adress2[2]=h;
 	        h=target_adress1[3];  target_adress1[3]=target_adress2[3];  target_adress2[3]=h;
 #       else
-		h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
+            std::swap(target_adress1[0], target_adress2[0]);
 #       endif
 	    target_adress1+=IVP_VECFPU_SIZE;
 	    target_adress2+=IVP_VECFPU_SIZE;
