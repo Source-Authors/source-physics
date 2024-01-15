@@ -129,7 +129,7 @@ inline hk_real hk_VecFPU::fpu_large_dot_product(hk_real *base_a, hk_real *base_b
     } 
 #else
     hk_real sum=0.0f;
-    for(int i=size-1;i>=0;i--) {
+    for(int i=0;i<size;i++) {
 	sum += base_a[i] * base_b[i];
     }
     return sum;
@@ -428,7 +428,7 @@ inline hk_double hk_VecFPU::fpu_large_dot_product(hk_double *base_a, hk_double *
     } 
 #else
     hk_double sum=0.0;
-    for(int i=size-1;i>=0;i--) {
+    for(int i=0;i<size;i++) {
 	sum += base_a[i] * base_b[i];
     }
     return sum;
