@@ -210,15 +210,15 @@ inline void hk_VecFPU::fpu_exchange_rows(hk_real *target_adress1,hk_real *target
 	
         int i;
         for(i=size;i>0;i-=hk_VecFPU_SIZE_FLOAT) {
-	        hk_real h;
 #       if hk_VecFPU_SIZE_FLOAT == 2
+	        hk_real h;
 	        h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
 	        h=target_adress1[1];  target_adress1[1]=target_adress2[1];  target_adress2[1]=h;
 #       elif hk_VecFPU_SIZE_FLOAT == 4
-	        h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
-	        h=target_adress1[1];  target_adress1[1]=target_adress2[1];  target_adress2[1]=h;
-	        h=target_adress1[2];  target_adress1[2]=target_adress2[2];  target_adress2[2]=h;
-	        h=target_adress1[3];  target_adress1[3]=target_adress2[3];  target_adress2[3]=h;
+	        std::swap(target_adress1[0], target_adress2[0]);
+	        std::swap(target_adress1[1], target_adress2[1]);
+	        std::swap(target_adress1[2], target_adress2[2]);
+	        std::swap(target_adress1[3], target_adress2[3]);
 #       else
         shit
 #       endif
@@ -509,11 +509,11 @@ inline void hk_VecFPU::fpu_exchange_rows(hk_double *target_adress1,hk_double *ta
 	} else {
         int i;
         for(i=size;i>0;i-=hk_VecFPU_SIZE_DOUBLE) {
-	        hk_double h;
 #       if hk_VecFPU_SIZE_DOUBLE == 2
-	        h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
-	        h=target_adress1[1];  target_adress1[1]=target_adress2[1];  target_adress2[1]=h;
+	        std::swap(target_adress1[0], target_adress2[0]);
+	        std::swap(target_adress1[1], target_adress2[1]);
 #       elif hk_VecFPU_SIZE_DOUBLE == 4
+	        hk_double h;
 	        h=target_adress1[0];  target_adress1[0]=target_adress2[0];  target_adress2[0]=h;
 	        h=target_adress1[1];  target_adress1[1]=target_adress2[1];  target_adress2[1]=h;
 	        h=target_adress1[2];  target_adress1[2]=target_adress2[2];  target_adress2[2]=h;
@@ -586,7 +586,7 @@ inline void hk_VecFPU::fpu_set_row_to_zero(hk_double *target_adress,int size,hk_
         for(i=size-1;i>=0;i-=hk_VecFPU_SIZE_DOUBLE) {
 	        int j;
 	        for(j=0;j<hk_VecFPU_SIZE_DOUBLE;j++) {
-	            target_adress[j] = 0.0f;
+	            target_adress[j] = 0.0;
 			}
 	        target_adress+=hk_VecFPU_SIZE_DOUBLE;
 		}     
