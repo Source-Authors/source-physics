@@ -1239,8 +1239,11 @@ void IVP_Mindist::do_impact(){
 	if (g_fDeferDeleteMindist)
 	{
 		// BUGBUG: someone changed a collision filter and didn't tell us!
-		IVP_ASSERT(0);
-		delete this;
+		// Calling recheck_collision_filter should fix it and stop it from breaking the entire engine. (Never call "delete this;" here). 
+		// In most cases, this IVP_Mindist will also be deleted from recheck_collision_filter.
+		for (int i = 0;i<2;i++){
+			objects[i]->recheck_collision_filter();
+		} 
 		return;
 	}
 
