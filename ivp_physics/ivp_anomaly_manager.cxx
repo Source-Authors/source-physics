@@ -191,13 +191,13 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 #endif
 }
 
-IVP_FLOAT IVP_Anomaly_Manager::get_push_speed_penetration( IVP_Real_Object *obj0, IVP_Real_Object *obj1) {
+IVP_FLOAT IVP_Anomaly_Manager::get_push_speed_penetration( IVP_Real_Object *obj0, IVP_Real_Object *) {
 	IVP_DOUBLE d_time=obj0->get_environment()->get_delta_PSI_time();
     IVP_DOUBLE grav = obj0->get_environment()->get_gravity()->real_length();
     IVP_DOUBLE speed_change = (grav*2.0f) * d_time;
 	return speed_change;
 }
 
-IVP_BOOL IVP_Anomaly_Manager::max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits *, IVP_Core *core){
+IVP_BOOL IVP_Anomaly_Manager::max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits *, IVP_Core *){
     return IVP_TRUE;
 }
