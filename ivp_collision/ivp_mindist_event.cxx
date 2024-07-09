@@ -606,10 +606,10 @@ void IVP_Mindist_Event_Solver::calc_next_event_PP(const IVP_Compact_Edge *P,
     IVP_U_Matrix_Cache cache_P2(m_cache_P2->clp_cache_object);
     
 
-    IVP_DOUBLE sum_abs_omega;
+    //IVP_DOUBLE sum_abs_omega;
     IVP_Core *solver_P = m_cache_P->get_core();
     IVP_Core *solver_P2 = m_cache_P2->get_core();
-    sum_abs_omega = solver_P->abs_omega + solver_P2->abs_omega;
+    //sum_abs_omega = solver_P->abs_omega + solver_P2->abs_omega;
 
     event_time_out =  t_max;
     const IVP_U_Float_Point *points_object[2];
@@ -726,10 +726,10 @@ void IVP_Mindist_Event_Solver::calc_next_event_BP(IVP_Ball * ball,const  IVP_Com
     IVP_U_Matrix_Cache cache_P(m_cache_B);
     IVP_U_Matrix_Cache cache_P2(m_cache_P2->clp_cache_object);
     
-    IVP_DOUBLE sum_abs_omega;
+    //IVP_DOUBLE sum_abs_omega;
     IVP_Core *solver_P = ball->get_core();
     IVP_Core *solver_P2 = m_cache_P2->get_core();
-    sum_abs_omega = solver_P->abs_omega + solver_P2->abs_omega;
+    //sum_abs_omega = solver_P->abs_omega + solver_P2->abs_omega;
 
     event_time_out =  t_max;
 
@@ -1036,10 +1036,10 @@ void IVP_Mindist_Event_Solver::calc_next_event_BK(IVP_Ball * ball,const  IVP_Com
     IVP_U_Matrix_Cache cache_P(m_cache_B);
     IVP_U_Matrix_Cache cache_K(m_cache_K->clp_cache_object);
     
-    IVP_DOUBLE sum_abs_omega;
+    //IVP_DOUBLE sum_abs_omega;
     IVP_Core *solver_P = ball->get_core();
     IVP_Core *solver_K = m_cache_K->get_core();
-    sum_abs_omega = solver_P->abs_omega + solver_K->abs_omega;
+    //sum_abs_omega = solver_P->abs_omega + solver_K->abs_omega;
 
     event_time_out =  t_max;
 

@@ -122,13 +122,13 @@ class IVP_OO_Watcher : public IVP_Collision, public IVP_Collision_Delegator {
     IVP_Synapse_OO  synapses[2];
     IVP_U_FVector<IVP_Collision>  mindists;
 protected:
-    void get_objects( IVP_Real_Object *objects_out[2] );
-    void get_ledges( const IVP_Compact_Ledge *ledges_out[2] );
+    void get_objects( IVP_Real_Object *objects_out[2] ) override;
+    void get_ledges( const IVP_Compact_Ledge *ledges_out[2] ) override;
 
     IVP_Synapse_OO *get_synapse(int i){ return &synapses[i]; };
 public:
     // IVP_Collision_Delegator
-    void collision_is_going_to_be_deleted_event(class IVP_Collision *t);
+    void collision_is_going_to_be_deleted_event(class IVP_Collision *t) override;
     
     void hull_limit_exceeded_event();
     void hull_manager_is_going_to_be_deleted_event ();
