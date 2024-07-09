@@ -788,7 +788,7 @@ IVP_Compact_Grid *IVP_GridBuilder_Array::compile_ledges_into_compact_grid(const 
 		is_left_handed = IVP_FALSE;
 	    }
 	}
-	IVP_DOUBLE max_delta_height_os;
+	//IVP_DOUBLE max_delta_height_os;
 	{ // find center, use bounding box
 	    IVP_FLOAT max, min;
 	    max = min = height_field[0];
@@ -800,7 +800,7 @@ IVP_Compact_Grid *IVP_GridBuilder_Array::compile_ledges_into_compact_grid(const 
 	    center_gs.set( (n_rows-1) * 0.5f, (n_cols-1) * 0.5f, (max + min) * 0.5f );
 
 	    m_object_f_grid.vmult4( &center_gs, &cg->center );
-	    max_delta_height_os = (max - min ) * 0.5f;
+	    //max_delta_height_os = (max - min ) * 0.5f;
 	}
 
 	IVP_U_Point center; center.set(&cg->center);
