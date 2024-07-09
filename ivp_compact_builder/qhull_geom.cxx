@@ -533,7 +533,7 @@ LABELreturn_bestnew:
 void qh_gausselim(realT **rows, int numrow, int numcol, boolT *sign, boolT *nearzero) {
   realT *ai, *ak, *rowp, *pivotrow;
   realT n, pivot, pivot_abs= 0.0, temp;
-  int i, j, k, pivoti, flip=0;
+  int i, j, k, pivoti /*, flip = 0 */;
   
   *nearzero= False;
   for(k= 0; k < numrow; k++) {
@@ -550,7 +550,7 @@ void qh_gausselim(realT **rows, int numrow, int numcol, boolT *sign, boolT *near
       rows[pivoti]= rows[k]; 
       rows[k]= rowp; 
       *sign ^= 1;
-      flip ^= 1;
+      // flip ^= 1;
     }
     if (pivot_abs <= qh NEARzero[k]) {
       *nearzero= True;

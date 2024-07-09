@@ -20,7 +20,8 @@ class IVP_Compact_Ledge_Generator
     int edge_cnt;
     int n_triangles;
     IVP_Hash *edge_hash;
-    IVP_Hash *common_hash;
+    // dimhotepus: Comment unused.
+    // IVP_Hash *common_hash;
 
     IVP_Compact_Ledge *compact_ledge; // for validate
     IVP_U_Vector<IVP_Triangle> *orig_triangles; // for validate

@@ -160,7 +160,7 @@ int IVP_Object_Polygon_Tetra::check_concavity_and_manage(IVP_Tri_Edge *edge, P_C
     edge->tmp.gen.concav_flag = (char)flag;
     edge->opposite->tmp.gen.concav_flag = (char)flag;
 
-    if((flag==-2)){
+    if(flag==-2){
 	move_edge_to_epsilon_hash(edge);
     }else{
 	move_edge_to_normal_hash(edge);
@@ -179,12 +179,7 @@ int IVP_Tri_Edge::check_concavity(IVP_Tri_Edge *other_edge)
     // -1: identical
     // 0: convex
     // 1: concav
-    
-    if(!this){
-	printf("NULL edge in check_concavity.\n");
-    }
 
-    
     // set concavity as measure for concavity volume (+ -> convex)
     IVP_DOUBLE concav = -this->triangle->tmp.gen.hesse.get_dist(other_edge->prev->start_point);
     {
@@ -687,7 +682,9 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 {
     // opt: check whether there are any islands in the surface
     int having_islands = 0;
+#ifdef SUR_DEBUG
     int triangle_count = 0;
+#endif
     int n_lines = this->orig_surface->n_lines;
     int reached_points_counter = p_count_reachable(this->lines.first->start_point);
 
@@ -844,8 +841,8 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 #ifdef SUR_DEBUG	    
 	    printf("Triangle %d: %d, %d, %d\n",triangle_count,
 		   point_a->point_num, point_c->point_num, point_b->point_num);
-#endif
 	    triangle_count++;
+#endif
 	    
 	    // delete used lines      , maybe faster with hash
 	    this->lines.remove(td_base_line);
@@ -985,7 +982,7 @@ IVP_Object_Polygon_Tetra::~IVP_Object_Polygon_Tetra()
 
 IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 {
-    int n_edges;
+    // int n_edges;
     IVP_Template_Surface *sur;
     IVP_Poly_Point *po, *po2, *po3;
     IVP_Triangle *tri;
@@ -993,7 +990,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
     IVP_Template_Polygon *templ = template_polygon;
     int num_of_edges;
     
-    n_edges = 0;
+    // n_edges = 0;
     num_of_edges = 6 * (templ->n_points-2); // accurately calculated
     hash = new IVP_Hash(num_of_edges/*size*/, sizeof(void *) * 2 /*keylen*/, 0/*notfound*/);
     {
@@ -1047,7 +1044,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 		
 		// 3 edges in uzs
 		edge = &tri->three_edges[0];
-		n_edges += 3;
+		// n_edges += 3;
 		
 		// 1. edge
 //		tri->edge = edge;
@@ -1093,7 +1090,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 	    tri->other_side = otri;
 	    otri->other_side = tri;
 
-	    n_edges += 3;
+	    // n_edges += 3;
 
 	    int i;
 	    for(i=2; i>=0; i--){
@@ -1413,12 +1410,12 @@ void IVP_Object_Polygon_Tetra::add_edge_to_min_list(IVP_Tri_Edge *edge,P_HASH_CL
 
 void IVP_Object_Polygon_Tetra::remove_edge_from_min_list(IVP_Tri_Edge *edge){
     if (edge->tmp.gen.hash_class){
-	this->min_hash[edge->tmp.gen.hash_class]->remove((void *)edge);	
+	this->min_hash[(unsigned)edge->tmp.gen.hash_class]->remove((void *)edge);	
 	edge->tmp.gen.hash_class = P_HASH_CLASS_NONE;
     }
     edge = edge->opposite;
     if (edge->tmp.gen.hash_class){
-	this->min_hash[edge->tmp.gen.hash_class]->remove((void *)edge);	
+	this->min_hash[(unsigned)edge->tmp.gen.hash_class]->remove((void *)edge);	
 	edge->tmp.gen.hash_class = P_HASH_CLASS_NONE;
     }
 }
@@ -1487,7 +1484,7 @@ IVP_BOOL IVP_Object_Polygon_Tetra::p_link_edge(IVP_Tri_Edge *edge, IVP_Tri_Edge 
 
     // set/recalc concavity infos
     IVP_BOOL retval = IVP_FALSE;
-    int flag = this->check_concavity_and_manage(edge, P_CONVEXIFY_STATE_LINK);
+    [[maybe_unused]] int flag = this->check_concavity_and_manage(edge, P_CONVEXIFY_STATE_LINK);
     //if (flag <0) retval = IVP_TRUE;
     flag = this->check_concavity_and_manage(orig_edge_oppo, P_CONVEXIFY_STATE_LINK);
     //if (flag <0) retval = IVP_TRUE;

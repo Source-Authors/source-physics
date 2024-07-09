@@ -821,17 +821,15 @@ IVP_Concave_Polyhedron * IVP_SurfaceBuilder_3ds::convert_3ds_to_concave(const ch
 class P_Hardware;
 int p_graphlib_robust_convert_3dmax_object_to_compact_ledges(P_Hardware *hw, const char *filename, IVP_U_BigVector<IVP_Compact_Ledge> *ledges) {
 
-#ifdef WIN32    
+#ifdef WIN32
+	flags |= NORMDUP;
 
-//    P_Hardware_W95 *w95_hw = (P_Hardware_W95 *)hw;
-flags |= NORMDUP;
-    char * infn=0, * name=DEFNAME;
+    const char * infn=0;
 	FILE * inf, * outf;
 	int n;
 	H3dsScene * scene;
-//    float32 xscale, yscale, zscale;
 
-	infn = (char *)filename;
+	infn = filename;
 	outf = NULL;
 
 	if(!infn) {
@@ -917,31 +915,6 @@ flags |= NORMDUP;
 		verts=n;
 	}
 
-#if 0
-    int x;
-    for (x=0; x<(int)verts; x++) {
-	H3dsMapVert *vm = &vrtmap[x];
-	IVP_U_Point *point = new IVP_U_Point();
-	point->k[0] = vm->x;
-	point->k[1] = vm->y;
-	point->k[2] = vm->z;
-	concave_polyhedron->points.add(point);
-    }
-
-    H3dsMeshObj * mo = &scene->meshobjlist[0];
-    for (x=0; x<(int)mo->faces; ) {
-        H3dsFace * fa = &mo->facelist[x++];
-	IVP_Concave_Polyhedron_Face *face = new IVP_Concave_Polyhedron_Face();
-	face->add_offset(fa->p0);
-	face->add_offset(fa->p1);
-	face->add_offset(fa->p2);
-	concave_polyhedron->faces.add(face);
-    }
-
-//    repair_geometry(concave_polyhedron);
-#endif
-
-    //IVP_U_BigVector<IVP_Compact_Ledge> ledges;
     IVP_U_Vector<IVP_U_Point> polygon;
 
     int i;

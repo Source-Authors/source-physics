@@ -125,8 +125,9 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
       }
     }
   }
-  int edges_found = 0;
-  int edges_not_found = 0;
+  // dimhotepus: Comment unused.
+  // int edges_found = 0;
+  // int edges_not_found = 0;
   // set all flags
   {
     IVP_Compact_Ledge *ledge = hull;
@@ -154,9 +155,9 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
 	edge_key.set_edge( pi[j], pi[ (j+1)%3]);
 	if (!edge_hash.find( (char *)&edge_key)){
 	  ((IVP_Compact_Edge *)tri->get_edge(j))->set_is_virtual(1);
-	  edges_not_found ++;
+	  // edges_not_found ++;
 	}else{
-	  edges_found ++;
+	  // edges_found ++;
 	}
       }
     }

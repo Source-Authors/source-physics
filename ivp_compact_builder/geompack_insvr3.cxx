@@ -11,9 +11,9 @@ void IVP_Geompack::insvr3_(int a) {
     int    *faceverticeslist = this->g_faceverticeslist;
     double *edge_angles      = this->g_edge_angles;
 
-    int lnxt, b, c__, d__, i__, j, k, l;
+    int lnxt, /* b, */ c__, d__, i__, j, k, l;
     long int bflag;
-    int n, la, lb, li, lj;
+    int n, /* la, lb, */ li, lj;
     double angnxt, ang;
 
 
@@ -50,9 +50,10 @@ void IVP_Geompack::insvr3_(int a) {
 
     /* Function Body */
     this->n_original_vertices++;
-    b = faceverticeslist[a * 6 + 3];
+    // dimhteopus: Comment no side effects.
+    /*b = faceverticeslist[a * 6 + 3];
     la = faceverticeslist[a * 6 + 1];
-    lb = faceverticeslist[b * 6 + 1];
+    lb = faceverticeslist[b * 6 + 1];*/
     i__ = a;
 
 /*     Find start edge of FACEVERTICESLIST if AB lies on boundary of decomposition. */

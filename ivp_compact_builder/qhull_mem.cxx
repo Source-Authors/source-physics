@@ -48,7 +48,7 @@ void    qh_errexit(int exitcode, facetT *, ridgeT *);
     see mem.h for definition
 */
 
-qhmemT qhmem= {0};     /* remove "= {0}" if this causes a compiler error */
+qhmemT qhmem= {};     /* remove "= {0}" if this causes a compiler error */
 
 #ifndef qh_NOmem
 
