@@ -9,6 +9,8 @@
 	#include <signal.h>
 #endif
 
+#include <cstddef>  // std::nullptr_t
+
 #ifdef WIN32
 #define IVP_PIII			/* set for P3 specific code */
 //#define IVP_WILLAMETTE	/* set for Willamette specific code */

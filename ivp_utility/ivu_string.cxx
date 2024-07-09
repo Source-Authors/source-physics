@@ -435,8 +435,7 @@ int p_atoi(const char *s){
 
 long p_get_time(){ // returns seconds since 1970
 	time_t t;
-	time_t now = time(&t);
-	return t;
+	return time(&t);
 }
 
 

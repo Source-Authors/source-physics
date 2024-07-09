@@ -42,12 +42,12 @@ IVP_U_Min_Hash::IVP_U_Min_Hash(int sizei){
 IVP_U_Min_Hash::~IVP_U_Min_Hash(){
     unsigned int i;
     for (i=0;i<size;i++){
-	if (!elems[i]) continue;\
-	IVP_U_Min_Hash_Elem *next_elem;
-	for ( IVP_U_Min_Hash_Elem *elem = elems[i]; elem; elem = next_elem){
-	    next_elem = elem->next;
-	    delete elem;
-	}
+		if (!elems[i]) continue;
+		IVP_U_Min_Hash_Elem *next_elem;
+		for ( IVP_U_Min_Hash_Elem *elem = elems[i]; elem; elem = next_elem){
+			next_elem = elem->next;
+			delete elem;
+		}
     }
     P_FREE(elems);
     P_FREE(stadel);

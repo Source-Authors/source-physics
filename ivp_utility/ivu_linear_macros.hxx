@@ -8,7 +8,7 @@
 #if defined(IVP_USE_PS2_VU0)
 #   include "ivu_linear_ps2.hxx"
 #elif defined(IVP_PIII)
-#   include "ivu_linear_PIII.hxx"
+#   include "ivu_linear_piii.hxx"
 #else
 #   include "ivu_linear_software.hxx"
 #endif
