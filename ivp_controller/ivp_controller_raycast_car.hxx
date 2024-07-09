@@ -170,7 +170,7 @@ public:
 	void change_fast_turn_factor( IVP_FLOAT fast_turn_factor_ );  // not implemented for raycasts
     void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque);
     
-	void update_throttle( IVP_FLOAT flThrottle ) {}
+	void update_throttle( IVP_FLOAT ) {}
 
     void update_body_countertorque(){;};
     

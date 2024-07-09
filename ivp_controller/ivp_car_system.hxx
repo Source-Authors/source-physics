@@ -170,7 +170,7 @@ public:
     virtual IVP_DOUBLE get_orig_front_wheel_distance()=0;
     virtual IVP_DOUBLE get_orig_axles_distance()=0;
 	virtual void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out) = 0;
-    virtual void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel) = 0;
+    virtual void set_powerslide( [[maybe_unused]] IVP_FLOAT front_accel, [[maybe_unused]] IVP_FLOAT rear_accel) = 0;
     // Tools
     static IVP_FLOAT calc_ackerman_angle(IVP_FLOAT alpha, IVP_FLOAT dx, IVP_FLOAT dz); // alpha refers to innermost wheel
 
@@ -188,7 +188,7 @@ public:
 	virtual void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData ) = 0;
 
     // handle events
-    virtual void event_object_deleted(IVP_Event_Object* pEvent) { };
+    virtual void event_object_deleted(IVP_Event_Object*) { };
 };
 
 
