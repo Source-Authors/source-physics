@@ -292,7 +292,7 @@ inline void hk_VecFPU::fpu_set_row_to_zero(hk_real *target_adress,int size,hk_bo
 	}
 }
 
-inline int hk_VecFPU::calc_aligned_row_len(int unaligned_len,hk_real *dummy_type) { //dummy type is used for overloading
+inline int hk_VecFPU::calc_aligned_row_len(int unaligned_len, [[maybe_unused]] hk_real *dummy_type) { //dummy type is used for overloading
     return (unaligned_len+hk_VecFPU_SIZE_FLOAT-1)&hk_VecFPU_MASK_FLOAT;
 }
 
@@ -593,7 +593,7 @@ inline void hk_VecFPU::fpu_set_row_to_zero(hk_double *target_adress,int size,hk_
 	}
 }
 
-inline int hk_VecFPU::calc_aligned_row_len(int unaligned_len,hk_double *dummy_type) { //dummy type is used for overloading
+inline int hk_VecFPU::calc_aligned_row_len(int unaligned_len, [[maybe_unused]] hk_double *dummy_type) { //dummy type is used for overloading
     return (unaligned_len+hk_VecFPU_SIZE_DOUBLE-1)&hk_VecFPU_MASK_DOUBLE;
 }
 

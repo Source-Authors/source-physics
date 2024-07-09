@@ -87,9 +87,9 @@ inline int hk_Math::int_log2( hk_real ) { return 0; }
 inline hk_real hk_Math::_rand01()
 {
 	// BSD rand function
-	const unsigned a = 1103515245;
-	const unsigned c = 12345;
-	const unsigned m = unsigned(-1) >> 1;
+	constexpr unsigned a = 1103515245;
+	constexpr unsigned c = 12345;
+	constexpr unsigned m = unsigned(-1) >> 1;
 	hk_random_seed = (a * hk_random_seed + c ) & m;
 	return hk_real(hk_random_seed) / m;
 }

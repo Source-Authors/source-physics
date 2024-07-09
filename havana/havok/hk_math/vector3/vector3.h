@@ -104,7 +104,7 @@ class hk_Vector3
 
 	public:
 
-		hk_real HK_ALIGNED_VARIABLE(x,16);
+		HK_ALIGNED_VARIABLE(hk_real x, 16);
 		hk_real y;
 		hk_real z;
 		hk_real w;

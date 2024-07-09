@@ -106,7 +106,7 @@ class hk_Matrix3
 
 	protected:
 
-		hk_real		HK_ALIGNED_VARIABLE(m_elems[12],16);
+		HK_ALIGNED_VARIABLE(hk_real m_elems[12], 16);
 
 };
 

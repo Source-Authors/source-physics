@@ -163,7 +163,7 @@ hk_result hk_Dense_Matrix_Util::invert(hk_Dense_Matrix& m, hk_real tolerance)
 }
 */
 
-hk_result hk_Dense_Matrix_Util::invert_6x6(hk_Fixed_Dense_Matrix<6>& m, hk_real tolerance)
+hk_result hk_Dense_Matrix_Util::invert_6x6(hk_Fixed_Dense_Matrix<6>& m, [[maybe_unused]] hk_real tolerance)
 {
 	hk_real inverted[ 6 * 8 ];
 
@@ -184,7 +184,7 @@ hk_result hk_Dense_Matrix_Util::invert_6x6(hk_Fixed_Dense_Matrix<6>& m, hk_real 
 	return HK_OK;
 }
 
-hk_result hk_Dense_Matrix_Util::invert_5x5(hk_Fixed_Dense_Matrix<5>& m, hk_real tolerance)
+hk_result hk_Dense_Matrix_Util::invert_5x5(hk_Fixed_Dense_Matrix<5>& m, [[maybe_unused]] hk_real tolerance)
 {
 	hk_real inverted[ 5 * 8 ];
 
@@ -204,7 +204,7 @@ hk_result hk_Dense_Matrix_Util::invert_5x5(hk_Fixed_Dense_Matrix<5>& m, hk_real 
 	return HK_OK;
 }
 
-hk_result hk_Dense_Matrix_Util::invert_4x4(hk_Fixed_Dense_Matrix<4>& m, hk_real tolerance)
+hk_result hk_Dense_Matrix_Util::invert_4x4(hk_Fixed_Dense_Matrix<4>& m, [[maybe_unused]] hk_real tolerance)
 {
 	hk_real inverted[ 4 * 4 ];
 

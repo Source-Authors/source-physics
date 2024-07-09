@@ -1,16 +1,16 @@
 #include <hk_math/vecmath.h>
 
-hk_Plane::hk_Plane(const hk_Vector3& p0, const hk_Vector3& p1, const hk_Vector3& p2)
+hk_Plane::hk_Plane(const hk_Vector3&, const hk_Vector3&, const hk_Vector3&)
 {
 	//XXX todo
 }
 
-void hk_Plane::set(const hk_Vector3& n, hk_real d)
+void hk_Plane::set(const hk_Vector3&, hk_real)
 {
 	//XXX todo
 }
 
-void hk_Plane::set(const hk_Vector3& p0, const hk_Vector3& p1, const hk_Vector3& p2)
+void hk_Plane::set(const hk_Vector3&, const hk_Vector3&, const hk_Vector3&)
 {
 	//XXX todo
 }
