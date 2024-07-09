@@ -191,7 +191,7 @@ set_of_mindists(16)
 	
 	if (templat->dont_check_for_unmoveables)
 	{
-		// don�t change anything here
+		// don't change anything here
 		
 	}
 	else

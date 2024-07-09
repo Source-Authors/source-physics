@@ -755,13 +755,10 @@ void IVP_Friction_Solver::ease_two_mindists(IVP_Contact_Point *dist0,IVP_Contact
 {    
     IVP_Core *rev_core=dist0->get_synapse(0)->l_obj->physical_core; //forces seen relative to this core
 
-    int second_core_reversed;
     IVP_FLOAT reverse_factor;
     if(rev_core!=dist1->get_synapse(0)->l_obj->physical_core) {
-	second_core_reversed=1;
 	reverse_factor = -1.0f;
     } else {
-	second_core_reversed=0;
 	reverse_factor = 1.0f;
     }
     

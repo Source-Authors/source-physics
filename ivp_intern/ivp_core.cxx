@@ -1312,7 +1312,7 @@ void IVP_Core::ensure_core_to_be_in_simulation() {
 	return;
     }
     
-    if((this->movement_state==IVP_MT_NOT_SIM))
+    if(this->movement_state==IVP_MT_NOT_SIM)
     {
 	IVP_Environment *env=this->environment;
 	//IVP_ASSERT( env->state==IVP_ES_AT );

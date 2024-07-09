@@ -492,7 +492,7 @@ void IVP_Impact_Solver::do_rescue_push(IVP_U_Float_Point *push_dir_norm,IVP_BOOL
 	rel_speed_world.subtract(&world_speed1,&world_speed0);
 
 	IVP_DOUBLE dist_velocity=rel_speed_world.dot_product(&diff_vec_world); //velocity of distance change. negative means getting closer.
-	if((panic_mode==IVP_TRUE)) {
+	if(panic_mode==IVP_TRUE) {
 	    if(dist_velocity>0.0f) {
 		dist_velocity=0.0f; //assure that a positive push is really done
 	    }
@@ -641,7 +641,7 @@ void IVP_Impact_Solver::do_impact(IVP_Core *pushed_cores[2],IVP_BOOL allow_delay
 
     //printf("\n\n\nimpacting\n\n\n");
     IVP_DOUBLE virtual_speed,give_back_speed = 0.0f,speed_before;
-    IVP_DOUBLE relative_trans_speed_before;
+    //IVP_DOUBLE relative_trans_speed_before;
     IVP_DOUBLE used_conservation;
 
     IVP_IF(1) {
@@ -693,7 +693,7 @@ void IVP_Impact_Solver::do_impact(IVP_Core *pushed_cores[2],IVP_BOOL allow_delay
     IVP_IF(1) {
 	IVP_U_Float_Point trans_vec;
 	trans_vec.subtract( &trans_speed[0],&trans_speed[1] );
-	relative_trans_speed_before=trans_vec.real_length();
+	//relative_trans_speed_before=trans_vec.real_length();
     }
     
     //IVP_DOUBLE full_energy = this->get_total_energy();
