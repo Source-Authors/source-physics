@@ -25,11 +25,11 @@ struct hk_Hinge_Constraint_Work
 	
 #ifdef HK_ARCH_PPC
 
-	static inline void *operator new (size_t size, void *addr){
+	static inline void *operator new (size_t, void *addr){
 		return addr;
 	}
 #else
-	static inline void *operator new (size_t size, void *addr){
+	static inline void *operator new (size_t, void *addr){
 		return addr;
 	}
 	static inline void operator delete (void *, void *){ }

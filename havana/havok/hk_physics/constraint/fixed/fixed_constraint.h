@@ -40,7 +40,7 @@ class hk_Fixed_Constraint : public hk_Constraint
 			return "fixed";
 		}
 
-		inline hk_Transform get_transform(int x) const
+		inline hk_Transform get_transform( [[maybe_unused]] int x) const
 		{
 			// todo(crack): this is probably wrong... fix me
 			HK_ASSERT(0 && "Incomplete implementation");

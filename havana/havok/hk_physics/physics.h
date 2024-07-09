@@ -215,11 +215,11 @@ public:
 			m_environment = env;
 	}
 
-    virtual void anchor_will_be_deleted_event(IVP_Anchor *del_anchor){ // when an object is deleted it sends events to its connected actuators
+    virtual void anchor_will_be_deleted_event( [[maybe_unused]] IVP_Anchor *del_anchor){ // when an object is deleted it sends events to its connected actuators
 		delete this;
 	}
 
-    virtual void core_is_going_to_be_deleted_event(IVP_Core *my_core){
+    virtual void core_is_going_to_be_deleted_event( [[maybe_unused]] IVP_Core *my_core){
 		delete this;
 	}
 

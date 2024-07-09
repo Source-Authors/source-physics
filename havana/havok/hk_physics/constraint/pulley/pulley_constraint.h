@@ -51,7 +51,7 @@ class hk_Pulley_Constraint : public hk_Constraint
 		
 	private:
 
-		inline virtual int	setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor );
+		virtual int	setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor );
 };
 
 #endif //HK_PULLEY_CONSTRAINT_H

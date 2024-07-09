@@ -4,7 +4,7 @@
 
 class hk_Cached_Force_Axis_Description
 {
-	hk_Vector4 dummy;
+	[[maybe_unused]] hk_Vector4 dummy;
 };
 
 #define HK_MAX_SIZEOF_CACHED_FORCE_AXIS_DESCRIPTION (sizeof(hk_Cached_Force_Axis_Description))
@@ -14,7 +14,7 @@ class hk_Cached_Force_Axis_Description
 class hk_Impulse_Info
 {
 	public:
-		hk_Vector3		HK_ALIGNED_VARIABLE(m_linear,16);
+		HK_ALIGNED_VARIABLE(hk_Vector3 m_linear,16);
 		//: is usually the direction (and optionally the magnitude) of the impulse
 
 		hk_Vector3			m_angular; 

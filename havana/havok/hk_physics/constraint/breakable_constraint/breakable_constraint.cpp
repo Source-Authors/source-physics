@@ -189,7 +189,7 @@ void hk_Breakable_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_re
 	}	
 }
 
-void hk_Breakable_Constraint::apply_effector_PSI( hk_PSI_Info& pi, hk_Array<hk_Entity*>* )
+void hk_Breakable_Constraint::apply_effector_PSI( hk_PSI_Info&, hk_Array<hk_Entity*>* )
 {
 	HK_ASSERT(0 && "never reached");
 }

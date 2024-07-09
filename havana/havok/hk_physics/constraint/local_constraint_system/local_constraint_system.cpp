@@ -249,8 +249,8 @@ IVP_FLOAT GetMoveableMass(IVP_Core* pCore)
 
 void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk_Entity*>*)
 {
-	const int buffer_size = 150000;
-	const int max_constraints = 1000;
+	constexpr int buffer_size = 150000;
+	constexpr int max_constraints = 1000;
 	void* vmq_buffers[max_constraints];
 	char buffer[buffer_size];
 	HK_ASSERT(m_size_of_all_vmq_storages < buffer_size);
@@ -262,14 +262,16 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 
 	//first do the setup
 	{
+		assert( max_constraints > m_constraints.length() );
+
 		char* p_buffer = &buffer[0];
 		for (int i = 0; i < m_constraints.length(); i++) {
-			vmq_buffers[i] = (void*)p_buffer;
+			vmq_buffers[i] = p_buffer;
 
-			hk_Rigid_Body *b0 = m_constraints.element_at(i)->get_rigid_body(0);
-			hk_Rigid_Body *b1 = m_constraints.element_at(i)->get_rigid_body(1);
+			[[maybe_unused]] hk_Rigid_Body *b0 = m_constraints.element_at(i)->get_rigid_body(0);
+			[[maybe_unused]] hk_Rigid_Body *b1 = m_constraints.element_at(i)->get_rigid_body(1);
 
-			int b_size = m_constraints.element_at(i)->setup_and_step_constraint(pi, (void*)p_buffer, 1.0f, 1.0f);
+			int b_size = m_constraints.element_at(i)->setup_and_step_constraint(pi, p_buffer, 1.0f, 1.0f);
 			p_buffer += b_size;
 		}
 	}
@@ -280,10 +282,10 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 		for (int x = 0; x < 2 && taus[x] != 0; x++)
 		{
 			for (int i = m_constraints.length() - 1; i >= 0; i--) {
-				m_constraints.element_at(i)->step_constraint(pi, (void*)vmq_buffers[i], taus[x], damps[x]);
+				m_constraints.element_at(i)->step_constraint(pi, vmq_buffers[i], taus[x], damps[x]);
 			}
 			for (int j = 0; j < m_constraints.length(); j++) {
-				m_constraints.element_at(j)->step_constraint(pi, (void*)vmq_buffers[j], taus[x], damps[x]);
+				m_constraints.element_at(j)->step_constraint(pi, vmq_buffers[j], taus[x], damps[x]);
 			}
 		}
 	}

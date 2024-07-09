@@ -61,7 +61,7 @@ class hk_VMQ_Storage
 		hk_real m_velocities[ HK_NEXT_MULTIPLE_OF(4,N) ];
 		char m_buffer_0[ HK_MAX_SIZEOF_CACHED_FORCE_AXIS_DESCRIPTION * N];
 		char m_buffer_1[ HK_MAX_SIZEOF_CACHED_FORCE_AXIS_DESCRIPTION * N];
-		hk_real HK_ALIGNED_VARIABLE(m_impulse_info[2][sizeof( hk_Virtual_Mass_Query ) * N / sizeof( hk_real)],16);
+		HK_ALIGNED_VARIABLE(hk_real m_impulse_info[2][sizeof( hk_Virtual_Mass_Query ) * N / sizeof( hk_real)],16);
 		hk_Fixed_Dense_Matrix<N> m_dense_matrix;
 };
 
@@ -89,7 +89,7 @@ class hk_VM_Query_Builder
 
 		inline hk_VM_Query_Builder() = default;
 
-		void begin(int size)
+		void begin([[maybe_unused]] int size)
 		{
 			m_input[0].m_buffer = m_vmq_storage.get_cfad_buffer_0();
 			m_input[1].m_buffer = m_vmq_storage.get_cfad_buffer_1();
@@ -109,7 +109,7 @@ class hk_VM_Query_Builder
 		}
 
 
-		inline void begin_entries(int size) {}
+		inline void begin_entries([[maybe_unused]] int size) {}
 		
 
 		inline void add_angular(
