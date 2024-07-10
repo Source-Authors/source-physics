@@ -454,7 +454,9 @@ void IVP_Controller_Buoyancy::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
 
 	//create new input vector and use the provided weights
 	IVP_Buoyancy_Input weighted_b_input;
+#if !defined(IVP_NO_MD_INTERPOLATION)
 	IVP_MI_Vector *weighted_new_input = (IVP_MI_Vector *)&weighted_b_input;
+#endif
 	weighted_b_input.rel_speed_of_current_os.set_multiple(&rel_speed_of_current_os, temp_buoyancy->mi_weights.weight_current_speed);
 	weighted_b_input.surface_os.set_multiple(&surface_os, temp_buoyancy->mi_weights.weight_surface);
 	weighted_b_input.surface_os.hesse_val = surface_os.hesse_val * temp_buoyancy->mi_weights.weight_surface;
@@ -462,7 +464,9 @@ void IVP_Controller_Buoyancy::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
 
 	//reserve memory on the stack for the new solutions
 	IVP_Buoyancy_Output b_output;
+#if !defined(IVP_NO_MD_INTERPOLATION)
 	IVP_MI_Vector *solution_values = (IVP_MI_Vector *)&b_output;
+#endif
 	
 #if !defined(IVP_NO_MD_INTERPOLATION)
 	//check if interpolation should be used or not

@@ -2065,7 +2065,7 @@ next_in_loop:;
 
 
 void IVP_Friction_System::get_controlled_cores(IVP_U_Vector<IVP_Core> *vectr) {
-    vectr=NULL;
+    vectr = NULL;
 }
 
 IVP_DOUBLE IVP_Friction_System::get_minimum_simulation_frequency() {

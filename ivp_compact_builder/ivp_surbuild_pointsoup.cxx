@@ -300,7 +300,7 @@ void IVP_SurfaceBuilder_Pointsoup::error_output(IVP_Template_Polygon *templ)
 }
 
 class IVP_SB_PS_DUMMY {
-  int dummy;
+  [[maybe_unused]] int dummy;
 };
 
 IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_qhull_result(IVP_U_Vector<IVP_U_Point> *points, IVP_BOOL *skip_point, char *skip_list, char *use_list){
