@@ -40,7 +40,10 @@ class hk_Dense_Matrix
 		hk_real* getRealPointer() { return m_elt; }
 		const hk_real* getConstRealPointer() const { return m_elt; }
 
-		void mult_vector( hk_real *x_vector, hk_real *result_vector )const; //both vectors are aligned
+		void mult_vector( hk_real *x_vector, hk_real *result_vector ) const; //both vectors are aligned
+
+		// dimhotepus: Add setter for memory. Overcomes issue with derived class ctor.
+		void set_real_pointer(hk_real* mem) { m_elt = mem; }
 
 	protected:
 
@@ -110,8 +113,10 @@ class hk_Dense_Matrix_3x3 : public hk_Dense_Matrix
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Dense_Matrix_3x3 )
 
 		inline	hk_Dense_Matrix_3x3 ()
-			: hk_Dense_Matrix( m_elt_buffer.get_elem_address(0,0), 3, 3, 4 ), m_elt_buffer{}
+			: hk_Dense_Matrix( nullptr, 3, 3, 4 ), m_elt_buffer{}
 		{
+			// dimhotepus: Fix UB during access of uninitialized m_elt_buffer.
+			set_real_pointer( m_elt_buffer.get_elem_address(0, 0) );
 		}
 
 		inline hk_Matrix3& get_matrix3();
