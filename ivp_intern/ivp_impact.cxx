@@ -1640,7 +1640,7 @@ IVP_BOOL IVP_Impact_System::test_loop_all_pairs()
 	IVP_Core *impacting_cores[2];
 	worst_impact_dist->tmp_contact_info->impacts_while_system++;
        
-	worst_impact_dist->tmp_contact_info->do_impact_long_term(impacting_cores,worst_impact_dist->tmp_contact_info->impact.rescue_speed_addon,worst_impact_dist);
+	worst_impact_dist->tmp_contact_info->do_impact_long_term(impacting_cores,rescue_speed_addon,worst_impact_dist);
 	    
 	//printf("did_sys_imp %lx\n",(long)(&worst_impact_dist->long_term_impact_info)&0x0000ffff);
 	    
