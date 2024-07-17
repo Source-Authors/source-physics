@@ -38,8 +38,8 @@ IVP_BOOL ivp_check_debug_mindist( IVP_Mindist *md){
 
     const char *name0 = md->get_synapse(0)->get_object()->get_name();
     const char *name1 = md->get_synapse(1)->get_object()->get_name();
-    if (	!P_String::string_cmp(name0, search0, IVP_FALSE) && !P_String::string_cmp(name1, search1, IVP_FALSE) ||
-		!P_String::string_cmp(name0, search1, IVP_FALSE) && !P_String::string_cmp(name1, search0, IVP_FALSE)){
+    if (	(!P_String::string_cmp(name0, search0, IVP_FALSE) && !P_String::string_cmp(name1, search1, IVP_FALSE)) ||
+		(!P_String::string_cmp(name0, search1, IVP_FALSE) && !P_String::string_cmp(name1, search0, IVP_FALSE))){
 	const IVP_Time &time = md->get_synapse(0)->l_obj->get_environment()->get_current_time();
 	if ( time - IVP_DEBUG_TIME >= 0.0f){
 	    printf("%10s %10s %8f-%X: ", name0, name1, time.get_time(), (int)((intp)md & 0xffff) );
