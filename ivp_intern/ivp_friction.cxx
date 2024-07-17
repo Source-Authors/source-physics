@@ -1066,9 +1066,9 @@ IVP_FLOAT IVP_Contact_Point_API::get_vert_force(IVP_Contact_Point *friction_hand
 
 
 void IVP_Contact_Point_API::get_surface_normal_ws(IVP_Contact_Point* friction_handle, IVP_U_Float_Point* normal){
-    *normal = friction_handle->tmp_contact_info
-                  ? friction_handle->tmp_contact_info->surf_normal
-                  : IVP_U_Float_Point(0, 0, 0);
+    // dimhotepus: Use cached surface normal as tmp_contact_info
+	// be nulled in debug_clean_tmp_info. 
+	*normal = friction_handle->last_surf_normal_ws;
 }
 
 void IVP_Friction_Info_For_Core::friction_info_insert_friction_dist(IVP_Contact_Point *dist)
@@ -2065,8 +2065,7 @@ next_in_loop:;
 }
 
 
-void IVP_Friction_System::get_controlled_cores(IVP_U_Vector<IVP_Core> *vectr) {
-    vectr = NULL;
+void IVP_Friction_System::get_controlled_cores(IVP_U_Vector<IVP_Core> *) {
 }
 
 IVP_DOUBLE IVP_Friction_System::get_minimum_simulation_frequency() {
