@@ -23,7 +23,7 @@ class hk_Stiff_Spring_Work
 			return addr;
 		}
 
-		static inline void operator delete (void *, void *){;}
+		static inline void operator delete (void *, void *){}
 #endif
 
 		hk_VM_Query_Builder< hk_VMQ_Storage<1> > query_engine;

@@ -313,7 +313,8 @@ hk_real hk_Vector3::length() const
 hk_real hk_Vector3::length_inv() const
 {
 	hk_real l2 = (x*x) + (y*y) + (z*z);
-	return l2 ? hk_Math::sqrt_inv(l2) : 0;
+	// dimhotepus: Compare with instead of 0.
+	return l2 >= HK_REAL_EPS ? hk_Math::sqrt_inv(l2) : 0.0f;
 }
 
 hk_real hk_Vector3::length_squared() const

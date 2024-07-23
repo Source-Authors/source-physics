@@ -11,8 +11,6 @@ class hk_Rotation : public hk_Matrix3
 	public:		
 		inline hk_Rotation() = default;
 			//: Empty constructor.
-		inline ~hk_Rotation() { }
-			//: Empty deconstructor.
 
 		inline hk_Rotation(const hk_Quaternion& q);
 			//: Initialize from a normalized quaternion.

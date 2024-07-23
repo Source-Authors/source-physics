@@ -28,7 +28,7 @@ public:
 
 };
 
-#define HK_TRANSFORM_TO_CORE_SPACE(body, vec) body->get_core()->get_m_world_f_core_PSI()->inline_vimult3((IVP_U_Float_Point *)&vec, (IVP_U_Float_Point *)&vec);
+#define HK_TRANSFORM_TO_CORE_SPACE(body, vec) body->get_core()->get_m_world_f_core_PSI()->inline_vimult3((IVP_U_Float_Point *)&vec, (IVP_U_Float_Point *)&vec)
 //#define HK_TRANSFORM_TO_CORE_SPACE(body, vec) vec.set_zero();
 
 class hk_Rigid_Body: public IVP_Real_Object
@@ -200,12 +200,12 @@ protected:
 public:
     //Controller Section
     IVP_U_Vector<IVP_Core> actuator_controlled_cores;
-    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &actuator_controlled_cores; };
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_CONSTRAINTS_MIN; };
+    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() override { return &actuator_controlled_cores; }
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_CONSTRAINTS_MIN; }
 
 	virtual void apply_effector_PSI(	class hk_PSI_Info& pi, hk_Array<hk_Entity*>* ) = 0;
 
-	void do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vector<IVP_Core> * /*core_list*/)
+	void do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vector<IVP_Core> * /*core_list*/) override
 	{
 		apply_effector_PSI( *(hk_PSI_Info *)(es), NULL );
 	}
@@ -219,12 +219,11 @@ public:
 		delete this;
 	}
 
-    virtual void core_is_going_to_be_deleted_event( [[maybe_unused]] IVP_Core *my_core){
+    void core_is_going_to_be_deleted_event( [[maybe_unused]] IVP_Core *my_core) override {
 		delete this;
 	}
 
     virtual ~hk_Link_EF(){
-		;
 	}
 
 	inline hk_Environment *get_environment() const

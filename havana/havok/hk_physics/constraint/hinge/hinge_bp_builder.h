@@ -21,7 +21,7 @@ public:
 		// sets the joint friction attached to an angular motor
 
 	void set_angular_limits( hk_real lower, hk_real upper );
-	const hk_Hinge_BP *get_blueprint(){ return &m_hinge_bp; };
+	const hk_Hinge_BP *get_blueprint(){ return &m_hinge_bp; }
 	void set_axis_perp_os(int body_index, const hk_Vector3& axis_os);
 };
 

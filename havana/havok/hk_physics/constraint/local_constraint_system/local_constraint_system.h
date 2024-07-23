@@ -32,7 +32,7 @@ public:
 	inline hk_Environment* get_environment() const
 	{
 		return m_environment;
-	};
+	}
 
 	void write_to_blueprint(hk_Local_Constraint_System_BP*);
 
@@ -48,7 +48,7 @@ public:
 public:	// internal
 	virtual void entity_deletion_event(hk_Entity*);
 
-	void core_is_going_to_be_deleted_event(IVP_Core*);
+	void core_is_going_to_be_deleted_event(IVP_Core*) override;
 
 	void constraint_deletion_event(hk_Constraint*);
 
@@ -60,9 +60,9 @@ public:	// internal
 
 	//virtual hk_real get_minimum_simulation_frequency(hk_Array<hk_Entity> *);
 
-	void apply_effector_PSI(hk_PSI_Info&, hk_Array<hk_Entity*>*);
+	void apply_effector_PSI(hk_PSI_Info&, hk_Array<hk_Entity*>*) override;
 
-	void apply_effector_collision(hk_PSI_Info&, hk_Array<hk_Entity*>*) { ; }
+	void apply_effector_collision(hk_PSI_Info&, hk_Array<hk_Entity*>*) {}
 
 	hk_real get_epsilon();
 	inline bool is_active() const { return m_is_active; }

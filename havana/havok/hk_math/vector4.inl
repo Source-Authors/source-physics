@@ -123,7 +123,9 @@ void hk_Vector4::operator=(const hk_Vector4& v)
 
  hk_real hk_Vector4::length_inv4() const
 {
-	return hk_Math::sqrt_inv(x*x + y*y + z*z + w*w);
+	hk_real l2 = x*x + y*y + z*z + w*w;
+	// dimhotepus: Compare eps and return 0.0f.
+	return l2 >= HK_REAL_EPS ? hk_Math::sqrt_inv(l2) : 0.0f;
 }
 
  hk_real hk_Vector4::length_squared4() const

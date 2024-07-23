@@ -57,7 +57,7 @@ public:
     int get_size() const 
 	{ 
 		return byte_size; 
-    };
+    }
 
     /******************************************************************************
      *  Method:		get_compact_ledge_tree_root

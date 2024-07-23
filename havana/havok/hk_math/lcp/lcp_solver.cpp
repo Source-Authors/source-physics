@@ -24,7 +24,6 @@
 #define HK_LCP_NUMERIC_TEST_EVERY_N 7
 #define HK_LCP_MAX_STEP_LEN (10000.0f)
 #define HK_LCP_REAL_MAX 1e20f
-#define MAX_ERROR_BUFFER_LEN 1024
 
 
 /* Algorithm explanation:

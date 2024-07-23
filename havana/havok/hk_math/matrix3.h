@@ -14,8 +14,6 @@ class hk_Matrix3
 
 		inline hk_Matrix3() = default;
 			//: Empty default constructor
-		inline ~hk_Matrix3() {}
-			//:: Empty default destructor
 
 		inline void set_elem(int row, int column, hk_real value);
 			//: Set element (row,column) to value

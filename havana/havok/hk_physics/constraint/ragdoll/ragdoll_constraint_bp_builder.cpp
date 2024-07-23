@@ -178,7 +178,6 @@ hk_result hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_
 		default:
 		{
 			return HK_FAULT;
-			break;
 		}
 	}
 	return HK_OK;

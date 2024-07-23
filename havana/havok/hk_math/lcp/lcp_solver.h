@@ -92,7 +92,7 @@ class hk_LCP_Solver {
     void get_values_when_setup();
     void startup_setup(int num_actives);
     hk_bool numerical_stability_ok();
-    void increase_step_count(int *counter) { (*counter)++; };
+    void increase_step_count(int *counter) { (*counter)++; }
     void do_a_little_random_permutation();
     void lcs_bubble_sort_x_vals();
     void move_not_necessary_actives_to_inactives();

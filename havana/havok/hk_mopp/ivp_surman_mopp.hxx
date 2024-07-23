@@ -45,7 +45,7 @@ public:
 	/******************************************************************************
 	 *  Description:	INTERNAL METHODS
 	 *****************************************************************************/
-	void add_reference_to_ledge(const IVP_Compact_Ledge* ledge);
+	void add_reference_to_ledge(const IVP_Compact_Ledge* ledge) override;
 
 	void remove_reference_to_ledge(const IVP_Compact_Ledge* ledge);
 

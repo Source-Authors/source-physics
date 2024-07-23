@@ -23,19 +23,19 @@ class hk_Fixed_Constraint : public hk_Constraint
 
 		void apply_effector_PSI( hk_PSI_Info&, hk_Array<hk_Entity*>* );
 
-		virtual int get_vmq_storage_size();
+		int get_vmq_storage_size() override;
 
-		inline virtual int setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor );
+		inline int setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor ) override;
 			//: uses the mem as a vmq storage, returns the bytes needed to store its vmq_storage
 
-		virtual void step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor );
+		void step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor ) override;
 			//: use the mem as a vmq storage setup before
 
-		void init_constraint( const void* bp );
+		void init_constraint( const void* bp ) override;
 
 		void write_to_blueprint( hk_Fixed_BP * );
 
-		virtual const char* get_constraint_type()
+		const char* get_constraint_type() override
 		{
 			return "fixed";
 		}

@@ -29,7 +29,6 @@ public:
 				m_errorTolerance( 0.03 ),
 				m_active( false )
 		{
-			;
 		}
 };
 

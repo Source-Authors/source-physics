@@ -34,6 +34,8 @@ void hk_Euler_Angles::set_euler_angles( const hk_Quaternion& q, hk_EULER_ANGLES_
 			hk_real sz = 2.0f * ( qx * qy + qz * qw ) * cy_inv;
 			hk_real cz = ( (qw * qw - qy * qy ) + (qz * qz - qx * qx) ) * cy_inv;
 			z = hk_Math::atan2( sz, cz );
+			// dimhotepus: Add missed break.
+			break;
 		}
 
 	default:

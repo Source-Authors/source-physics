@@ -14,12 +14,12 @@ class hk_Prismatic_Constraint : public hk_Constraint
 
 		void apply_effector_PSI( hk_PSI_Info&, hk_Array<hk_Entity*>* );
 
-		virtual int get_vmq_storage_size();
+		int get_vmq_storage_size() override;
 
-		inline virtual int	setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor );
+		inline int	setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor ) override;
 			//: uses the mem as a vmq storage, returns the bytes needed to store its vmq_storage
 
-		virtual void step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor );
+		void step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor ) override;
 			//: use the mem as a vmq storage setup before
 
 		void set_limits( hk_real min, hk_real max );
@@ -27,14 +27,14 @@ class hk_Prismatic_Constraint : public hk_Constraint
 		void set_motor( hk_real desired_vel, hk_real max_force );
 
 		void write_to_blueprint( hk_Prismatic_BP * );
-		void init_constraint(const void*);
+		void init_constraint(const void*) override;
 
-		virtual const char* get_constraint_type()
+		const char* get_constraint_type() override
 		{
 			return "prismatic";
 		}
 
-		virtual int get_constraint_dof()
+		int get_constraint_dof() override
 		{
 			return 1;
 		}

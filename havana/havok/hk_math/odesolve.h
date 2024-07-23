@@ -43,11 +43,11 @@ public:
 	OdeRungaKutta4();
 	virtual ~OdeRungaKutta4();
 
-	void calc_step(hk_real y0[], hk_real y1[], unsigned int len, hk_real t0, hk_real t1, dydt_function dydt, void *client_data);
+	void calc_step(hk_real y0[], hk_real y1[], unsigned int len, hk_real t0, hk_real t1, dydt_function dydt, void *client_data) override;
  
 private:
 
-	void ode_realloc(int new_size);
+	void ode_realloc(int new_size) override;
 
 	// work variables
 	hk_real *k1;    
@@ -67,7 +67,7 @@ public:
 
 	OdeEuler();
 
-	void calc_step(hk_real y0[], hk_real y1[], unsigned int len, hk_real t0, hk_real t1, dydt_function dydt, void *client_data);
+	void calc_step(hk_real y0[], hk_real y1[], unsigned int len, hk_real t0, hk_real t1, dydt_function dydt, void *client_data) override;
 
 };
 
@@ -81,7 +81,7 @@ public:
 
 	OdeMidPoint();
 
-	void calc_step(hk_real y0[], hk_real y1[], unsigned int len, hk_real t0, hk_real t1, dydt_function dydt, void *client_data);
+	void calc_step(hk_real y0[], hk_real y1[], unsigned int len, hk_real t0, hk_real t1, dydt_function dydt, void *client_data) override;
 
 };
 
