@@ -339,14 +339,14 @@ IVP_FLOAT ivp_rand();		// returns [0 .. 1]
 #	define IVP_PREFETCH_BLOCK(a,b)  /* IVP_ASSERT(b < 128);*/
 #else
 
-#   define IVP_PREFETCH_BLOCK(pntr, size) {	\
+#   define IVP_PREFETCH_BLOCK(pntr, size) do {	\
     IVP_PREFETCH(pntr,0);	\
     if ( size > IVP_PREFETCH_CLINE_SIZE)   IVP_PREFETCH( pntr, IVP_PREFETCH_CLINE_SIZE);   \
     if ( size > 2*IVP_PREFETCH_CLINE_SIZE) IVP_PREFETCH( pntr, 2*IVP_PREFETCH_CLINE_SIZE); \
     if ( size > 3*IVP_PREFETCH_CLINE_SIZE) IVP_PREFETCH( pntr, 3*IVP_PREFETCH_CLINE_SIZE); \
     /*if ( size > 4*IVP_PREFETCH_CLINE_SIZE) IVP_PREFETCH( pntr, 4*IVP_PREFETCH_CLINE_SIZE);*/ \
     /*IVP_PREFETCH( pntr, (size - sizeof(void *))) */\
-}
+} while (false)
 
 #endif
 
