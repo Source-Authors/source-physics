@@ -16,11 +16,11 @@
 
 #define IVP_BLOCKING_EVERY_MIN
 
-#include <stdio.h>
+#include <cstdio>
+#include <cmath>
 
-#include <math.h>
 #if defined(LINUX)
-#	include <string.h>
+#	include <cstring>
 #endif
 
 #ifndef _IVP_U_TYPES_INCLUDED

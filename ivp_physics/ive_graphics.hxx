@@ -171,12 +171,12 @@ public:
 				  IVP_FLOAT * /*v2_out*/,
 				  IVP_FLOAT * /*u3_out*/,
 				  IVP_FLOAT * /*v3_out*/
-				  ) {;};
+				  ) {}
 
     virtual void texture_callback(const IVP_Real_Object * /*real_object_in*/,
 				  const char ** /*texture_name_out*/,
 				  IVP_FLOAT * /*scale_factor_out*/
-				  ) {;};
+				  ) {}
 
     P_Texture_Server() {
 	this->return_absolute_positions = IVP_FALSE;

@@ -77,7 +77,7 @@ public:
     // IVP_BOOL low_simulation_forbidden;   // not used anymore
     IVP_Material *material;		 // Pointer to the material (used only if no surface material is set)
     void set_nocoll_group_ident(const char *nocoll_group);        // Optional string used by the IVP_Collision_Filter_Coll_Group_Ident, maxlen = IVP_NO_COLL_GROUP_STRING_LEN
-    const char *get_nocoll_group_ident() const { return &nocoll_group_ident[0]; };
+    const char *get_nocoll_group_ident() const { return &nocoll_group_ident[0]; }
     IVP_DOUBLE mass;			 // Mass of object (unit: kilogram), default 1.0
 
 /********************************************************************************

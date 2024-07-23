@@ -221,7 +221,7 @@ class IVP_Environment {		// the environment
 		} else {
 			return IVP_FALSE;
 		}
-	};
+	}
 
 	void add_revive_core(IVP_Core *r_obj);
     void remove_revive_core(IVP_Core *r_obj);
@@ -241,7 +241,7 @@ class IVP_Environment {		// the environment
     // INTERN_END
     
 #ifdef DEBUG
-    void invalid_time_code(){ current_time_code++;};	// invalid current time code
+    void invalid_time_code(){ current_time_code++;}	// invalid current time code
 #endif
     void fire_event_pre_collision( IVP_Event_Collision *);
     void fire_event_post_collision( IVP_Event_Collision *);
@@ -254,7 +254,7 @@ class IVP_Environment {		// the environment
 
     //some PSI grid dependent constants
     IVP_DOUBLE integrated_energy_damp;
-    IVP_DOUBLE get_integrated_energy_damp() { return integrated_energy_damp; };
+    IVP_DOUBLE get_integrated_energy_damp() { return integrated_energy_damp; }
     /***********************************************************************************
      *			Internal public functions, handle with care:
      ***********************************************************************************/
@@ -283,31 +283,31 @@ public:
     
     //////////// time management
     IVP_Time get_next_PSI_time(){ return time_of_next_psi; }
-    IVP_Time get_old_time_of_last_PSI() { return time_of_last_psi; };
+    IVP_Time get_old_time_of_last_PSI() { return time_of_last_psi; }
 
     IVP_FLOAT get_delta_PSI_time() { return delta_PSI_time; }
     IVP_FLOAT get_inv_delta_PSI_time() { return inv_delta_PSI_time; }
     void force_psi_on_next_simulation();
     IVP_Time_CODE get_current_time_code(){ return current_time_code; }
     
-    IVP_ENV_STATE get_env_state() { return state; };	// return state;
+    IVP_ENV_STATE get_env_state() { return state; }	// return state;
 
     //////// private managers
-    IVP_Time_Manager		 *get_time_manager() const	        { return time_manager;};
-    IVP_Controller_Manager       *get_controller_manager() const        { return controller_manager; }; 
-    IVP_Mindist_Manager		 *get_mindist_manager() const	        { return mindist_manager; };
-    IVP_Sim_Units_Manager        *get_sim_units_manager() const         { return sim_units_manager; };
+    IVP_Time_Manager		 *get_time_manager() const	        { return time_manager;}
+    IVP_Controller_Manager       *get_controller_manager() const        { return controller_manager; }
+    IVP_Mindist_Manager		 *get_mindist_manager() const	        { return mindist_manager; }
+    IVP_Sim_Units_Manager        *get_sim_units_manager() const         { return sim_units_manager; }
 
-    IVP_Cache_Object_Manager	 *get_cache_object_manager() const      { return cache_object_manager; };
-    IVP_OV_Tree_Manager          *get_ov_tree_manager() const           { return ov_tree_manager; };
-    IVP_Cluster_Manager          *get_cluster_manager() const           { return cluster_manager; };
-    IVP_Debug_Manager		 *get_debug_manager() const             { return debug_information; };
-    IVP_U_Memory		 *get_memory_manager() const	        { return short_term_mem; };
+    IVP_Cache_Object_Manager	 *get_cache_object_manager() const      { return cache_object_manager; }
+    IVP_OV_Tree_Manager          *get_ov_tree_manager() const           { return ov_tree_manager; }
+    IVP_Cluster_Manager          *get_cluster_manager() const           { return cluster_manager; }
+    IVP_Debug_Manager		 *get_debug_manager() const             { return debug_information; }
+    IVP_U_Memory		 *get_memory_manager() const	        { return short_term_mem; }
     IVP_Cluster                  *get_root_cluster();
-    IVP_PerformanceCounter	*get_performancecounter()  		{ return performancecounter; };
+    IVP_PerformanceCounter	*get_performancecounter()  		{ return performancecounter; }
 
-    IVP_U_Memory *get_sim_unit_mem(){ return sim_unit_mem; };
-    IVP_U_Memory *get_short_term_mem(){ return short_term_mem; };
+    IVP_U_Memory *get_sim_unit_mem(){ return sim_unit_mem; }
+    IVP_U_Memory *get_short_term_mem(){ return short_term_mem; }
 
 
 
@@ -319,18 +319,18 @@ public:
      ***********************************************************************************/
 
     //////////// public managers
-    IVP_Range_Manager		 *get_range_manager() const 			{ return range_manager; };
-    IVP_Material_Manager 	 *get_material_manager() const			{ return l_material_manager; };
-    IVP_Collision_Filter	 *get_collision_filter() const			{ return collision_filter; };
-    IVP_Statistic_Manager	 *get_statistic_manager()			{ return &statistic_manager; };
-    IVP_BetterStatisticsmanager	 *get_betterstatisticsmanager()			{ return better_statisticsmanager; };
-    IVP_U_Active_Value_Manager	 *get_active_value_manager() const		{ return l_active_value_manager; };
-    IVP_Universe_Manager 	 *get_universe_manager() const			{ return universe_manager; };
+    IVP_Range_Manager		 *get_range_manager() const 			{ return range_manager; }
+    IVP_Material_Manager 	 *get_material_manager() const			{ return l_material_manager; }
+    IVP_Collision_Filter	 *get_collision_filter() const			{ return collision_filter; }
+    IVP_Statistic_Manager	 *get_statistic_manager()			{ return &statistic_manager; }
+    IVP_BetterStatisticsmanager	 *get_betterstatisticsmanager()			{ return better_statisticsmanager; }
+    IVP_U_Active_Value_Manager	 *get_active_value_manager() const		{ return l_active_value_manager; }
+    IVP_Universe_Manager 	 *get_universe_manager() const			{ return universe_manager; }
     IVP_Anomaly_Manager		 *get_anomaly_manager() const                   { return anomaly_manager; }
     IVP_Anomaly_Limits		 *get_anomaly_limits() const                   { return anomaly_limits; }
 
-    IVP_Real_Object	         *get_static_object() const                     { return static_object; }; // a env. global static ball
-    IVP_Freeze_Manager           *get_freeze_manager()                          { return &freeze_manager; };
+    IVP_Real_Object	         *get_static_object() const                     { return static_object; } // a env. global static ball
+    IVP_Freeze_Manager           *get_freeze_manager()                          { return &freeze_manager; }
     //////////// time management
     IVP_Time get_current_time(){ return current_time; }
     void 	set_delta_PSI_time( IVP_DOUBLE new_delta_PSI_time );		// range: IVP_MIN_DELTA_PSI_TIME - IVP_MAX_DELTA_PSI_TIME
@@ -383,7 +383,7 @@ public:
 
     IVP_Controller_Motion *create_controller_motion(IVP_Real_Object *, const class IVP_Template_Controller_Motion *);
 
-    const IVP_U_Point *get_gravity(){ return &gravity; };		// current gravity vector, default (0,9.83f,0);
+    const IVP_U_Point *get_gravity(){ return &gravity; }		// current gravity vector, default (0,9.83f,0);
     void set_gravity(IVP_U_Point *gravity);				// sets gravity vector (can be changed at any time)
 	class IVP_Standard_Gravity_Controller *get_gravity_controller( void ) { return standard_gravity_controller; }
     
@@ -464,13 +464,13 @@ public:
 class IVP_Vector_of_Hulls_128: public IVP_U_Vector<IVP_Hull_Manager_Base> {
     IVP_Hull_Manager_Base *elem_buffer[128];
 public:
-    IVP_Vector_of_Hulls_128(): IVP_U_Vector<IVP_Hull_Manager_Base>((void **)&elem_buffer[0], 128){;};
+    IVP_Vector_of_Hulls_128(): IVP_U_Vector<IVP_Hull_Manager_Base>((void **)&elem_buffer[0], 128){}
 };
 
 class IVP_Vector_of_Cores_128: public IVP_U_Vector<IVP_Core> {
     void *elem_buffer[128];
 public:
-    IVP_Vector_of_Cores_128(): IVP_U_Vector<IVP_Core>(&elem_buffer[0], 128){;};
+    IVP_Vector_of_Cores_128(): IVP_U_Vector<IVP_Core>(&elem_buffer[0], 128){}
 };
 
 

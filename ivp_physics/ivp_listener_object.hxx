@@ -24,7 +24,7 @@ public:
     virtual void event_object_revived( IVP_Event_Object *)=0;
     virtual void event_object_frozen ( IVP_Event_Object *)=0;
 
-	virtual ~IVP_Listener_Object() {};
+	virtual ~IVP_Listener_Object() {}
 };
 
 #endif

@@ -23,7 +23,7 @@ public:
 	{     
 		IVP_ASSERT(reference_count == 1 );
 		reference_count--; 
-	};
+	}
     IVP_U_Quat		q_world_f_object;
     IVP_U_Matrix	m_world_f_object;
     IVP_U_Point         core_pos;

@@ -48,8 +48,8 @@ public:
 
 	virtual void environment_is_going_to_be_deleted(IVP_Environment *) = 0;
 	virtual void reset_and_print_performance_counters(IVP_Time current_time) = 0;
-	IVP_PerformanceCounter(){;};
-	virtual ~IVP_PerformanceCounter(){;};
+	IVP_PerformanceCounter(){}
+	virtual ~IVP_PerformanceCounter(){}
 };
 
 

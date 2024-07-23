@@ -62,19 +62,19 @@ protected:
     void assign_to_cluster(IVP_Cluster *cluster); // moves object to cluster
 //    friend class IVP_Mindist;
 
-    void set_type(IVP_OBJECT_TYPE type_in)		{ object_type = type_in; };
+    void set_type(IVP_OBJECT_TYPE type_in)		{ object_type = type_in; }
 public:
     IVP_Environment *environment; 	// the environment to which this object belongs
-    IVP_OBJECT_TYPE	get_type() const		{ return object_type; };
+    IVP_OBJECT_TYPE	get_type() const		{ return object_type; }
 
-    const char		*get_name() const		{ return name; };
-    IVP_Environment    	*get_environment() const    	{ return environment; };
+    const char		*get_name() const		{ return name; }
+    IVP_Environment    	*get_environment() const    	{ return environment; }
 
 
-    IVP_Polygon     *to_poly(){return (IVP_Polygon *)this;};	// cast
-    IVP_Cluster     *to_cluster(){ IVP_ASSERT(get_type()==IVP_CLUSTER); return (IVP_Cluster *)this;};
-    IVP_Real_Object *to_real(){ IVP_ASSERT(get_type()!=IVP_CLUSTER); return (IVP_Real_Object *)this;};
-    IVP_Ball        *to_ball(){ IVP_ASSERT(get_type()==IVP_BALL); return (IVP_Ball *)this;};
+    IVP_Polygon     *to_poly(){return (IVP_Polygon *)this;}	// cast
+    IVP_Cluster     *to_cluster(){ IVP_ASSERT(get_type()==IVP_CLUSTER); return (IVP_Cluster *)this;}
+    IVP_Real_Object *to_real(){ IVP_ASSERT(get_type()!=IVP_CLUSTER); return (IVP_Real_Object *)this;}
+    IVP_Ball        *to_ball(){ IVP_ASSERT(get_type()==IVP_BALL); return (IVP_Ball *)this;}
 };
 
 /********************************************************************************

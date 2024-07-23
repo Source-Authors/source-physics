@@ -80,7 +80,7 @@ public:
   virtual void core_entered_volume(class IVP_Controller_Phantom *controller,class IVP_Core *pCore)=0;
   virtual void core_left_volume(class IVP_Controller_Phantom *controller, class IVP_Core *pCore)=0;
   virtual void phantom_is_going_to_be_deleted_event(class IVP_Controller_Phantom *controller)=0;  // indicates either object is deleted or phantom is converted to object
-  IVP_Listener_Phantom(){;};
+  IVP_Listener_Phantom(){}
 };
 
 
@@ -112,10 +112,10 @@ protected:
   void mindist_left_volume(class IVP_Mindist *mindist);
 public:
   
-  IVP_U_Set_Active<IVP_Real_Object> *get_intruding_objects() const { return set_of_objects ; };  // returns NULL if manage_set was IVP_FALSE 
-  IVP_U_Set_Active<IVP_Core> *get_intruding_cores() const { return set_of_cores ; };  // returns NULL if manage_set was IVP_FALSE 
-  IVP_U_Set_Active<IVP_Mindist_Base> *get_intruding_mindists(){ return &set_of_mindists ; };             // returns mindist
-  IVP_Real_Object *get_object() const { return object; };
+  IVP_U_Set_Active<IVP_Real_Object> *get_intruding_objects() const { return set_of_objects ; }  // returns NULL if manage_set was IVP_FALSE 
+  IVP_U_Set_Active<IVP_Core> *get_intruding_cores() const { return set_of_cores ; }  // returns NULL if manage_set was IVP_FALSE 
+  IVP_U_Set_Active<IVP_Mindist_Base> *get_intruding_mindists(){ return &set_of_mindists ; }             // returns mindist
+  IVP_Real_Object *get_object() const { return object; }
   void wake_all_sleeping_objects()
   {
       if (object)

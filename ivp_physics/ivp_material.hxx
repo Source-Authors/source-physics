@@ -107,13 +107,13 @@ public:
     virtual IVP_DOUBLE get_adhesion(IVP_Contact_Situation *situation);		//
     // INTERN_END
     IVP_Material_Manager(IVP_BOOL delete_on_env_delete);
-    virtual ~IVP_Material_Manager(){;};
+    virtual ~IVP_Material_Manager(){}
     
     virtual void environment_will_be_deleted(IVP_Environment *){
 	if (delete_on_env_delete){
 	    P_DELETE_THIS(this);
 	}
-    };
+    }
 };
 
 #endif

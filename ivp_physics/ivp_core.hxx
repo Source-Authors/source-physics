@@ -62,7 +62,7 @@ union IVP_Core_Friction_Info {
 class IVP_Vector_of_Objects:public  IVP_U_Vector<IVP_Real_Object> {
     IVP_Real_Object *elem_buffer[1];
 public:
-    IVP_Vector_of_Objects(): IVP_U_Vector<IVP_Real_Object>( (void **)&elem_buffer[0],1 ){;};
+    IVP_Vector_of_Objects(): IVP_U_Vector<IVP_Real_Object>( (void **)&elem_buffer[0],1 ){}
     void reset(){ elems = (void **)&elem_buffer[0]; memsize = 1; }
 };
 /********************************************************************************
@@ -132,11 +132,11 @@ public:
 
 
     const class IVP_U_Point_4 *get_inv_masses(){ return (class IVP_U_Point_4*)& inv_rot_inertia;} // combined solution for inertias
-    IVP_FLOAT get_mass() const{ return rot_inertia.hesse_val; };
+    IVP_FLOAT get_mass() const{ return rot_inertia.hesse_val; }
 
-    const IVP_U_Float_Point *get_rot_inertia()const{ return &rot_inertia;};
-    const IVP_U_Float_Point *get_inv_rot_inertia() const{ return &inv_rot_inertia;};
-    IVP_FLOAT get_inv_mass() const{ return inv_rot_inertia.hesse_val;};
+    const IVP_U_Float_Point *get_rot_inertia()const{ return &rot_inertia;}
+    const IVP_U_Float_Point *get_inv_rot_inertia() const{ return &inv_rot_inertia;}
+    IVP_FLOAT get_inv_mass() const{ return inv_rot_inertia.hesse_val;}
 
 };
 
@@ -264,8 +264,8 @@ public:
     void unlink_obj_from_core_and_maybe_destroy(IVP_Real_Object *remove_obj);
     void core_add_link_to_obj(IVP_Real_Object *add_obj);
 
-    void set_fast_piling_allowed(IVP_BOOL bool_flag) { fast_piling_allowed_flag=bool_flag; };
-    IVP_BOOL fast_piling_allowed() { return (IVP_BOOL)fast_piling_allowed_flag; };
+    void set_fast_piling_allowed(IVP_BOOL bool_flag) { fast_piling_allowed_flag=bool_flag; }
+    IVP_BOOL fast_piling_allowed() { return (IVP_BOOL)fast_piling_allowed_flag; }
 
 
     /********************************************************************************
@@ -480,7 +480,7 @@ public:
     void commit_all_async_pushes();			// make all asynchronous pushes permanent
     
 
-    IVP_Environment *get_environment() { return this->environment; };
+    IVP_Environment *get_environment() { return this->environment; }
     
    /********************************************************************************
     *	Name:	     	calc_correct_virt_mass  	
@@ -520,8 +520,8 @@ public:
     *	Name:	       	get_m_world_f_core_PSI
     *	Description:	Get the core matrix at PSI time
     ********************************************************************************/
-    const IVP_U_Matrix *get_m_world_f_core_PSI()  { return &m_world_f_core_last_psi; };
-    const IVP_U_Point *get_position_PSI() { return m_world_f_core_last_psi.get_position(); };
+    const IVP_U_Matrix *get_m_world_f_core_PSI()  { return &m_world_f_core_last_psi; }
+    const IVP_U_Point *get_position_PSI() { return m_world_f_core_last_psi.get_position(); }
 
    /********************************************************************************
     *	Name:	       	values_changed_recalc_redundants

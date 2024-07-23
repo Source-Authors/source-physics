@@ -165,7 +165,7 @@ void IVP_PerformanceCounter_Simple::pcount( IVP_PERFORMANCE_ELEMENT el){
 #		ifndef WIN32_LEAN_AND_MEAN
 #			define	WIN32_LEAN_AND_MEAN
 #		endif
-#		include	<windows.h>
+#		include	<Windows.h>
 #	else
 #		ifndef WINVER
 #			define WINVER 0x0500
@@ -202,10 +202,10 @@ void IVP_PerformanceCounter_Simple::start_pcount(){
     	counting = IVP_PE_PSI_START;
 }
 
-void IVP_PerformanceCounter_Simple::stop_pcount(){ ; }
+void IVP_PerformanceCounter_Simple::stop_pcount(){}
 
 #else
-	void IVP_PerformanceCounter_Simple::pcount( IVP_PERFORMANCE_ELEMENT ){;}
-	void IVP_PerformanceCounter_Simple::start_pcount(){ ; }
-	void IVP_PerformanceCounter_Simple::stop_pcount(){ ; }
+	void IVP_PerformanceCounter_Simple::pcount( IVP_PERFORMANCE_ELEMENT ){}
+	void IVP_PerformanceCounter_Simple::start_pcount(){}
+	void IVP_PerformanceCounter_Simple::stop_pcount(){}
 #endif

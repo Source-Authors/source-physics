@@ -41,7 +41,7 @@ public:
      *****************************************************************************/
     IVP_FLOAT get_radius() const {
 	return( get_extra_radius() );
-    };
+    }
 };
 
 #endif

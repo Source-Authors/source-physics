@@ -65,8 +65,8 @@ public:
     IVP_FLOAT hull_value_next_psi;	// optimistic, may be less
     int time_of_next_reset;  		// counting seconds only
 public:
-    IVP_Hull_Manager_Base_Gradient() : last_vpsi_time (0.0f) {; };
-    ~IVP_Hull_Manager_Base_Gradient(){;};
+    IVP_Hull_Manager_Base_Gradient() : last_vpsi_time (0.0f) {}
+    ~IVP_Hull_Manager_Base_Gradient(){}
 };
 
 class IVP_Hull_Manager_Base: protected IVP_Hull_Manager_Base_Gradient {
@@ -93,9 +93,9 @@ protected:
     IVP_Synapse_Friction *friction_synapses;	// Linked list of contact points.
     IVP_U_Quat	         *q_core_f_object;	 // in object !!!!
     IVP_U_Float_Point 	 shift_core_f_object;
-    IVP_Real_Object_Fast_Static(IVP_Cluster *father, const IVP_Template_Object *templ): IVP_Object( father, templ){;};
+    IVP_Real_Object_Fast_Static(IVP_Cluster *father, const IVP_Template_Object *templ): IVP_Object( father, templ){}
 public:
-    const IVP_U_Float_Point *get_shift_core_f_object() const { return &shift_core_f_object; };
+    const IVP_U_Float_Point *get_shift_core_f_object() const { return &shift_core_f_object; }
 
 };
 
@@ -115,7 +115,7 @@ public:
 	unsigned int	collision_listener_exists:1; /* all flags of object listeners functions */
 	unsigned int	collision_listener_listens_to_friction:1;
     } flags;
-    IVP_Real_Object_Fast(IVP_Cluster *father, const IVP_Template_Object *templ): IVP_Real_Object_Fast_Static( father, templ){;};
+    IVP_Real_Object_Fast(IVP_Cluster *father, const IVP_Template_Object *templ): IVP_Real_Object_Fast_Static( father, templ){}
 };
 
 class IVP_Real_Object: public IVP_Real_Object_Fast {
@@ -185,28 +185,28 @@ public:
     IVP_Core *original_core;
 
     ////////// Anchors
-    IVP_Anchor *get_first_anchor(){ return anchors; };
+    IVP_Anchor *get_first_anchor(){ return anchors; }
     void insert_anchor(IVP_Anchor *new_anchor);
     void remove_anchor(IVP_Anchor *destroy_anch);
 
-    IVP_Synapse_Real *get_first_exact_synapse(){ return exact_synapses; };
-    IVP_Synapse_Friction *get_first_friction_synapse(){ return friction_synapses; };
-    IVP_Hull_Manager *get_hull_manager(){ return (IVP_Hull_Manager *)&this->hull_manager; };
+    IVP_Synapse_Real *get_first_exact_synapse(){ return exact_synapses; }
+    IVP_Synapse_Friction *get_first_friction_synapse(){ return friction_synapses; }
+    IVP_Hull_Manager *get_hull_manager(){ return (IVP_Hull_Manager *)&this->hull_manager; }
     void reset_time( IVP_Time offset);
 
     void revive_object_for_simulation(); // wake up object immediately ; @@@IK don't use this - use ensure_in_simulation() instead!
     
-    IVP_SurfaceManager     *get_surface_manager()const { return surface_manager; }
+    IVP_SurfaceManager     *get_surface_manager() const { return surface_manager; }
     IVP_OV_Element	   *get_ov_element(){ return ov_element; }
 
-    void set_movement_state(IVP_Movement_Type mt) { flags.object_movement_state = mt; };
+    void set_movement_state(IVP_Movement_Type mt) { flags.object_movement_state = mt; }
 
-    IVP_FLOAT get_extra_radius() const { return extra_radius; };	// returns an extra collision radius around the object#
+    IVP_FLOAT get_extra_radius() const { return extra_radius; }	// returns an extra collision radius around the object#
 	void set_extra_radius( IVP_DOUBLE new_radius );
 	inline IVP_Cache_Object *get_cache_object_no_lock(); // see get_cache_object, but restricted usage
 
 
-    IVP_Real_Object *to_nonconst() const { return (IVP_Real_Object *)this; }; // remove const
+    IVP_Real_Object *to_nonconst() const { return (IVP_Real_Object *)this; } // remove const
 /********************************************************************************
  *	The real end user public section:
  ********************************************************************************/
@@ -283,10 +283,10 @@ public:
 	 **************************************************************************************/
     void   calc_m_core_f_object(IVP_U_Matrix * m_core_f_object);
 
-    IVP_Core *get_core()	  const { return physical_core;}; // Returns the current core. 
-    IVP_Core *get_original_core() const { return original_core; }; // Returns the core that was valid at creation of object.
+    IVP_Core *get_core()	  const { return physical_core;} // Returns the current core. 
+    IVP_Core *get_original_core() const { return original_core; } // Returns the core that was valid at creation of object.
     
-    IVP_Movement_Type get_movement_state() { return (IVP_Movement_Type)flags.object_movement_state; }; // See declaration of IVP_Movement_Type.
+    IVP_Movement_Type get_movement_state() { return (IVP_Movement_Type)flags.object_movement_state; } // See declaration of IVP_Movement_Type.
 
     
     //////// Simulation
@@ -313,7 +313,7 @@ public:
     
     IVP_BOOL is_collision_detection_enabled() { // Returns IVP_FALSE if IVP_Environment::enable_collision_detection was not called
 	return (IVP_BOOL)flags.collision_detection_enabled;
-    };
+    }
 
     /////// Listening
     void add_listener_collision(IVP_Listener_Collision *);	// Adds a private collision callback.
@@ -332,7 +332,7 @@ public:
 	 **************************************************************************************/
 
     void convert_to_phantom(const IVP_Template_Phantom  *tmpl);
-    IVP_Controller_Phantom *get_controller_phantom(){ return controller_phantom; };
+    IVP_Controller_Phantom *get_controller_phantom(){ return controller_phantom; }
 
     
         /**************************************************************************************

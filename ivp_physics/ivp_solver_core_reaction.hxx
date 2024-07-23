@@ -78,7 +78,7 @@ public:
   void exert_angular_impulse_dim2(IVP_Core *core_0, IVP_Core *core_1, IVP_U_Float_Point &impulse_rs); // 2 dimensions
   void exert_angular_impulse_dim3(IVP_Core *core_0, IVP_Core *core_1, IVP_U_Float_Point &impulse_rs); // 3 dimensions
 
-  //IVP_Solver_Core_Reaction(){;}; // real constructor is init
+  //IVP_Solver_Core_Reaction(){} // real constructor is init
 };
 
 #endif
