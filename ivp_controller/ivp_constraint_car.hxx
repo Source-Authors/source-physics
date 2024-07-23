@@ -62,10 +62,10 @@ public:
     IVP_RETURN_TYPE			init_constraint_system( IVP_Environment *env, IVP_Real_Object *body, IVP_U_Vector<IVP_Real_Object> &wheels,
 											        IVP_U_Vector<IVP_U_Float_Point> &p_Bos ); 
 	// Simulation.
-    void					do_simulation_controller( IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list );
+    void					do_simulation_controller( IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list ) override;
 
-	IVP_U_Vector<IVP_Core>	*get_associated_controlled_cores()		{ return &cores_of_constraint_system; };
-    int						get_num_of_appending_terminals()		{ return wheel_objects.len(); };			// e.g. 4 for four wheels, might be more flexible in the future
+	IVP_U_Vector<IVP_Core>	*get_associated_controlled_cores() override		{ return &cores_of_constraint_system; }
+    int						get_num_of_appending_terminals()		{ return wheel_objects.len(); }			// e.g. 4 for four wheels, might be more flexible in the future
 
 public:
     
@@ -89,9 +89,9 @@ public:
 
 protected:
 
-    void					core_is_going_to_be_deleted_event( IVP_Core *core );
-    IVP_DOUBLE				get_minimum_simulation_frequency()						{ return 30;}
-    IVP_CONTROLLER_PRIORITY	get_controller_priority()								{ return IVP_CP_CONSTRAINTS; };
+    void					core_is_going_to_be_deleted_event( IVP_Core *core ) override;
+    IVP_DOUBLE				get_minimum_simulation_frequency() override						{ return 30;}
+    IVP_CONTROLLER_PRIORITY	get_controller_priority() override								{ return IVP_CP_CONSTRAINTS; }
 
 	// Simulation.
 	void					do_simulation_controller_rotation( IVP_Event_Sim *es, IVP_Core *core_B, const IVP_U_Matrix *m_world_f_B );

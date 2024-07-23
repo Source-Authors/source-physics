@@ -13,8 +13,6 @@
 #include "ivp_multidimensional_interp.hxx"
 
 //#define WITH_DEBUG_OUTPUT          1
-#define LOWER_LIMIT    -0.2f
-#define UPPER_LIMIT     1.2f
 
 void IVP_MI_Vector::set(const IVP_MI_Vector *v) {
     IVP_ASSERT( nr_of_elements >= v->nr_of_elements);

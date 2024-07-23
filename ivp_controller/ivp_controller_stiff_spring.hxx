@@ -124,7 +124,7 @@ protected:
     IVP_U_Active_Float *active_float_spring_constant;      // dito
     IVP_U_Active_Float *active_float_spring_damp;          // dito
     
-    void active_float_changed(IVP_U_Active_Float *af);
+    void active_float_changed(IVP_U_Active_Float *af) override;
 
     friend class IVP_Environment;
  public:    

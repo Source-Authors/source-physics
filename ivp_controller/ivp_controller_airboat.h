@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
+//========= Copyright 1996-2002, Valve LLC, All rights reserved. ============
 //
 // Purpose: 4-Wheel Vehicle attempt at an airboat!
 //
@@ -191,7 +191,7 @@ public:
     virtual void					do_steering(IVP_FLOAT steering_angle_in);											// default implementation updates this->steering_angle
     
     virtual void					set_booster_acceleration( IVP_FLOAT acceleration);
-    virtual void					activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay);
+    void					activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay) override;
     virtual void					update_booster(IVP_FLOAT delta_time);
 	virtual IVP_FLOAT				get_booster_delay();
     

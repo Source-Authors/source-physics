@@ -83,7 +83,7 @@ class IVP_Event_Sim;
 class IVP_Controller_Raycast_Car_Vector_of_Cores_1: public IVP_U_Vector<IVP_Core> {
     void *elem_buffer[1];
 public:
-    IVP_Controller_Raycast_Car_Vector_of_Cores_1(): IVP_U_Vector<IVP_Core>( &elem_buffer[0],1 ){;};
+    IVP_Controller_Raycast_Car_Vector_of_Cores_1(): IVP_U_Vector<IVP_Core>( &elem_buffer[0],1 ){}
 };
 
 class IVP_Controller_Raycast_Car : public IVP_Car_System, protected IVP_Controller_Dependent  {
@@ -121,11 +121,11 @@ protected:
 	// debug
 	IVP_CarSystemDebugData_t	m_CarSystemDebugData;
     
-    IVP_Raycast_Car_Wheel *get_wheel( IVP_POS_WHEEL i) { return & wheels_of_car[i]; };
-    IVP_Raycast_Car_Axis *get_axis( IVP_POS_AXIS i) { return & axis_of_car[i]; };
+    IVP_Raycast_Car_Wheel *get_wheel( IVP_POS_WHEEL i) { return & wheels_of_car[i]; }
+    IVP_Raycast_Car_Axis *get_axis( IVP_POS_AXIS i) { return & axis_of_car[i]; }
 
-    virtual void core_is_going_to_be_deleted_event(IVP_Core *){ P_DELETE_THIS(this); };
-    virtual IVP_U_Vector<IVP_Core> *get_associated_controlled_cores(){ return &vector_of_cores; };
+    virtual void core_is_going_to_be_deleted_event(IVP_Core *){ P_DELETE_THIS(this); }
+    virtual IVP_U_Vector<IVP_Core> *get_associated_controlled_cores(){ return &vector_of_cores; }
     
     virtual void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
     virtual IVP_CONTROLLER_PRIORITY get_controller_priority();
@@ -162,7 +162,7 @@ public:
     void change_spring_constant(IVP_POS_WHEEL pos, IVP_FLOAT spring_constant); // [Newton/meter]
     void change_spring_dampening(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening); // when spring is relaxing spring
     void change_spring_dampening_compression(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening); // [Newton/meter] for compressing spring
-    void change_max_body_force(IVP_POS_WHEEL , IVP_FLOAT /*mforce*/){;};
+    void change_max_body_force(IVP_POS_WHEEL , IVP_FLOAT /*mforce*/){}
     void change_spring_pre_tension(IVP_POS_WHEEL pos, IVP_FLOAT pre_tension_length);
 	void change_spring_length(IVP_POS_WHEEL pos, IVP_FLOAT spring_length);
 
@@ -172,7 +172,7 @@ public:
     
 	void update_throttle( IVP_FLOAT ) {}
 
-    void update_body_countertorque(){;};
+    void update_body_countertorque(){}
     
     void change_body_downforce(IVP_FLOAT force);        // extra force to keep flipped objects flipped over
 
@@ -192,8 +192,8 @@ public:
     virtual void do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false); // default implementation updates this->steering_angle
 
     virtual void set_booster_acceleration( IVP_FLOAT acceleration);
-    virtual void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay);
-    virtual void update_booster(IVP_FLOAT /*delta_time*/){;};    
+    void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay) override;
+    virtual void update_booster(IVP_FLOAT /*delta_time*/){}    
 	virtual IVP_FLOAT get_booster_delay();
     virtual IVP_FLOAT get_booster_time_to_go();
     IVP_Controller_Raycast_Car(IVP_Environment *environment, const IVP_Template_Car_System *);

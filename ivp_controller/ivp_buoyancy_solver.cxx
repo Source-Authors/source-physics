@@ -11,13 +11,6 @@
 #include <ivp_compact_ledge_solver.hxx>
 #include <ivp_controller_buoyancy.hxx>
 
-//define some decision variables
-#define DAMPENING_WITH_MOVEVECTOR               1
-#define DAMPENING_WITH_PARTICLE_ACCELERATION    1
-
-#define BALL_DAMPENING_CALC_PUSHING_FORCES       1
-#define BALL_DAMPENING_CALC_SUCKING_FORCES      -1
-
 //return surface speed in object coordinate system
 // #+# do everything in object space !!!!
 void ivp_core_get_surface_speed_os(IVP_Core *pc,IVP_Real_Object *object, const IVP_U_Float_Point *point_os, IVP_U_Float_Point *speed_out_os) {
@@ -104,34 +97,25 @@ IVP_BOOL IVP_Buoyancy_Solver::compute_forces( const IVP_U_Float_Point *rel_speed
 	cache_object->transform_vector_to_object_coords(&resulting_speed_of_current_ws, &resulting_speed_of_current_os);
     }
 
-    
     switch (object->get_type()) {
-    case IVP_BALL: {
+		case IVP_BALL: {
+			//ensure that surface_ws is normized
+			IVP_IF(1){
+				IVP_ASSERT( IVP_Inline_Math::fabsd( surface_os->real_length() - 1.0f) < 0.01f);
+			}
 			
-	//ensure that surface_ws is normized
-	IVP_IF(1){
-	    IVP_ASSERT( IVP_Inline_Math::fabsd( surface_os->real_length() - 1.0f) < 0.01f);
-	}
-			
-	//compute buoyancy and dampening values for this ball
-	compute_values_for_one_ball(object, surface_os, rel_speed_of_current_os);  //compute the volume centers and the volumes under surface_ws for the pushing forces
+			//compute buoyancy and dampening values for this ball
+			compute_values_for_one_ball(object, surface_os, rel_speed_of_current_os);  //compute the volume centers and the volumes under surface_ws for the pushing forces
+		}
+		break;
+		case IVP_POLYGON: {
+			compute_values_for_one_polygon(object, surface_os);
+		}
+		break;
+		default:
+		break;
+    }
 
-    }
-    break;
-    case IVP_POLYGON: {
-			
-	compute_values_for_one_polygon(object, surface_os);
-
-    }
-    default: {
-			
-    }
-    break;
-    }
-		
-    
-		
-    
     //return value describes if the object is in the water
     if ((volume_under > buoyancy_eps) || (sum_impulse.quad_length() > buoyancy_eps)) {
 	// //copy the solution values to the structure
@@ -212,7 +196,7 @@ void IVP_Buoyancy_Solver::compute_dampening_values_for_one_ball(const int &decis
     speed_plane_os.hesse_val = speed_plane_os_->hesse_val;
 	
     
-    //will hold the content of the projected surface that´s under the water surface
+    //will hold the content of the projected surface that's under the water surface
     IVP_DOUBLE ball_projected_surface_content_under = 0.0f;
     
     switch (decision) {

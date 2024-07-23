@@ -822,9 +822,10 @@ void IVP_Actuator_Extra::do_puck_force(IVP_DOUBLE dtime)
 	IVP_Core *pc0 = anch0->l_anchor_object->friction_core;
 	IVP_Core *pc1 = anch1->l_anchor_object->friction_core;
 
-	IVP_Real_Object *r_obj0,*r_obj1;
+    // dimhotepus: Comment unused stuff.
+	/*IVP_Real_Object *r_obj0,*r_obj1;
 	r_obj0=anch0->anchor_get_real_object();
-	r_obj1=anch1->anchor_get_real_object();
+	r_obj1=anch1->anchor_get_real_object();*/
 		
         IVP_U_Float_Point dir_ws;
 	IVP_U_Point pos0_ws;
@@ -904,9 +905,10 @@ void IVP_Actuator_Extra::do_float_cam(IVP_DOUBLE d_time)
     IVP_Core *pc0 = anch0->l_anchor_object->physical_core;
     IVP_Core *pc1 = anch1->l_anchor_object->physical_core;
 
-    IVP_Real_Object *r_obj0,*r_obj1;
+    // dimhotepus: Comment no side effects stuff.
+    /*IVP_Real_Object *r_obj0,*r_obj1;
     r_obj0=anch0->anchor_get_real_object();
-    r_obj1=anch1->anchor_get_real_object();
+    r_obj1=anch1->anchor_get_real_object();*/
 
     IVP_U_Point dir_ws;
     IVP_U_Point pos0_ws;

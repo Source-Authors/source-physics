@@ -114,7 +114,7 @@ public:
 	rel_speed_of_current_os.hesse_val = 0.0;
 	rot_speed.hesse_val = 0.0;
 #endif	
-    };
+    }
 };
 
 
@@ -141,7 +141,7 @@ public:
 			   sum_impulse.set(0.0f, 0.0f, 0.0f);
 			   sum_impulse_x_point.set(0.0f, 0.0f, 0.0f);
 			   sum_impulse_x_movevector.set(0.0f, 0.0f, 0.0f);
-    };
+    }
 };
 
 
@@ -261,9 +261,9 @@ private:
     int nr_not_interpolated;
     
 protected:
-    void core_is_going_to_be_deleted_event(IVP_Core *) { delete this;};
-    IVP_DOUBLE get_minimum_simulation_frequency() { return 0.0f; };
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_FORCEFIELDS; };
+    void core_is_going_to_be_deleted_event(IVP_Core *) { delete this;}
+    IVP_DOUBLE get_minimum_simulation_frequency() { return 0.0f; }
+    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_FORCEFIELDS; }
     
     /********************************************************************
      * Name:        do_simulation_controller(...)
@@ -296,13 +296,13 @@ public:
      *	Name:	       	get_parameters_per_core
      *	Description:    get parameters for one core
      ********************************************************************************/
-    virtual IVP_Template_Buoyancy *get_parameters_per_core( IVP_Core * ){ return &template_buoyancy; };
+    virtual IVP_Template_Buoyancy *get_parameters_per_core( IVP_Core * ){ return &template_buoyancy; }
     
     /********************************************************************************
      *	Name:	       	get_buoyancy_surface
      *	Description:    get surface used for buoyancy
      ********************************************************************************/
-    virtual IVP_SurfaceManager *get_buoyancy_surface(IVP_Real_Object *obj){ return obj->get_surface_manager(); };
+    virtual IVP_SurfaceManager *get_buoyancy_surface(IVP_Real_Object *obj){ return obj->get_surface_manager(); }
     IVP_Attacher_To_Cores_Buoyancy(IVP_Template_Buoyancy &templ, IVP_U_Set_Active<IVP_Core> *set_of_cores_, IVP_Liquid_Surface_Descriptor *liquid_surface_descriptor_);
 };
 

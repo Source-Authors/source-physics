@@ -110,22 +110,22 @@ protected:
  public:
 
     void set_constant(IVP_DOUBLE value); // will be multiplied with factor
-    IVP_FLOAT get_constant(){ return spring_constant;};
+    IVP_FLOAT get_constant(){ return spring_constant;}
     void set_damp(IVP_DOUBLE value);
-    IVP_FLOAT get_damp_factor(){ return spring_damp;};
+    IVP_FLOAT get_damp_factor(){ return spring_damp;}
     void set_rel_pos_damp(IVP_DOUBLE value);
     IVP_FLOAT get_rel_pos_damp() { return rel_pos_damp; }
     void set_len(IVP_DOUBLE value);
     void set_break_max_len(IVP_DOUBLE value);
 
-    IVP_FLOAT get_spring_length_zero_force(){ return spring_len; };
+    IVP_FLOAT get_spring_length_zero_force(){ return spring_len; }
 
 	IVP_BOOL get_only_stretch() { return spring_force_only_on_stretch; }
   
     void add_listener_spring(IVP_Listener_Spring *listener);	// NOT_IMPLEMENTED_YET
     void remove_listener_spring(IVP_Listener_Spring *listener);	// NOT_IMPLEMENTED_YET
 
-    virtual void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
   
     virtual ~IVP_Actuator_Spring();
 };
@@ -139,7 +139,7 @@ protected:
     IVP_U_Active_Float *active_float_spring_damp;          // dito
     IVP_U_Active_Float *active_float_spring_rel_pos_damp;  // dito
     
-    void active_float_changed(IVP_U_Active_Float *af);
+    void active_float_changed(IVP_U_Active_Float *af) override;
 
     friend class IVP_Environment;
     IVP_Actuator_Spring_Active(IVP_Environment *env, IVP_Template_Spring *spring); // constructor of the spring
@@ -161,7 +161,7 @@ protected:
 public:    
     void set_spring_damp_compression(IVP_FLOAT value); // will be multiplied with factor
     void set_max_body_force(IVP_FLOAT value);
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);  
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
     ~IVP_Actuator_Suspension();
 
     // To create a new suapension, use IVP_Environment->create_suspension

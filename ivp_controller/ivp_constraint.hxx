@@ -101,12 +101,12 @@ protected:
 protected:
     IVP_Vector_of_Cores_2 cores_of_constraint_system;
 
-    void core_is_going_to_be_deleted_event(IVP_Core *core);
+    void core_is_going_to_be_deleted_event(IVP_Core *core) override;
 
-    IVP_DOUBLE get_minimum_simulation_frequency();
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_CONSTRAINTS; };
+    IVP_DOUBLE get_minimum_simulation_frequency() override;
+    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_CONSTRAINTS; }
 public:
-    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &cores_of_constraint_system; };
+    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &cores_of_constraint_system; }
     static IVP_Constraint *create_constraint_any_solver(IVP_Template_Constraint *constraint_template);
 
 public:

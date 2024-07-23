@@ -83,7 +83,7 @@ public:
      *	Description:	Callback, called by IVP_Core::~IVP_CORE()
      *  Note:		Controller may delete itself
      ********************************************************************************/
-    virtual void core_is_going_to_be_deleted_event(IVP_Core *) {; };
+    virtual void core_is_going_to_be_deleted_event(IVP_Core *) {}
     
     /********************************************************************************
      *	Name:	  	get_minimum_simulation_frequency   	
@@ -91,7 +91,7 @@ public:
      *			The result of this function is heavily cached, so changing
      *			it's return value might not have any effect
      ********************************************************************************/
-    virtual IVP_DOUBLE get_minimum_simulation_frequency() { return 1.0f; };
+    virtual IVP_DOUBLE get_minimum_simulation_frequency() { return 1.0f; }
     
     /********************************************************************************
      *	Name:	  	get_associated_controlled_cores   	
@@ -108,7 +108,7 @@ public:
      *	Description:	called when the time of the whole physics system is resetted
      * 			offset is old last_PSI_time
      ********************************************************************************/
-    virtual void reset_time(IVP_Time /*offset*/){;};
+    virtual void reset_time(IVP_Time /*offset*/){}
 
     /********************************************************************************
      *	Name:	  	do_simulation_controller   	
@@ -124,12 +124,12 @@ public:
 
     virtual const char* get_controller_name() { return "sys:unknown"; }
 
-    virtual ~IVP_Controller() { ; };
+    virtual ~IVP_Controller() {}
 };
 
 class IVP_Controller_Independent: public IVP_Controller {
     static IVP_U_Vector<IVP_Core> empty_list;
-    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &empty_list; };
+    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() override { return &empty_list; }
 };
 
 class IVP_Controller_Dependent: public IVP_Controller {
@@ -139,15 +139,15 @@ class IVP_Controller_Dependent: public IVP_Controller {
 
 class IVP_Standard_Gravity_Controller : public IVP_Controller_Independent {
 public:
-    IVP_Standard_Gravity_Controller() { ; };
+    IVP_Standard_Gravity_Controller() {}
     IVP_U_Float_Point grav_vec;
 
     void set_standard_gravity(IVP_U_Point *new_gravity);
 
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_GRAVITY; };
-    virtual ~IVP_Standard_Gravity_Controller() { ; };
-    void core_is_going_to_be_deleted_event(IVP_Core *) { ; }
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_GRAVITY; }
+    virtual ~IVP_Standard_Gravity_Controller() {}
+    void core_is_going_to_be_deleted_event(IVP_Core *) override {}
 };
 
 
@@ -202,7 +202,7 @@ public:
      ********************************************************************************/
     void ensure_core_in_simulation(IVP_Core *core);
 
-    IVP_Controller_Manager(IVP_Environment *env) { l_environment=env; };
+    IVP_Controller_Manager(IVP_Environment *env) { l_environment=env; }
 };
 
 #endif

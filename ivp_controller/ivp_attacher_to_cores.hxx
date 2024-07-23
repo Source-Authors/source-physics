@@ -42,18 +42,18 @@ protected:
 	set_of_cores->remove_listener_set_active(this);
     }
      
-    void element_added(IVP_U_Set_Active<IVP_Core> *, IVP_Core *elem){
+    void element_added(IVP_U_Set_Active<IVP_Core> *, IVP_Core *elem) override {
 	ATTACH_T *con = new ATTACH_T(this, elem);
 	core_to_attachment_hash.add_elem( elem, con);
     }
     
-    void element_removed(IVP_U_Set_Active<IVP_Core> *, IVP_Core *elem){
+    void element_removed(IVP_U_Set_Active<IVP_Core> *, IVP_Core *elem) override {
 	ATTACH_T *con = (ATTACH_T *) core_to_attachment_hash.find_elem(elem);
 	IVP_ASSERT(con);
 	P_DELETE(con);
     }
     
-    void pset_is_going_to_be_deleted(IVP_U_Set_Active<IVP_Core> *set){
+    void pset_is_going_to_be_deleted(IVP_U_Set_Active<IVP_Core> *set) override {
 	IVP_U_Set_Enumerator<IVP_Core> all_cores(set);
 	while ( IVP_Core *core = all_cores.get_next_element(set) ){
 	    this->element_removed( NULL, core );

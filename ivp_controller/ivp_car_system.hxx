@@ -111,7 +111,7 @@ public:
 		}
 		
 		fast_turn_factor = 1.0f;
-    };
+    }
 };
 
 class IVP_Wheel_Skid_Info {
@@ -188,7 +188,7 @@ public:
 	virtual void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData ) = 0;
 
     // handle events
-    virtual void event_object_deleted(IVP_Event_Object*) { };
+    virtual void event_object_deleted(IVP_Event_Object*) { }
 };
 
 
@@ -268,7 +268,7 @@ public:
     // Car Info
     IVP_DOUBLE get_body_speed(IVP_COORDINATE_INDEX idx_z = IVP_INDEX_Z); // km/h in 'z' direction
     IVP_DOUBLE get_wheel_angular_velocity(IVP_POS_WHEEL);
-    void update_wheel_positions(){;};
+    void update_wheel_positions(){}
     IVP_DOUBLE get_orig_front_wheel_distance();
     IVP_DOUBLE get_orig_axles_distance();
 	void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out);
@@ -278,7 +278,7 @@ public:
     virtual void do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false); // updates this->steering_angle
 
     void set_booster_acceleration(IVP_FLOAT acceleration);
-    void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT recharge_time);
+    void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT recharge_time) override;
     void update_booster(IVP_FLOAT delta_time);
 	virtual IVP_FLOAT get_booster_delay();
     virtual IVP_FLOAT get_booster_time_to_go() { return booster_seconds_to_go; }

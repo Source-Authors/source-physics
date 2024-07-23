@@ -49,8 +49,8 @@ private:
     IVP_Real_Object *object;
     IVP_U_Point coords_world;	// coordinates in world space
 public:
-    IVP_Real_Object *get_object(){ return object; };
-    IVP_U_Point *get_anchor_point_ws(){ return &coords_world; };
+    IVP_Real_Object *get_object(){ return object; }
+    IVP_U_Point *get_anchor_point_ws(){ return &coords_world; }
     
     // unit for all conversion methods: meters
 	void set_anchor_position_ws(IVP_Real_Object *obj, const IVP_U_Point *coords_ws);
@@ -61,7 +61,7 @@ public:
 	void set_anchor_position_cs(IVP_Real_Object *obj, const IVP_U_Float_Point *coords_cs);
 	void set_anchor_position_cs(IVP_Real_Object *obj, const IVP_DOUBLE x, const IVP_DOUBLE y, const IVP_DOUBLE z);
 #endif
-    const IVP_U_Point *get_anchor_position_ws() const { return & coords_world; };
+    const IVP_U_Point *get_anchor_position_ws() const { return & coords_world; }
 };
 
 
@@ -227,10 +227,10 @@ public:
     void init_anchor(IVP_Actuator *, IVP_Template_Anchor *);	// constructor, called by IVP_Real_Object::create_anchor
     IVP_Anchor *move_anchor(IVP_U_Point *coords_ws); 	// move anchor
 
-    IVP_Anchor *get_next_anchor(){ return anchor_next_in_object; };
-    IVP_Anchor *get_prev_anchor(){ return anchor_prev_in_object; };
+    IVP_Anchor *get_next_anchor(){ return anchor_next_in_object; }
+    IVP_Anchor *get_prev_anchor(){ return anchor_prev_in_object; }
     
-    IVP_Real_Object *anchor_get_real_object() { return l_anchor_object; };
+    IVP_Real_Object *anchor_get_real_object() { return l_anchor_object; }
 };
 
 
@@ -267,12 +267,12 @@ protected:
 public:
     //Controller Section
     IVP_U_Vector<IVP_Core> actuator_controlled_cores;
-    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() { return &actuator_controlled_cores; };
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_ACTUATOR; };
+    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() override { return &actuator_controlled_cores; }
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_ACTUATOR; }
 
     IVP_Actuator(IVP_Environment *env);
     virtual void anchor_will_be_deleted_event(IVP_Anchor *del_anchor); // when an object is deleted it sends events to its connected actuators
-    virtual void core_is_going_to_be_deleted_event(IVP_Core *my_core);
+    void core_is_going_to_be_deleted_event(IVP_Core *my_core) override;
     virtual ~IVP_Actuator();
 };
 
@@ -352,7 +352,7 @@ public:
     void set_force(IVP_DOUBLE new_force);
     virtual ~IVP_Actuator_Force();
 
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
 };
 
 
@@ -360,7 +360,7 @@ class IVP_Actuator_Force_Active: public IVP_Actuator_Force, IVP_U_Active_Float_L
 {
     IVP_U_Active_Float *active_float_force;	// optional override of force
 protected:
-    void active_float_changed(IVP_U_Active_Float *calling_mod); // for wakup
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override; // for wakup
     friend class IVP_Environment;
     IVP_Actuator_Force_Active(IVP_Environment *env, IVP_Template_Force *templ);
 public:
@@ -397,10 +397,10 @@ public:
     IVP_FLOAT rot_speed_out;		// used to export the last rotation speed
     void set_max_rotation_speed( IVP_DOUBLE );
     void set_power(IVP_DOUBLE);
-    IVP_FLOAT get_power() { return power; };
+    IVP_FLOAT get_power() { return power; }
     void set_max_torque(IVP_DOUBLE);
 
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
   
     virtual ~IVP_Actuator_Rot_Mot();
 };
@@ -410,7 +410,7 @@ class IVP_Actuator_Rot_Mot_Active: public IVP_Actuator_Rot_Mot, public IVP_U_Act
     IVP_U_Active_Float *active_float_max_rotation_speed;
     IVP_U_Active_Float *active_float_power;
     IVP_U_Active_Float *active_float_max_torque;
-    void active_float_changed(IVP_U_Active_Float *calling_mod); // for wakup
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override; // for wakup
 public:
     IVP_Actuator_Rot_Mot_Active(IVP_Environment *env, IVP_Template_Rot_Mot *templ);
     ~IVP_Actuator_Rot_Mot_Active();
@@ -435,14 +435,14 @@ class IVP_Actuator_Torque: public IVP_Actuator_Two_Point
 protected:
     friend class IVP_Environment;
 
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
 
     IVP_Actuator_Torque(IVP_Environment *env, IVP_Template_Torque *templ);
 public:
     IVP_FLOAT rot_speed_out;		// used to export the last rotation speed
     void set_max_rotation_speed( IVP_DOUBLE );
     void set_torque(IVP_DOUBLE);
-    IVP_FLOAT get_torque() { return torque; };
+    IVP_FLOAT get_torque() { return torque; }
     
     virtual ~IVP_Actuator_Torque();
 };
@@ -451,7 +451,7 @@ public:
 class IVP_Actuator_Torque_Active: public IVP_Actuator_Torque, public IVP_U_Active_Float_Listener {
     IVP_U_Active_Float *active_float_max_rotation_speed;
     IVP_U_Active_Float *active_float_torque;
-    void active_float_changed(IVP_U_Active_Float *calling_mod); // for wakup
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override; // for wakup
 public:
     IVP_Actuator_Torque_Active(IVP_Environment *env, IVP_Template_Torque *templ);
     ~IVP_Actuator_Torque_Active();
@@ -476,15 +476,15 @@ public:
 class IVP_Anchor_Check_Dist : public IVP_Listener_Hull
 {
 public:
-    IVP_HULL_ELEM_TYPE get_type(){ return IVP_HULL_ELEM_ANCHOR; };
-    virtual void hull_limit_exceeded_event(IVP_Hull_Manager *, IVP_HTIME);
-    virtual void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *);
+    IVP_HULL_ELEM_TYPE get_type() override { return IVP_HULL_ELEM_ANCHOR; }
+    void hull_limit_exceeded_event(IVP_Hull_Manager *, IVP_HTIME) override;
+    void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *) override;
 
     IVP_Real_Object *real_object;
     IVP_Actuator_Check_Dist *l_actuator_check_dist;
     IVP_U_Float_Point object_pos;	// original position of object space
 
-    IVP_Anchor_Check_Dist(){; };
+    IVP_Anchor_Check_Dist(){}
     void init_anchor_check_dist(IVP_Real_Object *object, IVP_U_Point *position_world_space, IVP_Actuator_Check_Dist *my_act_check_dist);
     virtual ~IVP_Anchor_Check_Dist();
 };
@@ -550,9 +550,9 @@ public:
 
     void do_float_cam(IVP_DOUBLE d_time);
     void do_puck_force(IVP_DOUBLE d_time);
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
   
-    void active_float_changed(IVP_U_Active_Float *calling_mod); // for bombs
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override; // for bombs
 
     void calc_float_cam_matrix(IVP_U_Matrix *cam_matrix_out);
     IVP_Actuator_Extra(IVP_Environment *env, IVP_Template_Extra *templ);
@@ -581,7 +581,7 @@ protected:
     IVP_FLOAT stabi_constant;
     friend class IVP_Environment;
     IVP_Actuator_Stabilizer(IVP_Environment *env, IVP_Template_Stabilizer *stabi);
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
 public:
     void set_stabi_constant(IVP_DOUBLE);
     
