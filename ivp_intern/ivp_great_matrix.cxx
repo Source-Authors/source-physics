@@ -16,7 +16,6 @@
 
 #define IVP_UNILATERAL_SOLVER_MAX_STEP 250
 #define IVP_STATIC_FRICTION_TEST_EPS 0.00001f //is a percentage value
-#define COMPLEX_EPS 10E-6f
 #define IVP_NUMERIC_TEST_EVERY_N 7
 
 

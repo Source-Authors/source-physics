@@ -33,7 +33,8 @@
 #define IVP_SPEED_ADDON_SYSTEM_IMPACT 0.01f
 #define IVP_INV_HALF_CONSERVATION_STEPS 0.5f // elasticity is raised with number of impacts in system, at 1.0f/IVP_INV_HALF_CONSERVATION_STEPS the elasticity is at least 0.5
 #define MAXIMUM_SYSTEM_PUSH_NUMBER 5000
-#define MINIMAL_IMPACT_VELOCITY_FIXPOINT -11.552f
+// dimhotepus: Unused, comment.
+// #define MINIMAL_IMPACT_VELOCITY_FIXPOINT -11.552f
 #define IMPACT_EPS 10E-5f
 
 //#define EASEONIMPACT //doesnt work with balls // #+# kill and remove dependent functions
@@ -1839,7 +1840,7 @@ void IVP_Contact_Point::calc_coll_distance(){
 class IVP_Vector_of_Hull_Managers_256: public IVP_U_Vector<IVP_Hull_Manager_Base> {
     void *elem_buffer[256];
 public:
-    IVP_Vector_of_Hull_Managers_256(): IVP_U_Vector<IVP_Hull_Manager_Base>( &elem_buffer[0],256 ){;};
+    IVP_Vector_of_Hull_Managers_256(): IVP_U_Vector<IVP_Hull_Manager_Base>( &elem_buffer[0],256 ){}
 };
 
 void IVP_Impact_System::recalc_all_affected_cores()

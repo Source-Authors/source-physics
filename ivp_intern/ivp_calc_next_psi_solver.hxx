@@ -4,7 +4,7 @@
 class IVP_Vector_of_Hull_Managers_1: public IVP_U_Vector<IVP_Hull_Manager_Base> {
     void *elem_buffer[1];
 public:
-    IVP_Vector_of_Hull_Managers_1(): IVP_U_Vector<IVP_Hull_Manager_Base>(&elem_buffer[0], 1){;};
+    IVP_Vector_of_Hull_Managers_1(): IVP_U_Vector<IVP_Hull_Manager_Base>(&elem_buffer[0], 1){}
 };
 
 
@@ -43,5 +43,5 @@ public:
      *	Description:	these functions are used to calc the next psi matrix
      ********************************************************************************/
     
-    IVP_Calc_Next_PSI_Solver( IVP_Core *core_in ) { core = core_in;};
+    IVP_Calc_Next_PSI_Solver( IVP_Core *core_in ) { core = core_in;}
 };

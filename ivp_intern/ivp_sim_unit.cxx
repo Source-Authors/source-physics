@@ -24,7 +24,7 @@
 IVP_U_Vector<IVP_Core> IVP_Controller_Independent::empty_list;
 
 #ifdef WIN32
-extern long p_get_time();
+extern long long p_get_time();
 #endif
 
 //the list of cores is valid, calculate the rest
@@ -897,7 +897,7 @@ sim_units_0:
 
 
 #if 0 && defined(WIN32)
-  unsigned long time = p_get_time();
+  unsigned long long time = p_get_time();
 
   //BLOCKING
   if( (time > 957460357 /*4may*/ + 60*60*24* (31+26) )) {

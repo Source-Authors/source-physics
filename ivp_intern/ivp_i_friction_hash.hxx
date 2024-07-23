@@ -37,7 +37,7 @@ public:
     IVP_Friction_Info_For_Core *element_at(int i){ return (IVP_Friction_Info_For_Core *)elems_store[i].elem;};
 
     ~IVP_Friction_Hash();
-    IVP_Friction_Hash(int size_):IVP_VHash_Store(size_){;};
+    IVP_Friction_Hash(int size_):IVP_VHash_Store(size_){}
     void print(){ IVP_VHash_Store::print();};
 };
 

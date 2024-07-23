@@ -26,14 +26,14 @@
 #include <ivp_authenticity.hxx>
 
 
-void IVP_Listener_Collision::event_pre_collision( IVP_Event_Collision *){;};   // the user app sould override this
-void IVP_Listener_Collision::event_post_collision( IVP_Event_Collision *){;};   // the user app sould override this
-void IVP_Listener_Collision::event_collision_object_deleted( IVP_Real_Object *){;};  // only object private callbacks are called	
+void IVP_Listener_Collision::event_pre_collision( IVP_Event_Collision *){}   // the user app sould override this
+void IVP_Listener_Collision::event_post_collision( IVP_Event_Collision *){}   // the user app sould override this
+void IVP_Listener_Collision::event_collision_object_deleted( IVP_Real_Object *){}  // only object private callbacks are called	
 
 	// friction
     // set the IVP_LISTENER_COLLISION_CALLBACK_FRICTION bit in the constructor if you want to use this
-void IVP_Listener_Collision::event_friction_created(IVP_Event_Friction *){;};   // the user app sould override this
-void IVP_Listener_Collision::event_friction_deleted(IVP_Event_Friction *){;};   // the user app sould override this
+void IVP_Listener_Collision::event_friction_created(IVP_Event_Friction *){}   // the user app sould override this
+void IVP_Listener_Collision::event_friction_deleted(IVP_Event_Friction *){}   // the user app sould override this
 
 IVP_Cluster *IVP_Cluster_Manager::get_root_cluster()
 {

@@ -314,7 +314,7 @@ public:
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_ENERGY_FRICTION; };
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
 
-    virtual ~IVP_Friction_Sys_Energy() { ; };
+    virtual ~IVP_Friction_Sys_Energy() {};
     void core_is_going_to_be_deleted_event(IVP_Core *core);
     IVP_DOUBLE get_mimumum_simulation_frequency() { return 1.0f; };
 };
@@ -327,9 +327,9 @@ public:
     IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_STATIC_FRICTION; };
     void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
 
-    virtual ~IVP_Friction_Sys_Static(){ ; };
+    virtual ~IVP_Friction_Sys_Static(){};
     
-    void core_is_going_to_be_deleted_event(IVP_Core *del_core);
+    void core_is_going_to_be_deleted_event(IVP_Core *del_core) override;
     IVP_DOUBLE get_minimum_simulation_frequency() { return 1.0f; };
 };
 

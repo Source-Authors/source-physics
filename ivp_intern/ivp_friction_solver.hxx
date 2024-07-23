@@ -7,7 +7,7 @@ class IVP_U_Memory;
 class IVP_Vector_of_Contact_Info_512:public  IVP_U_Vector<IVP_Impact_Solver_Long_Term> {
     IVP_Impact_Solver_Long_Term *elem_buffer[512];
 public:
-    IVP_Vector_of_Contact_Info_512(): IVP_U_Vector<IVP_Impact_Solver_Long_Term>( (void **)&elem_buffer[0],512 ){;};
+    IVP_Vector_of_Contact_Info_512(): IVP_U_Vector<IVP_Impact_Solver_Long_Term>( (void **)&elem_buffer[0],512 ){}
 };
 
 // temporarily used class, no long term values 
