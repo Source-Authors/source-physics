@@ -118,7 +118,7 @@ int hk_Stiff_Spring_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void
 
 	work.current_dist = IntervalDistance(norm_length, m_min_length, m_stiff_spring_length);
 
-	if (this->m_min_length == this->m_stiff_spring_length || work.current_dist != 0.f)
+	if (hk_Math::almost_equal( this->m_min_length, this->m_stiff_spring_length ) || work.current_dist != 0.f)
 		work.skip_solve = false;
 	else
 	{

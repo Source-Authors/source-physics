@@ -26,7 +26,7 @@ public:
 				m_tau( 1.0f ),
 				m_n_iterations( 0 ),
 				m_minErrorTicks( 1 ),
-				m_errorTolerance( 0.03 ),
+				m_errorTolerance( 0.03f ),
 				m_active( false )
 		{
 		}

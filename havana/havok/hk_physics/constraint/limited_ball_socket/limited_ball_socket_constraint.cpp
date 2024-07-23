@@ -127,13 +127,15 @@ int	hk_Limited_Ball_Socket_Constraint::setup_and_step_constraint(
 		/* get the relative joint axes and angles */
 
 		hk_Matrix3 joint_axes;
-		if (0){ // use euler
-			hk_Euler_Angles::create_rot_axis_and_angles(
-					t_ws_ks[0], t_ws_ks[1],
-					0,1,2,
-					joint_axes, work.joint_angles);
-			work.joint_angles *= -1.0f;
-		}else{ // use quaternion as in ipion
+		// dimhotepus: Comment never reachable code.
+		//if (0){ // use euler
+		//	hk_Euler_Angles::create_rot_axis_and_angles(
+		//			t_ws_ks[0], t_ws_ks[1],
+		//			0,1,2,
+		//			joint_axes, work.joint_angles);
+		//	work.joint_angles *= -1.0f;
+		//}else
+		{ // use quaternion as in ipion
  			hk_Rotation m_ks0_ks1;
 			m_ks0_ks1.set_mul3_inv(t_ws_ks[0], t_ws_ks[1]);
 

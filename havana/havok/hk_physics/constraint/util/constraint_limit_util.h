@@ -80,7 +80,7 @@ public:
 				impulse -= virtual_mass * delta;
 			}
 		}
-		if (impulse){
+		if (!hk_Math::almost_equal(impulse, 0.0f)){
 			hk_real impulses[1];
 			impulses[0] = impulse;
 			query.apply_impulses( HK_BODY_A, b0, impulses );
@@ -191,7 +191,7 @@ public:
 				impulse += virtual_mass * delta;	
 			}
 		}
-		if (impulse){
+		if (!hk_Math::almost_equal(impulse, 0.0f)){
 			hk_real impulses[1];
 			impulses[0] = impulse;
 			query.apply_impulses( HK_BODY_A, b0, impulses );
@@ -283,7 +283,7 @@ public:
 				impulse += virtual_mass * delta;	
 			}
 		}
-		if (impulse){
+		if (!hk_Math::almost_equal(impulse, 0.0f)){
 			hk_real impulses[1];
 			impulses[0] = impulse;
 			query.apply_impulses( HK_BODY_A, b0, impulses );
