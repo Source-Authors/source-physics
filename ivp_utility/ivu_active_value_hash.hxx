@@ -11,7 +11,7 @@ class IVP_U_Active_Value;
 class IVP_Active_Value_Hash : protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const;
+    IVP_BOOL compare(void *elem0, void *elem1) const override;
     int      object_to_index(IVP_U_Active_Value *av);
 
 public:
@@ -19,23 +19,23 @@ public:
     {
 	add_elem(av, object_to_index(av));
 	av->add_reference();
-    };
+    }
 
     IVP_U_Active_Value *remove_active_value(IVP_U_Active_Value *av)
     {
 	IVP_U_Active_Value *av_out =  (IVP_U_Active_Value *)remove_elem(av, object_to_index(av));
 	av_out->remove_reference();
 	return av_out;
-    };
+    }
 
     IVP_U_Active_Value *find_active_value(IVP_U_Active_Value *av)
     {
 	return (IVP_U_Active_Value *)find_elem(av, object_to_index(av));
-    };
+    }
   
 
     ~IVP_Active_Value_Hash();
-    IVP_Active_Value_Hash(int init_size) : IVP_VHash(init_size) {;};
+    IVP_Active_Value_Hash(int init_size) : IVP_VHash(init_size) {}
 };
 
 

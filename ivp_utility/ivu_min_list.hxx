@@ -48,7 +48,7 @@ public:
     void *find_min_elem(){
 		IVP_ASSERT( first_element != IVP_U_MINLIST_UNUSED);
 		return elems[first_element].element;
-	};
+	}
 
     IVP_BOOL has_elements(){
 	return (IVP_BOOL) (counter>0);

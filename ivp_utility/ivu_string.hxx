@@ -41,7 +41,8 @@ IVP_DOUBLE p_atof(const char *s);
 #ifdef WIN32
 int strcasecmp(const char *a, const char *b);
 void replace_slash(const char *in,char *out);
-long p_get_time(); // returns seconds since 1970
+// dimhotepus: long long instead of long for 64 bits.
+long long p_get_time(); // returns seconds since 1970
 #endif
 
 

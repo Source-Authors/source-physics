@@ -117,7 +117,7 @@ public:
     void print(const char *comment = 0) const;
 
     IVP_U_Float_Point() = default;
-    IVP_U_Float_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = (IVP_FLOAT)x; k[1] = (IVP_FLOAT)y; k[2] = (IVP_FLOAT)z;};
+    IVP_U_Float_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = (IVP_FLOAT)x; k[1] = (IVP_FLOAT)y; k[2] = (IVP_FLOAT)z;}
     IVP_U_Float_Point(const IVP_U_Float_Point *p);
 
 #if !defined(IVP_NO_DOUBLE)
@@ -160,8 +160,8 @@ public:
 	IVP_DOUBLE hesse_val;
     };
 #	endif    
-    inline IVP_DOUBLE dot_product(const IVP_U_Point *v2) const   {    return( k[0]*v2->k[0] + k[1]*v2->k[1] + k[2]*v2->k[2] );   };
-    inline IVP_DOUBLE dot_product(const IVP_U_Float_Point *v2) const   {    return( k[0]*v2->k[0] + k[1]*v2->k[1] + k[2]*v2->k[2] );   };
+    inline IVP_DOUBLE dot_product(const IVP_U_Point *v2) const   {    return( k[0]*v2->k[0] + k[1]*v2->k[1] + k[2]*v2->k[2] );   }
+    inline IVP_DOUBLE dot_product(const IVP_U_Float_Point *v2) const   {    return( k[0]*v2->k[0] + k[1]*v2->k[1] + k[2]*v2->k[2] );   }
     
     inline void inline_calc_cross_product(const IVP_U_Point *v1, const IVP_U_Point *v2); // this = v1 x v2
     inline void inline_calc_cross_product_and_normize(const IVP_U_Point *v1, const IVP_U_Point *v2); // this = v1 x v2
@@ -257,7 +257,7 @@ public:
 
     IVP_U_Point() = default;
     inline IVP_U_Point(const IVP_U_Float_Point &p);
-    IVP_U_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = x; k[1] = y; k[2] = z;};
+    IVP_U_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = x; k[1] = y; k[2] = z;}
 
 	inline void byte_swap() { IVP_ASSERT( 0 && "No byte swap for doubles yet"); CORE; }
 
@@ -317,18 +317,18 @@ public:
     static IVP_DOUBLE ivp_expf(IVP_DOUBLE f) { return expf(f); };
     static IVP_DOUBLE atan2d(IVP_DOUBLE f1, IVP_DOUBLE f2){ return atan2f(f1,f2); };
 #else
-    static IVP_DOUBLE fabsd(IVP_DOUBLE f){ return fabs(f); };
-    static IVP_DOUBLE ivp_sqrtf(IVP_DOUBLE f){ return sqrt(f); };
-    static IVP_DOUBLE sqrtd(IVP_DOUBLE f){ return sqrt(f); };
-    static IVP_DOUBLE ivp_sinf(IVP_DOUBLE f) { return sin(f); };
-    static IVP_DOUBLE ivp_cosf(IVP_DOUBLE f) { return cos(f); };
-    static IVP_DOUBLE sind(IVP_DOUBLE f) { return sin(f); };
-    static IVP_DOUBLE cosd(IVP_DOUBLE f) { return cos(f); };
-    static IVP_DOUBLE acosd(IVP_DOUBLE f){ return acos(f); };
-    static IVP_DOUBLE asind(IVP_DOUBLE f){ return asin(f); };
-    static IVP_DOUBLE atand(IVP_DOUBLE f){ return atan(f); };
-    static IVP_DOUBLE ivp_expf(IVP_DOUBLE f) { return exp(f); };
-    static IVP_DOUBLE atan2d(IVP_DOUBLE f1, IVP_DOUBLE f2){ return atan2(f1,f2); };
+    static IVP_DOUBLE fabsd(IVP_DOUBLE f){ return fabs(f); }
+    static IVP_DOUBLE ivp_sqrtf(IVP_DOUBLE f){ return sqrt(f); }
+    static IVP_DOUBLE sqrtd(IVP_DOUBLE f){ return sqrt(f); }
+    static IVP_DOUBLE ivp_sinf(IVP_DOUBLE f) { return sin(f); }
+    static IVP_DOUBLE ivp_cosf(IVP_DOUBLE f) { return cos(f); }
+    static IVP_DOUBLE sind(IVP_DOUBLE f) { return sin(f); }
+    static IVP_DOUBLE cosd(IVP_DOUBLE f) { return cos(f); }
+    static IVP_DOUBLE acosd(IVP_DOUBLE f){ return acos(f); }
+    static IVP_DOUBLE asind(IVP_DOUBLE f){ return asin(f); }
+    static IVP_DOUBLE atand(IVP_DOUBLE f){ return atan(f); }
+    static IVP_DOUBLE ivp_expf(IVP_DOUBLE f) { return exp(f); }
+    static IVP_DOUBLE atan2d(IVP_DOUBLE f1, IVP_DOUBLE f2){ return atan2(f1,f2); }
 #endif
 };
 
@@ -373,7 +373,7 @@ public:
 #if !defined(IVP_VECTOR_UNIT_FLOAT)
     IVP_FLOAT hesse_val;
 #endif
-    void set4(const IVP_U_Float_Hesse *h){ this->set(h); this->hesse_val = h->hesse_val;};
+    void set4(const IVP_U_Float_Hesse *h){ this->set(h); this->hesse_val = h->hesse_val;}
     void calc_hesse(const IVP_U_Float_Point *p0,const IVP_U_Float_Point *p1,const IVP_U_Float_Point *p2);
     void calc_hesse_val(const IVP_U_Float_Point *p0);
     void proj_on_plane(const IVP_U_Float_Point *p, IVP_U_Float_Point *result) const;	// sets result to a point on the plane and nearest to p
@@ -402,8 +402,8 @@ class IVP_U_Matrix3 {
 protected:
     IVP_U_Point rows[3];    // use get_elem and set_elem to access elements
 public:
-    inline IVP_DOUBLE get_elem(int row, int col) const { return rows[row].k[col];};
-    inline void set_elem(int row, int col, IVP_DOUBLE val){ rows[row].k[col] = val; };
+    inline IVP_DOUBLE get_elem(int row, int col) const { return rows[row].k[col];}
+    inline void set_elem(int row, int col, IVP_DOUBLE val){ rows[row].k[col] = val; }
     
     inline void inline_mmult3(const IVP_U_Matrix3 *mb, IVP_U_Matrix3 *m_out )const; 
     inline void inline_mimult3(const IVP_U_Matrix3 *mb, IVP_U_Matrix3 *m_out )const;
@@ -493,8 +493,8 @@ class IVP_U_Matrix: public IVP_U_Matrix3
 public:    
     IVP_U_Point vv;	// Translations Vector, is added in vmult after rotation.
 
-    IVP_U_Point *get_position() { return &vv; };				// get the position of an object matrix
-    const IVP_U_Point *get_position() const { return &vv; };				// get the position of an object matrix
+    IVP_U_Point *get_position() { return &vv; }				// get the position of an object matrix
+    const IVP_U_Point *get_position() const { return &vv; }				// get the position of an object matrix
 
     inline void inline_mmult4(const IVP_U_Matrix *mb, IVP_U_Matrix *m_out ) const; // matrix multiplication
     inline void inline_mimult4(const IVP_U_Matrix *mb, IVP_U_Matrix *m_out ) const; // this is transposed !!
@@ -601,7 +601,7 @@ public:
     inline IVP_DOUBLE inline_estimate_q_diff_to(const IVP_U_Float_Quat *reference) const;	// roughly estimate the quad alpha
 
     IVP_U_Quat() = default;  // not initialized quat
-    IVP_U_Quat(const IVP_U_Point &p){ this->set_fast_multiple(&p,1.0f); }; // init by a rotation
+    IVP_U_Quat(const IVP_U_Point &p){ this->set_fast_multiple(&p,1.0f); } // init by a rotation
     IVP_U_Quat( const IVP_U_Matrix3 *m) { this->set_quaternion(m); }
     // INTERN_START
     //log_difference ?nicht kapiert

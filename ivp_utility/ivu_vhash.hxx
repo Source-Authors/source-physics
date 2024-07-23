@@ -61,9 +61,9 @@ public:
     void deactivate(); // remove elems memory (assert no elems used)
     void activate(int preferred_size);   // allocate memory
  
-    int len() const { return size_mm+1;};  // size of hash array
-    int n_elems(){ return nelems; };  // elems in hash
-    void *element_at(int i) const { return (void *)elems[i].elem;};
+    int len() const { return size_mm+1;}  // size of hash array
+    int n_elems(){ return nelems; }  // elems in hash
+    void *element_at(int i) const { return (void *)elems[i].elem;}
     IVP_BOOL is_element_touched(int i) const { return (IVP_BOOL)(elems[i].hash_index >= IVP_VHASH_TOUCH_BIT); }
     void untouch_all();
     void print()const;
@@ -146,9 +146,9 @@ public:
     
     void *touch_element(void *key_elem,unsigned int hash_index);	// finds and touches
  
-    int len(){ return size;};
-    int n_elems(){ return nelems; };
-    void *element_at(int i){ return elems_store[i].elem;};
+    int len(){ return size;}
+    int n_elems(){ return nelems; }
+    void *element_at(int i){ return elems_store[i].elem;}
     IVP_BOOL is_element_touched(int i){ return (IVP_BOOL)(elems_store[i].hash_index >= IVP_VHASH_TOUCH_BIT); }
     void untouch_all();
     void print();

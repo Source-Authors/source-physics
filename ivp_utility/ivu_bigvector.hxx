@@ -27,7 +27,7 @@ class IVP_U_BigVector: public IVP_U_BigVector_Base {
 	if (n_elems>=memsize){
 	    this->increment_mem();
 	}
-    };
+    }
 protected:
     //  special vector with preallocated elems
     IVP_U_BigVector(void **ielems, int size){
@@ -46,7 +46,7 @@ public:
 	}else{	
 	    elems = NULL;
 	}
-    };
+    }
     
     void clear(){
 	if ( elems != (void **) (this+1)){
@@ -56,26 +56,26 @@ public:
 	    memsize = 0;
 	}
 	n_elems = 0;
-    };
+    }
 
     void exchange_vector_elems( int first, int second ) {
         void *temp;
 	temp=elems[first];
 	elems[first]=elems[second];
 	elems[second]=temp;
-    };
+    }
   
     void remove_all(){
 	n_elems = 0;
-    };
+    }
     
     ~IVP_U_BigVector(){
 	this->clear();
-    };
+    }
     
     int len() const {
 	return n_elems;
-    };
+    }
     
     int index_of(T *elem){
 	int i;
@@ -83,14 +83,14 @@ public:
 	    if (elems[i] == elem) break;
 	}
 	return i;
-    };
+    }
     
     int add(T *elem){
 	ensure_capacity();
 	IVP_ASSERT( index_of(elem) == -1);
 	elems[n_elems] = (void *)elem;
 	return n_elems++;
-    };
+    }
 
     void remove_at(int index){
 	IVP_ASSERT((index>=0)&&(index<n_elems));
@@ -100,7 +100,7 @@ public:
 	    j++;
 	}
 	n_elems--;
-    };
+    }
 
 
 
@@ -110,7 +110,7 @@ public:
 	ensure_capacity();
 	elems[n_elems] = (void *)elem;
 	return n_elems++;
-    };
+    }
     
     void remove(T *elem){
 	int index = this->index_of(elem);
@@ -120,12 +120,12 @@ public:
 	    elems[index] = (elems+1)[index];
 	    index++;
 	}
-    };
+    }
 
     T* element_at(int index) const {
 	IVP_ASSERT(index>=0 && index < n_elems);
 	return (T *)elems[index];
-    };
+    }
 };
 
 // For threadsave usage

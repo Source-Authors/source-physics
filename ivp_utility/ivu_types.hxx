@@ -54,7 +54,7 @@
 #ifndef WIN32
 #define CORE raise(SIGINT)  /* send fatal signal */
 #else
-#define CORE __debugbreak();
+#define CORE __debugbreak()
 #endif
 
 #if defined (PSXII)
@@ -113,22 +113,22 @@ inline void BREAKPOINT()
 		}
 #	elif defined (_LINUX)
 #		define IVP_ASSERT(cond) \
-		{ \
+		do { \
 			if(!(cond)) \
 			{ \
 				::fprintf(stderr, "\nASSERTION FAILURE: %s\nFILE: %s\nLINE: %d\n\n", ""#cond, __FILE__, __LINE__); \
 				raise(SIGINT); \
 			} \
-		}
+		} while (false)
 #	else
 #		define IVP_ASSERT(cond) \
-		{ \
+		do { \
 			if(!(cond)) \
 			{ \
 				::fprintf(stderr, "\nASSERTION FAILURE: %s\nFILE: %s\nLINE: %d\n\n", ""#cond, __FILE__, __LINE__); \
 				CORE; \
 			} \
-		}
+		} while (false)
 //#		define IVP_ASSERT(cond)	if (!(cond)) CORE
 #	endif // PSXII, Mac, etc.  debug assert
 #	define IVP_USE(a) a=a
@@ -149,14 +149,14 @@ public:
     void operator+=(double val){
 	seconds += val;
     }
-    double get_seconds() const { return seconds; };
-    double get_time() const { return seconds; }; // for debugging
+    double get_seconds() const { return seconds; }
+    double get_time() const { return seconds; } // for debugging
     double operator-(const IVP_Time &b) const { return float(this->seconds - b.seconds); }
     void operator-=(const IVP_Time b) { this->seconds -= b.seconds; }
     IVP_Time operator+(double val) const { IVP_Time result; result.seconds = this->seconds + val; return result;}
 
     IVP_Time() = default;
-    IVP_Time(double time){ seconds = time; };
+    IVP_Time(double time){ seconds = time; }
 };
 
 #else
@@ -182,7 +182,7 @@ public:
 	while (result.sub_seconds > 1.0f){    result.seconds ++;    result.sub_seconds -= 1.0f;	}
 	return result;
     }
-    IVP_Time(){;};
+    IVP_Time(){}
     IVP_Time(float time){ seconds = float(int(time)); sub_seconds = time - int(time); };
 };
 #endif
@@ -264,16 +264,16 @@ enum IVP_RETURN_TYPE {
 
 extern void ivp_memory_check(void *a);
 
-#define P_DELETE(a)  { /*ivp_memory_check((void*)a);*/ delete(a); a=NULL; };
-#define P_DELETE_THIS(a)  { /*ivp_memory_check((void*)a);*/ delete(a); };
-#define P_DELETE_ARRAY(a)  { /*ivp_memory_check((void*)a);*/ delete[](a); (a)= 0; };
+#define P_DELETE(a) do { /*ivp_memory_check((void*)a);*/ delete(a); a=NULL; } while (false)
+#define P_DELETE_THIS(a) do { /*ivp_memory_check((void*)a);*/ delete(a); } while (false)
+#define P_DELETE_ARRAY(a) do { /*ivp_memory_check((void*)a);*/ delete[](a); (a)= 0; } while (false)
 
-#define P_FREE_ALIGNED(a) { if (a) { /*ivp_memory_check((void*)a);*/ ivp_free_aligned( (void *)a ); a = NULL; } };
-#define P_FREE(a) { if (a) { /*ivp_memory_check((void*)a);*/ p_free( (char *) a); a = NULL; } };
+#define P_FREE_ALIGNED(a) do { if (a) { /*ivp_memory_check((void*)a);*/ ivp_free_aligned( (void *)a ); a = NULL; } } while (false)
+#define P_FREE(a) do { if (a) { /*ivp_memory_check((void*)a);*/ p_free( (char *) a); a = NULL; } } while (false)
 
-#define P_MEM_CLEAR(a) memset((char*)(a), 0, sizeof(*a));
-#define P_MEM_CLEAR_M4(a) memset((char*)(a)+sizeof(void*), 0, sizeof(*a)-sizeof(void *));
-#define P_MEM_CLEAR_ARRAY(clss,elems) memset((char*)(clss), 0, sizeof(*clss)*elems);
+#define P_MEM_CLEAR(a) memset((char*)(a), 0, sizeof(*a))
+#define P_MEM_CLEAR_M4(a) memset((char*)(a)+sizeof(void*), 0, sizeof(*a)-sizeof(void *))
+#define P_MEM_CLEAR_ARRAY(clss,elems) memset((char*)(clss), 0, sizeof(*clss)*elems)
 
 constexpr inline float P_FLOAT_EPS{1e-10f};  // used for division checking
 constexpr inline float P_FLOAT_RES{1e-6f};	// float resolution for numbers < 1.0
@@ -317,7 +317,7 @@ IVP_FLOAT ivp_rand();		// returns [0 .. 1]
 #	endif
 #	define IVP_IF_PREFETCH_ENABLED(x) if(x)
 #	include <xmmintrin.h>
-#	define IVP_PREFETCH( pntr, offset) _mm_prefetch( int(offset) + (char *)pntr, _MM_HINT_T1);
+#	define IVP_PREFETCH( pntr, offset) _mm_prefetch( int(offset) + (char *)pntr, _MM_HINT_T1)
 #   endif
 
 

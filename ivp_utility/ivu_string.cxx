@@ -2,11 +2,11 @@
 
 #include <ivp_physics.hxx>
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdarg>
+#include <cstring>
 
-#include <ctype.h>
+#include <cctype>
 
 #if !defined(__MWERKS__) || !defined(__POWERPC__)
 #ifdef OSX
@@ -16,27 +16,14 @@
 #endif
 #endif
 #ifdef WIN32
-#	ifndef _XBOX
-#		ifndef WIN32_LEAN_AND_MEAN
-#			define WIN32_LEAN_AND_MEAN
-#		endif
-#		include <windows.h>
-#	else
-#		ifndef WINVER
-#			define WINVER 0x0500
-#		endif
-#		ifndef _X86_
-#			define _X86_
-#		endif  /* _X86_ */
-#		include <excpt.h>
-#		include <stdarg.h>
-#		include <windef.h>
-#		include <winbase.h>
+#	ifndef WIN32_LEAN_AND_MEAN
+#		define WIN32_LEAN_AND_MEAN
 #	endif
+#	include <Windows.h>
 #endif
 
 void P_String::uppercase(char *str)
-	{
+{
 	char c;
 	while( (c=*str) )	{
 		if ( (c<='z') && (c>='a')) *str = c - 'a' + 'A';
@@ -45,8 +32,6 @@ void P_String::uppercase(char *str)
 }
 
 #define P_MIN(a,b)(((a)<(b))?(a):(b))
-
-#define UPPERCASE(c) if ( (c>='a') && (c<='z')) c+= 'A'-'a'
 
 const char *P_String::find_string(const char *str, const char *key, int upper_case)
 {
@@ -215,9 +200,8 @@ char *gbs_add_path(char *path,char *name)
 
 
 
-char *GBS_remove_escape(char *com)	/* \ is the escape charakter
-					*/
-	{
+char *GBS_remove_escape(char *com)	/* \ is the escape charakter */
+{
 	char *result,*s,*d;
 	int	ch;
 
@@ -431,9 +415,10 @@ int p_atoi(const char *s){
 
 
 #ifdef WIN32
-#	include <time.h>
+#	include <ctime>
 
-long p_get_time(){ // returns seconds since 1970
+// dimhotepus: long long instead of long for 64 bits.
+long long p_get_time(){ // returns seconds since 1970
 	time_t t;
 	return time(&t);
 }
@@ -446,24 +431,5 @@ int	strcasecmp(const char *a,const char *b)
 {
 // chris, Sept 2000
 	return stricmp(a,b);
-
-/*
-	if(a==NULL) return -1;
-	if(b==NULL) return +1;
-	int i;
-
-	for(i=0;a[i];i++)
-	{
-		if(b[i]==0) return +1;
-		int ia=(int)a[i];
-		int ib=(int)b[i];
-		if((ia>=97) && (ia<123)) ia=ia-32;
-		if((ib>=97) && (ib<123)) ib=ib-32;
-		if(ia<ib) return -1;
-		if(ia>ib) return +1;
-	}
-	if(b[i]!=0) return -1; 
-	return 0;
-*/
 }
 #endif

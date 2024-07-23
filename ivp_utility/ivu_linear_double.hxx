@@ -372,8 +372,8 @@ inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Point *p_in, IVP_U_Point * p
     IVP_DOUBLE b = h * get_elem(1,0);
     IVP_DOUBLE c = h * get_elem(2,0);
     IVP_DOUBLE x,y;
-    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
-    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
+    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y; c+= x;
+    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y; c+= x;
     a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
     p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
 }
@@ -386,8 +386,8 @@ inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Float_Point *p_in, IVP_U_Poi
     IVP_DOUBLE b = h * get_elem(1,0);
     IVP_DOUBLE c = h * get_elem(2,0);
     IVP_DOUBLE x,y;
-    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y, c+= x;
-    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y, c+= x;
+    h = p_in->k[1]; x = h*get_elem(0,1);	y = h*get_elem(1,1);	a += x;	x = h*get_elem(2,1);	 b+=y; c+= x;
+    h = p_in->k[2]; x = h*get_elem(0,2);	y = h*get_elem(1,2);	a += x;	x = h*get_elem(2,2);	 b+=y; c+= x;
     a += vv.k[0];    b += vv.k[1];    c += vv.k[2];
     p_out->k[0] = a;p_out->k[1] = b; p_out->k[2] = c;
 }

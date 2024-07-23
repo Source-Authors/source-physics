@@ -37,21 +37,21 @@ template<class T>
 class IVP_U_Set: public IVP_VHash {
   //friend class IVP_U_Set_Enumerator;
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const { return (elem0 == elem1)?IVP_TRUE:IVP_FALSE; }
+    IVP_BOOL compare(void *elem0, void *elem1) const override { return (elem0 == elem1)?IVP_TRUE:IVP_FALSE; }
     int      elem_to_index(T *elem){ return fast_hash_index((long) elem); }
 public:
   void add_element(T *elem){
       IVP_VHash::add_elem(elem, elem_to_index(elem));
-  };
+  }
 
   void remove_element(T *elem)    {
       IVP_VHash::remove_elem(elem, elem_to_index(elem));
-    };
+    }
 
   // returns NULL or elem
   T *find_element(T *elem)  {
     return (T *)IVP_VHash::find_elem(elem, elem_to_index(elem));
-  };
+  }
 
   void install_element(T *elem){
     int index = elem_to_index(elem);
@@ -59,12 +59,12 @@ public:
     if (hit) return;
 
     IVP_VHash::add_elem(elem, index);
-  };
+  }
 
   int n_elems() { return nelems; }
   
-  ~IVP_U_Set(){;};
-  IVP_U_Set(int init_size) : IVP_VHash(init_size) { ;};
+  ~IVP_U_Set(){}
+  IVP_U_Set(int init_size) : IVP_VHash(init_size) {}
 };
 
 template <class T> class IVP_U_Set_Active;
@@ -88,7 +88,7 @@ public:
 	IVP_Listener_Set_Active<T> *l = listeners.element_at(i);
 	l->element_added(this,elem);
       }
-  };
+  }
 
   void install_element(T *elem){
     int index = elem_to_index(elem);
@@ -100,7 +100,7 @@ public:
 	IVP_Listener_Set_Active<T> *l = listeners.element_at(i);
 	l->element_added(this,elem);
       }
-  };
+  }
 
   
   void remove_element(T *elem)    {
@@ -109,15 +109,15 @@ public:
 	IVP_Listener_Set_Active<T> *l = listeners.element_at(i);
 	l->element_removed(this,elem);
       }
-    };
+    }
 
   ~IVP_U_Set_Active(){
     for (int i = listeners.len()-1; i>=0;i--){
       IVP_Listener_Set_Active<T> *l = listeners.element_at(i);
       l->pset_is_going_to_be_deleted(this);
     }
-  };
-  IVP_U_Set_Active(int init_size) : IVP_U_Set<T>(init_size) {;};
+  }
+  IVP_U_Set_Active(int init_size) : IVP_U_Set<T>(init_size) {}
 
     void add_listener_set_active( IVP_Listener_Set_Active<T> *lis ){
 	listeners.add(lis);

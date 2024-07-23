@@ -51,7 +51,7 @@ public:
 	if (delete_on_env_delete){
 	    P_DELETE_THIS(this);
 	}
-    };
+    }
     
     virtual void insert_active_float(IVP_U_Active_Float *mod); // add to name_hash
     virtual void remove_active_float(IVP_U_Active_Float *mod); // remove from name_hash
@@ -136,12 +136,12 @@ private:
 protected:
     int reference_count;
 public:
-    void add_reference(){ reference_count++;};
-    void remove_reference(){ reference_count--;if (!reference_count) delete this; };
+    void add_reference(){ reference_count++;}
+    void remove_reference(){ reference_count--;if (!reference_count) delete this; }
     virtual ~IVP_U_Active_Value();
     IVP_U_Active_Value(const char *name_);
     
-    const char *get_name() { return name; };
+    const char *get_name() { return name; }
 };
 
 class IVP_U_Active_Float: public  IVP_U_Active_Value //
@@ -163,8 +163,8 @@ public:
 
     static int change_meter;
     
-    IVP_DOUBLE give_double_value(){ return double_value; };
-    IVP_FLOAT get_float_value(){ return (IVP_FLOAT)double_value; };
+    IVP_DOUBLE give_double_value(){ return double_value; }
+    IVP_FLOAT get_float_value(){ return (IVP_FLOAT)double_value; }
 
     void add_dependency(IVP_U_Active_Float_Listener *derived_active_IVP_FLOAT);
     void remove_dependency(IVP_U_Active_Float_Listener *derived_active_IVP_FLOAT);
@@ -189,7 +189,7 @@ public:
     
     void update_derived();
 public:
-    int give_int_value(){ return int_value; };
+    int give_int_value(){ return int_value; }
 
     void add_dependency(IVP_U_Active_Int_Listener *derived_active_int);
     void remove_dependency(IVP_U_Active_Int_Listener *derived_active_int);
@@ -214,9 +214,9 @@ private:
 public:
     IVP_U_Active_Terminal_Double(const char *name,  IVP_DOUBLE value);
     
-    virtual void update_float();     // tell dependent classes that something has changed
+    void update_float() override;     // tell dependent classes that something has changed
     virtual void set_double(IVP_DOUBLE new_value, IVP_BOOL delayed=IVP_FALSE);
-    int print();
+    int print() override;
 };
 
 class IVP_U_Active_Terminal_Int : public IVP_U_Active_Int, public IVP_U_Active_Int_Delayed
@@ -226,10 +226,10 @@ private:
 public:
     IVP_U_Active_Terminal_Int(const char *name,int value);
     
-    virtual void update_int();	// Int::set_int
+    void update_int() override;	// Int::set_int
     
     virtual void set_int(int new_value, IVP_BOOL delayed=IVP_FALSE);
-    int print();
+    int print() override;
 };
 
 
@@ -254,8 +254,8 @@ public:
 	       IVP_DOUBLE time_shift);
     ~IVP_U_Active_Sine();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);    
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 class IVP_U_Active_Square : public IVP_U_Active_Float, public IVP_U_Active_Float_Listener
@@ -273,8 +273,8 @@ public:
 		 IVP_DOUBLE high_val);
     ~IVP_U_Active_Square();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 
@@ -297,8 +297,8 @@ public:
 		IVP_DOUBLE high_val);
     ~IVP_U_Active_Pulse();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 
@@ -316,8 +316,8 @@ public:
     IVP_U_Active_Add(const char *name,IVP_U_Active_Float *mod0, IVP_U_Active_Float *mod1);
     ~IVP_U_Active_Add();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 
@@ -331,8 +331,8 @@ public:
     IVP_U_Active_Sub(const char *name,   IVP_U_Active_Float *mod0,   IVP_U_Active_Float *mod1);
     ~IVP_U_Active_Sub();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 
@@ -349,8 +349,8 @@ public:
 		       IVP_U_Active_Float *mod0, IVP_U_Active_Float *mod1, IVP_DOUBLE factor);
     ~IVP_U_Active_Add_Multiple();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 class IVP_U_Active_Mult : public IVP_U_Active_Float, public IVP_U_Active_Float_Listener
@@ -364,8 +364,8 @@ public:
     IVP_U_Active_Mult(const char *name,IVP_U_Active_Float *mod0, IVP_U_Active_Float *mod1);
     ~IVP_U_Active_Mult();
     
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 
@@ -386,8 +386,8 @@ public:
 		IVP_U_Active_Float *mod, IVP_DOUBLE low_val, IVP_DOUBLE high_val);
     ~IVP_U_Active_Limit();
 
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 
@@ -414,8 +414,8 @@ public:
 		     IVP_U_Active_Float *mod_test, IVP_U_Active_Float *mod_low_val, IVP_U_Active_Float *mod_high_val);
     ~IVP_U_Active_Test_Range();
 
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    int print() override;
 };
 
 class IVP_U_Active_Switch : public IVP_U_Active_Float, public IVP_U_Active_Float_Listener, public IVP_U_Active_Int_Listener
@@ -434,9 +434,9 @@ public:
 		     IVP_U_Active_Int *mod_cond, IVP_U_Active_Float *mod_true, IVP_U_Active_Float *mod_false);
     ~IVP_U_Active_Switch();
 
-    void active_float_changed(IVP_U_Active_Float *calling_mod);
-    void active_int_changed(IVP_U_Active_Int *calling_mod);
-    int print();
+    void active_float_changed(IVP_U_Active_Float *calling_mod) override;
+    void active_int_changed(IVP_U_Active_Int *calling_mod) override;
+    int print() override;
 };
 
 #endif

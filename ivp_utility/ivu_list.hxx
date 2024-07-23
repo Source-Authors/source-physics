@@ -24,7 +24,7 @@ public:
 	elem->prev = 0;
 	first = elem;
 	len++;
-    };
+    }
     
     void remove(T *elem){
 	T *e = elem;
@@ -41,7 +41,7 @@ public:
 	e->next = (T *)-1;	// invalid flag !!
 	len--;
 	//elem->next = 0;
-    };
+    }
     
     P_List(){
 	first=0;

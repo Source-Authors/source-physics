@@ -21,7 +21,7 @@ class IVP_U_FVector: public IVP_U_Vector_Base {
 	if (n_elems>=memsize){
 	    this->increment_mem();
 	}
-    };
+    }
 protected:
     //  special vector with preallocated elems
     IVP_U_FVector(void **ielems, int size){
@@ -40,7 +40,7 @@ public:
 	}else{	
 	    elems = NULL;
 	}
-    };
+    }
     
     void clear(){
 	if ( elems != (void **) (this+1)){
@@ -48,26 +48,26 @@ public:
 	    memsize = 0;
 	}
 	n_elems = 0;
-    };
+    }
     
     void remove_all(){
 	n_elems = 0;
-    };
+    }
     
     ~IVP_U_FVector(){
 	this->clear();
-    };
+    }
     
     int len() const {
 	return n_elems;
-    };
+    }
     
     int index_of(T *elem){
 	int i0 = elem->get_fvector_index(0);
 	if ( i0 >=0 && i0 < n_elems && element_at(i0) == elem) return i0;
 	IVP_ASSERT ( elem->get_fvector_index(1) <0 ||  elem->get_fvector_index(1) >= n_elems || element_at(elem->get_fvector_index(1)) == elem);
 	return elem->get_fvector_index(1);
-    };
+    }
     
     int add(T *elem){
 	ensure_capacity();
@@ -75,7 +75,7 @@ public:
 	elems[n_elems] = (void *)elem;
 	elem->set_fvector_index(-1, n_elems);
 	return n_elems++;
-    };
+    }
 
     void swap_elems(int index1, int index2){
 	IVP_ASSERT((index1>=0)&&(index1<n_elems));
@@ -99,13 +99,13 @@ public:
 	    e->set_fvector_index(n_elems, index);
 	}
 	elem->set_fvector_index(index, -1);
-    };
+    }
     
 
     T* element_at(int index) const {
 	IVP_ASSERT(index>=0 && index < n_elems);
 	return (T *)elems[index];
-    };
+    }
 };
 
 #endif

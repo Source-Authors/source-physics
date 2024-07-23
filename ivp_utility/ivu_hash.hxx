@@ -30,7 +30,7 @@ class IVP_Hash_Enumerator {
     IVP_Hash *my_hash;
     IVP_Hash_Elem *el;
 public:
-    IVP_Hash_Enumerator(IVP_Hash *hash){ my_hash = hash; index_pos = -1; el = 0;};
+    IVP_Hash_Enumerator(IVP_Hash *hash){ my_hash = hash; index_pos = -1; el = 0;}
     void *next_element();
 };
 
