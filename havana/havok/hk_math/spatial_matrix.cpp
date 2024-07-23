@@ -277,7 +277,7 @@ int max_order_row_index;
 			x[backcol] -= A[order[backcol]][backrow]*x[backrow];
 		}
 
-		if( A[order[backcol]][backcol] == 0 ){
+		if( A[order[backcol]][backcol] == 0.0f ){
 		//		exit(1);
 			x[backcol] = 0;  //!me fail nicely
 		}else{

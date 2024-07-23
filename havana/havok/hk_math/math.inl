@@ -83,6 +83,10 @@ inline hk_real hk_Math::clamp( hk_real r, hk_real mn, hk_real mx)
 
 inline int hk_Math::int_log2( hk_real ) { return 0; }
 
+inline bool hk_Math::almost_equal( hk_real a, hk_real b, hk_real eps )
+{
+	return hk_Math::fabs(a - b) <= eps;
+}
 
 inline hk_real hk_Math::_rand01()
 {

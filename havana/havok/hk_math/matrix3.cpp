@@ -1,5 +1,7 @@
 #include <hk_math/vecmath.h>
 
+#include "hk_math/base_math.h"
+
 void hk_Matrix3::set_rows( const hk_Vector3& r0,
 							const hk_Vector3& r1,
 							const hk_Vector3& r2)
@@ -26,9 +28,10 @@ void hk_Matrix3::set_identity_rotation()
 bool hk_Matrix3::is_identity_rotation() const
 {
 	const hk_Matrix3& m = *this;
-	return	m(0,0)==1 && m(0,1)==0 && m(0,2)==0 &&
-			m(1,0)==0 && m(1,1)==1 && m(1,2)==0 &&
-			m(2,0)==0 && m(2,1)==0 && m(2,2)==1;
+	// dimhotepus: Compare with eps to honor float imprecisions.
+	return	hk_Math::almost_equal(m(0,0), 1) && hk_Math::almost_equal(m(0,1), 0) && hk_Math::almost_equal(m(0,2), 0) &&
+		hk_Math::almost_equal(m(1,0), 0) && hk_Math::almost_equal(m(1,1), 1) && hk_Math::almost_equal(m(1,2), 0) &&
+		hk_Math::almost_equal(m(2,0), 0) && hk_Math::almost_equal(m(2,1), 0) && hk_Math::almost_equal(m(2,2), 1);
 }
 
 void hk_Matrix3::set_zero()

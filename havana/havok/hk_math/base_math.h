@@ -16,37 +16,39 @@ constexpr inline hk_real HK_REAL_RES{1e-7f};  /* resolution of hk_real of  relat
 class hk_Math
 {
 	public:
-		static inline hk_double fabsd( hk_double );
+		static inline hk_double fabsd[[nodiscard]] ( hk_double );
 
-		static inline hk_real sqrt( hk_real );
-		static inline hk_real sqrt_inv( hk_real );
-		static inline hk_real fast_sqrt( hk_real );
-		static inline hk_real fast_sqrt_inv( hk_real );
+		static inline hk_real sqrt [[nodiscard]] ( hk_real );
+		static inline hk_real sqrt_inv [[nodiscard]] ( hk_real );
+		static inline hk_real fast_sqrt [[nodiscard]] ( hk_real );
+		static inline hk_real fast_sqrt_inv [[nodiscard]] ( hk_real );
 
-		static inline hk_real fabs( hk_real );
-		static inline hk_real tan( hk_real );
-		static inline hk_real sin( hk_real );
-		static inline hk_real cos( hk_real );
-		static inline hk_real atan2( hk_real sinus, hk_real cosinus);
-		static inline hk_real fast_approx_atan2( hk_real sinus, hk_real cosinus); // 0.01 error
-		static inline hk_real fast_approx_atan2_normized( hk_real sinus, hk_real cosinus); // 0.01 error // input has to be normized
+		static inline hk_real fabs [[nodiscard]] (hk_real);
+		static inline hk_real tan [[nodiscard]] ( hk_real );
+		static inline hk_real sin [[nodiscard]] ( hk_real );
+		static inline hk_real cos [[nodiscard]] ( hk_real );
+		static inline hk_real atan2 [[nodiscard]] ( hk_real sinus, hk_real cosinus);
+		static inline hk_real fast_approx_atan2 [[nodiscard]] ( hk_real sinus, hk_real cosinus); // 0.01 error
+		static inline hk_real fast_approx_atan2_normized [[nodiscard]] ( hk_real sinus, hk_real cosinus); // 0.01 error // input has to be normized
 		
-		static inline hk_real asin( hk_real );
-		static inline hk_real acos( hk_real );
-		static inline hk_real max( hk_real, hk_real );
-		static inline hk_real min( hk_real, hk_real );
+		static inline hk_real asin [[nodiscard]] (hk_real);
+		static inline hk_real acos [[nodiscard]] ( hk_real );
+		static inline hk_real max [[nodiscard]] ( hk_real, hk_real );
+		static inline hk_real min [[nodiscard]] ( hk_real, hk_real );
 
-		static inline hk_real floor( hk_real );
-		static inline hk_real ceil( hk_real );
-		static inline hk_real clamp( hk_real v, hk_real min, hk_real max );
-		static inline hk_real pow( hk_real, hk_real );
-		static inline hk_real exp( hk_real );
+		static inline hk_real floor [[nodiscard]] ( hk_real );
+		static inline hk_real ceil [[nodiscard]] ( hk_real );
+		static inline hk_real clamp [[nodiscard]] ( hk_real v, hk_real min, hk_real max );
+		static inline hk_real pow [[nodiscard]] ( hk_real, hk_real );
+		static inline hk_real exp [[nodiscard]] ( hk_real );
 
 		static void srand01( unsigned seedVal );
-		static inline hk_real _rand01();
-		static	      hk_real rand01();
-		static inline int int_log2( hk_real ); // integer part of log2
+		static inline hk_real _rand01 [[nodiscard]] ();
+		static	      hk_real rand01 [[nodiscard]] ();
+		static inline int int_log2 [[nodiscard]] ( hk_real ); // integer part of log2
 		static unsigned int hk_random_seed;
+
+		static bool almost_equal [[nodiscard]] ( hk_real a, hk_real b, hk_real eps = HK_REAL_RES );
 };
 
 #include <hk_math/math.inl>
