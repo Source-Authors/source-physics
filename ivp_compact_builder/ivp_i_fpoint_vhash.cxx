@@ -14,7 +14,7 @@
 #include <ivp_i_fpoint_vhash.hxx>
 
 
-IVP_I_FPoint_VHash::~IVP_I_FPoint_VHash(){;}
+IVP_I_FPoint_VHash::~IVP_I_FPoint_VHash(){}
 
 int IVP_I_FPoint_VHash::point_to_index(IVP_U_Float_Point *point)
 {

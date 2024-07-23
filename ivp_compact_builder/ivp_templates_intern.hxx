@@ -44,7 +44,7 @@ public:
 class IVP_Template_Line {
 public:
     ushort p[2];	// end points of a line stored as a point index (see point array)
-    void set(ushort a, ushort b){ p[0] = a; p[1] = b;};
+    void set(ushort a, ushort b){ p[0] = a; p[1] = b;}
 };
 
 

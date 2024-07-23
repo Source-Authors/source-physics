@@ -933,7 +933,7 @@ void	qh_printsummary(FILE *fp);
 
 /********* -user.c prototypes (alphabetical) **********************/
 
-void 	qh_errexit(int exitcode, facetT *facet, ridgeT *ridge);
+void qh_errexit [[noreturn]] (int exitcode, facetT *facet, ridgeT *ridge);
 void 	qh_errprint(const char* string, facetT *atfacet, facetT *otherfacet, ridgeT *atridge, vertexT *atvertex);
 int     qh_new_qhull (int dim, int numpoints, coordT *points, boolT ismalloc, 
 		char *qhull_cmd, FILE *outfile, FILE *errfile);

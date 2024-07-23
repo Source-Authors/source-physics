@@ -64,7 +64,7 @@ class IVP_Poly_Point : public IVP_U_Point
 {
     friend class IVP_Tri_Edge;
 public:
-    IVP_Poly_Point() { tmp.tetra_point = NULL; };    
+    IVP_Poly_Point() { tmp.tetra_point = NULL; }
     inline IVP_Real_Object *get_real_object2() const; // @@@@@ returns 0
     IVP_Object_Polygon_Tetra *l_tetras;
     union {			// temporary pointers
@@ -106,7 +106,7 @@ public:
     int check_concavity(IVP_Tri_Edge *other_edge);
     
     IVP_Tri_Edge *other_side();
-    IVP_BOOL is_concav(){ return (IVP_BOOL)(concavity < -1E-10f); };
+    IVP_BOOL is_concav(){ return (IVP_BOOL)(concavity < -1E-10f); }
     void print(const char *text = 0);
     
 
@@ -135,7 +135,7 @@ public:
 	    IVP_U_Hesse hesse;			// normized hesse
 		ivp_triangle_gen() = default;
 	} gen;
-	ivp_triangle_tmp(){;};
+	ivp_triangle_tmp(){}
     } tmp;    
     int index; // used for compact ledge generation
     

@@ -1122,14 +1122,12 @@ void qh_printafacet(FILE *fp, int format, facetT *facet, boolT printall) {
     qh_outerinner (facet, NULL, &innerplane);
     offset= facet->offset - innerplane;
     goto LABELprintnorm;
-    break; /* prevent warning */
   case qh_PRINTmerges:
     fprintf (fp, "%d\n", facet->nummerge);
     break;
   case qh_PRINTnormals:
     offset= facet->offset;
     goto LABELprintnorm;
-    break; /* prevent warning */
   case qh_PRINTouter:
     qh_outerinner (facet, &outerplane, NULL);
     offset= facet->offset - outerplane;

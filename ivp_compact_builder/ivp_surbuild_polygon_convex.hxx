@@ -41,11 +41,10 @@ public:
 
     IVP_Compact_Ledge *get_and_remove_compact_ledge()
     {
-	IVP_Compact_Ledge *ret;
-	ret = c_ledge;
+	IVP_Compact_Ledge *ret = c_ledge;
 	c_ledge = 0;
 	return ret;
-    };
+    }
     ///////// real public
     ~IVP_SurfaceBuilder_Polygon_Convex();
 

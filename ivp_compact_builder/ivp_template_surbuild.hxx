@@ -68,7 +68,7 @@ public:
 #else
 		merge_points = IVP_SLMP_NO_MERGE;
 #endif
-	};
+	}
 };
 
 #endif // IVP_TEMPLATE_SURBUILD_LEDGE_SOUP_INCLUDED

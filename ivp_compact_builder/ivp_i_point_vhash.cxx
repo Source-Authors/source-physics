@@ -14,7 +14,7 @@
 #include <ivp_i_point_vhash.hxx>
 
 
-IVP_point_hash::~IVP_point_hash(){;}
+IVP_point_hash::~IVP_point_hash(){}
 
 int IVP_point_hash::point_to_index(IVP_Poly_Point *point)
 {
@@ -30,7 +30,7 @@ IVP_BOOL IVP_point_hash::compare(void *elem0, void *elem1) const {
 }
 
 
-IVP_I_Point_VHash::~IVP_I_Point_VHash(){;}
+IVP_I_Point_VHash::~IVP_I_Point_VHash(){}
 
 int IVP_I_Point_VHash::point_to_index(IVP_U_Point *point)
 {

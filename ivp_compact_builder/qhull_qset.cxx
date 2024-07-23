@@ -1021,7 +1021,7 @@ void qh_setprint(FILE *fp, const char* string, setT *set) {
   else {
     SETreturnsize_(set, size);
     fprintf (fp, "%s set=%p maxsize=%d size=%d elems=",
-	     string, set, set->maxsize, size);
+	     string, (void*)set, set->maxsize, size);
     if (size > set->maxsize)
       size= set->maxsize+1;
     for (k=0; k < size; k++)

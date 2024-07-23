@@ -108,9 +108,7 @@ IVP_DOUBLE IVP_Triangle::calc_areasize()
 
 int IVP_Triangle::print(const char *comment)
 {
-    // OG problems with sun
-    return 0;
-    
+    // dimhotepus: Print again.
     const char *obj_name = "unknown name";
     printf("%s '%s' T(%d %d %d) \n",
 	   (comment)?comment:"",

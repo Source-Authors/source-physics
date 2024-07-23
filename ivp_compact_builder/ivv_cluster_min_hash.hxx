@@ -44,8 +44,8 @@ public:
     void add(void *elem,IVP_DOUBLE value);
     void change_value(void *elem,IVP_DOUBLE new_value);
     
-    void *find_min_elem(){	if (!stadel[1]) return NULL; else return stadel[1]->elem; };
-    IVP_DOUBLE find_min_value(){	return stadel[1]->value; };
+    void *find_min_elem(){	if (!stadel[1]) return NULL; else return stadel[1]->elem; }
+    IVP_DOUBLE find_min_value(){	return stadel[1]->value; }
     int  is_elem(void *elem);
     void remove(void *elem);
     void remove_min();

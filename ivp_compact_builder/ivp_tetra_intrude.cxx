@@ -533,7 +533,7 @@ IVP_INTRUSION_CHECK_RESULTS IVP_Tetra_Intrude::check_intrusion(IVP_Tri_Edge *old
 		      e->start_point == tri_edges[b]->start_point ||
 		      e->start_point == tri_edges[b]->next->start_point ||
 		      e->start_point == tri_edges[b]->prev->start_point;
-		      e = e->next){;}; // search point not on both triangles
+		      e = e->next){} // search point not on both triangles
 		e = e->next;
 		edge_edges [c] = e;
 		edge_hesses[c].set(&hesse_of_t[a]);

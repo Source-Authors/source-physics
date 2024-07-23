@@ -192,7 +192,7 @@ int qh_new_qhull (int dim, int numpoints, coordT *points, boolT ismalloc,
       print help text for singular data set
     exit program via long jump (if defined) or exit()      
 */
-void qh_errexit(int exitcode, facetT *facet, ridgeT *ridge) {
+void qh_errexit [[noreturn]] (int exitcode, facetT *facet, ridgeT *ridge) {
 
     if (qh ferr)	{
 	if (qh ERREXITcalled) {

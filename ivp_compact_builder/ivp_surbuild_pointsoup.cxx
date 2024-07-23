@@ -657,31 +657,49 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_triangle_to_compace_led
     return cl;
 }
 
+// dimhotepus: RAII wrapper as original code leaked FPU mode.
+#if defined(WIN32) && defined(_M_IX86)
+// doesnt work with threads !!
+class ScopedFpuMode {
+ public:
+  explicit ScopedFpuMode(uint16_t new_mode) noexcept
+  {
+    __asm FSTCW old_mode_;
+
+    new_mode = old_mode_ | new_mode;
+
+    __asm FLDCW new_mode;
+  }
+  ~ScopedFpuMode() noexcept
+  {
+    __asm FLDCW old_mode_;
+  }
+
+ private:
+  uint16_t old_mode_;
+};
+#endif
 
 IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_ledge(IVP_U_Vector<IVP_U_Point> *points)
 {
   /************************************************
   * FPU mode
   ************************************************/
-  //doesnt work with threads !!
 #if defined WIN32 && defined(_M_IX86)
-  WORD tmpflag;
-  __asm FSTCW tmpflag;
-
-  WORD newFPUflag = tmpflag | 0x0300;
-  __asm FLDCW newFPUflag;
+  const ScopedFpuMode scoped_fpu_mode{0x0300};
 #endif
-    int n_points = points->len();
 
-    if (n_points <3) return NULL;
-    if ( n_points == 3 ) { // special case: 2-dimensional triangles
-	return convert_triangle_to_compace_ledge( points->element_at(0), points->element_at(1), points->element_at(2));
-    } else { // use QHULL to convert pointsoup
-	return IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_ledge_internal(points);
-    }
-#if defined WIN32 && defined(_M_IX86)
-  __asm FLDCW tmpflag;
-#endif
+  int n_points = points->len();
+  if ( n_points < 3 ) return nullptr;
+
+  if ( n_points == 3 )
+  {
+     // special case: 2-dimensional triangles
+     return convert_triangle_to_compace_ledge( points->element_at(0), points->element_at(1), points->element_at(2));
+  }
+
+  // use QHULL to convert pointsoup
+  return IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_ledge_internal(points);
 }
 
 

@@ -34,7 +34,7 @@ public:
   
     IVP_Compact_Ledge *compact_ledge;
     IVV_Sphere	*child_1, *child_2;
-    IVV_Sphere(){ P_MEM_CLEAR(this); };
+    IVV_Sphere(){ P_MEM_CLEAR(this); }
 };
 
 struct IVV_Sphere_Cluster {

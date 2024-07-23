@@ -695,7 +695,7 @@ void qh_initflags(char *command) {
 	default:
 	  s--;
 	  ivp_message( "qhull warning: unknown 'F' output option %c, rest ignored\n", (int)s[0]);
-	  while (*++s && !isspace(*s)){;};
+	  while (*++s && !isspace(*s)){}
 	  break;
 	}
       }
@@ -759,7 +759,7 @@ void qh_initflags(char *command) {
 	default:
 	  s--;
 	  ivp_message( "qhull warning: unknown 'G' print option %c, rest ignored\n", (int)s[0]);
-	  while (*++s && !isspace(*s)){;};
+	  while (*++s && !isspace(*s)){}
 	  break;
 	}
       }
@@ -940,12 +940,10 @@ void qh_initflags(char *command) {
 	  qh_option ("Q1-no-angle-sort", NULL, NULL);
 	  qh ANGLEmerge= False;
 	  goto LABELcheckdigit;
-	  break; /* no warnings */
 	case '2':
 	  qh_option ("Q2-no-merge-independent", NULL, NULL);
 	  qh MERGEindependent= False;
 	  goto LABELcheckdigit;
-	  break; /* no warnings */
 	case '3':
 	  qh_option ("Q3-no-merge-vertices", NULL, NULL);
 	  qh MERGEvertices= False;
