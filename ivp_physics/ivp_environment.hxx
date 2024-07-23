@@ -410,7 +410,7 @@ public:
     /////////// simulation
     void simulate_until(IVP_Time time);				// the MAIN function: simulates the entire physical environment until 'time'
     void simulate_dtime(IVP_DOUBLE deta_time);			// the MAIN function: simulates the entire physical for a given time
-    void simulate_time_step( IVP_FLOAT sub_psi_pos = 1.99 );    // simulate exactly one time step (for synchronous use of the physics engine (e.g. playstation 2).
+    void simulate_time_step( IVP_FLOAT sub_psi_pos = 1.99f );    // simulate exactly one time step (for synchronous use of the physics engine (e.g. playstation 2).
 
     void simulate_variable_time_step( IVP_FLOAT delta_time );    // simulate exactly one time step with a variable length
                                                                  // delta_time has to be in between 0.1 and 0.005 
