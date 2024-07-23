@@ -46,7 +46,7 @@ public:
     int			dummy[3];		// 16byte memory align
     /* Note: to get geom center use root node */
 
-    int get_size() const { return byte_size; };
+    int get_size() const { return byte_size; }
     /******************************************************************************
      *  Method:		get_compact_ledge_tree_root
      *  Description:    INTERNAL METHOD

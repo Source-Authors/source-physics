@@ -36,11 +36,11 @@ public:
     /******************************************************************************
      *  Description:    INTERNAL METHODS
      *****************************************************************************/
-    void add_reference_to_ledge(const IVP_Compact_Ledge *ledge);
-    void remove_reference_to_ledge(const IVP_Compact_Ledge *ledge);
-    void insert_all_ledges_hitting_ray(IVP_Ray_Solver *ray_solver, IVP_Real_Object *object);
-    void get_radius_and_radius_dev_to_given_center(const IVP_U_Float_Point *center, IVP_FLOAT *radius, IVP_FLOAT *radius_deviation) const;
-    virtual IVP_SURMAN_TYPE get_type();
+    void add_reference_to_ledge(const IVP_Compact_Ledge *ledge) override;
+    void remove_reference_to_ledge(const IVP_Compact_Ledge *ledge) override;
+    void insert_all_ledges_hitting_ray(IVP_Ray_Solver *ray_solver, IVP_Real_Object *object) override;
+    void get_radius_and_radius_dev_to_given_center(const IVP_U_Float_Point *center, IVP_FLOAT *radius, IVP_FLOAT *radius_deviation) const override;
+    virtual IVP_SURMAN_TYPE get_type() override;
 
 
     /******************************************************************************
@@ -51,20 +51,20 @@ public:
      *			or more (convex) ledges (e.g. a cube made out of four
      *			subcubed) this method will return NULL!
      *****************************************************************************/
-    virtual const IVP_Compact_Ledge *get_single_convex() const;
+    virtual const IVP_Compact_Ledge *get_single_convex() const override;
 
     /******************************************************************************
      *  Method:		get_mass_center
      *	Output:		sets the compact surface's mass center
      *****************************************************************************/
-    void get_mass_center(IVP_U_Float_Point *mass_center_out) const;
+    void get_mass_center(IVP_U_Float_Point *mass_center_out) const override;
 
     /******************************************************************************
      *  Method:		get_rotation_inertia
      *	Description:	Returns the compact surface's rotation inertia
      *	Input:		<rotation_inertia_out> vector to be filled with inertia
      *****************************************************************************/
-    void get_rotation_inertia(IVP_U_Float_Point *rotation_inertia_out) const;
+    void get_rotation_inertia(IVP_U_Float_Point *rotation_inertia_out) const override;
 
     /******************************************************************************
      *  Method:		get_all_ledges_within_radius
@@ -80,8 +80,8 @@ public:
      *****************************************************************************/
     void get_all_ledges_within_radius(const IVP_U_Point *observer_os, IVP_DOUBLE radius,
 				      const IVP_Compact_Ledge *root_ledge, IVP_Real_Object *other_object, const IVP_Compact_Ledge *other_reference_ledge,
-				      IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges);
-    void get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges);
+				      IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges) override;
+    void get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges) override;
 
     /******************************************************************************
      *  Method:		get_compact_surface

@@ -38,7 +38,7 @@ public:
     /******************************************************************************
      *  Description:    INTERNAL METHODS
      *****************************************************************************/
-    void add_reference_to_ledge(const IVP_Compact_Ledge *ledge);
+    void add_reference_to_ledge(const IVP_Compact_Ledge *ledge) override;
     void remove_reference_to_ledge(const IVP_Compact_Ledge *ledge);
     void insert_all_ledges_hitting_ray(IVP_Ray_Solver *, IVP_Real_Object *);
     void get_radius_and_radius_dev_to_given_center(const IVP_U_Float_Point *center, IVP_FLOAT *radius, IVP_FLOAT *radius_deviation) const;
