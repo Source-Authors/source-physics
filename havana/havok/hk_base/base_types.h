@@ -24,7 +24,7 @@
 
 #ifndef HK_ASSERT
 # ifdef HK_DEBUG
-#  define HK_ASSERT(a) { if(!(a)) hk_assert(a,#a,__LINE__,__FILE__); }
+#  define HK_ASSERT(a) do { if(!(a)) hk_assert(a,#a,__LINE__,__FILE__); } while (false)
 #  define HK_IF_DEBUG(a) if(a)
 # else
 #  define HK_ASSERT(a) 
@@ -34,7 +34,7 @@
 
 #if defined(HK_DEBUG)
 #	define HK_IF_CHECK(a) if (a)
-#	define HK_CHECK(a){ if(!(a)) hk_check(a,#a,__LINE__,__FILE__); }
+#	define HK_CHECK(a) do { if(!(a)) hk_check(a,#a,__LINE__,__FILE__); } while (false)
 #else
 #	define HK_IF_CHECK(a) if (0)
 #	define HK_CHECK(a) 
@@ -45,7 +45,7 @@
 #ifndef WIN32
 #define HK_BREAKPOINT() raise(SIGINT)
 #else
-#define HK_BREAKPOINT() __debugbreak();
+#define HK_BREAKPOINT() __debugbreak()
 #endif
 
 
@@ -53,7 +53,7 @@ class hkBaseObject
 {
 public:
 	int m_memsize;
-	virtual ~hkBaseObject(){;}
+	virtual ~hkBaseObject(){}
 };
 
 

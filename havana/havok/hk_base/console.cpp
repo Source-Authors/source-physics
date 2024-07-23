@@ -5,9 +5,6 @@
 #include <cstdarg>
 
 #ifdef WIN32
-#	ifndef WIN32_LEAN_AND_MEAN
-#		define	WIN32_LEAN_AND_MEAN
-#	endif
 #	ifdef _XBOX
 #		include <xtl.h>
 #	else

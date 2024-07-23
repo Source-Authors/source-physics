@@ -73,16 +73,16 @@ void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 		// details per type
 		out->printf( "\nDetails per type\n" );
 		out->printf(   "****************\n" );
-		for (unsigned i = 0; i < static_cast<unsigned>(hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX); i++)
+		for (unsigned j = 0; j < static_cast<unsigned>(hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX); j++)
 		{
-			if ( i == static_cast<unsigned>(hk_MEMORY_CLASS::HK_MEMORY_CLASS_DUMMY) ) continue;
+			if ( j == static_cast<unsigned>(hk_MEMORY_CLASS::HK_MEMORY_CLASS_DUMMY) ) continue;
 
-			hk_Memory::hk_Memory_Statistics &s = mem->m_statistics[i];
+			hk_Memory::hk_Memory_Statistics &s = mem->m_statistics[j];
 			if ( !s.m_max_size_in_use ) {
 				continue;
 			}
 
-			const char *type_name = enum_to_string[ i ];
+			const char *type_name = enum_to_string[ j ];
 			if (!type_name){
 				type_name = "hk_Memory::print_statistics does not know type";
 			}
@@ -99,18 +99,18 @@ void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 		out->printf( "\nDetails per size\n" );
 		out->printf(   "****************\n" );
 
-		for (int i = 0; i < HK_MEMORY_MAX_ROW; i++)
+		for (int j = 0; j < HK_MEMORY_MAX_ROW; j++)
 		{
 			hk_size_t free_blocks = 0;
-			for ( hk_Memory::hk_Memory_Elem *el = mem->m_free_list[i]; el; el = el->m_next ){
+			for ( hk_Memory::hk_Memory_Elem *el = mem->m_free_list[j]; el; el = el->m_next ){
 				++free_blocks;
 			}
 			out->printf( "%32s  blocks %4zu  size %5hu  free_elems %4zu  total %6zu\n",
 				"", 
-				mem->m_blocks_in_use[i],
-				mem->m_row_to_size[i],
+				mem->m_blocks_in_use[j],
+				mem->m_row_to_size[j],
 				free_blocks,
-				mem->m_blocks_in_use[i] * mem->m_row_to_size[i]);
+				mem->m_blocks_in_use[j] * mem->m_row_to_size[j]);
 		}
 	}
 }

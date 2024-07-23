@@ -10,7 +10,6 @@ class hk_Memory_Managed_Virtual_Class
 private:
 	protected:
 		inline virtual ~hk_Memory_Managed_Virtual_Class(){
-			;
 		}
 	public:
 		int m_memsize;

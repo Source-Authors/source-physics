@@ -139,8 +139,8 @@ void *hk_Memory::allocate_real( hk_size_t size )
 	while ( allocated_size < 256U )
 	{
 		if ( size + m_used_end < m_memory_end){
-			auto *el = reinterpret_cast<hk_Memory_Elem *>( m_used_end );
-			el->m_magic = 0;
+			auto *e = reinterpret_cast<hk_Memory_Elem *>( m_used_end );
+			e->m_magic = 0;
 
 			this->deallocate( m_used_end, size, hk_MEMORY_CLASS::HK_MEMORY_CLASS_DUMMY );
 			m_used_end += size;
@@ -262,7 +262,7 @@ void  hk_Memory::deallocate_stored_size(void* p, hk_MEMORY_CLASS cl)
 
 
 
-void *hk_Memory::aligned_malloc( hk_size_t size, hk_size_t alignment)
+void *hk_Memory::aligned_malloc( hk_size_t size, hk_size_t alignment )
 {
 #if defined(WIN32_)
 	return _aligned_malloc ( size, alignment );
