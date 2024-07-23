@@ -299,7 +299,7 @@ constexpr inline double P_MAX_WORLD_DOUBLE{10000};  // max world koords
 
 constexpr inline float P_MAX_OBJECT_SIZE{1000.0f}; 
 constexpr inline float P_MIN_EDGE_LEN{0.01f};	// 10 mm min edge len of polygon objects
-constexpr inline float P_RES_EPS{P_MAX_WORLD_DOUBLE * P_DOUBLE_RES}; // effective IVP_DOUBLE resolution for world coords
+constexpr inline float P_RES_EPS{/*P_MAX_WORLD_DOUBLE*/ 10000.0f * P_FLOAT_RES}; // effective IVP_DOUBLE resolution for world coords
 
 void ivp_srand(int seed);
 IVP_FLOAT ivp_rand();		// returns [0 .. 1]
