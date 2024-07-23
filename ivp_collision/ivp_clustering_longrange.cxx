@@ -10,7 +10,9 @@
 //#define DEBUG_EXPANDTREE
 //#define DEBUG_VECTORLISTS
 
+#ifdef DEBUG_CALCOPTIMALBOX
 #define DEBUG_IF if ( ctr > 0 )
+#endif
 
 #include <ivu_float.hxx>
 
@@ -799,7 +801,7 @@ void IVP_OV_Tree_Manager::remove_ov_element(IVP_OV_Element *element)
     element->node = NULL;
     node->elements.remove(element);
 
-    while ( (node = cleanup_node(node)) != NULL ) { ; }
+    while ( (node = cleanup_node(node)) != NULL ) {}
 
     return;
 }

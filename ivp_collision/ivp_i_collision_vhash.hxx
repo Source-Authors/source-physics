@@ -42,7 +42,7 @@ public:
     };
 
     ~IVP_Collision_Callback_Table_Hash();
-    IVP_Collision_Callback_Table_Hash(int init_size) : IVP_VHash(init_size) {;};
+    IVP_Collision_Callback_Table_Hash(int init_size) : IVP_VHash(init_size) {}
 };
 
 

@@ -5,7 +5,7 @@
 class IVP_ov_tree_hash : protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const;
+    IVP_BOOL compare(void *elem0, void *elem1) const override;
     int      node_to_index(IVP_OV_Node *node);
 
 public:
@@ -26,7 +26,7 @@ public:
   
 
     ~IVP_ov_tree_hash();
-    IVP_ov_tree_hash(int create_size) : IVP_VHash(create_size) {;};
+    IVP_ov_tree_hash(int create_size) : IVP_VHash(create_size) {}
 };
 
 

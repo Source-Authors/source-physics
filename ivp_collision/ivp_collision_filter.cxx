@@ -66,7 +66,7 @@ public:
  ********************************************************************************/
 class IVP_CFEP_Hash : protected IVP_VHash {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const;
+    IVP_BOOL compare(void *elem0, void *elem1) const override;
     int pair_to_index(IVP_CFEP_Objectpair *pair);
 
 public:

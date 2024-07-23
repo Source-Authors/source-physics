@@ -7,7 +7,7 @@
 #include <ivp_clustering_lrange_hash.hxx>
 
 
-IVP_ov_tree_hash::~IVP_ov_tree_hash() {;}
+IVP_ov_tree_hash::~IVP_ov_tree_hash() {}
 
 int IVP_ov_tree_hash::node_to_index(IVP_OV_Node *node)
 {

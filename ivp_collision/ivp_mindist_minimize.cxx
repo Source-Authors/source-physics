@@ -85,7 +85,7 @@ void IVP_Mindist_Minimize_Solver::init_loop_hash()
     loop_hash = new IVP_Hash(IVP_LOOP_HASH_SIZE/*size*/, sizeof(IVP_Loop_Key_Struct) );
 }
 #else
-void IVP_Mindist_Minimize_Solver::init_loop_hash(){;};
+void IVP_Mindist_Minimize_Solver::init_loop_hash(){}
 
 IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(IVP_SYNAPSE_POLYGON_STATUS i_s0,     const IVP_Compact_Edge *i_e0,
 						      IVP_SYNAPSE_POLYGON_STATUS i_s1,     const IVP_Compact_Edge *i_e1){
@@ -193,6 +193,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_invalid_mindist()
 	    // find best triangle on opposite of convex object
 	    mms.pierce_mindist();
 	    // case ENDLESS must follow!
+		[[fallthrough]];
 	}
 	case IVP_MRC_ENDLESS_LOOP:{
 	  if (this->mindist_function == IVP_MF_PHANTOM ||
@@ -244,6 +245,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 	      continue;
 	    }
 	    // case ENDLESS must follow!
+		[[fallthrough]];
 	}
 	case IVP_MRC_ENDLESS_LOOP:{
 	  if (this->mindist_function == IVP_MF_PHANTOM ||

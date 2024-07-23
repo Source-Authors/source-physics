@@ -35,9 +35,9 @@ public:
     } tmp;
 private:
 public:
-    const IVP_Compact_Ledge *get_compact_ledge() { return this->compact_ledge; };
-    IVP_Cache_Object *get_object_cache() { return this->clp_cache_object; };
-    IVP_Core *get_core() { return this->clp_object->get_core(); };
+    const IVP_Compact_Ledge *get_compact_ledge() { return this->compact_ledge; }
+    IVP_Cache_Object *get_object_cache() { return this->clp_cache_object; }
+    IVP_Core *get_core() { return this->clp_object->get_core(); }
 
     inline void init_cache_ledge_point(IVP_Real_Object *obj, const IVP_Compact_Ledge *ledge){
 	compact_ledge = ledge;

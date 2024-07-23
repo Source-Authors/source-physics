@@ -56,5 +56,5 @@ public:
     // called by the IVP_Environment to get the information when it should
     // send object_no_longer_needed events
     virtual const IVP_Universe_Manager_Settings *provide_universe_settings();
-    IVP_Universe_Manager(void) { ; };
+    IVP_Universe_Manager(void) {};
 };

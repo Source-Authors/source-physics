@@ -52,12 +52,12 @@ public:
     // safety and interface methods (mainly internal usage)
   inline void set_start_point_index(int val) {IVP_ASSERT(val>=0 && val< (1<<16)); start_point_index=val; }
   inline void set_opposite_index(int val) {IVP_ASSERT(val>=-(1<<14)+1 && val< (1<<14)-1); opposite_index=val; }
-  inline void set_is_virtual(unsigned int val){ is_virtual = val; }; 
+  inline void set_is_virtual(unsigned int val){ is_virtual = val; } 
 
     // real public 
 public:
-  inline int get_start_point_index() const { return start_point_index; };
-  inline int get_opposite_index() const { return opposite_index; };
+  inline int get_start_point_index() const { return start_point_index; }
+  inline int get_opposite_index() const { return opposite_index; }
   inline int get_is_virtual() const { return is_virtual; }
 
     // read content
@@ -98,20 +98,20 @@ public:
   inline void set_tri_index(int val) {IVP_ASSERT(val>=0 && val< (1<<12)); tri_index=val; }
   inline void set_pierce_index(int val) {IVP_ASSERT(val>=0 && val< (1<<12)); pierce_index=val; }
   inline void set_material_index(int val) {IVP_ASSERT(val>=0 && val< (1<<7)); material_index=val; }
-  inline void set_is_virtual(unsigned int val){ is_virtual = val; }; 
+  inline void set_is_virtual(unsigned int val){ is_virtual = val; }
 
   inline int get_tri_index() const { return tri_index; }
   inline int get_pierce_index() const { return pierce_index; }
   inline int get_material_index() const { return material_index; }
   inline int get_is_virtual() const { return is_virtual; }
 
-    inline const IVP_Compact_Edge *get_first_edge() const { return &c_three_edges[0]; };
-    inline       IVP_Compact_Edge *get_first_edge()       { return &c_three_edges[0]; };
+    inline const IVP_Compact_Edge *get_first_edge() const { return &c_three_edges[0]; }
+    inline       IVP_Compact_Edge *get_first_edge()       { return &c_three_edges[0]; }
 
-    inline const IVP_Compact_Edge *get_edge(int index) const { return &c_three_edges[index]; };
+    inline const IVP_Compact_Edge *get_edge(int index) const { return &c_three_edges[index]; }
     inline const IVP_Compact_Ledge *get_compact_ledge() const;
-    inline const IVP_Compact_Triangle *get_next_tri() const { return this+1; };
-    inline       IVP_Compact_Triangle *get_next_tri()       { return this+1; };
+    inline const IVP_Compact_Triangle *get_next_tri() const { return this+1; }
+    inline       IVP_Compact_Triangle *get_next_tri()       { return this+1; }
     
     IVP_Compact_Triangle();
 
@@ -145,35 +145,35 @@ private:
 	inline void set_offset_ledge_points(int offset) { 
 		IVP_ASSERT( (offset & 15) == 0 );
 		c_point_offset=offset; 
-	};
+	}
 
-    inline void set_size(int size){ IVP_ASSERT( (size > 0) && (size & 0xf) == 0); size_div_16 = size>>4; };
-    inline void set_is_compact(IVP_BOOL x){ is_compact_flag = x; };
+    inline void set_size(int size){ IVP_ASSERT( (size > 0) && (size & 0xf) == 0); size_div_16 = size>>4; }
+    inline void set_is_compact(IVP_BOOL x){ is_compact_flag = x; }
 public:
 
     void c_ledge_init();	// memclear(this)
 
-    inline const IVP_Compact_Poly_Point *get_point_array() const { return (IVP_Compact_Poly_Point *)(      ((char *)this) + c_point_offset);   };
-    inline       IVP_Compact_Poly_Point *get_point_array()       { return (IVP_Compact_Poly_Point *)(      ((char *)this) + c_point_offset);   };
+    inline const IVP_Compact_Poly_Point *get_point_array() const { return (IVP_Compact_Poly_Point *)(      ((char *)this) + c_point_offset);   }
+    inline       IVP_Compact_Poly_Point *get_point_array()       { return (IVP_Compact_Poly_Point *)(      ((char *)this) + c_point_offset);   }
 
     // triangles are always placed behind the class instance
-    inline const IVP_Compact_Triangle *get_first_triangle() const { return (IVP_Compact_Triangle *)(this+1); };
-    inline       IVP_Compact_Triangle *get_first_triangle()       { return (IVP_Compact_Triangle *)(this+1); };
-    inline IVP_BOOL is_terminal() const { return (IVP_BOOL)(has_chilren_flag == 0); };
+    inline const IVP_Compact_Triangle *get_first_triangle() const { return (IVP_Compact_Triangle *)(this+1); }
+    inline       IVP_Compact_Triangle *get_first_triangle()       { return (IVP_Compact_Triangle *)(this+1); }
+    inline IVP_BOOL is_terminal() const { return (IVP_BOOL)(has_chilren_flag == 0); }
 
     // get corresponding ledge tree node for recursive compace ledges only ( no grids )
-    inline const IVP_Compact_Ledgetree_Node *get_ledgetree_node() const { IVP_ASSERT( !is_terminal() ); return ( IVP_Compact_Ledgetree_Node *)( ((char *)this) + ledgetree_node_offset); };
+    inline const IVP_Compact_Ledgetree_Node *get_ledgetree_node() const { IVP_ASSERT( !is_terminal() ); return ( IVP_Compact_Ledgetree_Node *)( ((char *)this) + ledgetree_node_offset); }
     
-    inline int get_n_triangles() const { return n_triangles; };
+    inline int get_n_triangles() const { return n_triangles; }
     
 #if defined(LINUX) || defined(SUN) || (defined(__MWERKS__) && defined(__POWERPC__)) || defined(GEKKO)
-    inline int get_n_points() const { return  size_div_16 - n_triangles - 1; };
+    inline int get_n_points() const { return  size_div_16 - n_triangles - 1; }
 #endif    
 
-    inline int get_size() const { return size_div_16 * 16; };
-    inline IVP_BOOL is_compact(){ return (IVP_BOOL)is_compact_flag; }; // returns true if vertex info is included in compact ledge
-    inline int get_client_data() const { IVP_ASSERT( is_terminal()); return client_data; };   // see IVP_Surface_Manager_Polygon for user acces
-    inline void set_client_data(unsigned int x){ IVP_ASSERT(is_terminal()); if (is_terminal()) client_data = x; };
+    inline int get_size() const { return size_div_16 * 16; }
+    inline IVP_BOOL is_compact(){ return (IVP_BOOL)is_compact_flag; } // returns true if vertex info is included in compact ledge
+    inline int get_client_data() const { IVP_ASSERT( is_terminal()); return client_data; }   // see IVP_Surface_Manager_Polygon for user acces
+    inline void set_client_data(unsigned int x){ IVP_ASSERT(is_terminal()); if (is_terminal()) client_data = x; }
 
 	void byte_swap(); // just byte swap this data BUT WILL NOT do the point array, as may be external data or shared and so may be byte swapped > 1 times
 	void byte_swap_all(IVP_U_BigVector<IVP_Compact_Poly_Point>* pre_swapped_points); // byte_swap, and recurse too all related child data including the point and triangle data
@@ -224,7 +224,7 @@ public:
     IVP_BOOL is_terminal() const {
 	if (!offset_right_node) return IVP_TRUE;
 	else return IVP_FALSE;
-    };
+    }
     
     const IVP_Compact_Ledge *get_compact_hull() const {
 	if (this->offset_compact_ledge) {
@@ -232,7 +232,7 @@ public:
 	}else{
 	    return NULL;
 	}
-    };
+    }
 
 	void byte_swap(); // just byte swap this data
 	void byte_swap_all(IVP_U_BigVector<IVP_Compact_Poly_Point>* pre_swapped_points); // byte_swap, and recurse too all related child data
@@ -246,7 +246,7 @@ public:
 const IVP_Compact_Triangle *IVP_Compact_Edge::get_triangle() const
 {
     // mask 4 lowest adress bits to receive triangle
-#if PLATFORM_64BITS
+#if defined(PLATFORM_64BITS)
     return (IVP_Compact_Triangle *)(((uintp)this) & 0xfffffffffffffff0);
 #else
     return (IVP_Compact_Triangle *)(((unsigned int)this) & 0xfffffff0);

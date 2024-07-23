@@ -420,7 +420,6 @@ IVP_BOOL IVP_Ray_Solver_Os::check_ray_against_compact_ledge_os(const IVP_Compact
 		    if (qr.checks[j] > 0.0f ) continue;  // inside triangle
 		    edge = e->get_opposite();
 		    goto continue_with_next_triangle;
-		    break;
 		}
 	    }
 	    

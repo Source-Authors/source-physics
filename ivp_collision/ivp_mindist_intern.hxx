@@ -87,8 +87,8 @@ public:
   virtual void object_is_removed_from_collision_detection(IVP_Real_Object *);
   virtual IVP_Collision *delegate_collisions_for_object(IVP_Real_Object *base_object, IVP_Real_Object *colliding_element);
 
-  virtual void environment_is_going_to_be_deleted_event(IVP_Environment *env);
-  virtual void collision_is_going_to_be_deleted_event(class IVP_Collision *t);
+  void environment_is_going_to_be_deleted_event(IVP_Environment *env) override;
+  void collision_is_going_to_be_deleted_event(class IVP_Collision *t) override;
   ~IVP_Collision_Delegator_Root_Mindist();
   IVP_Collision_Delegator_Root_Mindist();
 };
@@ -104,10 +104,10 @@ class IVP_Synapse_OO: public IVP_Listener_Hull {
     IVP_Real_Object *object;
     IVP_OO_Watcher *watcher;
     virtual ~IVP_Synapse_OO();
-    IVP_Synapse_OO(){;};
+    IVP_Synapse_OO(){}
   void init_synapse_oo(IVP_OO_Watcher *, IVP_Real_Object *);
 public:
-    IVP_HULL_ELEM_TYPE get_type(){ return IVP_HULL_ELEM_OO_WATCHER; };
+    IVP_HULL_ELEM_TYPE get_type(){ return IVP_HULL_ELEM_OO_WATCHER; }
     void hull_limit_exceeded_event(IVP_Hull_Manager *hull_manager, IVP_HTIME);
     void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *);		// function have to remove itself from hull manager
 };
@@ -125,7 +125,7 @@ protected:
     void get_objects( IVP_Real_Object *objects_out[2] ) override;
     void get_ledges( const IVP_Compact_Ledge *ledges_out[2] ) override;
 
-    IVP_Synapse_OO *get_synapse(int i){ return &synapses[i]; };
+    IVP_Synapse_OO *get_synapse(int i){ return &synapses[i]; }
 public:
     // IVP_Collision_Delegator
     void collision_is_going_to_be_deleted_event(class IVP_Collision *t) override;
@@ -164,7 +164,7 @@ protected:
   inline void remove_invalid_synapse_from_object();
   inline void insert_invalid_synapse_in_object(); 
 
-  virtual ~IVP_Synapse_Real(){;};
+  virtual ~IVP_Synapse_Real(){}
 public:
   inline void  update_synapse(const IVP_Compact_Edge *e, IVP_SYNAPSE_POLYGON_STATUS s){
     IVP_IF(s!=IVP_ST_BALL){	check_consistency_of_ledge(e);    }
@@ -172,22 +172,22 @@ public:
     status = s;
 }
 protected:
-    IVP_Synapse_Real(){};
+    IVP_Synapse_Real(){}
     void init_synapse( IVP_Mindist *min, IVP_Real_Object *object_to_link, const IVP_Compact_Edge *e, IVP_SYNAPSE_POLYGON_STATUS s ){
 	IVP_Synapse::init_synapse_real((IVP_Mindist_Base *)min, object_to_link);
-	update_synapse(e,s);};
+	update_synapse(e,s);}
 public:
-  inline IVP_Core *get_core()const{ return l_obj->physical_core; };
+  inline IVP_Core *get_core()const{ return l_obj->physical_core; }
 
   virtual void print();
 
-  IVP_Hull_Manager *get_hull_manager(){ return get_object()->get_hull_manager();};
+  IVP_Hull_Manager *get_hull_manager(){ return get_object()->get_hull_manager();}
   inline IVP_DOUBLE insert_in_hull_manager(IVP_DOUBLE rel_hull_time); // returns current center pos
   inline IVP_DOUBLE insert_lazy_in_hull_manager(IVP_DOUBLE rel_hull_time);
   
-  IVP_Synapse_Real       *get_next(){ return (IVP_Synapse_Real *)next;};
-  IVP_Synapse_Real       *get_prev(){ return (IVP_Synapse_Real *)prev;};
-  IVP_Mindist            *get_mindist(){ return (IVP_Mindist *) get_synapse_mindist(); };
+  IVP_Synapse_Real       *get_next(){ return (IVP_Synapse_Real *)next;}
+  IVP_Synapse_Real       *get_prev(){ return (IVP_Synapse_Real *)prev;}
+  IVP_Mindist            *get_mindist(){ return (IVP_Mindist *) get_synapse_mindist(); }
 };
 
 
@@ -259,10 +259,10 @@ public:  // Read only public !!!!
 
   IVP_U_Float_Point contact_plane;  //  needed for halfspace optimization, normized surface normal, only valid if recalc_result == IVP_MDRR_OK  
 
-        IVP_Synapse *get_mindist_synapse(int i)     { return &synapse[i]; };
-  const IVP_Synapse *get_mindist_synapse(int i)const{ return &synapse[i]; };
+        IVP_Synapse *get_mindist_synapse(int i)     { return &synapse[i]; }
+  const IVP_Synapse *get_mindist_synapse(int i)const{ return &synapse[i]; }
   
-  IVP_FLOAT get_length() const { return len_numerator; }; // distance, only valid if recalc_result == IVP_MDRR_OK
+  IVP_FLOAT get_length() const { return len_numerator; } // distance, only valid if recalc_result == IVP_MDRR_OK
 
   // IVP_Collision implementations
   virtual void get_objects( IVP_Real_Object *objects_out[2] );
@@ -270,7 +270,7 @@ public:  // Read only public !!!!
 
   
   IVP_Mindist_Base(IVP_Collision_Delegator *del);
-  virtual ~IVP_Mindist_Base(){;};
+  virtual ~IVP_Mindist_Base(){}
 };
 
 // Minimal Dist Recalc types
@@ -309,16 +309,16 @@ protected:
     void mindist_hull_limit_exceeded_event(IVP_HTIME hull_intrusion_value);
     void hull_manager_is_reset(IVP_FLOAT dt,IVP_FLOAT center_dt);
 public:
-  IVP_Synapse_Real *get_synapse(int i) const { return (IVP_Synapse_Real *)&synapse[i]; };
+  IVP_Synapse_Real *get_synapse(int i) const { return (IVP_Synapse_Real *)&synapse[i]; }
   IVP_Synapse_Real *get_sorted_synapse(int i) const { return (IVP_Synapse_Real *)&synapse[synapse_sort_flag ^ i]; };
     IVP_DOUBLE get_coll_dist(){ return ivp_mindist_settings.coll_dists[coll_dist_selector]; }
 				    
     IVP_Mindist(IVP_Environment *env, IVP_Collision_Delegator *del);
   virtual ~IVP_Mindist();
 
-  virtual IVP_BOOL is_recursive() { return IVP_FALSE; }; //@@CB
+  virtual IVP_BOOL is_recursive() { return IVP_FALSE; } //@@CB
 
-    IVP_Environment *get_environment(){ return get_synapse(0)->get_object()->get_environment();};
+    IVP_Environment *get_environment(){ return get_synapse(0)->get_object()->get_environment();}
     
     /********************************************************************************
      *	Name:	    	init_mindist  	
@@ -397,7 +397,7 @@ public:
 	void change_spawned_mindist_count(int change);
 	int get_spawned_mindist_count();
 
-	virtual IVP_BOOL is_recursive() { return IVP_TRUE; };
+	virtual IVP_BOOL is_recursive() { return IVP_TRUE; }
 	//@@CB
 
     virtual void do_impact(); // recursive check for sub mindists or IVP_Mindist::do_impact

@@ -78,7 +78,7 @@ public:
 class IVP_Ray_Hit_Listener {
 public:
     virtual void add_hit_object(IVP_Real_Object *object, const IVP_Compact_Ledge *compact_ledge, const IVP_Compact_Triangle *compact_triangle, IVP_DOUBLE hit_dist, IVP_U_Point *hit_sur_vec_os) = 0;
-    virtual ~IVP_Ray_Hit_Listener(){;};
+    virtual ~IVP_Ray_Hit_Listener(){}
 };
 
 /********************************************************************************
@@ -154,7 +154,7 @@ public:
 
     IVP_Ray_Solver(const IVP_Ray_Solver_Template *templ); // inits class members
 
-    ~IVP_Ray_Solver(){;};
+    ~IVP_Ray_Solver(){}
 };
 
 
@@ -191,15 +191,15 @@ class IVP_Ray_Solver_Min_Hash: public IVP_Ray_Solver {
 private:
     IVP_U_Min_Hash output_min_hash;    // holds results
     IVP_Ray_Hit hit_info[IVP_MAX_NUM_RAY_HITS];
-    virtual void add_hit_object(IVP_Real_Object *object, const IVP_Compact_Ledge *compact_ledge, const IVP_Compact_Triangle *compact_triangle, IVP_DOUBLE hit_dist, IVP_U_Point *hit_sur_vec_os);
+    void add_hit_object(IVP_Real_Object *object, const IVP_Compact_Ledge *compact_ledge, const IVP_Compact_Triangle *compact_triangle, IVP_DOUBLE hit_dist, IVP_U_Point *hit_sur_vec_os) override;
  public:
 
-  IVP_U_Min_Hash *get_result_min_hash() { return &output_min_hash; };
+  IVP_U_Min_Hash *get_result_min_hash() { return &output_min_hash; }
   
   IVP_Ray_Solver_Min_Hash(const IVP_Ray_Solver_Template *templ): IVP_Ray_Solver(templ), output_min_hash(8){
       ; // inits class members
   }
-  ~IVP_Ray_Solver_Min_Hash(){;};
+  ~IVP_Ray_Solver_Min_Hash(){}
 };
 
 
@@ -215,17 +215,17 @@ class IVP_Ray_Solver_Min: public IVP_Ray_Solver {
     IVP_Ray_Hit *get_ray_hit(){
 	if (min_dist == P_FLOAT_MAX) return NULL;
 	return &ray_hit;
-    };
-    IVP_FLOAT get_ray_dist(){ return min_dist; };
+    }
+    IVP_FLOAT get_ray_dist(){ return min_dist; }
     
-    virtual void add_hit_object(IVP_Real_Object *object, const IVP_Compact_Ledge *compact_ledge, const IVP_Compact_Triangle *compact_triangle, IVP_DOUBLE hit_dist, IVP_U_Point *hit_sur_vec_os);
+    void add_hit_object(IVP_Real_Object *object, const IVP_Compact_Ledge *compact_ledge, const IVP_Compact_Triangle *compact_triangle, IVP_DOUBLE hit_dist, IVP_U_Point *hit_sur_vec_os) override;
 
   
   IVP_Ray_Solver_Min(const IVP_Ray_Solver_Template *templ):IVP_Ray_Solver(templ),ray_hit{}{ // inits class members
       min_dist = P_FLOAT_MAX;
   }
     
-  ~IVP_Ray_Solver_Min(){;};
+  ~IVP_Ray_Solver_Min(){}
 };
 
 #endif // IVP_INCLUDED

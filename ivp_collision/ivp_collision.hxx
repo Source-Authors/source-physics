@@ -21,13 +21,13 @@ public:
 	 *			however it's much faster this way
 	 ********************************************************************************/
   virtual void collision_is_going_to_be_deleted_event(class IVP_Collision *t) = 0;  // should remove t from its internal structures
-  virtual ~IVP_Collision_Delegator(){;};
+  virtual ~IVP_Collision_Delegator(){}
   // Note: in the destructor, it should not delete it's IVP_Collision children, but
   // call child->delegator_is_going_to_be_deleted_event(this)
 
   //@@CB
-  virtual void change_spawned_mindist_count(int /*change*/) {;};
-  virtual int get_spawned_mindist_count() {return -1;};
+  virtual void change_spawned_mindist_count(int /*change*/) {}
+  virtual int get_spawned_mindist_count() {return -1;}
   //@@CB
 };
 
@@ -82,9 +82,9 @@ public:
 
   virtual void delegator_is_going_to_be_deleted_event(IVP_Collision_Delegator *){
     P_DELETE_THIS(this);
-  };
-  virtual ~IVP_Collision(){;}; // implementations should call  delegator->collision_is_going_to_be_deleted_event(this);
-  IVP_Collision( IVP_Collision_Delegator *d){ delegator = d; fvector_index[0] = fvector_index[1] = -1; };
+  }
+  virtual ~IVP_Collision(){} // implementations should call  delegator->collision_is_going_to_be_deleted_event(this);
+  IVP_Collision( IVP_Collision_Delegator *d){ delegator = d; fvector_index[0] = fvector_index[1] = -1; }
 };
 
 #endif
