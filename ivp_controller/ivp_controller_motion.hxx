@@ -53,10 +53,10 @@ protected:
     IVP_Real_Object *real_object;
     IVP_Core *core;
 
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *) override;
     
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_MOTION; };
-    void core_is_going_to_be_deleted_event(IVP_Core *core);
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_MOTION; }
+    void core_is_going_to_be_deleted_event(IVP_Core *core) override;
 
     friend class IVP_Environment;
 public:

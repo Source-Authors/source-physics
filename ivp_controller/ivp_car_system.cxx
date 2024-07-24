@@ -400,19 +400,19 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels( IVP_Environment *env, IV
 	// equip vehicle axles with stabilizers
 	if ( n_wheels != n_axis )
 	{
-		for( int i = 0; i < 2; i++ )
+		for( int ii = 0; ii < 2; ii++ )
 		{
 			// i=0: front stabi, i=1: rear stabi
 			IVP_Template_Stabilizer stabi_template;
 			
 			// set default
-			stabi_template.stabi_constant = templ->stabilizer_constant[i]; // Newton/meter
+			stabi_template.stabi_constant = templ->stabilizer_constant[ii]; // Newton/meter
 			
-			stabi_template.anchors[0] = &anchor_body_template[i*2];
-			stabi_template.anchors[1] = &anchor_wheel_template[i*2];
-			stabi_template.anchors[2] = &anchor_body_template[i*2+1];
-			stabi_template.anchors[3] = &anchor_wheel_template[i*2+1];
-			this->car_stabilizer[i] = environment->create_stabilizer( &stabi_template );
+			stabi_template.anchors[0] = &anchor_body_template[ii*2];
+			stabi_template.anchors[1] = &anchor_wheel_template[ii*2];
+			stabi_template.anchors[2] = &anchor_body_template[ii*2+1];
+			stabi_template.anchors[3] = &anchor_wheel_template[ii*2+1];
+			this->car_stabilizer[ii] = environment->create_stabilizer( &stabi_template );
 		}
 	}
 

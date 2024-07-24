@@ -261,9 +261,9 @@ private:
     int nr_not_interpolated;
     
 protected:
-    void core_is_going_to_be_deleted_event(IVP_Core *) { delete this;}
-    IVP_DOUBLE get_minimum_simulation_frequency() { return 0.0f; }
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_FORCEFIELDS; }
+    void core_is_going_to_be_deleted_event(IVP_Core *) override { delete this; }
+    IVP_DOUBLE get_minimum_simulation_frequency() override { return 0.0f; }
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_FORCEFIELDS; }
     
     /********************************************************************
      * Name:        do_simulation_controller(...)
@@ -272,7 +272,7 @@ protected:
      * Note:        do_simulation_controller is called by the internal
      *              simulation unit of the physics engine
      ********************************************************************/
-    void do_simulation_controller(IVP_Event_Sim *sim_u,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *sim_u,IVP_U_Vector<IVP_Core> *core_list) override;
 public:
     // not for public use
 };

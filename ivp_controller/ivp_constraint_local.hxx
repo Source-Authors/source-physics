@@ -93,35 +93,35 @@ private: // functions
     void sort_rotation_mapping();
     void constraint_changed();
 protected:
-    void core_is_going_to_be_deleted_event(IVP_Core *core);
-    void do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vector<IVP_Core> *core_list);
+    void core_is_going_to_be_deleted_event(IVP_Core *core) override;
+    void do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vector<IVP_Core> *core_list) override;
     
 public: // constraint changing functions
     IVP_Real_Object *get_objectR();
     IVP_Real_Object *get_objectA();
 
     // functions that refer to translation
-    void change_fixing_point_Ros(const IVP_U_Point *anchor_Ros);
-    void change_target_fixing_point_Ros(const IVP_U_Point *anchor_Ros);
-    void change_translation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rfs);
-    void change_target_translation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rfs);
-    void fix_translation_axis(IVP_COORDINATE_INDEX which);
-    void free_translation_axis(IVP_COORDINATE_INDEX which);
-    void limit_translation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right);
-    void change_max_translation_impulse(IVP_CONSTRAINT_FORCE_EXCEED impulsetype, IVP_FLOAT impulse);
+    void change_fixing_point_Ros(const IVP_U_Point *anchor_Ros) override;
+    void change_target_fixing_point_Ros(const IVP_U_Point *anchor_Ros) override;
+    void change_translation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rfs) override;
+    void change_target_translation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rfs) override;
+    void fix_translation_axis(IVP_COORDINATE_INDEX which) override;
+    void free_translation_axis(IVP_COORDINATE_INDEX which) override;
+    void limit_translation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right) override;
+    void change_max_translation_impulse(IVP_CONSTRAINT_FORCE_EXCEED impulsetype, IVP_FLOAT impulse) override;
 
     // functions that refer to rotation
     
-    void change_rotation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rrs);   // set a new rotation axis in both object
-    void change_target_rotation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rrs); // set a new angular target position of attached object
-    void fix_rotation_axis(IVP_COORDINATE_INDEX which);
-    void free_rotation_axis(IVP_COORDINATE_INDEX which);
-    void limit_rotation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right);
-    void change_max_rotation_impulse(IVP_CONSTRAINT_FORCE_EXCEED impulsetype, IVP_FLOAT impulse);
+    void change_rotation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rrs) override;   // set a new rotation axis in both object
+    void change_target_rotation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rrs) override; // set a new angular target position of attached object
+    void fix_rotation_axis(IVP_COORDINATE_INDEX which) override;
+    void free_rotation_axis(IVP_COORDINATE_INDEX which) override;
+    void limit_rotation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right) override;
+    void change_max_rotation_impulse(IVP_CONSTRAINT_FORCE_EXCEED impulsetype, IVP_FLOAT impulse) override;
 
     // functions that explain differences
-    void change_Aos_to_relaxe_constraint();
-    void change_Ros_to_relaxe_constraint();
+    void change_Aos_to_relaxe_constraint() override;
+    void change_Ros_to_relaxe_constraint() override;
 
     IVP_Constraint_Local(const IVP_Template_Constraint &tmpl);
     ~IVP_Constraint_Local();

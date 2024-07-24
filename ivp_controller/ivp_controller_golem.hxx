@@ -52,8 +52,8 @@ protected:
 	IVP_FLOAT max_golem_force;
 	IVP_FLOAT filter_dtime;
 
-    void reset_time( IVP_Time offset);
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *);
+    void reset_time( IVP_Time offset) override;
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *) override;
 
     void beam_object_to_target_position(IVP_Event_Sim *es);  // may be called from resolve_for_problem to beam object
 public:

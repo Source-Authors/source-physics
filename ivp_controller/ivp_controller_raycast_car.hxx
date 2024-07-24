@@ -124,11 +124,11 @@ protected:
     IVP_Raycast_Car_Wheel *get_wheel( IVP_POS_WHEEL i) { return & wheels_of_car[i]; }
     IVP_Raycast_Car_Axis *get_axis( IVP_POS_AXIS i) { return & axis_of_car[i]; }
 
-    virtual void core_is_going_to_be_deleted_event(IVP_Core *){ P_DELETE_THIS(this); }
-    virtual IVP_U_Vector<IVP_Core> *get_associated_controlled_cores(){ return &vector_of_cores; }
+    void core_is_going_to_be_deleted_event(IVP_Core *) override { P_DELETE_THIS(this); }
+    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() override { return &vector_of_cores; }
     
-    virtual void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
-    virtual IVP_CONTROLLER_PRIORITY get_controller_priority();
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override;
 
 	// Initialization.
 	void InitRaycastCarEnvironment( IVP_Environment *pEnvironment, const IVP_Template_Car_System *pCarSystemTemplate );
@@ -156,52 +156,52 @@ protected:
 			      IVP_FLOAT *friction_of_object_out )=0;
     
 public:
-    void do_steering_wheel(IVP_POS_WHEEL wheel_pos, IVP_FLOAT s_angle); // called by do_steering()
+    void do_steering_wheel(IVP_POS_WHEEL wheel_pos, IVP_FLOAT s_angle) override; // called by do_steering()
 
     // Car Adjustment
-    void change_spring_constant(IVP_POS_WHEEL pos, IVP_FLOAT spring_constant); // [Newton/meter]
-    void change_spring_dampening(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening); // when spring is relaxing spring
-    void change_spring_dampening_compression(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening); // [Newton/meter] for compressing spring
-    void change_max_body_force(IVP_POS_WHEEL , IVP_FLOAT /*mforce*/){}
-    void change_spring_pre_tension(IVP_POS_WHEEL pos, IVP_FLOAT pre_tension_length);
-	void change_spring_length(IVP_POS_WHEEL pos, IVP_FLOAT spring_length);
+    void change_spring_constant(IVP_POS_WHEEL pos, IVP_FLOAT spring_constant) override; // [Newton/meter]
+    void change_spring_dampening(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening) override; // when spring is relaxing spring
+    void change_spring_dampening_compression(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening) override; // [Newton/meter] for compressing spring
+    void change_max_body_force(IVP_POS_WHEEL , IVP_FLOAT /*mforce*/) override {}
+    void change_spring_pre_tension(IVP_POS_WHEEL pos, IVP_FLOAT pre_tension_length) override;
+	void change_spring_length(IVP_POS_WHEEL pos, IVP_FLOAT spring_length) override;
 
-    void change_stabilizer_constant(IVP_POS_AXIS pos, IVP_FLOAT stabi_constant); // [Newton/meter]
-	void change_fast_turn_factor( IVP_FLOAT fast_turn_factor_ );  // not implemented for raycasts
-    void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque);
+    void change_stabilizer_constant(IVP_POS_AXIS pos, IVP_FLOAT stabi_constant) override; // [Newton/meter]
+	void change_fast_turn_factor( IVP_FLOAT fast_turn_factor_ ) override;  // not implemented for raycasts
+    void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque) override;
     
-	void update_throttle( IVP_FLOAT ) {}
+	void update_throttle( IVP_FLOAT ) override {}
 
-    void update_body_countertorque(){}
+    void update_body_countertorque() override {}
     
-    void change_body_downforce(IVP_FLOAT force);        // extra force to keep flipped objects flipped over
+    void change_body_downforce(IVP_FLOAT force) override;        // extra force to keep flipped objects flipped over
 
-    void fix_wheel( IVP_POS_WHEEL, IVP_BOOL stop_wheel ); // stop wheel completely (e.g. handbrake )
+    void fix_wheel( IVP_POS_WHEEL, IVP_BOOL stop_wheel ) override; // stop wheel completely (e.g. handbrake )
     
     // Car Info
-    IVP_DOUBLE get_body_speed(IVP_COORDINATE_INDEX idx_z = IVP_INDEX_Z); // km/h in 'z' direction
-    IVP_DOUBLE get_wheel_angular_velocity(IVP_POS_WHEEL);
-    IVP_DOUBLE get_orig_front_wheel_distance();
-    IVP_DOUBLE get_orig_axles_distance();
-	void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out);
-    virtual void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel);
+    IVP_DOUBLE get_body_speed(IVP_COORDINATE_INDEX idx_z = IVP_INDEX_Z) override; // km/h in 'z' direction
+    IVP_DOUBLE get_wheel_angular_velocity(IVP_POS_WHEEL) override;
+    IVP_DOUBLE get_orig_front_wheel_distance() override;
+    IVP_DOUBLE get_orig_axles_distance() override;
+	void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out) override;
+    void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel) override;
     void get_wheel_position(IVP_U_Point *position_ws_out, IVP_U_Quat *direction_ws_out);
   
     /**** Methods: 2nd Level, based on primitives ****/
     /**** Methods: 2nd Level, based on primitives ****/
-    virtual void do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false); // default implementation updates this->steering_angle
+    void do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false) override; // default implementation updates this->steering_angle
 
-    virtual void set_booster_acceleration( IVP_FLOAT acceleration);
+    void set_booster_acceleration( IVP_FLOAT acceleration) override;
     void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay) override;
-    virtual void update_booster(IVP_FLOAT /*delta_time*/){}    
-	virtual IVP_FLOAT get_booster_delay();
-    virtual IVP_FLOAT get_booster_time_to_go();
+    void update_booster(IVP_FLOAT /*delta_time*/) override {}    
+	IVP_FLOAT get_booster_delay() override;
+    IVP_FLOAT get_booster_time_to_go() override;
     IVP_Controller_Raycast_Car(IVP_Environment *environment, const IVP_Template_Car_System *);
     virtual ~IVP_Controller_Raycast_Car();
 
 	// Debug
-	void SetCarSystemDebugData( const IVP_CarSystemDebugData_t &carSystemDebugData );
-	void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData );
+	void SetCarSystemDebugData( const IVP_CarSystemDebugData_t &carSystemDebugData ) override;
+	void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData ) override;
 };
 
 #endif

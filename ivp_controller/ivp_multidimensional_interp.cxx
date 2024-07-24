@@ -1,7 +1,7 @@
 
 #include <ivp_physics.hxx>
 
-#if defined(LINUX)||defined(SUN)||(__MWERKS__ && __POWERPC__)
+#if defined(LINUX) || defined(SUN) || (defined(__MWERKS__) && __POWERPC__)
 #   include <alloca.h>
 #endif
 
@@ -92,7 +92,7 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::linfit(int m, int n, IVP_MI_V
     //m = X->nr_of_elements;  //number of lines in the matrix A
     //n = nr_of_vectors;      //number of columns in the matrix A
 
-#if WITH_DEBUG_OUTPUT
+#if defined(WITH_DEBUG_OUTPUT)
     //print_matrix(n, m, A);
 #endif
     

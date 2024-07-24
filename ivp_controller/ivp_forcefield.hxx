@@ -30,15 +30,15 @@ protected:
     IVP_BOOL i_am_owner_of_set_of_cores; // default: IVP_TRUE; if IVP_FALSE, set_of_cores will not be deleted by deconstructor!
 
     // IVP_Listener_Set_Active implementations
-    virtual void element_added(IVP_U_Set_Active<IVP_Core> *set, IVP_Core *elem);
-    virtual void element_removed(IVP_U_Set_Active<IVP_Core> *set, IVP_Core *elem);
-    virtual void pset_is_going_to_be_deleted(IVP_U_Set_Active<IVP_Core> *set);   // Note: pset is not removing elements when deleted
+    void element_added(IVP_U_Set_Active<IVP_Core> *set, IVP_Core *elem) override;
+    void element_removed(IVP_U_Set_Active<IVP_Core> *set, IVP_Core *elem) override;
+    void pset_is_going_to_be_deleted(IVP_U_Set_Active<IVP_Core> *set) override;   // Note: pset is not removing elements when deleted
 
     // IVP_Controller implementations (only some)
-    virtual void core_is_going_to_be_deleted_event(IVP_Core *);   // default deletes this
+    void core_is_going_to_be_deleted_event(IVP_Core *) override;   // default deletes this
     
     virtual void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list)=0;
-    virtual IVP_CONTROLLER_PRIORITY get_controller_priority();
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override;
     IVP_Forcefield(IVP_Environment *env, IVP_U_Set_Active<IVP_Core> *set_of_cores, IVP_BOOL owner_of_set);
 public:
     ~IVP_Forcefield();

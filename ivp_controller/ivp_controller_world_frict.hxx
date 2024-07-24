@@ -27,10 +27,10 @@ class IVP_Controller_World_Friction : public IVP_Controller_Independent {
 protected:
     IVP_Real_Object *real_obj;
 
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
     
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_CONSTRAINTS_MAX; };
-    void core_is_going_to_be_deleted_event(IVP_Core *core);
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_CONSTRAINTS_MAX; }
+    void core_is_going_to_be_deleted_event(IVP_Core *core) override;
 
     friend class IVP_Environment;    
     

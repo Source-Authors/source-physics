@@ -623,8 +623,8 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	}
     }
     
-    // Nun hab ich Matrizen der Groﬂe 0 bis 6.
-    // Noch nicht gemacht: Die unterschiedlichen Matrixgroﬂen beachten!
+    // Nun hab ich Matrizen der Grobe 0 bis 6.
+    // Noch nicht gemacht: Die unterschiedlichen Matrixgroben beachten!
     // Matrix erschaffen und vimult3(dvRA, impulseR);
     IVP_Great_Matrix_Many_Zero mg_impulse_f_dvRA;
     mg_impulse_f_dvRA.columns = matrix_size;
@@ -929,7 +929,7 @@ void IVP_Constraint_Local::change_fixing_point_Ros(const IVP_U_Point *anchor) { 
     IVP_U_Point point_Rfs_f_nRfs; m_Rfs_f_Rcs.vmult4(&point_Rcs_f_nRfs, &point_Rfs_f_nRfs); // point_nRfs_in_Rfs
     m_Rfs_f_Rcs.vv.subtract(&point_Rfs_f_nRfs);
 
-/* if I would have to translate -- wenn ich ubersetzen muﬂte:
+/* if I would have to translate -- wenn ich ubersetzen mubte:
     IVP_U_Point point_Rcs_f_nuRfs; m_Rcs_f_Ros.vmult4(anchor, &point_Rcs_f_nuRfs);
     IVP_U_Matrix3 m_uRfs_f_Rcs; mapping_uRfs_f_Rfs.mapply((IVP_U_Matrix3 *) &m_Rfs_f_Rcs, &m_uRfs_f_Rcs);
     IVP_U_Point point_nuRfs_f_Rcs; m_uRfs_f_Rcs.vmult3(&point_Rcs_f_nuRfs, &point_nuRfs_f_Rcs);

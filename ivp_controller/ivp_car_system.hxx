@@ -243,48 +243,48 @@ public:
     IVP_Car_System_Real_Wheels(IVP_Environment *environment,	 IVP_Template_Car_System *);
     virtual ~IVP_Car_System_Real_Wheels();
     
-    void do_steering_wheel(IVP_POS_WHEEL wheel_pos, IVP_FLOAT s_angle); // called by do_steering()
+    void do_steering_wheel(IVP_POS_WHEEL wheel_pos, IVP_FLOAT s_angle) override; // called by do_steering()
 
     // Car Adjustment
-    void change_spring_constant(IVP_POS_WHEEL pos, IVP_FLOAT spring_constant); // [Newton/meter]
-    void change_spring_dampening(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening); // when spring is relaxing spring
-    void change_spring_dampening_compression(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening); // [Newton/meter] for compressing spring
-    void change_max_body_force(IVP_POS_WHEEL wheel_nr, IVP_FLOAT mforce);
-    void change_spring_pre_tension(IVP_POS_WHEEL pos, IVP_FLOAT pre_tension_length);
-	void change_spring_length(IVP_POS_WHEEL wheel_nr, IVP_FLOAT spring_length);
+    void change_spring_constant(IVP_POS_WHEEL pos, IVP_FLOAT spring_constant) override; // [Newton/meter]
+    void change_spring_dampening(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening) override; // when spring is relaxing spring
+    void change_spring_dampening_compression(IVP_POS_WHEEL pos, IVP_FLOAT spring_dampening) override; // [Newton/meter] for compressing spring
+    void change_max_body_force(IVP_POS_WHEEL wheel_nr, IVP_FLOAT mforce) override;
+    void change_spring_pre_tension(IVP_POS_WHEEL pos, IVP_FLOAT pre_tension_length) override;
+	void change_spring_length(IVP_POS_WHEEL wheel_nr, IVP_FLOAT spring_length) override;
 
-    void change_stabilizer_constant(IVP_POS_AXIS pos, IVP_FLOAT stabi_constant); // [Newton/meter]
-	void change_fast_turn_factor( IVP_FLOAT );  
-    void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque);
+    void change_stabilizer_constant(IVP_POS_AXIS pos, IVP_FLOAT stabi_constant) override; // [Newton/meter]
+	void change_fast_turn_factor( IVP_FLOAT ) override;  
+    void change_wheel_torque(IVP_POS_WHEEL pos, IVP_FLOAT torque) override;
 	void change_wheel_speed_dampening( IVP_POS_WHEEL wheel_nr, IVP_FLOAT dampening );
-    void update_body_countertorque();		// rotate the body in the opposite direction of the wheels
+    void update_body_countertorque() override;		// rotate the body in the opposite direction of the wheels
 
-   	void update_throttle( IVP_FLOAT /*flThrottle*/ ) {}
+   	void update_throttle( IVP_FLOAT /*flThrottle*/ ) override {}
  
-    void change_body_downforce(IVP_FLOAT force); // extra force to keep flipped objects flipped over
+    void change_body_downforce(IVP_FLOAT force) override; // extra force to keep flipped objects flipped over
 
-    void fix_wheel( IVP_POS_WHEEL, IVP_BOOL stop_wheel ); // stop wheel completely (e.g. handbrake )
+    void fix_wheel( IVP_POS_WHEEL, IVP_BOOL stop_wheel ) override; // stop wheel completely (e.g. handbrake )
     
     // Car Info
-    IVP_DOUBLE get_body_speed(IVP_COORDINATE_INDEX idx_z = IVP_INDEX_Z); // km/h in 'z' direction
-    IVP_DOUBLE get_wheel_angular_velocity(IVP_POS_WHEEL);
-    void update_wheel_positions(){}
-    IVP_DOUBLE get_orig_front_wheel_distance();
-    IVP_DOUBLE get_orig_axles_distance();
-	void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out);
-    void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel);
+    IVP_DOUBLE get_body_speed(IVP_COORDINATE_INDEX idx_z = IVP_INDEX_Z) override; // km/h in 'z' direction
+    IVP_DOUBLE get_wheel_angular_velocity(IVP_POS_WHEEL) override;
+    void update_wheel_positions() override {}
+    IVP_DOUBLE get_orig_front_wheel_distance() override;
+    IVP_DOUBLE get_orig_axles_distance() override;
+	void get_skid_info( IVP_Wheel_Skid_Info *array_of_skid_info_out) override;
+    void set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel) override;
     /**** Methods: 2nd Level, based on primitives ****/
     /**** Methods: 2nd Level, based on primitives ****/
-    virtual void do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false); // updates this->steering_angle
+    void do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false) override; // updates this->steering_angle
 
-    void set_booster_acceleration(IVP_FLOAT acceleration);
+    void set_booster_acceleration(IVP_FLOAT acceleration) override;
     void activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT recharge_time) override;
-    void update_booster(IVP_FLOAT delta_time);
-	virtual IVP_FLOAT get_booster_delay();
-    virtual IVP_FLOAT get_booster_time_to_go() { return booster_seconds_to_go; }
+    void update_booster(IVP_FLOAT delta_time) override;
+	IVP_FLOAT get_booster_delay() override;
+    IVP_FLOAT get_booster_time_to_go() override { return booster_seconds_to_go; }
 	// Debug
-	void SetCarSystemDebugData( const IVP_CarSystemDebugData_t &carSystemDebugData );
-	void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData );
+	void SetCarSystemDebugData( const IVP_CarSystemDebugData_t &carSystemDebugData ) override;
+	void GetCarSystemDebugData( IVP_CarSystemDebugData_t &carSystemDebugData ) override;
 };
 
 
