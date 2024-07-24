@@ -5,11 +5,11 @@
 
 #ifdef PLATFORM_64BITS
 #define IVU_MEM_ALIGN 0x50U //align to cache line data 64Byte
-#define IVU_MEM_MASK 0xffffffffffffffe0U;
+#define IVU_MEM_MASK 0xffffffffffffffe0U
 #define IVU_MEMORY_BLOCK_SIZE 0x7fe0	// size of block loaded by
 #else
 #define IVU_MEM_ALIGN 0x20U //align to cache line data 32Byte
-#define IVU_MEM_MASK 0xffffffe0U; 
+#define IVU_MEM_MASK 0xffffffe0U
 #define IVU_MEMORY_BLOCK_SIZE (0x8000U-IVU_MEM_ALIGN)	// size of block loaded by 
 #endif
 

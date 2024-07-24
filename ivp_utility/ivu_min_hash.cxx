@@ -160,27 +160,6 @@ void IVP_U_Min_Hash::change_value(void *elem, IVP_DOUBLE val){
 
     remove(elem);
     add(elem,val);
-    return;
-    int i = hash_index((int *)&elem);
-    IVP_U_Min_Hash_Elem *el;
-    for (el = elems[i];el;el=el->next){
-	if ( el->elem == elem){
-	    break;
-	}
-    }
-    IVP_ASSERT(el != NULL);
-
-    if (val < el->value){	// we got smaller
-	el->value = val;	// update stadel
-	if (val <= min_per_array_pos[i]->value){	// new mimimum found
-	    min_added_at_index(el,i);
-	}
-    }else{	// we became bigger
-	el->value = val;	// update stadel
-	if (el == min_per_array_pos[i]){	// we were a minimum, so get rid of it
-	    min_removed_at_index(el,i);	  // let's look for a new minimum
-	}
-    }
 }
 
 /** try to remove element from min_hash */
