@@ -64,10 +64,10 @@ public:
    
 protected:
     // hull manager
-  IVP_HULL_ELEM_TYPE get_type(){ return IVP_HULL_ELEM_POLYGON; }
-  virtual void hull_limit_exceeded_event(IVP_Hull_Manager *hull_manager, IVP_HTIME hull_intrusion_value);
-  virtual void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *hull_manager);
-  virtual   void hull_manager_is_reset(IVP_FLOAT dt,IVP_FLOAT center_dt);
+  IVP_HULL_ELEM_TYPE get_type() override { return IVP_HULL_ELEM_POLYGON; }
+  void hull_limit_exceeded_event(IVP_Hull_Manager *hull_manager, IVP_HTIME hull_intrusion_value) override;
+  void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *hull_manager) override;
+  void hull_manager_is_reset(IVP_FLOAT dt,IVP_FLOAT center_dt) override;
 public:
 
     IVP_Real_Object *get_object(){ return l_obj; }

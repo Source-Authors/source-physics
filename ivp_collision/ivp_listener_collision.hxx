@@ -131,10 +131,10 @@ public:
 	// constructor
 	IVP_Listener_Collision(int /* IVP_LISTENER_COLLISION_CALLBACKS */ enable_callbacks = 1){
 		enabled_callbacks = enable_callbacks;	// set flags for implemented callbacks
-	};
+	}
 
 	// virtual destructor: @@CB
-	virtual ~IVP_Listener_Collision() {};
+	virtual ~IVP_Listener_Collision() {}
 };
 
 

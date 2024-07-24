@@ -17,9 +17,9 @@ class IVP_Collision;
 class IVP_OV_Element : public IVP_Listener_Hull {
 
 protected:
-    IVP_HULL_ELEM_TYPE get_type();
-    virtual void hull_limit_exceeded_event(IVP_Hull_Manager *mgr, IVP_HTIME);
-    virtual void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *mgr);
+    IVP_HULL_ELEM_TYPE get_type() override;
+    void hull_limit_exceeded_event(IVP_Hull_Manager *mgr, IVP_HTIME) override;
+    void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *mgr) override;
 public:
     IVP_OV_Node *node;
     IVP_Hull_Manager *hull_manager;	// set if in hull manager

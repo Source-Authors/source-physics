@@ -2,7 +2,7 @@
 
 #include <ivp_physics.hxx>
 
-#if defined(LINUX) || defined(SUN) || (__MWERKS__ && __POWERPC__)
+#if defined(LINUX) || defined(SUN) || (defined(__MWERKS__) && __POWERPC__)
 #   include <alloca.h>
 #endif
 

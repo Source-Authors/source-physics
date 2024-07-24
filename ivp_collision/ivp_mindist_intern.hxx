@@ -84,8 +84,8 @@ public:
  ********************************************************************************/
 class IVP_Collision_Delegator_Root_Mindist : public IVP_Collision_Delegator_Root {
 public:
-  virtual void object_is_removed_from_collision_detection(IVP_Real_Object *);
-  virtual IVP_Collision *delegate_collisions_for_object(IVP_Real_Object *base_object, IVP_Real_Object *colliding_element);
+  void object_is_removed_from_collision_detection(IVP_Real_Object *) override;
+  IVP_Collision *delegate_collisions_for_object(IVP_Real_Object *base_object, IVP_Real_Object *colliding_element) override;
 
   void environment_is_going_to_be_deleted_event(IVP_Environment *env) override;
   void collision_is_going_to_be_deleted_event(class IVP_Collision *t) override;
@@ -107,9 +107,9 @@ class IVP_Synapse_OO: public IVP_Listener_Hull {
     IVP_Synapse_OO(){}
   void init_synapse_oo(IVP_OO_Watcher *, IVP_Real_Object *);
 public:
-    IVP_HULL_ELEM_TYPE get_type(){ return IVP_HULL_ELEM_OO_WATCHER; }
-    void hull_limit_exceeded_event(IVP_Hull_Manager *hull_manager, IVP_HTIME);
-    void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *);		// function have to remove itself from hull manager
+    IVP_HULL_ELEM_TYPE get_type() override { return IVP_HULL_ELEM_OO_WATCHER; }
+    void hull_limit_exceeded_event(IVP_Hull_Manager *hull_manager, IVP_HTIME) override;
+    void hull_manager_is_going_to_be_deleted_event(IVP_Hull_Manager *) override;		// function have to remove itself from hull manager
 };
 
 
@@ -265,8 +265,8 @@ public:  // Read only public !!!!
   IVP_FLOAT get_length() const { return len_numerator; } // distance, only valid if recalc_result == IVP_MDRR_OK
 
   // IVP_Collision implementations
-  virtual void get_objects( IVP_Real_Object *objects_out[2] );
-  virtual void get_ledges( const IVP_Compact_Ledge *ledges_out[2] );
+  void get_objects( IVP_Real_Object *objects_out[2] ) override;
+  void get_ledges( const IVP_Compact_Ledge *ledges_out[2] ) override;
 
   
   IVP_Mindist_Base(IVP_Collision_Delegator *del);
@@ -310,7 +310,7 @@ protected:
     void hull_manager_is_reset(IVP_FLOAT dt,IVP_FLOAT center_dt);
 public:
   IVP_Synapse_Real *get_synapse(int i) const { return (IVP_Synapse_Real *)&synapse[i]; }
-  IVP_Synapse_Real *get_sorted_synapse(int i) const { return (IVP_Synapse_Real *)&synapse[synapse_sort_flag ^ i]; };
+  IVP_Synapse_Real *get_sorted_synapse(int i) const { return (IVP_Synapse_Real *)&synapse[synapse_sort_flag ^ i]; }
     IVP_DOUBLE get_coll_dist(){ return ivp_mindist_settings.coll_dists[coll_dist_selector]; }
 				    
     IVP_Mindist(IVP_Environment *env, IVP_Collision_Delegator *del);
@@ -331,7 +331,7 @@ public:
      ********************************************************************************/
     void print(const char *text);
 
-    void simulate_time_event(IVP_Environment *env);
+    void simulate_time_event(IVP_Environment *env) override;
 
     /********************************************************************************
      *	Name:	    	recalc_mindist  	
@@ -381,26 +381,26 @@ enum IVP_MINDIST_RECURSIVE_TYPES {
 
 class IVP_Mindist_Recursive: public IVP_Mindist, public IVP_Collision_Delegator {
     void delete_all_children();
-    virtual void collision_is_going_to_be_deleted_event(class IVP_Collision *t);  // should remove t from its internal structures
+    void collision_is_going_to_be_deleted_event(class IVP_Collision *t) override;  // should remove t from its internal structures
     void recheck_recursive_childs(IVP_DOUBLE hull_dist_intra_object);
     void invalid_mindist_went_exact();
 public:
-    virtual void mindist_rescue_push();
+    void mindist_rescue_push() override;
     void rec_hull_limit_exceeded_event();
-    virtual void exact_mindist_went_invalid(IVP_Mindist_Manager *mm);
+    void exact_mindist_went_invalid(IVP_Mindist_Manager *mm) override;
 
     IVP_MINDIST_RECURSIVE_TYPES recursive_status;
     IVP_U_FVector<IVP_Collision> mindists;
 	//@@CB
 	int spawned_mindist_count;
 
-	void change_spawned_mindist_count(int change);
-	int get_spawned_mindist_count();
+	void change_spawned_mindist_count(int change) override;
+	int get_spawned_mindist_count() override;
 
-	virtual IVP_BOOL is_recursive() { return IVP_TRUE; }
+	IVP_BOOL is_recursive() override { return IVP_TRUE; }
 	//@@CB
 
-    virtual void do_impact(); // recursive check for sub mindists or IVP_Mindist::do_impact
+    void do_impact() override; // recursive check for sub mindists or IVP_Mindist::do_impact
   
     IVP_Mindist_Recursive(IVP_Environment *env, IVP_Collision_Delegator *del);
     ~IVP_Mindist_Recursive();

@@ -172,7 +172,7 @@ IVP_BOOL IVP_OV_Tree_Manager::box_contains_box(const struct IVP_OV_Node_Data *ma
 
     return(IVP_TRUE);
 }
-#if !defined(SUN) && !defined(LINUX) && !(__MWERKS__ && __POWERPC__) && !defined(GEKKO)
+#if !defined(SUN) && !defined(LINUX) && !(defined(__MWERKS__) && __POWERPC__) && !defined(GEKKO)
 inline int ivp_int_floor(IVP_DOUBLE x){
     return (int)floorf(x);
 }

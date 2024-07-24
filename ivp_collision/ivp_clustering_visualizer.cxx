@@ -494,7 +494,7 @@ IVP_Clustering_Visualizer_Longrange_Callback::~IVP_Clustering_Visualizer_Longran
  ********************************************************************************/
 class IVP_Clustering_Visualizer_Longrange_Hash : protected IVP_VHash {
 protected:
-    IVP_BOOL          compare     (void *elem0, void *elem1) const;
+    IVP_BOOL          compare     (void *elem0, void *elem1) const override;
     int               obj_to_index(IVP_Real_Object *obj);
 
 public:

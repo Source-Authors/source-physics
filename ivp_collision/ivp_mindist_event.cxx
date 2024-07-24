@@ -33,7 +33,7 @@ public:
     IVP_U_Point point_of_area_object;
     // object B    
     
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_PF_COLL::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c){
@@ -58,7 +58,7 @@ public:
 
     // object B
     IVP_U_Point hesse_of_area_object;
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_VEC_PARALLEL_AREA::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c){
@@ -81,7 +81,7 @@ public:
     IVP_U_Point B_object;
     IVP_U_Point normized_direction_world_at_t0;
 
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_DISTANCE_OF_TWO_POINTS::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c){
@@ -113,7 +113,7 @@ public:
     // object B is edge
     IVP_U_Point K_object;
     IVP_U_Point K_vec_object;	// normized K_vec
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_S_VALS::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c){
@@ -140,7 +140,7 @@ public:
     // object B is edge
     IVP_U_Point K_object;
     IVP_U_Point K_vec_object;	// normized K_vec
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) override;
 };
 
 
@@ -188,7 +188,7 @@ public:
     IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
 };
 
-IVP_DOUBLE IVP_3D_Solver_PK_COLL::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c){
+IVP_DOUBLE IVP_3D_Solver_PK_COLL::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) {
     IVP_3D_Solver_PK_COLL *t = this;
     
     IVP_U_Point P_world;
@@ -218,7 +218,7 @@ public:
 
     // object B
     IVP_U_Point hesse_of_area_object;
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c, IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c, IVP_U_Matrix *B_w_f_c) override;
 
 };
 
@@ -401,7 +401,7 @@ public:
     IVP_U_Point l_vec_object;		// normized l direction
 
     // object B
-    IVP_DOUBLE get_value(IVP_U_Matrix *K_w_f_c,IVP_U_Matrix *L_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *K_w_f_c,IVP_U_Matrix *L_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_KK_PARALLEL::get_value(IVP_U_Matrix *K_w_f_c,IVP_U_Matrix *L_w_f_c){

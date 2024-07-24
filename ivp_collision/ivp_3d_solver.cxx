@@ -28,49 +28,51 @@ IVP_Time IVP_3D_Solver::calc_nullstelle(IVP_Time t0, IVP_Time t1, IVP_DOUBLE val
     IVP_U_Matrix A,B;
 
     int counter = 0;
-    while(1){
-	
-	IVP_DOUBLE dv = v1-v0;
-	IVP_Time tt;
-	// There are two algorithms to reduce the size of the interval:
-	// 1. midpoint
-	// 2. zero value of connecting straight
+    while(1) {
+		IVP_DOUBLE dv = v1-v0;
+		IVP_Time tt;
+		// There are two algorithms to reduce the size of the interval:
+		// 1. midpoint
+		// 2. zero value of connecting straight
 
-	// only alg. 1 ensures termination, alg 2 is better on the average so
-	// mix both alg.
-	tt = t0;
-	tt += (value - v0) * (t1 - t0) / dv;
+		// only alg. 1 ensures termination, alg 2 is better on the average so
+		// mix both alg.
+		tt = t0;
+		tt += (value - v0) * (t1 - t0) / dv;
 	
-	// modified midpoint
-	if ( (counter & 0x3) == 3){	// sometimes split interval int
-	    if (counter > 64) return t0;	// endless loop, take left value
-	    const IVP_DOUBLE ratio = 0.25f;		// int
-	    const IVP_DOUBLE inv_ratio = 1.0f - ratio;
-	    IVP_DOUBLE dt0 = t0 - tt;
-	    IVP_DOUBLE dt1 = t1 - tt;
+		// modified midpoint
+		if ( (counter & 0x3) == 3){	// sometimes split interval int
+			if (counter > 64) return t0;	// endless loop, take left value
+
+			const IVP_DOUBLE ratio = 0.25f;		// int
+			const IVP_DOUBLE inv_ratio = 1.0f - ratio;
+			IVP_DOUBLE dt0 = t0 - tt;
+			IVP_DOUBLE dt1 = t1 - tt;
 	    
-	    IVP_DOUBLE mid2 = dt0 + dt1;
+			IVP_DOUBLE mid2 = dt0 + dt1;
 	    
-	    tt += mid2 * (inv_ratio * 0.5f);
-	}
+			tt += mid2 * (inv_ratio * 0.5f);
+		}
 	
-	solver_a->calc_at_matrix(tt, &A);
-	solver_b->calc_at_matrix(tt, &B);
-	IVP_DOUBLE vv = get_value(&A,&B);
-	// 	printf("%i %G	%G:%G	%G:%G	%G:%G    %G\n", counter,value,  t0.get_time(),v0, tt.get_time(),vv, t1.get_time(),v1, vv-value);
+		solver_a->calc_at_matrix(tt, &A);
+		solver_b->calc_at_matrix(tt, &B);
+		IVP_DOUBLE vv = get_value(&A,&B);
+		// 	printf("%i %G	%G:%G	%G:%G	%G:%G    %G\n", counter,value,  t0.get_time(),v0, tt.get_time(),vv, t1.get_time(),v1, vv-value);
 	
-	if(IVP_Inline_Math::fabsd(vv-value) < IVP_3D_SOLVER_NULLSTELLE_EPS){
-	    return tt;
-	}
-	counter++;
-	    // take left or right interval?
-	if(vv >= value){
-	    v0 = vv;
-	    t0 = tt;
-	}else{
-	    v1 = vv;
-	    t1 = tt;
-	}
+		if(IVP_Inline_Math::fabsd(vv-value) < IVP_3D_SOLVER_NULLSTELLE_EPS){
+			return tt;
+		}
+
+		counter++;
+
+		// take left or right interval?
+		if (vv >= value) {
+			v0 = vv;
+			t0 = tt;
+		} else {
+			v1 = vv;
+			t1 = tt;
+		}
     }
     return t0;
 }

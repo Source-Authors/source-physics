@@ -168,7 +168,7 @@ public:
 
 	this->user_data = NULL;
 	return;
-    };
+    }
 
     virtual ~IVP_Clustering_Visualizer_Shortrange_Callback();
 };
