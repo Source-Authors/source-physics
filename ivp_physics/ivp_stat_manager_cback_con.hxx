@@ -14,9 +14,9 @@
 
 class IVP_Statisticsmanager_Console_Callback : public IVP_BetterStatisticsmanager_Callback_Interface {
 private:
-    void output_request(IVP_BetterStatisticsmanager_Data_Entity *entity);
-    void enable();
-    void disable();
+    void output_request(IVP_BetterStatisticsmanager_Data_Entity *entity) override;
+    void enable() override;
+    void disable() override;
 
 public:
     IVP_Statisticsmanager_Console_Callback();

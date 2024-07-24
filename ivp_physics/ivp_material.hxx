@@ -70,13 +70,13 @@ public:
     IVP_DOUBLE elasticity;
     // INTERN_START
     IVP_DOUBLE adhesion;
-    virtual IVP_DOUBLE get_adhesion();
+    IVP_DOUBLE get_adhesion() override;
     // INTERN_END
     
-    virtual IVP_DOUBLE get_friction_factor();
-    virtual IVP_DOUBLE get_second_friction_factor() { return second_friction_x; };
-    virtual IVP_DOUBLE get_elasticity();
-    virtual const char *get_name();		// helps debugging
+    IVP_DOUBLE get_friction_factor() override;
+    IVP_DOUBLE get_second_friction_factor() override { return second_friction_x; }
+    IVP_DOUBLE get_elasticity() override;
+    const char *get_name() override;		// helps debugging
     IVP_Material_Simple(IVP_DOUBLE friction, IVP_DOUBLE elasticity);
     virtual ~IVP_Material_Simple();
 };

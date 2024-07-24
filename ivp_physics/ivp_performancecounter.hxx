@@ -73,13 +73,13 @@ public:
 	IVP_Time time_of_last_reset;
 
 
-	void reset_and_print_performance_counters(IVP_Time current_time);
+	void reset_and_print_performance_counters(IVP_Time current_time) override;
 
-	virtual void start_pcount();
-	virtual void pcount( IVP_PERFORMANCE_ELEMENT );
-	virtual void stop_pcount();
+	void start_pcount() override;
+	void pcount( IVP_PERFORMANCE_ELEMENT ) override;
+	void stop_pcount() override;
 
-	virtual void environment_is_going_to_be_deleted(IVP_Environment *);
+	void environment_is_going_to_be_deleted(IVP_Environment *) override;
 
 	IVP_PerformanceCounter_Simple();
 	virtual ~IVP_PerformanceCounter_Simple();

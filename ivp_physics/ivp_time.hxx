@@ -20,20 +20,20 @@ class IVP_Time_Event_PSI : public IVP_Time_Event
 {
 public:
     IVP_Time_Event_PSI() = default;
-    void simulate_time_event(IVP_Environment *env);
+    void simulate_time_event(IVP_Environment *env) override;
 };
 
 class IVP_Time_Event_D : public IVP_Time_Event
 {
 public:    
     int number_of_sons;
-    void simulate_time_event(IVP_Environment *env);
+    void simulate_time_event(IVP_Environment *env) override;
     IVP_Time_Event_D(IVP_Time time);
 };
 
 class IVP_Time_Event_N : public IVP_Time_Event {
 public:    
-    void simulate_time_event(IVP_Environment *env);
+    void simulate_time_event(IVP_Environment *env) override;
     IVP_Time_Event_N(IVP_Time time);
 };
 
@@ -48,11 +48,11 @@ public:
 };
 
 class IVP_Event_Manager_Standard : public IVP_Event_Manager {
-	virtual void simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time until);
+	void simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time until) override;
 };
 
 class IVP_Event_Manager_D : public IVP_Event_Manager {
-	virtual void simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time untilt);
+	void simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time untilt) override;
 };
 
 // Time Manager
@@ -63,7 +63,7 @@ class IVP_Event_Manager_D : public IVP_Event_Manager {
 class IVP_Time_Manager
 {
 private:
-    int n_events; // num of events currently managed
+    // int n_events; // num of events currently managed
     IVP_Time_Event *get_next_event(); // and remove event afterwards
     IVP_Time_Event *get_next_event(IVP_Time time); //get event until
 public:
