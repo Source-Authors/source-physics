@@ -585,7 +585,7 @@ void qh_printstatistics (FILE *fp, const char *string) {
     nop if id >= ZEND, printed, or same as initial value
 */
 void qh_printstatlevel (FILE *fp, int id, [[maybe_unused]] int start) {
-#define NULLfield "       "
+//#define NULLfield "       "
 
   if (id >= ZEND || qhstat printed[id])
     return;

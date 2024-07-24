@@ -39,21 +39,21 @@ IVP_Template_SurfaceBuilder_3ds::IVP_Template_SurfaceBuilder_3ds(){
 
 
 // Default object name to set as public label
-#define DEFNAME "rawobj"
+//#define DEFNAME "rawobj"
 
 int flags = 0;
 
 #define  VERBOSE    0x0001    /* Verbose mode on                  */
 #define  OVERWR     0x0002    /* Don't sak for file overwrite     */
 #define  BINARY     0x0004    /* Binary output                    */
-#define  ASSEMBLY   0x0008    /* Assembly source output           */
-#define  CENTRE     0x0010    /* Centre objects                   */
-#define  SCALE      0x0020    /* Scale objects                    */
-#define  NOMAPFIX   0x0040    /* Don't fix bad mapping values     */
-#define  NORMNULL   0x0080    /* Don't remove null faces          */
-#define  NORMUNUSED 0x0100    /* Don't remove unused vertices     */
+//#define  ASSEMBLY   0x0008    /* Assembly source output           */
+//#define  CENTRE     0x0010    /* Centre objects                   */
+//#define  SCALE      0x0020    /* Scale objects                    */
+//#define  NOMAPFIX   0x0040    /* Don't fix bad mapping values     */
+//#define  NORMNULL   0x0080    /* Don't remove null faces          */
+//#define  NORMUNUSED 0x0100    /* Don't remove unused vertices     */
 #define  NORMDUP    0x0200    /* Don't remove duplicated vertices */
-#define  NOMAPPING  0x0400    /* Don't output mapping values      */
+//#define  NOMAPPING  0x0400    /* Don't output mapping values      */
 
 
 void FixMaps(H3dsScene * scene)

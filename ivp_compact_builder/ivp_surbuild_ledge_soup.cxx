@@ -329,7 +329,7 @@ void IVP_SurfaceBuilder_Ledge_Soup::ledges_to_spheres()
 	this->spheres_cluster[n].next     = n+1;
 	this->spheres_cluster[n].sphere   = sphere;
 
-	if ( this->smallest_radius == 0 ) {
+	if ( hk_Math::almost_equal(this->smallest_radius, 0) ) {
 	    this->smallest_radius = sphere->radius;
 	}
 	else if ( sphere->radius < this->smallest_radius ) {
@@ -435,7 +435,7 @@ void IVP_SurfaceBuilder_Ledge_Soup::ledges_to_boxes_and_spheres()
 		this->spheres_cluster[n].next     = n+1;
 		this->spheres_cluster[n].sphere   = sphere;
 
-		if ( this->smallest_radius == 0 ) {
+		if ( hk_Math::almost_equal( this->smallest_radius, 0 ) ) {
 		    this->smallest_radius = sphere->radius;
 		} else if ( sphere->radius < this->smallest_radius ) {
 		    this->smallest_radius = sphere->radius;
@@ -1497,7 +1497,7 @@ IVP_RETURN_TYPE IVP_SurfaceBuilder_Ledge_Soup::create_compact_ledgetree() {
     return(IVP_OK);
 }
 
-#if defined(LINUX) || defined(SUN) || (__MWERKS__ && POWERPC)
+#if defined(LINUX) || defined(SUN) || (defined(__MWERKS__) && defined(POWERPC))
 void IVP_SurfaceBuilder_Ledge_Soup::convert_ledges_to_templates(IVP_U_BigVector<IVP_Compact_Ledge> &ledges,
 								IVP_U_Vector<IVP_Template_Polygon> *templates_out)
 {

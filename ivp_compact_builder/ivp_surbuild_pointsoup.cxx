@@ -36,9 +36,9 @@ int IVP_SurfaceBuilder_Pointsoup::get_offset_from_pointlist(IVP_Template_Point *
     for (i=0; i<length; i++) {
 
 	if (
-	    points[i].k[0] == point->k[0] &&
-	    points[i].k[1] == point->k[1] &&
-	    points[i].k[2] == point->k[2])
+	    hk_Math::almost_equal( points[i].k[0], point->k[0] ) &&
+	    hk_Math::almost_equal( points[i].k[1], point->k[1] ) &&
+	    hk_Math::almost_equal( points[i].k[2], point->k[2] ))
 	{
 	    return(i);
 	}

@@ -250,7 +250,6 @@ P_Sur_2D_Point::P_Sur_2D_Point(int i_point_num)
 
 P_Sur_2D_Point::~P_Sur_2D_Point()
 {
-    ;
 }
 
 P_Sur_2D_Line::P_Sur_2D_Line(P_Sur_2D_Point *sp, P_Sur_2D_Point *ep)
@@ -270,7 +269,7 @@ P_Sur_2D_Line::P_Sur_2D_Line(P_Sur_2D_Point *sp, P_Sur_2D_Point *ep)
 
 P_Sur_2D_Line::~P_Sur_2D_Line()
 {
-    ; // end/start_points remain!
+    // end/start_points remain!
 }
 
 int P_Sur_2D_Line::point_lies_to_the_left(IVP_U_Point *i_point)
@@ -1322,7 +1321,7 @@ void IVP_Object_Polygon_Tetra::calc_concavities()
 	int i;
 	IVP_Tri_Edge *edge = &tri->three_edges[0];
 	for(i=2; i>=0; edge=edge->next, i--){
-	    if((edge->concavity == uninit)
+	    if(hk_Math::almost_equal(edge->concavity, uninit)
 	       &&(!edge->triangle->flags.is_hidden)
 	       &&(!edge->opposite->triangle->flags.is_hidden)) {
 		int flag = this->check_concavity_and_manage(edge, P_CONVEXIFY_STATE_INIT);

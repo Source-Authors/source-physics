@@ -86,7 +86,7 @@ void IVV_Cluster_Min_Hash::min_removed_at_index(IVV_Cluster_Min_Hash_Elem *elem,
 	    for (el =el->next;el;el=el->next){
 #if defined( SORT_MINDIST_ELEMENTS )
 		if (el->value < new_min->value ||
-		    (el->value == new_min->value && el->cmp_index < new_min->cmp_index)){
+		    (hk_Math::almost_equal(el->value, new_min->value) && el->cmp_index < new_min->cmp_index)){
 		    new_min = el;
 		}
 #else
@@ -116,7 +116,7 @@ void IVV_Cluster_Min_Hash::min_removed_at_index(IVV_Cluster_Min_Hash_Elem *elem,
 	}else{
 #if defined( SORT_MINDIST_ELEMENTS )
 	if (stadel[j]->value < stadel[j+1]->value ||
-	    (stadel[j]->value == stadel[j+1]->value && stadel[j]->cmp_index < stadel[j+1]->cmp_index))
+	    (hk_Math::almost_equal(stadel[j]->value, stadel[j+1]->value) && stadel[j]->cmp_index < stadel[j+1]->cmp_index))
 #else
 	if (stadel[j]->value < stadel[j+1]->value)
 #endif	    

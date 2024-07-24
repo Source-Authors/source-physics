@@ -133,7 +133,6 @@ IVP_Intrusion_Status::~IVP_Intrusion_Status(){
 }
 
 void IVP_Tetra_Point::init(IVP_Tetra_Intrude *  ){
-    ;
 }
 
 IVP_Tetra_Intrude::IVP_Tetra_Intrude(IVP_Tetra_Point *i_tetra_points, int orig_pnt_anz){

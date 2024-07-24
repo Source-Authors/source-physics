@@ -147,7 +147,7 @@ static int qh_compare_facetarea(const void *p1, const void *p2) {
     return 1; 
   if (a->f.area > b->f.area)
     return 1;
-  else if (a->f.area == b->f.area)
+  else if (hk_Math::almost_equal(a->f.area, b->f.area))
     return 0;
   return -1;
 } /* compare_facetarea */
