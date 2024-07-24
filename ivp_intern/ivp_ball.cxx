@@ -31,9 +31,9 @@ public:
 	mass_center_out->set_to_zero();
     }
     
-    virtual void get_radius_and_radius_dev_to_given_center(const IVP_U_Float_Point * /*center*/, IVP_FLOAT * /*radius*/, IVP_FLOAT * /*radius_deviation*/) const {
+    void get_radius_and_radius_dev_to_given_center(const IVP_U_Float_Point * /*center*/, IVP_FLOAT * /*radius*/, IVP_FLOAT * /*radius_deviation*/) const override {
 	CORE;}
-    virtual void get_rotation_inertia( IVP_U_Float_Point * /*rotation_inertia_out*/ ) const { CORE;}
+    void get_rotation_inertia( IVP_U_Float_Point * /*rotation_inertia_out*/ ) const override { CORE;}
   
 
     /********************************************************************************
@@ -42,20 +42,20 @@ public:
      *                  returns all ledges which intrude into a sphere around the observer's position 
      * 	Note:		Polygons only
      ********************************************************************************/
-    virtual void get_all_ledges_within_radius(const IVP_U_Point * observer_position_object, IVP_DOUBLE radius,
+    void get_all_ledges_within_radius(const IVP_U_Point * observer_position_object, IVP_DOUBLE radius,
 					      const IVP_Compact_Ledge * /*root_ledge*/, IVP_Real_Object * /*other_object*/, const IVP_Compact_Ledge * /*other_reference_ledge*/,
-					      IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges){
+					      IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges) override {
 	if (observer_position_object->quad_length() > radius*radius) return;
 	resulting_ledges->add(compact_ledge);
     }
 
-    void get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges){
+    void get_all_terminal_ledges(IVP_U_BigVector<IVP_Compact_Ledge> *resulting_ledges) override {
 	CORE;
 	resulting_ledges->add(compact_ledge);	
     }
 
-    virtual void insert_all_ledges_hitting_ray(IVP_Ray_Solver * /*ray_solver*/,
-					    IVP_Real_Object * /*object_to_insert*/)
+    void insert_all_ledges_hitting_ray(IVP_Ray_Solver * /*ray_solver*/,
+					    IVP_Real_Object * /*object_to_insert*/) override
     { CORE; } // dummy
     
     ~IVP_SurfaceManager_Ball(){
@@ -69,7 +69,7 @@ public:
     compact_ledge = (IVP_Compact_Ledge *)buffer;
     }
     
-    IVP_SURMAN_TYPE get_type(){ return IVP_SURMAN_BALL;}
+    IVP_SURMAN_TYPE get_type() override { return IVP_SURMAN_BALL;}
 };
 
 static IVP_SurfaceManager_Ball ivp_surface_manager_ball_global;

@@ -84,9 +84,9 @@ public:
   // *******************
   // ******** functions:
   // *******************    
-    void init_tmp_contact_info() { impacts_while_system=0; coll_time_is_valid=IVP_FALSE; friction_is_broken = IVP_FALSE; };
+    void init_tmp_contact_info() { impacts_while_system=0; coll_time_is_valid=IVP_FALSE; friction_is_broken = IVP_FALSE; }
   
-    IVP_Impact_Solver_Long_Term() { init_tmp_contact_info(); };
+    IVP_Impact_Solver_Long_Term() { init_tmp_contact_info(); }
 
     inline IVP_DOUBLE get_closing_speed() const ;  // based on current core speed
     
@@ -113,11 +113,11 @@ public:
 
     // has to be transfered to synapse_friction_polygon:
 
-    IVP_Real_Object *get_object(){ return l_obj; };
-    IVP_Synapse_Friction       *get_next(){ return next;};
-    IVP_Synapse_Friction       *get_prev(){ return prev;};
-    IVP_Contact_Point *get_contact_point()const{ return  (IVP_Contact_Point *)(contact_point_offset + (char *)this);};
-    void set_contact_point( IVP_Contact_Point *cp ) { contact_point_offset = ((char *)cp) - (char *)this; };
+    IVP_Real_Object *get_object(){ return l_obj; }
+    IVP_Synapse_Friction       *get_next(){ return next;}
+    IVP_Synapse_Friction       *get_prev(){ return prev;}
+    IVP_Contact_Point *get_contact_point()const{ return  (IVP_Contact_Point *)(contact_point_offset + (char *)this);}
+    void set_contact_point( IVP_Contact_Point *cp ) { contact_point_offset = ((char *)cp) - (char *)this; }
 
     int                        get_material_index() const;
     IVP_SYNAPSE_POLYGON_STATUS get_status()const { return (IVP_SYNAPSE_POLYGON_STATUS)status; }
@@ -179,7 +179,7 @@ protected:
     IVP_FLOAT now_friction_pressure; // needed to add values  distance_keeper pressure + static friction
     IVP_FLOAT last_gap_len; //length of gap at last PSI (to calc gained energy)
     
-    IVP_FLOAT get_gap_length() { return last_gap_len; };
+    IVP_FLOAT get_gap_length() { return last_gap_len; }
     
     short slowly_turn_on_keeper;     // is initialized with IVP_SLOWLY_TURN_ON_KEEPER
     IVP_CONTACT_POINT_BREAK_STATUS  cp_status:8;
@@ -245,7 +245,7 @@ class IVP_Contact_Point: public IVP_Contact_Point_Fast {
 
     inline void calc_pretension(IVP_FLOAT len);
 
-    IVP_Impact_Solver_Long_Term *get_lt(){ return tmp_contact_info; };
+    IVP_Impact_Solver_Long_Term *get_lt(){ return tmp_contact_info; }
     
     ~IVP_Contact_Point();
     // some friction checks:
@@ -256,8 +256,8 @@ class IVP_Contact_Point: public IVP_Contact_Point_Fast {
     void p_calc_friction_s_PK(const IVP_U_Point *pp, const IVP_Compact_Edge *K, IVP_Cache_Ledge_Point *m_cache_K, IVP_Impact_Solver_Long_Term *info, IVP_U_Float_Point *diff_contact_vec);
 public:
 	const IVP_U_Float_Point *get_contact_point_ws() const { return &last_contact_point_ws; }
-    IVP_Synapse_Friction *get_synapse(int i){ return &synapse[i];};
-    const IVP_Synapse_Friction *get_synapse(int i) const { return &synapse[i];};
+    IVP_Synapse_Friction *get_synapse(int i){ return &synapse[i];}
+    const IVP_Synapse_Friction *get_synapse(int i) const { return &synapse[i];}
     void recalc_friction_s_vals(); // move on surfaces but keep topologie
     IVP_Contact_Point(IVP_Mindist *mindist);
     IVP_FLOAT get_friction_factor();
@@ -311,12 +311,12 @@ class IVP_Friction_Sys_Energy : public IVP_Controller_Independent {
 public:  
     IVP_Friction_System *l_friction_system;
   
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_ENERGY_FRICTION; };
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_ENERGY_FRICTION; }
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
 
-    virtual ~IVP_Friction_Sys_Energy() {};
-    void core_is_going_to_be_deleted_event(IVP_Core *core);
-    IVP_DOUBLE get_mimumum_simulation_frequency() { return 1.0f; };
+    virtual ~IVP_Friction_Sys_Energy() {}
+    void core_is_going_to_be_deleted_event(IVP_Core *core) override;
+    IVP_DOUBLE get_mimumum_simulation_frequency() { return 1.0f; }
 };
 
 class IVP_Friction_Sys_Static : public IVP_Controller_Independent {
@@ -324,13 +324,13 @@ class IVP_Friction_Sys_Static : public IVP_Controller_Independent {
 public:
     IVP_Friction_System *l_friction_system;
   
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_STATIC_FRICTION; };
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_STATIC_FRICTION; }
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
 
-    virtual ~IVP_Friction_Sys_Static(){};
+    virtual ~IVP_Friction_Sys_Static(){}
     
     void core_is_going_to_be_deleted_event(IVP_Core *del_core) override;
-    IVP_DOUBLE get_minimum_simulation_frequency() { return 1.0f; };
+    IVP_DOUBLE get_minimum_simulation_frequency() override { return 1.0f; }
 };
 
 // a physical unmovable object can have more than one friction system and for every friction systems several distances
@@ -391,10 +391,10 @@ public:
     IVP_Friction_Core_Pair *find_pair_of_cores(IVP_Core *core0,IVP_Core *core1);
     
     //dist datastructures
-    int get_fr_dist_number() { return friction_dist_number; };
-    IVP_Contact_Point *get_first_friction_dist() { return first_friction_dist; };
-    IVP_Contact_Point *get_next_friction_dist(IVP_Contact_Point *old) { return old->next_dist_in_friction; };
-    IVP_Contact_Point *get_prev_friction_dist(IVP_Contact_Point *old) { return old->prev_dist_in_friction; };
+    int get_fr_dist_number() { return friction_dist_number; }
+    IVP_Contact_Point *get_first_friction_dist() { return first_friction_dist; }
+    IVP_Contact_Point *get_next_friction_dist(IVP_Contact_Point *old) { return old->next_dist_in_friction; }
+    IVP_Contact_Point *get_prev_friction_dist(IVP_Contact_Point *old) { return old->prev_dist_in_friction; }
     void exchange_friction_dists(IVP_Contact_Point *first,IVP_Contact_Point *second);
     void add_dist_to_system(IVP_Contact_Point *dist);
     void remove_dist_from_system(IVP_Contact_Point *dist);
@@ -428,13 +428,13 @@ public:
     void split_friction_system(IVP_Core *split_father);
 
     //fs is controller
-    void reset_time( IVP_Time offset);
-    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list);
-    IVP_CONTROLLER_PRIORITY get_controller_priority() { return IVP_CP_DYNAMIC_FRICTION; };  
-    void core_is_going_to_be_deleted_event(IVP_Core *core);  
+    void reset_time( IVP_Time offset) override;
+    void do_simulation_controller(IVP_Event_Sim *,IVP_U_Vector<IVP_Core> *core_list) override;
+    IVP_CONTROLLER_PRIORITY get_controller_priority() override { return IVP_CP_DYNAMIC_FRICTION; }  
+    void core_is_going_to_be_deleted_event(IVP_Core *core) override;  
     void get_controlled_cores(IVP_U_Vector<IVP_Core> *vectr);
-    IVP_DOUBLE get_minimum_simulation_frequency();
-    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores();
+    IVP_DOUBLE get_minimum_simulation_frequency() override;
+    IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() override;
   
     //for debugging
     void debug_clean_tmp_info();
