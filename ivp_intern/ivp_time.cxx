@@ -170,14 +170,19 @@ void IVP_Event_Manager::simulate_time_events(IVP_Time_Manager *,IVP_Environment 
 class ScopedFpuMode {
  public:
   explicit ScopedFpuMode(uint16_t new_mode) noexcept {
-    __asm { FSTCW old_mode_ }
+    // MSVC complains when we write to member directly.
+    uint16_t old_mode;
 
-    new_mode = old_mode_ | new_mode;
+    __asm FSTCW old_mode;
+    new_mode = old_mode | new_mode;
+    __asm FLDCW new_mode;
 
-    __asm { FLDCW new_mode }
+    old_mode_ = old_mode;
   }
   ~ScopedFpuMode() noexcept {
-    __asm { FLDCW old_mode_ }
+    // MSVC complains when we write to member directly.
+    uint16_t old_mode = old_mode_;
+    __asm FLDCW old_mode;
   }
 
  private:
