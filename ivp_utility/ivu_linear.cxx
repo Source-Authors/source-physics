@@ -930,7 +930,7 @@ void IVP_U_Matrix::init_columns4(const IVP_U_Point *v0, const IVP_U_Point *v1, c
 void IVP_U_Matrix::init_rot_multiple(const IVP_U_Point *angles, IVP_DOUBLE factor){// angles.k[0] = beta, [1] = gamma [2] = alpha,
     // mout = m_gamma * m_beta * m_alpha = m_k[1] * m_k[0] * m_k[2]
     IVP_DOUBLE x,y;
-    if ( angles->k[0] ){
+    if ( !hk_Math::almost_zero( angles->k[0] ) ){
 	x = IVP_Inline_Math::cosd( angles->k[0] * factor );
 	y = IVP_Inline_Math::sind( angles->k[0] * factor);
     }else{
@@ -939,7 +939,7 @@ void IVP_U_Matrix::init_rot_multiple(const IVP_U_Point *angles, IVP_DOUBLE facto
     }
 
     IVP_DOUBLE u,w;
-    if ( angles->k[1] ){
+    if ( !hk_Math::almost_zero( angles->k[1] ) ){
 	u = IVP_Inline_Math::cosd( angles->k[1] * factor );
 	w = IVP_Inline_Math::sind( angles->k[1] * factor);
     }else{
@@ -948,7 +948,7 @@ void IVP_U_Matrix::init_rot_multiple(const IVP_U_Point *angles, IVP_DOUBLE facto
     }
 
     IVP_DOUBLE c,s;
-    if ( angles->k[2] ){
+    if ( !hk_Math::almost_zero( angles->k[2] ) ){
 	c = IVP_Inline_Math::cosd( angles->k[2] * factor );
 	s = IVP_Inline_Math::sind( angles->k[2] * factor);
     }else{

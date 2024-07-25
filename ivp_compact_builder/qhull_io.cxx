@@ -406,7 +406,7 @@ pointT *qh_detvnorm (vertexT *vertex, vertexT *vertexA, setT *centers, realT *of
         wwmax_(Wridge0max, angle);
         wwadd_(Wridge0, angle);
       }else {
-        zzinc_(Zridgeok)
+        zzinc_(Zridgeok);
         wwmax_(Wridgeokmax, angle);
         wwadd_(Wridgeok, angle);
       }

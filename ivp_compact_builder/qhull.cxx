@@ -516,7 +516,7 @@ At %02d:%02d:%02d & %2.5g CPU secs, qhull has created %d facets and merged %d.\n
   see:
     normally use qh_errexit() in user.c (reports a facet and a ridge)
 */
-void qh_errexit2(int exitcode, facetT *facet, facetT *otherfacet) {
+void qh_errexit2 [[noreturn]] (int exitcode, facetT *facet, facetT *otherfacet) {
   
   qh_errprint("ERRONEOUS", facet, otherfacet, NULL, NULL);
   qh_errexit (exitcode, NULL, NULL);

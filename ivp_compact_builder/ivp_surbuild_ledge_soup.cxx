@@ -329,7 +329,7 @@ void IVP_SurfaceBuilder_Ledge_Soup::ledges_to_spheres()
 	this->spheres_cluster[n].next     = n+1;
 	this->spheres_cluster[n].sphere   = sphere;
 
-	if ( hk_Math::almost_equal(this->smallest_radius, 0) ) {
+	if ( hk_Math::almost_zero(this->smallest_radius) ) {
 	    this->smallest_radius = sphere->radius;
 	}
 	else if ( sphere->radius < this->smallest_radius ) {
@@ -435,7 +435,7 @@ void IVP_SurfaceBuilder_Ledge_Soup::ledges_to_boxes_and_spheres()
 		this->spheres_cluster[n].next     = n+1;
 		this->spheres_cluster[n].sphere   = sphere;
 
-		if ( hk_Math::almost_equal( this->smallest_radius, 0 ) ) {
+		if ( hk_Math::almost_zero( this->smallest_radius ) ) {
 		    this->smallest_radius = sphere->radius;
 		} else if ( sphere->radius < this->smallest_radius ) {
 		    this->smallest_radius = sphere->radius;

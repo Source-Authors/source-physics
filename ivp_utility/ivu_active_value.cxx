@@ -400,7 +400,7 @@ IVP_U_Active_Terminal_Int::IVP_U_Active_Terminal_Int(const char *i_name,int new_
 
 void IVP_U_Active_Terminal_Double::update_float()
 {
-    if(this->double_value != old_value){
+    if( !hk_Math::almost_equal( this->double_value, old_value ) ){
 	this->old_value = double_value;
 	this->update_derived();
     }
@@ -491,7 +491,7 @@ void IVP_U_Active_Sine::active_float_changed(IVP_U_Active_Float *)
     IVP_DOUBLE time = time_mod->give_double_value();
     IVP_DOUBLE new_val = IVP_Inline_Math::sind(time * frequence + time_shift) * amplitude + null_level;
 
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -538,7 +538,7 @@ void IVP_U_Active_Square::active_float_changed(IVP_U_Active_Float *)
     int h = (int)(time * frequence) & 1;
     IVP_DOUBLE new_val = (h) ? high_val : low_val;
     
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -591,7 +591,7 @@ void IVP_U_Active_Pulse::active_float_changed(IVP_U_Active_Float *)
     int val = (int)(time * frequence * m2) % m2;
     IVP_DOUBLE new_val = (val < m1) ? high_val : low_val;
     
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -636,7 +636,7 @@ void IVP_U_Active_Add::active_float_changed(IVP_U_Active_Float *)
     
     IVP_DOUBLE new_val = mod0->give_double_value() + mod1->give_double_value();
     
-    if(new_val != this->give_double_value()){
+    if( !hk_Math::almost_equal( new_val, this->give_double_value() ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -681,7 +681,7 @@ void IVP_U_Active_Sub::active_float_changed(IVP_U_Active_Float *)
     
     IVP_DOUBLE new_val = mod0->give_double_value() - mod1->give_double_value();
     
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -729,7 +729,7 @@ void IVP_U_Active_Add_Multiple::active_float_changed(IVP_U_Active_Float *)
     
     IVP_DOUBLE new_val = mod0->give_double_value() + factor * mod1->give_double_value();
     
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -777,7 +777,7 @@ void IVP_U_Active_Mult::active_float_changed(IVP_U_Active_Float *)
     
     IVP_DOUBLE new_val = mod0->give_double_value() * mod1->give_double_value();
     
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -833,7 +833,7 @@ void IVP_U_Active_Limit::active_float_changed(IVP_U_Active_Float *)
     if (new_val < low_val) new_val = low_val;
     if (new_val > high_val) new_val = high_val;
     
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }
@@ -940,13 +940,13 @@ void IVP_U_Active_Switch::active_float_changed(IVP_U_Active_Float *)
 
     IVP_DOUBLE new_val;
     IVP_DOUBLE cond_val = mod_cond->give_int_value();
-    if(cond_val){
+    if( !hk_Math::almost_zero( cond_val ) ){
 	new_val = mod_true->give_double_value();
     }else{
 	new_val = mod_false->give_double_value();
     }
 
-    if(new_val != this->double_value){
+    if( !hk_Math::almost_equal( new_val, this->double_value ) ){
 	this->double_value = new_val;
 	this->update_derived();
     }

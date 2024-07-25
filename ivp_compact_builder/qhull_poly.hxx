@@ -280,7 +280,7 @@ int 	qh_findgood (facetT *facetlist, int goodhorizon);
 void 	qh_findgood_all (facetT *facetlist);
 void    qh_furthestnext (void /* qh facet_list */);
 void    qh_furthestout (facetT *facet);
-void    qh_infiniteloop (facetT *facet);
+void    qh_infiniteloop [[noreturn]] (facetT *facet);
 void 	qh_initbuild(void);
 void 	qh_initialhull(setT *vertices);
 setT   *qh_initialvertices(int dim, setT *maxpoints, pointT *points, int numpoints);

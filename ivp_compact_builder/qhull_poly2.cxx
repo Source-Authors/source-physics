@@ -1504,7 +1504,7 @@ void qh_furthestout (facetT *facet) {
   qh_infiniteloop( facet )
     report infinite loop error due to facet
 */
-void qh_infiniteloop (facetT *facet) {
+void qh_infiniteloop [[noreturn]] (facetT *facet) {
 
   ivp_message( "qhull internal error (qh_infiniteloop): potential infinite loop detected\n");
   qh_errexit (qh_ERRqhull, facet, NULL);

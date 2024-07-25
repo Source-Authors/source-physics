@@ -49,7 +49,7 @@ void IVP_Event_Manager_Standard::simulate_time_events(IVP_Time_Manager *tman,IVP
 void IVP_Event_Manager_D::simulate_time_events(IVP_Time_Manager *tman,IVP_Environment *env,IVP_Time time) {
   IVP_FLOAT event_time;
   event_time = tman->min_hash->find_min_value();
-  if( time - tman->base_time ){
+  if( !hk_Math::almost_zero( time - tman->base_time ) ){
     //while ( (event_time = tman->min_hash->find_min_value()) < time - tman->base_time ){
       IVP_Time_Event *event = (IVP_Time_Event *)tman->min_hash->find_min_elem();
       tman->min_hash->remove_minlist_elem(event->index);

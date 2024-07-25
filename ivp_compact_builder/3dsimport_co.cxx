@@ -73,7 +73,7 @@ void FixMaps(H3dsScene * scene)
 				if(flags & VERBOSE)
 					ivp_message("%-14s bad mapping %.3f, scaling...\n",
 							mo->name, max);
-				float32 scale=1.0/max;
+				float32 scale=1.0f/max;
 				for(int mm=0; mm<mo->maps; mm++) {
 					H3dsMap * mmap = &mo->maplist[mm];
 					mmap->u *= scale;

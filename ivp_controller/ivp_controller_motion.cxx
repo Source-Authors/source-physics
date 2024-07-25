@@ -139,7 +139,7 @@ IVP_Controller_Motion::~IVP_Controller_Motion()
 }
 
 void IVP_Controller_Motion::set_target_position_ws(const IVP_U_Point * position){
-	if (position->quad_distance_to(&target_pos_ws) == 0) return;
+	if ( hk_Math::almost_zero( position->quad_distance_to(&target_pos_ws) ) ) return;
 
 	target_pos_ws = *position;
 	

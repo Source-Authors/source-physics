@@ -550,7 +550,7 @@ IVP_Actuator_Rot_Mot::~IVP_Actuator_Rot_Mot()
 }
 
 void IVP_Actuator_Rot_Mot::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vector<IVP_Core> * /*core_list*/) {
-    if (power == 0) return;	// don't wake up object
+    if ( hk_Math::almost_zero( power ) ) return;	// don't wake up object
   
     IVP_Real_Object *obj = get_actuator_anchor(0)->l_anchor_object;
     IVP_Core *core = obj->get_core();
@@ -641,7 +641,7 @@ IVP_Actuator_Torque::IVP_Actuator_Torque(IVP_Environment *env,    IVP_Template_T
     axis_in_core_coord_system.subtract(&get_actuator_anchor(1)->core_pos,&get_actuator_anchor(0)->core_pos);
     axis_in_core_coord_system.normize();
     this->torque = templ->torque;	
-    if (this->torque) {
+    if ( !hk_Math::almost_zero( this->torque ) ) {
 	ensure_actuator_in_simulation();
     }
 }

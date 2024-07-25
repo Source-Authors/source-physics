@@ -185,7 +185,7 @@ public:
     IVP_U_Float_Point K_object;
     IVP_U_Point K_vec_object;	// normized K_vec
     IVP_U_Point K_Lot_object;	// a normized vertical direction
-    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_PK_COLL::get_value(IVP_U_Matrix *A_w_f_c,IVP_U_Matrix *B_w_f_c) {
@@ -369,7 +369,7 @@ public:
     IVP_DOUBLE side;		// direction of H
 
     // object B
-    IVP_DOUBLE get_value(IVP_U_Matrix *K_w_f_c,IVP_U_Matrix *L_w_f_c);
+    IVP_DOUBLE get_value(IVP_U_Matrix *K_w_f_c,IVP_U_Matrix *L_w_f_c) override;
 };
 
 IVP_DOUBLE IVP_3D_Solver_KK_COLL::get_value(IVP_U_Matrix *K_w_f_c,IVP_U_Matrix *L_w_f_c){
@@ -495,7 +495,7 @@ void IVP_Mindist_Event_Solver::calc_next_event_KK(const IVP_Compact_Edge *K,
 	    solver_kk_coll.find_first_t_for_value_coll(   mindist->get_coll_dist() ,ivp_mindist_settings.real_coll_dist, 
 							   t_now, event_time_out,  
 							   &cache_K, &cache_L, 0, &event_time_out );
-	if (found){
+	if ( !hk_Math::almost_zero( found ) ){
 	    event_type_out = IVP_COLL_KK_COLL;
 	}
     }
@@ -514,7 +514,7 @@ void IVP_Mindist_Event_Solver::calc_next_event_KK(const IVP_Compact_Edge *K,
 	    solver_kk_parallel.find_first_t_for_value_max_dev( P_DOUBLE_EPS, 
 							       t_now, event_time_out, 0, 
 							       &cache_K, &cache_L , 0, &event_time_out );
-	if (found){
+	if ( !hk_Math::almost_zero( found ) ){
 	    event_type_out = IVP_COLL_KK_PARALLEL;
 	}
     }

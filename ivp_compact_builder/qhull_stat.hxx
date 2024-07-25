@@ -342,9 +342,9 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
   zzinc_( name ), zinc_( name)
     increment an integer statistic
 */
-#define zzinc_(id) {MAYdebugx; qhstat stats[id].i++;}
+#define zzinc_(id) do {MAYdebugx; qhstat stats[id].i++;} while (false)
 #if qh_KEEPstatistics
-#define zinc_(id) {MAYdebugx; qhstat stats[id].i++;}
+#define zinc_(id) do {MAYdebugx; qhstat stats[id].i++;} while (false)
 #else
 #define zinc_(id) {}
 #endif
@@ -355,11 +355,11 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
   zzadd_( name, value ), zadd_( name, value ), wadd_( name, value )
     add value to an integer or real statistic
 */
-#define zzadd_(id, val) {MAYdebugx; qhstat stats[id].i += (val);}
-#define wwadd_(id, val) {MAYdebugx; qhstat stats[id].r += (val);}
+#define zzadd_(id, val) do {MAYdebugx; qhstat stats[id].i += (val);} while (false)
+#define wwadd_(id, val) do {MAYdebugx; qhstat stats[id].r += (val);} while (false)
 #if qh_KEEPstatistics
-#define zadd_(id, val) {MAYdebugx; qhstat stats[id].i += (val);}
-#define wadd_(id, val) {MAYdebugx; qhstat stats[id].r += (val);}
+#define zadd_(id, val) do {MAYdebugx; qhstat stats[id].i += (val);} while (false)
+#define wadd_(id, val) do {MAYdebugx; qhstat stats[id].r += (val);} while (false)
 #else
 #define zadd_(id, val) {}
 #define wadd_(id, val) {}
@@ -387,10 +387,10 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
   zmax_( id, val ), wmax_( id, value )
     maximize id with val
 */
-#define wwmax_(id, val) {MAYdebugx; maximize_(qhstat stats[id].r,(val));}
+#define wwmax_(id, val) do {MAYdebugx; maximize_(qhstat stats[id].r,(val));} while (false)
 #if qh_KEEPstatistics
-#define zmax_(id, val) {MAYdebugx; maximize_(qhstat stats[id].i,(val));}
-#define wmax_(id, val) {MAYdebugx; maximize_(qhstat stats[id].r,(val));}
+#define zmax_(id, val) do {MAYdebugx; maximize_(qhstat stats[id].i,(val));} while (false)
+#define wmax_(id, val) do {MAYdebugx; maximize_(qhstat stats[id].r,(val));} while (false)
 #else
 #define zmax_(id, val) {}
 #define wmax_(id, val) {}
@@ -403,8 +403,8 @@ enum ztypes {zdoc,zinc,zadd,zmax,zmin,ZTYPEreal,wadd,wmax,wmin,ZTYPEend};
     minimize id with val
 */
 #if qh_KEEPstatistics
-#define zmin_(id, val) {MAYdebugx; minimize_(qhstat stats[id].i,(val));}
-#define wmin_(id, val) {MAYdebugx; minimize_(qhstat stats[id].r,(val));}
+#define zmin_(id, val) do {MAYdebugx; minimize_(qhstat stats[id].i,(val));} while (false)
+#define wmin_(id, val) do {MAYdebugx; minimize_(qhstat stats[id].r,(val));} while (false)
 #else
 #define zmin_(id, val) {}
 #define wmin_(id, val) {}

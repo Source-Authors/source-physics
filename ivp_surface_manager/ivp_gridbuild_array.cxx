@@ -685,7 +685,6 @@ void IVP_GridBuilder_Array::convert_strip_to_compact_ledges(int row, IVP_U_Vecto
 #endif
 		break;
 	    }
-	    break;
 	}
 	int ledge_index = ledges->len();
 	ledges->add(cl);

@@ -164,7 +164,7 @@ void IVP_Car_System_Real_Wheels::do_steering_wheel(IVP_POS_WHEEL wheel_pos, IVP_
 void IVP_Car_System_Real_Wheels::do_steering(IVP_FLOAT s_angle, bool bAnalog)
 {
     // tell constraint system new steering positions of wheels
-    if (  steering_angle == s_angle) return;
+    if ( hk_Math::almost_equal( steering_angle, s_angle ) ) return;
 
     IVP_Constraint_Solver_Car *cs_car=this->car_constraint_solver;
 

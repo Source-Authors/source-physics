@@ -29,9 +29,9 @@ bool hk_Matrix3::is_identity_rotation() const
 {
 	const hk_Matrix3& m = *this;
 	// dimhotepus: Compare with eps to honor float imprecisions.
-	return	hk_Math::almost_equal(m(0,0), 1) && hk_Math::almost_equal(m(0,1), 0) && hk_Math::almost_equal(m(0,2), 0) &&
-		hk_Math::almost_equal(m(1,0), 0) && hk_Math::almost_equal(m(1,1), 1) && hk_Math::almost_equal(m(1,2), 0) &&
-		hk_Math::almost_equal(m(2,0), 0) && hk_Math::almost_equal(m(2,1), 0) && hk_Math::almost_equal(m(2,2), 1);
+	return	hk_Math::almost_equal(m(0,0), 1) && hk_Math::almost_zero(m(0,1)) && hk_Math::almost_zero(m(0,2)) &&
+		hk_Math::almost_zero(m(1,0)) && hk_Math::almost_equal(m(1,1), 1) && hk_Math::almost_zero(m(1,2)) &&
+		hk_Math::almost_zero(m(2,0)) && hk_Math::almost_zero(m(2,1)) && hk_Math::almost_equal(m(2,2), 1);
 }
 
 void hk_Matrix3::set_zero()

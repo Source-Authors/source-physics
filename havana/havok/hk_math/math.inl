@@ -85,7 +85,40 @@ inline int hk_Math::int_log2( hk_real ) { return 0; }
 
 inline bool hk_Math::almost_equal( hk_real a, hk_real b, hk_real eps )
 {
-	return hk_Math::fabs(a - b) <= eps;
+	// Calculate the difference.
+	const hk_real diff{hk_Math::fabs(a - b)};
+
+	a = hk_Math::fabs(a);
+	b = hk_Math::fabs(b);
+
+	// Find the largest.
+	const hk_real largest{(b > a) ? b : a};
+
+	return diff <= largest * eps;
+}
+
+inline bool hk_Math::almost_equal( hk_double a, hk_double b, hk_double eps )
+{
+	// Calculate the difference.
+	const hk_double diff{hk_Math::fabsd(a - b)};
+
+	a = hk_Math::fabsd(a);
+	b = hk_Math::fabsd(b);
+
+	// Find the largest.
+	const hk_double largest{(b > a) ? b : a};
+
+	return diff <= largest * eps;
+}
+
+inline bool hk_Math::almost_zero( hk_real a, hk_real eps )
+{
+	return hk_Math::fabs(a) <= eps;
+}
+
+inline bool hk_Math::almost_zero( hk_double a, hk_double eps )
+{
+	return hk_Math::fabsd(a) <= eps;
 }
 
 inline hk_real hk_Math::_rand01()

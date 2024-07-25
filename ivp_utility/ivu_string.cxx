@@ -375,7 +375,7 @@ IVP_DOUBLE p_get_float(){
 int p_strlen(const char *s)
 {
     if(!s || s[0] == 0) return 0;
-    return strlen((char *)s);
+    return strlen(s);
 }
 
 int p_strcmp( const char *s1, const char *s2){

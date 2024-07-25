@@ -184,7 +184,6 @@ void *IVP_VHash::remove_elem(const void *elem, unsigned int hash_index){
 	      if (ideal_pos <= pos){	// element is not wrapped -> we are at the end of the hash table
 		  if (ideal_pos > last_pos) continue;  // no way to shift elements left to their ideal position
 	      }else{		// at the wrapped start of the hashtable, shifts are allowed
-		  ;
 	      }
 	  }
       }else{
@@ -448,7 +447,6 @@ void *IVP_VHash_Store::remove_elem(void *key_elem, unsigned int hash_index){
 	      if (ideal_pos <= pos){	// element is not wrapped -> we are at the end of the hash table
 		  if (ideal_pos > last_pos) continue;  // no way to shift elements left to their ideal position
 	      }else{		// at the wrapped start of the hashtable, shifts are allowed
-		  ;
 	      }
 	  }
       }else{

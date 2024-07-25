@@ -1034,7 +1034,7 @@ setT *qh_maxmin(pointT *points, int numpoints, int dimension) {
   qh WAScoplanar= False;
   if (qh ZEROcentrum)
     qh ZEROall_ok= True;
-  if (REALmin < REALepsilon && REALmin < REALmax && REALmin > -REALmax
+  if constexpr (REALmin < REALepsilon && REALmin < REALmax && REALmin > -REALmax
   && REALmax > 0.0 && -REALmax < 0.0)
     ; /* all ok */
   else {
@@ -1476,7 +1476,7 @@ void qh_projectinput (void) {
   project= (signed char*)qh_memalloc (size);
   memset ((char*)project, 0, size);
   for (k= 0; k < qh input_dim; k++) {   /* skip Delaunay bound */
-    if (qh lower_bound[k] == 0 && qh upper_bound[k] == 0) {
+    if (hk_Math::almost_zero( qh lower_bound[k] ) && hk_Math::almost_zero( qh upper_bound[k] )) {
       project[k]= -1;
       newdim--;
     }

@@ -351,8 +351,8 @@ void qh_collectstatistics (void) {
       dotproduct= qh_getangle(facet->normal, neighbor->normal);
       zinc_(Zangle);
       wadd_(Wangle, dotproduct);
-      wmax_(Wanglemax, dotproduct)
-      wmin_(Wanglemin, dotproduct)
+      wmax_(Wanglemax, dotproduct);
+      wmin_(Wanglemin, dotproduct);
     }
     if (facet->normal) {
       FOREACHvertex_(facet->vertices) {
@@ -491,7 +491,7 @@ boolT qh_newstats (int index, int *nextindex) {
 boolT qh_nostatistic (int i) {
   
   if ((qhstat type[i] > ZTYPEreal
-       &&qhstat stats[i].r == qhstat init[(unsigned char)(qhstat type[i])].r)
+       && hk_Math::almost_equal( qhstat stats[i].r, qhstat init[(unsigned char)(qhstat type[i])].r ) )
       || (qhstat type[i] < ZTYPEreal
 	  &&qhstat stats[i].i == qhstat init[(unsigned char)(qhstat type[i])].i))
     return True;

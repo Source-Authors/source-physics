@@ -188,7 +188,8 @@ public:
   
     /**** Methods: 2nd Level, based on primitives ****/
     /**** Methods: 2nd Level, based on primitives ****/
-    virtual void					do_steering(IVP_FLOAT steering_angle_in);											// default implementation updates this->steering_angle
+    // dimhotepus: Override base class steering to apply it!
+    void					do_steering(IVP_FLOAT steering_angle_in, bool bAnalog = false) override;											// default implementation updates this->steering_angle
     
     void					set_booster_acceleration( IVP_FLOAT acceleration) override;
     void					activate_booster(IVP_FLOAT thrust, IVP_FLOAT duration, IVP_FLOAT delay) override;

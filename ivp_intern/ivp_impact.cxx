@@ -1176,8 +1176,8 @@ void IVP_Contact_Point::recompute_friction() {
 	env->sim_unit_mem->end_memory_transaction();
 }
 
-void IVP_Impact_Solver::get_cos_sin_for_impact(IVP_FLOAT friction_val,IVP_FLOAT percent_energy_conservation,IVP_FLOAT *cos_val,IVP_FLOAT *sin_val) {
-    IVP_DOUBLE impact_fri_fact=friction_val * (1.0f + IVP_Inline_Math::ivp_sqrtf(percent_energy_conservation));
+void IVP_Impact_Solver::get_cos_sin_for_impact(IVP_FLOAT friction_val,IVP_FLOAT percent_energy_conservation_,IVP_FLOAT *cos_val,IVP_FLOAT *sin_val) {
+    IVP_DOUBLE impact_fri_fact=friction_val * (1.0f + IVP_Inline_Math::ivp_sqrtf(percent_energy_conservation_));
     IVP_DOUBLE fri_angle = IVP_Inline_Math::atand(impact_fri_fact);  // #+# bitter, kill, 
     IVP_DOUBLE c = IVP_Inline_Math::approx5_cos(fri_angle);
     *cos_val = c;
@@ -1693,10 +1693,10 @@ void  IVP_Impact_Solver::get_world_direction_second_friction(IVP_Contact_Point *
 		IVP_Core *i_core=cp->get_synapse(i)->l_obj->friction_core;
 		IVP_U_Matrix *mat=&i_core->m_world_f_core_last_psi;
 		mat->get_col(IVP_INDEX_X,&x_direction);
-		IVP_U_Float_Point *surf_normal=&cp->tmp_contact_info->surf_normal;
+		IVP_U_Float_Point *tmp_surf_normal=&cp->tmp_contact_info->surf_normal;
 
 		IVP_U_Float_Point x_in_surface;
-		x_in_surface.set_orthogonal_part(&x_direction,surf_normal);
+		x_in_surface.set_orthogonal_part(&x_direction,tmp_surf_normal);
 	    
 		IVP_DOUBLE relevance_factor=x_in_surface.real_length();
 		IVP_DOUBLE second_friction_val=mtl[i]->get_second_friction_factor();

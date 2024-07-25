@@ -597,7 +597,7 @@ void IVP_Controller_Raycast_Car::do_steering(IVP_FLOAT steering_angle_in, bool b
 {
 
     // tell constraint system new steering positions of wheels
-    if (  steering_angle == steering_angle_in) 
+    if ( hk_Math::almost_equal( steering_angle, steering_angle_in ) ) 
 		return;
 
     this->steering_angle = steering_angle_in;

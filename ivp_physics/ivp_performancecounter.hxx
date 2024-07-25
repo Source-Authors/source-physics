@@ -39,15 +39,14 @@ enum IVP_PERFORMANCE_ELEMENT {
 	IVP_PE_MAX
 };
 
-class IVP_PerformanceCounter {
-public:
+struct IVP_PerformanceCounter {
 	virtual void start_pcount() = 0;
 	virtual void pcount( IVP_PERFORMANCE_ELEMENT ) = 0;
 	virtual void stop_pcount() = 0;
 
-
 	virtual void environment_is_going_to_be_deleted(IVP_Environment *) = 0;
 	virtual void reset_and_print_performance_counters(IVP_Time current_time) = 0;
+
 	IVP_PerformanceCounter(){}
 	virtual ~IVP_PerformanceCounter(){}
 };
@@ -58,13 +57,23 @@ public:
  ********************************************************************************/
 class IVP_PerformanceCounter_Simple : public IVP_PerformanceCounter {
 public:
-    union {
-        int ref_counter[2];
 #ifdef WIN32
-      __int64 ref_counter64;
-#endif
+    __int64 ref_counter64;
 
-    };
+	typedef union _LARGE_INTEGER {
+		struct {
+			unsigned long LowPart;
+			long HighPart;
+		} DUMMYSTRUCTNAME;
+		struct {
+			unsigned long LowPart;
+			long HighPart;
+		} u;
+		long long QuadPart;
+	} LARGE_INTEGER;
+
+    LARGE_INTEGER counter_freq;
+#endif
 
     IVP_PERFORMANCE_ELEMENT counting;
 	int count_PSIs;

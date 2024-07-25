@@ -1164,7 +1164,7 @@ void IVP_Mindist::mindist_hull_limit_exceeded_event( IVP_HTIME hull_intrusion_va
       IVP_DOUBLE estimated_distance = this->get_length() - angular_movement - delta_center_distance + hull_intrusion_value;
       // this estimated_distance can now be used to throw mindist into hull again
       IVP_DOUBLE const look_ahead_factor = 6.0f;
-	IVP_IF( 0 && this->contact_plane.k[1] == -1.0f && !this->mindist_function){
+	IVP_IF( 0 && hk_Math::almost_equal( this->contact_plane.k[1], -1.0f ) && !this->mindist_function){
 	    ivp_message("sum_angular %f   angular_movement %f    sum_angular_hull_time %f\n", 
 		sum_angular, angular_movement, sum_angular_hull_time);
 	}
@@ -1186,7 +1186,7 @@ void IVP_Mindist::mindist_hull_limit_exceeded_event( IVP_HTIME hull_intrusion_va
 	IVP_DOUBLE dist_factor = estimated_distance / speed;
 	IVP_DOUBLE dist0 = dist_factor * speed0;
 	IVP_DOUBLE dist1 = dist_factor * speed1;
-	IVP_IF( 0 &&  this->contact_plane.k[1] == -1.0f && !this->mindist_function){
+	IVP_IF( 0 && hk_Math::almost_equal( this->contact_plane.k[1], -1.0f ) && !this->mindist_function){
 	    ivp_message("est_dist %f, center_dist %f   sum_angular %f\n", 
 		len_numerator, delta_center_distance, sum_angular);
 	}

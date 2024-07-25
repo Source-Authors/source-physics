@@ -63,12 +63,12 @@
     removing tracing reduces code size but doesn't change execution speed
 */
 #ifndef qh_NOtrace
-#define trace0(args) {if (qh IStracing) fprintf args;}
-#define trace1(args) {if (qh IStracing >= 1) fprintf args;}
-#define trace2(args) {if (qh IStracing >= 2) fprintf args;}
-#define trace3(args) {if (qh IStracing >= 3) fprintf args;}
-#define trace4(args) {if (qh IStracing >= 4) fprintf args;}
-#define trace5(args) {if (qh IStracing >= 5) fprintf args;}
+#define trace0(args) do {if (qh IStracing) fprintf args;} while (false)
+#define trace1(args) do {if (qh IStracing >= 1) fprintf args;} while (false)
+#define trace2(args) do {if (qh IStracing >= 2) fprintf args;} while (false)
+#define trace3(args) do {if (qh IStracing >= 3) fprintf args;} while (false)
+#define trace4(args) do {if (qh IStracing >= 4) fprintf args;} while (false)
+#define trace5(args) do {if (qh IStracing >= 5) fprintf args;} while (false)
 #else /* qh_NOtrace */
 #define trace0(args) {}
 #define trace1(args) {}
@@ -88,7 +88,7 @@ boolT   qh_addpoint (pointT *furthest, facetT *facet, boolT checkdist);
 void 	qh_buildhull(void);
 void    qh_buildtracing (pointT *furthest, facetT *facet);
 void    qh_build_withrestart (void);
-void 	qh_errexit2(int exitcode, facetT *facet, facetT *otherfacet);
+void 	qh_errexit2 [[noreturn]] (int exitcode, facetT *facet, facetT *otherfacet);
 void    qh_findhorizon(pointT *point, facetT *facet, int *goodvisible,int *goodhorizon);
 pointT *qh_nextfurthest (facetT **visible);
 void 	qh_partitionall(setT *vertices, pointT *points,int npoints);

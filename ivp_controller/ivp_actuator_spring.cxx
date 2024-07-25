@@ -255,14 +255,14 @@ IVP_Actuator_Suspension::IVP_Actuator_Suspension(IVP_Environment *env,
 
 void IVP_Actuator_Suspension::set_spring_damp_compression(IVP_FLOAT comp)
 {
-    if (spring_dampening_compression == comp) return;
+    if ( hk_Math::almost_equal( spring_dampening_compression, comp ) ) return;
     spring_dampening_compression = comp * spring_values_factor;
     this->ensure_actuator_in_simulation();
 }
 
 void IVP_Actuator_Suspension::set_max_body_force(IVP_FLOAT max_force)
 {
-    if (max_body_force == max_force) return;
+    if ( hk_Math::almost_equal( max_body_force, max_force ) ) return;
     max_body_force = max_force;
     this->ensure_actuator_in_simulation();
 }

@@ -50,7 +50,7 @@ class IVP_Actuator_Check_Dist;
 class IVP_Template_Constraint;
 class IVP_Constraint;
 class IVP_Collision_Delegator_Root;
-class IVP_PerformanceCounter;
+struct IVP_PerformanceCounter;
 class IVP_Anomaly_Manager;
 class IVP_Anomaly_Limits;
 

@@ -493,11 +493,11 @@ IVP_FLOAT IVP_Controller_Raycast_Airboat::get_booster_delay()
 	return booster_seconds_until_ready; 
 }
 
-
-void IVP_Controller_Raycast_Airboat::do_steering( IVP_FLOAT steering_angle_in )
+// dimhotepus: Override base class steering to apply it!
+void IVP_Controller_Raycast_Airboat::do_steering( IVP_FLOAT steering_angle_in, bool bAnalog )
 {
 	// Check for a change.
-    if (  m_SteeringAngle == steering_angle_in) 
+    if ( hk_Math::almost_equal( m_SteeringAngle, steering_angle_in ) ) 
 		return;
 
 	// Set the new steering angle.
