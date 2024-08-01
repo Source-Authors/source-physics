@@ -127,7 +127,6 @@ int	hk_Ball_Socket_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void 
 
 	hk_real *approaching_velocity = query_engine.get_vmq_storage().get_velocities();
 
-	const hk_real *pos = &b0->get_cached_transform().get_translation().x;
 	hk_Vector3 delta_dist_3;
 	delta_dist_3.set_mul( tau_factor * m_tau * pi.get_inv_delta_time(), dir );
 	delta_dist_3.add_mul( -1.0f * m_strength * damp_factor, *(const hk_Vector3 *)approaching_velocity );

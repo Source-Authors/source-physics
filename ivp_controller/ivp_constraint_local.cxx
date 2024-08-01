@@ -783,9 +783,6 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 			deactivate();
 			//P_DELETE_THIS(this);
 			return;
-			//free_translation_axis((IVP_COORDINATE_INDEX) i);
-			IVP_IF (1) printf("Translationsachse %d ist gebrochen!\n", i);
-			break;
 		    case IVP_CFE_BEND: // Constraint verschiebt sich in diese Richtung
                         // Maybe I should call a notify() function
                         // Matrizen verschieben und verdrehen
@@ -805,9 +802,6 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 			deactivate();
 			//P_DELETE_THIS(this);
 			return;
-			//ee_rotation_axis((IVP_COORDINATE_INDEX) i);
-			IVP_IF (1) printf("Rotationsachse %d ist gebrochen!\n", i);
-			break;
 		    case IVP_CFE_BEND:
 			// NOT implemented
 			break;
