@@ -1237,13 +1237,6 @@ void IVP_Mindist::do_impact(){
     }
 
 	g_pCurrentMindist = NULL;
-	if (g_fDeferDeleteMindist)
-	{
-		// BUGBUG: someone changed a collision filter and didn't tell us!
-		IVP_ASSERT(0);
-		delete this;
-		return;
-	}
 
     //revive_object_core is calling start_memory_transaction and end_memory_transaction, so we cannot start memory transaction earlier
     env->sim_unit_mem->start_memory_transaction();
@@ -1259,6 +1252,16 @@ void IVP_Mindist::do_impact(){
 
     IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(this, objects[0], objects[1]   );
     env->sim_unit_mem->end_memory_transaction();
+
+	if (g_fDeferDeleteMindist)
+	{
+		// BUGBUG: someone changed a collision filter and didn't tell us!
+		// Calling recheck_collision_filter should fix it and stop it from breaking the entire engine. (Never call "delete this;" here). 
+		// In most cases, this IVP_Mindist will also be deleted from recheck_collision_filter.
+		for (int i = 0;i<2;i++){
+			objects[i]->recheck_collision_filter();
+		} 
+	}
 }
 
 //find second critical core for core0 that is not core1
