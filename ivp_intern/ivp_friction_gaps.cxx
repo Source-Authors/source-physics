@@ -798,25 +798,6 @@ void IVP_Friction_Solver::setup_coords_mindists(IVP_Friction_System *fs)
 	}
 #endif
 
-
-void out_friction_info_obj(IVP_Core *obj)
-{
-    return; //absturz
-    IVP_IF(1) {
-	IVP_Friction_Info_For_Core *fr_info=obj->moveable_core_has_friction_info();
-	while(fr_info)    {
-	    printf("obj %lx fs %lx obj_ma %d",(long)obj&0x0000ffff,(long)fr_info->l_friction_system&0x0000ffff,obj->physical_unmoveable);
-	    
-	    for (int i = fr_info->friction_springs.len()-1; i>=0; i--){
-		IVP_Contact_Point *mindist = fr_info->friction_springs.element_at(i);
-		printf("  md %lx",(long)mindist&0x0000ffff);
-	    }
-	    fr_info=NULL;
-	    printf("\n");
-	}
-    }
-}
-
 /* friction distance with number 'current_contact_point_index' is tested. Therefore both objects of distance get a test push
  * Velocity changes are represented with 'rotation_vec' (obj coords) and 'translation_vec' (world coords)
  * then this funcion is called for both objects

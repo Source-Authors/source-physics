@@ -690,20 +690,8 @@ IVP_BOOL IVP_Simulation_Unit::sim_unit_calc_movement_state(IVP_Environment *env)
 
 void IVP_Simulation_Unit::init_moving_core_for_psi(IVP_Core *core, const IVP_Time &c_time) {
 
-    //IVP_PREFETCH(this->objects.elems); // now using special vector
-
-    IVP_IF(1) {
-	IVP_Friction_Info_For_Core *info=core->moveable_core_has_friction_info();
-	/*IVP_Friction_System *fs=NULL;
-	if(info) {
-	  fs=info->l_friction_system;
-	}*/
-    }
-  
     IVP_ASSERT(core->physical_unmoveable==IVP_FALSE);
 
-//    IVP_ASSERT ( c_time.get_time() == 0 || IVP_Inline_Math::fabsd( core->time_of_last_psi - c_time + 1.0f / core->i_delta_time ) < 10E-4f);
- 
     IVP_DOUBLE d_time = c_time - core->time_of_last_psi;
     
     core->q_world_f_core_next_psi.set_matrix(&core->m_world_f_core_last_psi);
