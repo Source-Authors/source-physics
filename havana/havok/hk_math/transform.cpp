@@ -32,14 +32,15 @@ void hk_Transform::set_identity_transform()
 }
 
 
-void hk_Transform::get_4x4_column_major(hk_real* p) const
+void hk_Transform::get_4x4_column_major(hk_Transform* p) const
 {
-	hkString::memcpy(p, &get_column(0), 16*sizeof(hk_real));
+	static_assert( sizeof(*p) >= sizeof(hk_real) * 16 );
+	hkString::memcpy(p, &get_column(0), sizeof(*p));
 
-	p[3]  = 0;
-	p[7]  = 0;
-	p[11] = 0;
-	p[15] = 1;
+	reinterpret_cast<hk_real*>(p)[3]  = 0;
+	reinterpret_cast<hk_real*>(p)[7]  = 0;
+	reinterpret_cast<hk_real*>(p)[11] = 0;
+	reinterpret_cast<hk_real*>(p)[15] = 1;
 }
 
 

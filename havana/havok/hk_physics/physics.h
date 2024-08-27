@@ -65,7 +65,7 @@ public:
 		if ( !this->flags.shift_core_f_object_is_zero)
 			next_m_world_f_core.vmult4(get_shift_core_f_object(), &next_m_world_f_core.vv);
 
-		next_m_world_f_core.get_4x4_column_major((hk_real*)&t);
+		next_m_world_f_core.get_4x4_column_major(&t);
 
 		return t;
 	}
@@ -74,14 +74,14 @@ public:
 		hk_Transform t;
 		if ( this->flags.shift_core_f_object_is_zero )
 		{
-			this->get_core()->get_m_world_f_core_PSI()->get_4x4_column_major( (hk_real *)&t );
+			this->get_core()->get_m_world_f_core_PSI()->get_4x4_column_major( &t );
 		}
 		else
 		{
 			IVP_U_Matrix coreShiftMatrix;
 			coreShiftMatrix.set_matrix( this->get_core()->get_m_world_f_core_PSI() );
 			coreShiftMatrix.vmult4( this->get_shift_core_f_object(), &coreShiftMatrix.vv );
-			coreShiftMatrix.get_4x4_column_major( (hk_real *)&t );
+			coreShiftMatrix.get_4x4_column_major( &t );
 		}
 		return t;
 	}
@@ -171,9 +171,7 @@ protected:
 
 protected:
 	hk_Rigid_Body_Binary_EF( hk_Environment *, hk_Rigid_Body *, hk_Rigid_Body *, hk_effector_priority );
-	~hk_Rigid_Body_Binary_EF(){
-
-	}
+	~hk_Rigid_Body_Binary_EF() = default;
 	
 public:
 	virtual void get_effected_entities(hk_Array<hk_Entity*> &ent_out)
