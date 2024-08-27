@@ -836,7 +836,7 @@ IVP_Compact_Grid *IVP_GridBuilder_Array::compile_ledges_into_compact_grid(const 
 		}
 
 		// and the ledges
-		dest = (char *)((long(dest)+0xf) & ~0xf);     	// align destination
+		dest = (char *)((intp(dest)+0xf) & ~0xf);     	// align destination
 		for (int ledge_index = 0; ledge_index < ledges->len(); ledge_index++){
 			IVP_Compact_Ledge *cl;
 			cl = ledges->element_at(ledge_index);
