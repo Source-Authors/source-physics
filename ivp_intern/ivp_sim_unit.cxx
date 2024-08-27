@@ -689,7 +689,6 @@ IVP_BOOL IVP_Simulation_Unit::sim_unit_calc_movement_state(IVP_Environment *env)
 }
 
 void IVP_Simulation_Unit::init_moving_core_for_psi(IVP_Core *core, const IVP_Time &c_time) {
-
     IVP_ASSERT(core->physical_unmoveable==IVP_FALSE);
 
     IVP_DOUBLE d_time = c_time - core->time_of_last_psi;
