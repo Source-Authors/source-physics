@@ -142,7 +142,7 @@ void hk_Array<T>::free_elem_array()
 {
 	if ( m_elems && ((char *)m_elems != (char *)(this + 1)))
 	{
-		hk_deallocate( m_elems, m_memsize * sizeof(T), HK_MEMORY_CLASS_ARRAY );
+		hk_deallocate( m_elems, m_memsize * sizeof(T), hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
 	}
 	m_n_elems = 0;
 	m_memsize = 0;
@@ -204,10 +204,10 @@ typename hk_Array<T>::iterator hk_Array<T>::start()
 template <class T>
 void hk_Array<T>::set( hk_Array<T> &t ) // OS: name to be discussed
 {
-	*this = t;
-	t.m_n_elems = 0;
-	t.m_memsize = 0;
-	t.m_elems = HK_NULL;
+	// dimhotepus: Do not leak old array.
+	std::swap( m_memsize, t.m_memsize );
+	std::swap( m_n_elems, t.m_n_elems );
+	std::swap( m_elems, t.m_elems );
 }
 
 

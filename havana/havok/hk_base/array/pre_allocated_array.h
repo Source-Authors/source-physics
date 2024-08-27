@@ -30,7 +30,7 @@ class hk_Pre_Allocated_Array : public hk_Array<T>
 			}
 			
 		}
-	HK_NEW_DELETE_FUNCTION_CLASS( hk_Pre_Allocated_Array<T>, HK_MEMORY_CLASS_ARRAY )		// e.g. defines new as   new (hk_Memory *)hk_Class_Name and delete var, hk_Memory *
+	HK_NEW_DELETE_FUNCTION_CLASS( hk_Pre_Allocated_Array<T>, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY )		// e.g. defines new as   new (hk_Memory *)hk_Class_Name and delete var, hk_Memory *
 };
 
 

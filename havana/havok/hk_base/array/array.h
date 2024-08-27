@@ -5,6 +5,8 @@
 #	error Include <hk_base/base.h> instead.
 #endif
 
+#include <algorithm>  // std::swap
+
 class hk_Array_Base
 {
 	public:

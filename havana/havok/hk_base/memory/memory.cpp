@@ -81,18 +81,7 @@ hk_Memory::hk_Memory(char *buffer, hk_size_t buffer_size)
 }
 
 
-hk_Memory::~hk_Memory()
-{
-	//[XXX this does not work in havok since global arrays
-	// may be destructed after this has been called :(
-	//while ( m_allocated_memory_blocks ){
-	//	hk_Memory_Block *b = m_allocated_memory_blocks;
-	//	m_allocated_memory_blocks = m_allocated_memory_blocks->m_next;
-	//	hk_Memory::aligned_free( (void *)b );
-	//}
-	//]
-}
-
+hk_Memory::~hk_Memory() = default;
 
 
 void *hk_Memory::allocate_real( hk_size_t size )
