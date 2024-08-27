@@ -526,7 +526,7 @@ public:
 
     void transpose();
     void set_transpose(const IVP_U_Matrix *in);
-	inline void get_4x4_column_major( IVP_FLOAT *out ) const;
+	inline void get_4x4_column_major( class hk_Transform *out ) const;
 
     IVP_RETURN_TYPE real_invert(IVP_DOUBLE epsilon = P_DOUBLE_EPS); 			// Using determinant algorithm
     IVP_RETURN_TYPE real_invert(const IVP_U_Matrix *m, IVP_DOUBLE epsilon = P_DOUBLE_EPS); // Overload

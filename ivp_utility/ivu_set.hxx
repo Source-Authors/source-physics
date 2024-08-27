@@ -63,7 +63,7 @@ public:
 
   int n_elems() { return nelems; }
   
-  ~IVP_U_Set(){}
+  ~IVP_U_Set() = default;
   IVP_U_Set(int init_size) : IVP_VHash(init_size) {}
 };
 

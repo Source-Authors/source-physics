@@ -43,27 +43,29 @@ void IVP_U_Matrix::inline_mimult4(const IVP_U_Matrix *mb, IVP_U_Matrix *m_out) c
 }
 
 
-void IVP_U_Matrix::get_4x4_column_major( IVP_FLOAT *o ) const
+void IVP_U_Matrix::get_4x4_column_major( class hk_Transform *o ) const
 {
-	o[0] = get_elem( 0, 0 );
-	o[1] = get_elem( 1, 0 );
-	o[2] = get_elem( 2, 0 );
-	o[3] = 0.0f;
+	static_assert( sizeof(*o) >= sizeof(hk_real) * 16 );
 
-	o[4] = get_elem( 0, 1 );
-	o[5] = get_elem( 1, 1 );
-	o[6] = get_elem( 2, 1 );
-	o[7] = 0.0f;
+	reinterpret_cast<hk_real*>(o)[0] = get_elem( 0, 0 );
+	reinterpret_cast<hk_real*>(o)[1] = get_elem( 1, 0 );
+	reinterpret_cast<hk_real*>(o)[2] = get_elem( 2, 0 );
+	reinterpret_cast<hk_real*>(o)[3] = 0.0f;
 
-	o[8] =	get_elem( 0, 2 );
-	o[9] =	get_elem( 1, 2 );
-	o[10] = get_elem( 2, 2 );
-	o[11] = 0.0f;
+	reinterpret_cast<hk_real*>(o)[4] = get_elem( 0, 1 );
+	reinterpret_cast<hk_real*>(o)[5] = get_elem( 1, 1 );
+	reinterpret_cast<hk_real*>(o)[6] = get_elem( 2, 1 );
+	reinterpret_cast<hk_real*>(o)[7] = 0.0f;
 
-	o[12] =	vv.k[0];
-	o[13] =	vv.k[1];
-	o[14] = vv.k[2];
-	o[15] = 1.0f;
+	reinterpret_cast<hk_real*>(o)[8] =	get_elem( 0, 2 );
+	reinterpret_cast<hk_real*>(o)[9] =	get_elem( 1, 2 );
+	reinterpret_cast<hk_real*>(o)[10] = get_elem( 2, 2 );
+	reinterpret_cast<hk_real*>(o)[11] = 0.0f;
+
+	reinterpret_cast<hk_real*>(o)[12] =	vv.k[0];
+	reinterpret_cast<hk_real*>(o)[13] =	vv.k[1];
+	reinterpret_cast<hk_real*>(o)[14] = vv.k[2];
+	reinterpret_cast<hk_real*>(o)[15] = 1.0f;
 }
 
 

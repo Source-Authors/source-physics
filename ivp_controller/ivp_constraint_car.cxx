@@ -224,7 +224,8 @@ void IVP_Constraint_Solver_Car::do_simulation_controller_rotation( IVP_Event_Sim
 			const IVP_DOUBLE tpm10 = tpm.get_elem( 1 ,0 );
 			const IVP_DOUBLE tpm11 = tpm.get_elem( 1, 1 );
 	  
-			r = IVP_Inline_Math::invert_2x2_matrix( tpm00, tpm01, tpm01 /*@@CB FIXME?*/,tpm11, &ia1, &ib1, &ia2, &ib2 );
+			// dimhotepus: tpm01 -> tpm10
+			r = IVP_Inline_Math::invert_2x2_matrix( tpm00, tpm01, tpm10, tpm11, &ia1, &ib1, &ia2, &ib2 );
 			if ( r == IVP_FAULT)
 			{
 				ivp_message("do_constraint_system: Couldn't invert rot matrix!\n");

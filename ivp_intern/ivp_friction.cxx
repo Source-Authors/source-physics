@@ -310,7 +310,8 @@ bool IVP_Contact_Point::friction_force_local_constraint_2d_wheel( IVP_Core *core
 	const IVP_DOUBLE tpm10 = tpm.get_elem( 1, 0 );
 	const IVP_DOUBLE tpm11 = tpm.get_elem( 1, 1 );
 	
-	IVP_RETURN_TYPE ret = IVP_Inline_Math::invert_2x2_matrix( tpm00, tpm01, tpm01, tpm11, &inv_mat2x2[0], &inv_mat2x2[1],&inv_mat2x2[2],&inv_mat2x2[3] );
+	// dimhotepus: tpm01 -> tpm10
+	IVP_RETURN_TYPE ret = IVP_Inline_Math::invert_2x2_matrix( tpm00, tpm01, tpm10, tpm11, &inv_mat2x2[0], &inv_mat2x2[1],&inv_mat2x2[2],&inv_mat2x2[3] );
 	if ( ret != IVP_OK ) 
 	{
 		flEnergy = 0.0f;
@@ -464,7 +465,8 @@ IVP_FLOAT IVP_Contact_Point::friction_force_local_constraint_2d(const IVP_Event_
 	const IVP_DOUBLE tpm10 = tpm.get_elem( 1, 0 );
 	const IVP_DOUBLE tpm11 = tpm.get_elem( 1, 1 );
 	
-	IVP_RETURN_TYPE ret = IVP_Inline_Math::invert_2x2_matrix( tpm00, tpm01, tpm01, tpm11, &inv_mat2x2[0], &inv_mat2x2[1],&inv_mat2x2[2],&inv_mat2x2[3] );
+	// dimhotepus: tpm01 -> tpm10
+	IVP_RETURN_TYPE ret = IVP_Inline_Math::invert_2x2_matrix( tpm00, tpm01, tpm10, tpm11, &inv_mat2x2[0], &inv_mat2x2[1],&inv_mat2x2[2],&inv_mat2x2[3] );
 	if( ret != IVP_OK ) 
 		return 0.0f;
 	
