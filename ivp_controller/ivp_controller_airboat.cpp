@@ -351,7 +351,6 @@ void IVP_Controller_Raycast_Airboat::DoSimulationSteering( IVP_Raycast_Airboat_P
 	for ( int iPoint = 0; iPoint < 4; ++iPoint )
 	{
 		IVP_Raycast_Airboat_Wheel *pPontoonPoint = get_wheel( IVP_POS_WHEEL( iPoint ) );
-		IVP_Raycast_Airboat_Pontoon_Temp *pTempPontoonPoint = &pTempPontoons[iPoint];
 
 		IVP_FLOAT flPontoonSign = iPoint >= 2 ? -1.0f : 1.0f;
 		IVP_FLOAT flForceRot = flForceRotational * flPontoonSign;
