@@ -1037,8 +1037,6 @@ void IVP_Mindist_Event_Solver::calc_next_event_BK(IVP_Ball * ball,const  IVP_Com
     IVP_U_Matrix_Cache cache_K(m_cache_K->clp_cache_object);
     
     //IVP_DOUBLE sum_abs_omega;
-    IVP_Core *solver_P = ball->get_core();
-    IVP_Core *solver_K = m_cache_K->get_core();
     //sum_abs_omega = solver_P->abs_omega + solver_K->abs_omega;
 
     event_time_out =  t_max;

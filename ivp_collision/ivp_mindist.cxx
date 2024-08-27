@@ -886,7 +886,7 @@ void IVP_Mindist::update_exact_mindist_events(IVP_BOOL allow_hull_conversion, IV
 		IVP_Debug_Manager *dm=get_environment()->get_debug_manager();
 		if(dm->file_out_impacts) 
 		{
-			fprintf(dm->out_deb_file,"doing_mindist_events %lx at %f\n",0x0000ffff&(long)this,get_environment()->get_current_time().get_time());
+			fprintf(dm->out_deb_file,"doing_mindist_events %zi at %f\n",0x0000ffff&(intp)this,get_environment()->get_current_time().get_time());
 		}
 	}
 	
