@@ -169,7 +169,6 @@ void hk_Ragdoll_Constraint::apply_angular_part( hk_PSI_Info &pi, hk_Ragdoll_Cons
 
 	// planar parts
 	int i = 2; do {
-		hk_VM_Query_Builder< hk_VMQ_Storage<1> >& qe = work.query_engine_angle[i];
 		hk_Constraint_Limit &limit = m_limits[ i ];
 
 		hk_real current_pos = work.joint_angles( i );
