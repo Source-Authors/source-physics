@@ -317,7 +317,7 @@ IVP_FLOAT ivp_rand();		// returns [0 .. 1]
 #	endif
 #	define IVP_IF_PREFETCH_ENABLED(x) if(x)
 #	include <xmmintrin.h>
-#	define IVP_PREFETCH( pntr, offset) _mm_prefetch( int(offset) + (char *)pntr, _MM_HINT_T1)
+#	define IVP_PREFETCH( pntr, offset) _mm_prefetch( intp(offset) + (char *)pntr, _MM_HINT_T1)
 #   endif
 
 
