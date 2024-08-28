@@ -50,10 +50,10 @@ enum IVP_Movement_Type {
     IVP_MT_GET_MINDIST = 0x21     // not really a movement type, used to get all mindists with recheck_ov_element
 };
 
-#define IVP_MTIS_SIMULATED(var) ( var < IVP_MT_NOT_SIM )
-#define IVP_MTIS_CAN_COLLIDE(var) ( var & 0x07 )
-#define IVP_MTIS_IS_MOVING(var) (  var & 0x07 )
-#define IVP_MTIS_IS_STATIC(var) ( var & 0x10 )
+#define IVP_MTIS_SIMULATED(var) ( (var) < IVP_MT_NOT_SIM )
+#define IVP_MTIS_CAN_COLLIDE(var) ( (var) & 0x07 )
+#define IVP_MTIS_IS_MOVING(var) (  (var) & 0x07 )
+#define IVP_MTIS_IS_STATIC(var) ( (var) & 0x10 )
 
 class IVP_Hull_Manager_Base_Gradient {
 public:

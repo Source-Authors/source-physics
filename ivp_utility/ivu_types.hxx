@@ -273,7 +273,7 @@ extern void ivp_memory_check(void *a);
 
 #define P_MEM_CLEAR(a) memset((char*)(a), 0, sizeof(*a))
 #define P_MEM_CLEAR_M4(a) memset((char*)(a)+sizeof(void*), 0, sizeof(*a)-sizeof(void *))
-#define P_MEM_CLEAR_ARRAY(clss,elems) memset((char*)(clss), 0, sizeof(*clss)*elems)
+#define P_MEM_CLEAR_ARRAY(clss,elems) memset((char*)(clss), 0, sizeof(*clss)*(elems))
 
 constexpr inline float P_FLOAT_EPS{1e-10f};  // used for division checking
 constexpr inline float P_FLOAT_RES{1e-6f};	// float resolution for numbers < 1.0
