@@ -126,8 +126,9 @@ IVP_SurfaceBuilder_Polygon_Convex::IVP_SurfaceBuilder_Polygon_Convex(IVP_Templat
 IVP_SurfaceBuilder_Polygon_Convex::~IVP_SurfaceBuilder_Polygon_Convex()
 {
     for (int i = poly_point_hash->len()-1; i >=0;i--){
-	IVP_U_Point *point = poly_point_hash->element_at(i);
-	if (point) delete point;
+	// dimhotepus: IVP_U_Point -> IVP_Poly_Point for correct dtor call.
+    IVP_Poly_Point *point = poly_point_hash->element_at(i);
+	delete point;
     }
     P_DELETE(poly_point_hash);
     P_DELETE(tetras);
