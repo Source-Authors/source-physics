@@ -44,9 +44,7 @@ IVP_Constraint_Local_Anchor::IVP_Constraint_Local_Anchor() {
     rot = NULL;
 }
 
-IVP_Constraint_Local_Anchor::~IVP_Constraint_Local_Anchor() {
-    //if (rot) delete rot;
-}
+IVP_Constraint_Local_Anchor::~IVP_Constraint_Local_Anchor() = default;
 
 IVP_Constraint_Local::IVP_Constraint_Local() {
     is_enabled = IVP_FALSE;
