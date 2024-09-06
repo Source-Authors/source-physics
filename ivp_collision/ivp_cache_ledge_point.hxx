@@ -50,7 +50,8 @@ public:
 	clp_cache_object->remove_reference();
     }
     IVP_Cache_Ledge_Point(IVP_Real_Object *obj, const IVP_Compact_Ledge *ledge){
-	this->init_cache_ledge_point(obj,ledge);
+        tmp.synapse = nullptr;
+	    this->init_cache_ledge_point(obj,ledge);
     }
     IVP_Cache_Ledge_Point() = default;
 };

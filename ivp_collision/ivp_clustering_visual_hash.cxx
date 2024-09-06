@@ -33,7 +33,7 @@ IVP_BOOL IVP_Clustering_Visualizer_Object_Hash::compare(void *elem0, void *elem1
 }
 
 int IVP_Clustering_Visualizer_Object_Hash::obj_to_index(IVP_Real_Object *obj) {
-
+    // dimhotepus: Yep, we hash only pointer here.
     return hash_index( (char *)obj, sizeof(obj));
 };
 
