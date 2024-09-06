@@ -851,7 +851,7 @@ int p_graphlib_robust_convert_3dmax_object_to_compact_ledges(P_Hardware *hw, con
 	long size;
 	if(fseek(inf, 0, SEEK_END)) {
         ivp_message( "Error seeking %s\n", infn);
-		if(outf!=stdout) fclose(outf);
+		if(outf && outf!=stdout) fclose(outf);
 		fclose(inf);
 		return 1;
 	}
