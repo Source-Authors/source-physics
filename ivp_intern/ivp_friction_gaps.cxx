@@ -626,7 +626,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	    IVP_Friction_Info_For_Core *fr_info = r_obj->get_friction_info(fs);
 
 	    if(fr_info->l_friction_system!=this){
-		printf("test_fr l_friction_system %f %zi\n",time.get_time(),(intp)obj_obj); CORE;
+		printf("test_fr l_friction_system %f %p\n",time.get_time(),obj_obj); CORE;
 	    }
 	    
 	    int found_mine=0;
@@ -650,7 +650,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	    }
 	    if(!found_mine)
 	    {
-		printf("test_fr mindist %zi missing in obj\n",(intp)mindist); CORE;
+		printf("test_fr mindist %p missing in obj\n",mindist); CORE;
 	    }
 	}
 
@@ -667,7 +667,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 		}
 	    }
 	    if(!found_mine) {
-		printf("test_fr dist %zi not found in pairs\n",(intp)mindist);
+		printf("test_fr dist %p not found in pairs\n",mindist);
 		CORE;
 	    }
 	}
@@ -689,7 +689,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 		    }
 		}
 		if(!found_mine)	{
-		    printf("test_fr pair %zi containing dist %zi not in system\n",(intp)fr_pair,(intp)fr_dist);
+		    printf("test_fr pair %p containing dist %p not in system\n",fr_pair,fr_dist);
 		    CORE;
 		}
 	    }
@@ -1012,10 +1012,10 @@ void IVP_Friction_System::exchange_friction_dists(IVP_Contact_Point *first_frd,I
 void IVP_Friction_System::ivp_debug_fs_pointers()
 {
     IVP_IF(1) {
-    printf("%lx  ",(long)first_friction_dist&0x0000ffff);
+    printf("%zi  ",(intp)first_friction_dist&0x0000ffff);
     for(IVP_Contact_Point *fr_d=get_first_friction_dist();fr_d;fr_d=get_next_friction_dist(fr_d))
     {
-	printf("%lx %lx %d %lx  ",(long)fr_d->prev_dist_in_friction&0x0000ffff,(long)fr_d&0x0000ffff,fr_d->has_negative_pull_since,(long)fr_d->next_dist_in_friction&0x0000ffff);
+	printf("%zi %zi %d %zi  ",(intp)fr_d->prev_dist_in_friction&0x0000ffff,(intp)fr_d&0x0000ffff,fr_d->has_negative_pull_since,(intp)fr_d->next_dist_in_friction&0x0000ffff);
     }
     printf("\n");
     }

@@ -618,8 +618,8 @@ void IVP_Real_Object::unlink_contact_points(IVP_BOOL silent) {
 	    IVP_Synapse_Friction *debug_syn=this->get_first_friction_synapse();
 	    printf("still_left_fd ");
 	    while(debug_syn) {
-		printf("fd %lx sys %lx  ",(long)debug_syn->get_contact_point(),
-		    (long)debug_syn->get_contact_point()->l_friction_system); 
+		printf("fd %p sys %p  ",debug_syn->get_contact_point(),
+		    debug_syn->get_contact_point()->l_friction_system); 
 		debug_syn=debug_syn->get_next();
 	    }
 	    printf("\n");

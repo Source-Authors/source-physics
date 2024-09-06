@@ -84,11 +84,11 @@ IVP_Contact_Point::IVP_Contact_Point( IVP_Mindist *md)
     //this->l_environment = mindist->l_environment;
     IVP_IF(1) {
 	IVP_IF(env->get_debug_manager()->check_fs) {
-	    fprintf(env->get_debug_manager()->out_deb_file,"create_mindist %f %lx cores %lx %lx\n",
+	    fprintf(env->get_debug_manager()->out_deb_file,"create_mindist %f %p cores %p %p\n",
 		    env->get_current_time().get_time(),
-		    (long)this,
-		    (long)syn0->l_obj->physical_core,
-		    (long)syn0->l_obj->physical_core);
+		    this,
+		    syn0->l_obj->physical_core,
+		    syn0->l_obj->physical_core);
 	}
     }
     if ( syn1->get_status() == IVP_ST_TRIANGLE){
@@ -1186,15 +1186,15 @@ void IVP_Friction_System::fusion_friction_systems(IVP_Friction_System *second_sy
     IVP_IF(1) {
         IVP_Environment *env=first_sys->l_environment;
 	IVP_IF(env->get_debug_manager()->check_fs) {
-	    printf("fusion_fs %f %lx %lx  cores ",env->get_current_time().get_time(),(long)first_sys,(long)second_sys);
+	    printf("fusion_fs %f %p %p  cores ",env->get_current_time().get_time(),first_sys,second_sys);
 	    for (int k = first_sys->cores_of_friction_system.len()-1; k>=0; k--){
 		IVP_Core *my_core = first_sys->cores_of_friction_system.element_at(k);
-	        printf("%lx ",(long)my_core);
+	        printf("%p ",my_core);
 	    }
 	    printf(" ");
 	    for (int l = second_sys->cores_of_friction_system.len()-1; l>=0; l--){
 		IVP_Core *my_core = second_sys->cores_of_friction_system.element_at(l);
-	        printf("%lx ",(long)my_core);
+	        printf("%p ",my_core);
 	    }
 	    printf("\n");	    
 	}
@@ -1369,7 +1369,7 @@ IVP_Core *IVP_Friction_System::union_find_fr_sys()
 	for (int k = fr_sys->cores_of_friction_system.len()-1; k>=0; k--){
 	    IVP_Core *objj = fr_sys->cores_of_friction_system.element_at(k);
 	    IVP_Core *of=objj->union_find_get_father();
-	    printf("uff of %lx : %lx\n",(long)objj&0x0000ffff,(long)of&0x0000ffff);
+	    printf("uff of %zi : %zi\n",(intp)objj&0x0000ffff,(intp)of&0x0000ffff);
 	}
     }
 
@@ -1407,10 +1407,10 @@ void IVP_Friction_System::split_friction_system(IVP_Core *split_father)
     IVP_Friction_System *new_fr_sys=new IVP_Friction_System(l_environment);
 
      IVP_IF( fr_sys->l_environment->get_debug_manager()->check_fs ) {
-        printf("split_fs %f %lx %lx  cores ",fr_sys->l_environment->get_current_time().get_time(),(long)fr_sys,(long)new_fr_sys);
+        printf("split_fs %f %p %p  cores ",fr_sys->l_environment->get_current_time().get_time(),fr_sys,new_fr_sys);
 	for (int i = fr_sys->cores_of_friction_system.len()-1; i>=0;i--){
 	    IVP_Core *my_core = fr_sys->cores_of_friction_system.element_at(i);
-	    printf("%lx ",(long)my_core);
+	    printf("%p ",my_core);
 	}
 	printf("\n");
      }
@@ -1565,19 +1565,19 @@ void IVP_Friction_System::split_friction_system(IVP_Core *split_father)
 void IVP_Friction_System::print_all_dists()
 {
     IVP_IF(1) {
-    printf("fs %lx  ",(long)this&0x0000ffff);
+    printf("fs %zi  ",(intp)this&0x0000ffff);
 		for(IVP_Contact_Point *mindist=this->get_first_friction_dist();mindist;mindist=this->get_next_friction_dist(mindist))
 		{
-		    printf("%lx ",(long)mindist&0x0000ffff);
+		    printf("%zi ",(intp)mindist&0x0000ffff);
 		}    
     printf("\n");
     printf("      ");
     for (int i = fr_pairs_of_objs.len()-1; i>=0; i--){
 	IVP_Friction_Core_Pair *fr_pair = fr_pairs_of_objs.element_at(i);
-	printf("p %lx %lx  ",(long)fr_pair->objs[0]&0x0000ffff,(long)fr_pair->objs[1]&0x0000ffff);
+	printf("p %zi %zi  ",(intp)fr_pair->objs[0]&0x0000ffff,(intp)fr_pair->objs[1]&0x0000ffff);
 	for (int c = fr_pair->fr_dists.len()-1;c>=0; c--){
 	    IVP_Contact_Point *fr_dist=fr_pair->fr_dists.element_at(c);
-	    printf("%lx ",(long)fr_dist&0x0000ffff);
+	    printf("%zi ",(intp)fr_dist&0x0000ffff);
 	}
     }
     printf("\n");
@@ -1894,30 +1894,30 @@ void IVP_Friction_Core_Pair::debug_read_vector_after_ease() {
 void IVP_Friction_System::debug_fs_out_ascii()
 {
     IVP_IF(1) {
-    printf("fs %lx  ",(long)this&0x0000ffff);
+    printf("fs %zi  ",(intp)this&0x0000ffff);
 		for(IVP_Contact_Point *mindist=this->get_first_friction_dist();mindist;mindist=this->get_next_friction_dist(mindist))
 		{
-		    printf("%lx ",(long)mindist&0x0000ffff);
+		    printf("%zi ",(intp)mindist&0x0000ffff);
 		}    
     printf("\n");
     for (int k = cores_of_friction_system.len()-1; k>=0; k--){
 	IVP_Core *my_core = cores_of_friction_system.element_at(k);
-        printf("    core %lx  ",(long)my_core&0x0000ffff);
+        printf("    core %zi  ",(intp)my_core&0x0000ffff);
 	IVP_Friction_Info_For_Core *inf=my_core->get_friction_info(this);
-	printf("lfs %lx  ",(long)inf->l_friction_system&0x0000ffff);
+	printf("lfs %zi  ",(intp)inf->l_friction_system&0x0000ffff);
 
 	for (int i = inf->friction_springs.len()-1; i>=0; i--){
 	    IVP_Contact_Point *mindist = inf->friction_springs.element_at(i);
-	    printf("%lx  ",(long)mindist&0x0000ffff);
+	    printf("%zi  ",(intp)mindist&0x0000ffff);
 	}
     }
     printf("\n");
     for (int m = fr_pairs_of_objs.len()-1; m>=0;m--){
 	IVP_Friction_Core_Pair *fr_pair = fr_pairs_of_objs.element_at(m);
-	printf("    p %lx %lx  ",(long)fr_pair->objs[0]&0x0000ffff,(long)fr_pair->objs[1]&0x0000ffff);
+	printf("    p %zi %zi  ",(intp)fr_pair->objs[0]&0x0000ffff,(intp)fr_pair->objs[1]&0x0000ffff);
 	for (int c = fr_pair->fr_dists.len()-1; c>=0; c--){
 	    IVP_Contact_Point *fr_dist= fr_pair->fr_dists.element_at(c);
-	    printf("%lx ",(long)fr_dist&0x0000ffff);
+	    printf("%zi ",(intp)fr_dist&0x0000ffff);
 	}
     }
     printf("\n");
@@ -1999,7 +1999,7 @@ inline IVP_FLOAT ivp_minimum(IVP_FLOAT a,IVP_FLOAT b) {
 IVP_BOOL IVP_Core::grow_friction_system() {
 
     IVP_IF( environment->get_debug_manager()->check_fs ) {
-	printf("growing_fs %f core %lx\n",environment->get_current_time().get_time(),(long)this);
+	printf("growing_fs %f core %p\n",environment->get_current_time().get_time(),this);
     }
 
     IVP_BOOL grew_new_contact_point=IVP_FALSE;

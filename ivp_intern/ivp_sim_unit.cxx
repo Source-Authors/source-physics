@@ -299,22 +299,22 @@ void IVP_Simulation_Unit::sim_unit_debug_out() {
     int i;
     for(i=sim_unit_cores.len()-1;i>=0;i--) {
         IVP_Core *my_core=sim_unit_cores.element_at(i);
-        printf("%lx: ",(long)my_core);
+        printf("%p: ",my_core);
 	IVP_Controller *my_cnt;
 	int j;
 	for(j=my_core->controllers_of_core.len()-1;j>=0;j--) {
 	    my_cnt=my_core->controllers_of_core.element_at(j);
-	    printf("%lx ",(long)my_cnt);
+	    printf("%p ",my_cnt);
 	}
 	printf("\n");
     }
     
     for(i=controller_cores.len()-1;i>=0;i--) {
-        printf("    controlr %lx: ",(long)controller_cores.element_at(i)->l_controller);
+        printf("    controlr %p: ",controller_cores.element_at(i)->l_controller);
 	int j;
 	IVP_Sim_Unit_Controller_Core_List *c_info=controller_cores.element_at(i);
 	for(j=c_info->cores_controlled_by.len()-1;j>=0;j--) {
-	    printf("%lx ",(long)c_info->cores_controlled_by.element_at(j));
+	    printf("%p ",c_info->cores_controlled_by.element_at(j));
 	}
 	printf("\n");
     }    
