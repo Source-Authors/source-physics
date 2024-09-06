@@ -112,7 +112,7 @@ int IVP_Triangle::print(const char *comment)
     const char *obj_name = "unknown name";
     printf("%s '%s' T(%d %d %d) \n",
 	   (comment)?comment:"",
-	   (obj_name)?obj_name:"",
+	   obj_name,
 	   this->three_edges[0].start_point->point_num(), 
 	   this->three_edges[0].next->start_point->point_num(),
 	   this->three_edges[0].prev->start_point->point_num()
@@ -214,20 +214,20 @@ int IVP_Tri_Edge::check_concavity(IVP_Tri_Edge *other_edge)
 	if (concav > 0){
 		return 0; // real convex
 	}
+
 	// are triangles in the same plane ?
 	if(concav < -P_Pop_Eps){
 	    // different planes -> everything normal
 		return 1; // real concav
 	}else{
 	    if(this->prev->start_point == other_edge->prev->start_point){
-		CORE;
-		return -1; // identical points
+			CORE;
+			return -1; // identical points
 	    }
+
 	    return -2;		// windschief
 	}
     }
-    CORE; // should not have happened
-    return -12345; // dummy
 }
 
 P_Sur_2D_Triangle::P_Sur_2D_Triangle(int pn0, int pn1, int pn2)
@@ -248,9 +248,7 @@ P_Sur_2D_Point::P_Sur_2D_Point(int i_point_num)
     point_num = i_point_num;
 }
 
-P_Sur_2D_Point::~P_Sur_2D_Point()
-{
-}
+P_Sur_2D_Point::~P_Sur_2D_Point() = default;
 
 P_Sur_2D_Line::P_Sur_2D_Line(P_Sur_2D_Point *sp, P_Sur_2D_Point *ep)
 {
@@ -267,10 +265,8 @@ P_Sur_2D_Line::P_Sur_2D_Line(P_Sur_2D_Point *sp, P_Sur_2D_Point *ep)
 #endif
 }
 
-P_Sur_2D_Line::~P_Sur_2D_Line()
-{
-    // end/start_points remain!
-}
+// end/start_points remain!
+P_Sur_2D_Line::~P_Sur_2D_Line() = default;
 
 int P_Sur_2D_Line::point_lies_to_the_left(IVP_U_Point *i_point)
 {
@@ -983,13 +979,11 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
     IVP_Template_Surface *sur;
     IVP_Poly_Point *po, *po2, *po3;
     IVP_Triangle *tri;
-    IVP_Hash *hash;
     IVP_Template_Polygon *templ = template_polygon;
-    int num_of_edges;
     
     // n_edges = 0;
-    num_of_edges = 6 * (templ->n_points-2); // accurately calculated
-    hash = new IVP_Hash(num_of_edges/*size*/, sizeof(void *) * 2 /*keylen*/, 0/*notfound*/);
+    int num_of_edges = 6 * (templ->n_points-2); // accurately calculated
+    IVP_Hash *hash = new IVP_Hash(num_of_edges/*size*/, sizeof(void *) * 2 /*keylen*/, 0/*notfound*/);
     {
 	int i;    
 	IVP_Tri_Edge *edge;
@@ -997,14 +991,20 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 	    // split plane into triangles and insert them
 	    P_Sur_2D *td_sur = new P_Sur_2D(this,sur);
 	    IVP_ERROR_STRING error = td_sur->calc_line_representation();
+
 	    if(error){
-		printf("make_triangles:calc_line_representation: %s\n", error);
-		return "No 2d representation";
+			fprintf(stderr, "make_triangles:calc_line_representation: %s\n", error);
+			// dimhotepus: Free on error.
+			P_DELETE(hash);
+			return "No 2d representation";
 	    }
+
 	    error = td_sur->calc_triangle_representation();
 	    if(error){
-		printf("make_triangles:calc_triangle_representation: %s\n", error);
-		return "no 3d representation";
+			fprintf(stderr, "make_triangles:calc_triangle_representation: %s\n", error);
+			// dimhotepus: Free on error.
+			P_DELETE(hash);
+			return "no 3d representation";
 	    }
 	    
 	    P_Sur_2D_Triangle *td_tri;
@@ -1562,6 +1562,7 @@ IVP_Triangle::IVP_Triangle()
     flags.is_terminal = 0;
     flags.is_hidden = 0;
     ivp_surface = NULL;
+    index = 0;
     memset((char*)(&three_edges[0]), 0, 3 * sizeof(IVP_Tri_Edge));
 }
 
@@ -1651,20 +1652,20 @@ void IVP_Object_Polygon_Tetra::calc_extrusion_point(const IVP_Tri_Edge *edge, IV
     IVP_U_Point mpo;		// mid point of tri_a, P_Pop_Eps dist to tria
     mpo.add_multiple(&mid_of_line, &edge->triangle->tmp.gen.hesse, eps);
 
-    IVP_U_Plain *oppo_ebene;
-    {
 	IVP_U_Point p0,p1;
 	p0.add_multiple(oppo->start_point, &oppo->triangle->tmp.gen.hesse,eps);
 	p1.add_multiple(oppo->next->start_point, &oppo->triangle->tmp.gen.hesse,eps);
-	oppo_ebene = new IVP_U_Plain(&p0,&p1,oppo->next->next->start_point);
-    }
-    IVP_U_Straight straight;
+	// dimhotepus: Do not alloc here, use stack for performance.
+	IVP_U_Plain oppo_ebene = IVP_U_Plain(&p0,&p1,oppo->next->next->start_point);
+
     IVP_U_Point svec;
     svec.subtract(&mpo, edge->prev->start_point);
-	
+
+    IVP_U_Straight straight;
     straight.set(edge->prev->start_point, &svec);
-    ((IVP_U_Hesse *)oppo_ebene)->calc_intersect_with(&straight,point_out);
-    delete oppo_ebene;
+
+    IVP_U_Hesse &oppo_ebene_hesse = oppo_ebene;
+    oppo_ebene_hesse.calc_intersect_with(&straight, point_out);
 }
 
 
