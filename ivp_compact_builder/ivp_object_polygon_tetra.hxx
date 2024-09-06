@@ -135,7 +135,7 @@ public:
 	    IVP_U_Hesse hesse;			// normized hesse
 		ivp_triangle_gen() = default;
 	} gen;
-	ivp_triangle_tmp(){}
+	ivp_triangle_tmp() = default;
     } tmp;    
     int index; // used for compact ledge generation
     

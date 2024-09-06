@@ -12,9 +12,7 @@ IVP_Compact_Recursive::IVP_Compact_Recursive() : ledges(128) {
 
 }
 
-IVP_Compact_Recursive::~IVP_Compact_Recursive(){
-
-}
+IVP_Compact_Recursive::~IVP_Compact_Recursive() = default;
 
 
 void IVP_Compact_Recursive::add_compact_ledge(const IVP_Compact_Ledge *ledge){

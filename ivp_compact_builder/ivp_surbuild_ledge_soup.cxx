@@ -100,9 +100,7 @@ IVP_SurfaceBuilder_Ledge_Soup::IVP_SurfaceBuilder_Ledge_Soup()
     return;
 }
 
-IVP_SurfaceBuilder_Ledge_Soup::~IVP_SurfaceBuilder_Ledge_Soup(){
-}
-
+IVP_SurfaceBuilder_Ledge_Soup::~IVP_SurfaceBuilder_Ledge_Soup() = default;
 
 void IVP_SurfaceBuilder_Ledge_Soup::insert_ledge(IVP_Compact_Ledge *c_ledge)
 {

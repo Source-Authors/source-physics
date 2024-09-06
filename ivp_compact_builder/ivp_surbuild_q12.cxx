@@ -28,7 +28,7 @@ public:
     int val;
 
     IVP_q12_int(int x) { this->val = x; }
-    ~IVP_q12_int() {}
+    ~IVP_q12_int() = default;
 };
 // hack :)
 
