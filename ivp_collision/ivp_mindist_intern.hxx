@@ -104,7 +104,7 @@ class IVP_Synapse_OO: public IVP_Listener_Hull {
     IVP_Real_Object *object;
     IVP_OO_Watcher *watcher;
     virtual ~IVP_Synapse_OO();
-    IVP_Synapse_OO(){}
+    IVP_Synapse_OO() : object{nullptr}, watcher{nullptr} {}
   void init_synapse_oo(IVP_OO_Watcher *, IVP_Real_Object *);
 public:
     IVP_HULL_ELEM_TYPE get_type() override { return IVP_HULL_ELEM_OO_WATCHER; }

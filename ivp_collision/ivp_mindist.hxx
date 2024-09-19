@@ -73,6 +73,7 @@ public:
     IVP_Real_Object *get_object(){ return l_obj; }
     IVP_SYNAPSE_POLYGON_STATUS get_status()const{ return (IVP_SYNAPSE_POLYGON_STATUS) status; }
 
+    IVP_Synapse() : next{nullptr}, prev{nullptr}, l_obj{nullptr}, edge{nullptr}, mindist_offset{SHRT_MAX}, status{SHRT_MAX} {}
     virtual ~IVP_Synapse(){}			// dummy, do not call
     const IVP_Compact_Ledge *get_ledge() const;
     const IVP_Compact_Edge *get_edge() const { return edge; }

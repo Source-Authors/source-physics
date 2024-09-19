@@ -196,7 +196,8 @@ private:
 
   IVP_U_Min_Hash *get_result_min_hash() { return &output_min_hash; }
   
-  IVP_Ray_Solver_Min_Hash(const IVP_Ray_Solver_Template *templ): IVP_Ray_Solver(templ), output_min_hash(8){
+  IVP_Ray_Solver_Min_Hash(const IVP_Ray_Solver_Template *templ): IVP_Ray_Solver(templ), output_min_hash(8) {
+      memset(hit_info, 0, sizeof(hit_info));
       // inits class members
   }
   ~IVP_Ray_Solver_Min_Hash(){}

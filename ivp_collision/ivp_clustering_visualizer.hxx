@@ -164,10 +164,8 @@ public:
     virtual void  visualize_request_for_node() = 0;
     virtual void  visualize_request_for_intruder_radius() = 0;
 
-    IVP_Clustering_Visualizer_Shortrange_Callback() {
-
-	this->user_data = NULL;
-	return;
+    IVP_Clustering_Visualizer_Shortrange_Callback()
+        : private_property{nullptr}, node{nullptr}, user_data{nullptr} {
     }
 
     virtual ~IVP_Clustering_Visualizer_Shortrange_Callback();

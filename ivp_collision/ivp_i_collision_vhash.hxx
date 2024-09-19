@@ -12,6 +12,8 @@ class IVP_Collision_Callback_Table {
 public:
     IVP_Real_Object                      *real_object;
     IVP_U_Vector<IVP_Listener_Collision>  listeners;
+
+    IVP_Collision_Callback_Table() : real_object{nullptr} {}
     ~IVP_Collision_Callback_Table();
 };
 
