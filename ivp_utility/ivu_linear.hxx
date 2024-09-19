@@ -117,7 +117,15 @@ public:
     void print(const char *comment = 0) const;
 
     IVP_U_Float_Point() = default;
-    IVP_U_Float_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = (IVP_FLOAT)x; k[1] = (IVP_FLOAT)y; k[2] = (IVP_FLOAT)z;}
+    IVP_U_Float_Point(IVP_DOUBLE x, IVP_DOUBLE y, IVP_DOUBLE z)
+    {
+        k[0] = (IVP_FLOAT)x;
+        k[1] = (IVP_FLOAT)y;
+        k[2] = (IVP_FLOAT)z;
+#ifdef IVP_VECTOR_UNIT_FLOAT
+        hesse_val = 0.0f;
+#endif
+    }
     IVP_U_Float_Point(const IVP_U_Float_Point *p);
 
 #if !defined(IVP_NO_DOUBLE)
@@ -257,7 +265,16 @@ public:
 
     IVP_U_Point() = default;
     inline IVP_U_Point(const IVP_U_Float_Point &p);
-    IVP_U_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z){ k[0] = x; k[1] = y; k[2] = z;}
+    IVP_U_Point(IVP_DOUBLE x, IVP_DOUBLE y,IVP_DOUBLE z)
+    {
+        k[0] = x;
+        k[1] = y;
+        k[2] = z;
+
+#ifdef IVP_VECTOR_UNIT_DOUBLE
+        hesse_val = 0.0;
+#endif
+    }
 
 	inline void byte_swap() { IVP_ASSERT( 0 && "No byte swap for doubles yet"); CORE; }
 
