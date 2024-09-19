@@ -664,17 +664,21 @@ void IVP_SurfaceBuilder_Q12::unload_q12bsp()
 
 IVP_SurfaceBuilder_Q12::IVP_SurfaceBuilder_Q12()
 {
+    this->header = NULL;
     this->dmodels = NULL;
     this->dplanes = NULL;
     this->dnodes = NULL;
     this->dclipnodes = NULL;
-    this->scale = 1.0f;
     this->shrink_value = 0.0f;
+    this->scale = 1.0f;
+    this->pointmerge_threshold = NAN;
     this->bsptree_loaded_from_disk = IVP_FALSE;
     this->halfspaces = new IVP_Halfspacesoup();
 
     this->zero = new IVP_q12_int(0);
     this->one = new IVP_q12_int(1);
+    this->min_x = min_y = min_z = NAN;
+    this->max_x = max_y = max_z = NAN;
     return;
 }
 

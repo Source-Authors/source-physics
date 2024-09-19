@@ -64,7 +64,7 @@ class IVP_Poly_Point : public IVP_U_Point
 {
     friend class IVP_Tri_Edge;
 public:
-    IVP_Poly_Point() { tmp.tetra_point = NULL; }
+    IVP_Poly_Point() { l_tetras = nullptr; tmp.tetra_point = nullptr; }
     inline IVP_Real_Object *get_real_object2() const; // @@@@@ returns 0
     IVP_Object_Polygon_Tetra *l_tetras;
     union {			// temporary pointers
@@ -157,6 +157,8 @@ class IVP_Template_Polygon;
 
 class IVP_Extra_Point : public IVP_Poly_Point {
 public:
+    IVP_Extra_Point() : next{nullptr} {}
+
     IVP_Extra_Point *next;
 };
 
