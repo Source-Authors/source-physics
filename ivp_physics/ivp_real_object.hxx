@@ -107,7 +107,8 @@ protected:
           exact_synapses(nullptr),
           invalid_synapses(nullptr),
           friction_synapses(nullptr),
-          q_core_f_object(nullptr) {}
+          q_core_f_object(nullptr),
+          shift_core_f_object{NAN, NAN, NAN} {}
 
 public:
     const IVP_U_Float_Point *get_shift_core_f_object() const { return &shift_core_f_object; }

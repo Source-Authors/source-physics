@@ -10,9 +10,12 @@ class IVP_Environment;
 
 struct IVP_Time_Event {
     int index;
-    IVP_Time_Event() = default;
+
+    IVP_Time_Event() : index{-1} {}
+
     // dimhotepus: Make pure instead of CORE.
     virtual void simulate_time_event(IVP_Environment *) = 0; // to be implemented by application
+
     virtual ~IVP_Time_Event();
 };
 
