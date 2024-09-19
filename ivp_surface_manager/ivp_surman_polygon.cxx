@@ -191,7 +191,7 @@ void IVP_SurfaceManager_Polygon::remove_reference_to_ledge(const IVP_Compact_Led
 
 
 
-IVP_SurfaceManager_Polygon::IVP_SurfaceManager_Polygon()
+IVP_SurfaceManager_Polygon::IVP_SurfaceManager_Polygon() : compact_surface{nullptr}
 {
 }
 
