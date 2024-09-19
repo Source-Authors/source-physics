@@ -7,6 +7,8 @@ class hk_Prismatic_BP  //: public hk_Effector_BP
 
 		inline hk_Prismatic_BP()
 		{
+			m_bodies[0] = UINT_MAX;
+			m_bodies[1] = UINT_MAX;
 			m_strength	= 1.0f;
 			m_tau		= 1.0f;
 			m_transform_Ros_Aos.set_identity();

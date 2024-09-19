@@ -15,6 +15,8 @@ class hk_Hinge_BP  //: public hk_Effector_BP
 			m_axis_os[1].set_zero();
 			m_axis_perp_os[0].set_zero();
 			m_axis_perp_os[1].set_zero();
+			m_bodies[0] = UINT_MAX;
+			m_bodies[1] = UINT_MAX;
 		}
 
 		void set_axis_os( int obj_idx, const hk_Ray& axis_os);

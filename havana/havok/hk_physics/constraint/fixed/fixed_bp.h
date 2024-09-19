@@ -19,6 +19,8 @@ class hk_Fixed_BP  //: public hk_Effector_BP
 			m_strength	= 1.0f;
 			m_tau		= 1.0f;
 			m_transform_os_ks.set_identity_transform();
+			m_bodies[0] = UINT_MAX;
+			m_bodies[1] = UINT_MAX;
 		}
 	
 	public: // hack for now //private: 

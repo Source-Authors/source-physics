@@ -186,21 +186,6 @@ class hk_VM_Query_Builder
 			vmq.m_angular.set_cross( mcr, vmq.m_linear );
 #endif
 			HK_TRANSFORM_TO_CORE_SPACE( rb, vmq.m_angular );
-			/*
-			{ // ipion check hack
-				IVP_U_Float_Point dir_ws( vmq.m_linear(0), vmq.m_linear(1),vmq.m_linear(2) );
-				IVP_U_Float_Point dir_cs;
-				rb->get_core()->get_m_world_f_core_PSI()->vimult3( &dir_ws, &dir_cs );
-
-				IVP_U_Float_Point pos_ws( mass_center_relative(0), mass_center_relative(1), mass_center_relative(2) );
-				IVP_U_Float_Point pos_cs;
-				rb->get_core()->get_m_world_f_core_PSI()->vimult3( &pos_ws, &pos_cs );
-	
-				IVP_U_Float_Point cross_cs;
-				cross_cs.inline_calc_cross_product( &pos_cs, &dir_cs );
-				ivp_message("hav %1.3f %1.3f %1.3f   ipion %1.3f %1.3f %1.3f\n", vmq.m_angular.x, vmq.m_angular.y, vmq.m_angular.z, cross_cs.k[0], cross_cs.k[1], cross_cs.k[2]);
-			}
-			// */
 
 			vmq.m_matrix_index = m_dense_matrix_offset + index_offset;
 			vmq.m_entity_core_id = rb->get_entity_core_id();

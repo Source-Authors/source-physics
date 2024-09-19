@@ -15,6 +15,8 @@ class hk_Pulley_BP  //: public hk_Constraint_BP
 			m_translation_os_ks[1].set(0,0,0);
 			m_worldspace_point[0].set(0,0,0);
 			m_worldspace_point[1].set(0,0,0);
+			m_bodies[0] = UINT_MAX;
+			m_bodies[1] = UINT_MAX;
 		}
 
 		//void set_position_os ( int, hk_Vector3& position_os);

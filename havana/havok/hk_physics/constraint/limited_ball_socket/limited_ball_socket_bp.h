@@ -17,6 +17,8 @@ class hk_Limited_Ball_Socket_BP  //: public hk_Effector_BP
 				m_angular_limits[i].m_min = 0;
 				m_angular_limits[i].m_max = 0;
 			}
+			m_bodies[0] = UINT_MAX;
+			m_bodies[1] = UINT_MAX;
 			m_constrainTranslation = true;
 		}
 
