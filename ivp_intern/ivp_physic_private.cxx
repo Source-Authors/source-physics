@@ -585,6 +585,7 @@ IVP_Friction_System::IVP_Friction_System(IVP_Environment *env)
     }
     //printf("creating_new_fs %lx at time %f\n",(long)this,env->get_current_time());
     l_environment=env;
+    next_friction_system = prev_friction_system = nullptr;
     //first_friction_obj=NULL;
     union_find_necessary=IVP_FALSE;
     first_friction_dist=NULL;
