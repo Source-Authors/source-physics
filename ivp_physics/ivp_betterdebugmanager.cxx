@@ -11,7 +11,7 @@
 
 void IVP_BetterDebugmanager::enable_debug_output(IVP_DEBUG_CLASS class_id) {
 
-    if (class_id >= IVP_DEBUG_MAX_N_CLASSES ) {
+    if (class_id < IVP_DM_DUMMY || class_id >= IVP_DEBUG_MAX_N_CLASSES) {
 	return;
     }
     this->flag_list[class_id] = 1;
@@ -21,7 +21,7 @@ void IVP_BetterDebugmanager::enable_debug_output(IVP_DEBUG_CLASS class_id) {
 
 void IVP_BetterDebugmanager::disable_debug_output(IVP_DEBUG_CLASS class_id) {
 
-    if (class_id >= IVP_DEBUG_MAX_N_CLASSES ) {
+    if (class_id < IVP_DM_DUMMY || class_id >= IVP_DEBUG_MAX_N_CLASSES) {
 	return;
     }
     this->flag_list[class_id] = 0;
@@ -35,7 +35,7 @@ IVP_BOOL IVP_BetterDebugmanager::is_debug_enabled(IVP_DEBUG_CLASS class_id) {
     if (class_id >= IVP_DEBUG_MAX_N_CLASSES ) {
 	return(IVP_FALSE);
     }
-    if ( this->flag_list[class_id] == 0 || !this->initialized ) {
+    if ( class_id < IVP_DM_DUMMY || this->flag_list[class_id] == 0 || !this->initialized ) {
 	return(IVP_FALSE);
     }
     return(IVP_TRUE);
