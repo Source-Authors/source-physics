@@ -87,6 +87,7 @@ IVP_Constraint_Solver_Car::IVP_Constraint_Solver_Car( IVP_COORDINATE_INDEX right
 {
     // P_MEM_CLEAR(this); NO !!!
 	
+    memset(c_local_ballsocket, 0, sizeof(c_local_ballsocket));
     this->body_object = NULL;
     this->x_idx = right;
     this->y_idx = up;
