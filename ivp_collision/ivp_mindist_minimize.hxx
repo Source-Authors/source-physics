@@ -139,8 +139,8 @@ public:
 	}
 	IVP_SYNAPSE_POLYGON_STATUS s0 = mindist->get_sorted_synapse(0)->get_status();
 	IVP_SYNAPSE_POLYGON_STATUS s1 = mindist->get_sorted_synapse(1)->get_status();
-	IVP_ASSERT(s0 < IVP_ST_MAX_LEGAL );
-	IVP_ASSERT(s1 < IVP_ST_MAX_LEGAL );
+	IVP_ASSERT( s0 >= IVP_ST_POINT && s0 < IVP_ST_MAX_LEGAL );
+	IVP_ASSERT( s1 >= IVP_ST_POINT && s1 < IVP_ST_MAX_LEGAL );
 
 	IVP_MRC_TYPE ret = mms_function_table[s0][s1]( this );
 	return ret;
