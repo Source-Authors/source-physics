@@ -77,7 +77,7 @@ hk_Pulley_Constraint::hk_Pulley_Constraint(
 	const hk_Pulley_BP* bp,
 	hk_Rigid_Body* a ,
 	hk_Rigid_Body* b )
-	: hk_Constraint( constraint_system, a, b, HK_PRIORITY_LOCAL_CONSTRAINT, HK_NEXT_MULTIPLE_OF(16,sizeof(hk_Pulley_Work)))
+	: hk_Constraint( constraint_system, a, b, HK_PRIORITY_LOCAL_CONSTRAINT, HK_NEXT_MULTIPLE_OF(16,static_cast<int>(sizeof(hk_Pulley_Work))))
 {
 	init_pulley_constraint( bp );
 }
@@ -99,7 +99,7 @@ void hk_Pulley_Constraint::set_worldspace_point( int index, const hk_Vector3& ws
 
 int hk_Pulley_Constraint::get_vmq_storage_size()
 {
-	return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Pulley_Work));
+	return HK_NEXT_MULTIPLE_OF(16, static_cast<int>(sizeof(hk_Pulley_Work)));
 }
 
 int hk_Pulley_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor )
@@ -151,7 +151,7 @@ int hk_Pulley_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void *mem,
 			query_engine.apply_impulses( HK_BODY_B, b1, (hk_real *)&impulses(0) );
 		}
 	}
-	return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Pulley_Work));
+	return HK_NEXT_MULTIPLE_OF(16, static_cast<int>(sizeof(hk_Pulley_Work)));
 }
 
 void hk_Pulley_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor )

@@ -74,7 +74,7 @@ hk_Stiff_Spring_Constraint::hk_Stiff_Spring_Constraint(
 	const hk_Stiff_Spring_BP* bp,
 	hk_Rigid_Body* a ,
 	hk_Rigid_Body* b )
-	: hk_Constraint( constraint_system, a, b, HK_PRIORITY_LOCAL_CONSTRAINT, HK_NEXT_MULTIPLE_OF(16,sizeof(hk_Stiff_Spring_Work)))
+	: hk_Constraint( constraint_system, a, b, HK_PRIORITY_LOCAL_CONSTRAINT, HK_NEXT_MULTIPLE_OF(16,static_cast<int>(sizeof(hk_Stiff_Spring_Work))))
 {
 	init_stiff_spring_constraint( bp );
 }
@@ -86,7 +86,7 @@ void hk_Stiff_Spring_Constraint::set_length( hk_real length)
 
 int hk_Stiff_Spring_Constraint::get_vmq_storage_size()
 {
-	return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Stiff_Spring_Work));
+	return HK_NEXT_MULTIPLE_OF(16, static_cast<int>(sizeof(hk_Stiff_Spring_Work)));
 }
 
 float IntervalDistance(float a1, float a2, float a3)
@@ -134,7 +134,7 @@ int hk_Stiff_Spring_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void
 		hk_real next_dist = IntervalDistance(next_norm_length, m_min_length, m_stiff_spring_length);
 		work.skip_solve = next_dist == 0.f;
 		if (work.skip_solve)
-			return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Stiff_Spring_Work));
+			return HK_NEXT_MULTIPLE_OF(16, static_cast<int>(sizeof(hk_Stiff_Spring_Work)));
 	}
 
 	query_engine.begin(1);
@@ -162,7 +162,7 @@ int hk_Stiff_Spring_Constraint::setup_and_step_constraint( hk_PSI_Info& pi, void
 		query_engine.apply_impulses( HK_BODY_A, b0, (hk_real *)&impulses(0) );
 		query_engine.apply_impulses( HK_BODY_B, b1, (hk_real *)&impulses(0) );
 	}
-	return HK_NEXT_MULTIPLE_OF(16, sizeof(hk_Stiff_Spring_Work));
+	return HK_NEXT_MULTIPLE_OF(16, static_cast<int>(sizeof(hk_Stiff_Spring_Work)));
 }
 
 void hk_Stiff_Spring_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor )
