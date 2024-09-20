@@ -56,8 +56,9 @@ hk_result hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_
 					}
 				}
 			}
-			hk_Rotation m0 = r.m_transform_os_ks[0];
-			hk_Rotation m1 = r.m_transform_os_ks[1];
+			// dimhotepus: hk_Rotation -> hk_Transform to not slice.
+			hk_Transform m0 = r.m_transform_os_ks[0];
+			hk_Transform m1 = r.m_transform_os_ks[1];
 
 			// rotate matrix to center axis
 			m0.rotate( axis, limit_mid[axis]);
@@ -125,7 +126,7 @@ hk_result hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_
 					hk_Vector3 cross_a; cross_a.set_cross( pos_Ref_ws, axis_Ref_ws);
 					hk_Vector3 cross_b; cross_b.set_cross( pos_Att_ws, axis_Att_ws);
 					
-					hk_Rigid_Body_Core  *core_a = a->get_rigid_body_core();
+					hk_Rigid_Body_Core *core_a = a->get_rigid_body_core();
 					hk_Rigid_Body_Core *core_b = b->get_rigid_body_core();
 
 					inv_virt_mass += cross_a.length_squared() * core_a->get_inv_mass();
@@ -147,9 +148,10 @@ hk_result hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_
 				{
 					int x = l_axis; l_axis = u_axis; u_axis = x;
 				}
-
-				hk_Rotation m0 = r.m_transform_os_ks[0];
-				hk_Rotation m1 = r.m_transform_os_ks[1];
+				
+				// dimmhotepus: hk_Rotation -> hk_Transform to not slice.
+				hk_Transform m0 = r.m_transform_os_ks[0];
+				hk_Transform m1 = r.m_transform_os_ks[1];
 
 				// now use u_axis for cone
 				m0.rotate( u_axis, limit_mid[u_axis]);

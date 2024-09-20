@@ -1033,7 +1033,8 @@ IVP_Contact_Point::~IVP_Contact_Point(){
     }
    {
      IVP_Core *core0 = nullptr,*core1 = nullptr;
-        IVP_IF( env->get_debug_manager()->check_fs ) {
+     IVP_BOOL check_fs = env->get_debug_manager()->check_fs;
+        IVP_IF( check_fs ) {
 	    core0=get_synapse(0)->l_obj->friction_core;
 	    core1=get_synapse(1)->l_obj->friction_core;
 	}
@@ -1041,7 +1042,7 @@ IVP_Contact_Point::~IVP_Contact_Point(){
 	get_synapse(0)->remove_friction_synapse_from_object();
 	get_synapse(1)->remove_friction_synapse_from_object();
 
-	IVP_IF( env->get_debug_manager()->check_fs ) {
+	IVP_IF( check_fs ) {
 	    if(core0->physical_unmoveable) {
 	        core0->unmovable_core_debug_friction_hash();
 	    }
