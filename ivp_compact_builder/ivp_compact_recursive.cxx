@@ -8,7 +8,7 @@
 #include <ivp_compact_recursive.hxx>
 #include <ivp_surbuild_pointsoup.hxx>
 
-IVP_Compact_Recursive::IVP_Compact_Recursive() : ledges(128) {
+IVP_Compact_Recursive::IVP_Compact_Recursive() : ledges(128), hull(nullptr) {
 
 }
 
@@ -66,9 +66,10 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
   struct Triangle_Key {
     int point_index[3];
     void set_tri(int a, int b, int c){
-      if (b<a){ int x = a;a=b;b=a;a=x; }
-      if (c<a){ int x = a;a=c;c=a;a=x; }
-      if (b<a){ int x = a;a=b;b=a;a=x; }
+      // dimhotepus: Fix sorting.
+      if (b<a){ int x = a;a=b;b=x; }
+      if (c<a){ int x = a;a=c;c=x; }
+      if (b<a){ int x = a;a=b;b=x; }
       // now a < b < c
       point_index[0] = a; point_index[1] = b; point_index[2] = c;
     }
@@ -77,8 +78,9 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
   struct Edge_Key {
     int point_index[2];
     void set_edge(int a, int b){
-      if (b<a){ int x = a;a=b;b=a;a=x; }
-      // now a < b < c
+      // dimhotepus: Fix sorting.
+      if (b<a){ int x=a;a=b;b=x; }
+      // now a < b
       point_index[0] = a; point_index[1] = b;
     }
   } edge_key;
