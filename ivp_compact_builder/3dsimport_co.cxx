@@ -858,7 +858,7 @@ int p_graphlib_robust_convert_3dmax_object_to_compact_ledges(P_Hardware *hw, con
 
 	if((size=ftell(inf)) == -1L) {
         ivp_message( "Error seeking %s\n", infn);
-		if(outf!=stdout) fclose(outf);
+		if(outf && outf!=stdout) fclose(outf);
 		fclose(inf);
 		return 1;
 	}
@@ -866,7 +866,7 @@ int p_graphlib_robust_convert_3dmax_object_to_compact_ledges(P_Hardware *hw, con
 
 	if((scene = HRead3dsScene(inf, 0, size)) == 0) {
         ivp_message( "Failed to load %s\n", infn);
-		if(outf!=stdout) fclose(outf);
+		if(outf && outf!=stdout) fclose(outf);
 		fclose(inf);
 		return 1;
 	}

@@ -1110,7 +1110,7 @@ void qh_initflags(char *command) {
 #else
 	    if (isquote) 
 	      ivp_message( "qhull error: missing end quote for option 'TO'.  Rest of line ignored.\n");
-	    else if (!freopen (filename, "w", 0 /*stdout*/)) {
+	    else if (!freopen (filename, "w", stdout /*stdout*/)) {
 	      ivp_message( "qhull error: could not open file \"%s\".", filename);
 	      qh_errexit (qh_ERRinput, NULL, NULL);
 	    }else {
