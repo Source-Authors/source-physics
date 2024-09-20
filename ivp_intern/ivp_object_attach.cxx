@@ -148,7 +148,7 @@ void IVP_Object_Attach::detach_object( IVP_Real_Object *attached_object, IVP_Tem
     }
 
     // set the new speed for next psi and wakeup object
-    if ( IVP_MTIS_SIMULATED(old_core->movement_state)) {
+    if ( old_core && IVP_MTIS_SIMULATED(old_core->movement_state)) {
 	attached_object->get_core()->fire_event_object_frozen();		 // tell them that we went to sleep
 	attached_object->ensure_in_simulation_now(); // wakeup and tell everybody
 						  
