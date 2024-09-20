@@ -48,14 +48,14 @@ private:
 				     const IVP_U_Float_Point *rel_speed_of_current_os);
 
     //computes the volume and its center that lies under the surface of the medium
-    void compute_buoyancy_values_for_one_ball(const int &decision,
+    void compute_buoyancy_values_for_one_ball(const int decision,
 					      const IVP_FLOAT &distance,
 					      const IVP_FLOAT &radius,
 					      const IVP_U_Float_Hesse *surface_os,
 					      const IVP_U_Float_Point *geom_center_os);
 
     //computes the values which determine the dampening of a given ball
-    void compute_dampening_values_for_one_ball(const int &decision,
+    void compute_dampening_values_for_one_ball(const int decision,
 					       const IVP_FLOAT &distance,
 					       const IVP_FLOAT &radius,
 					       const IVP_U_Float_Point *geom_center_os,
@@ -97,9 +97,9 @@ private:
     inline void compute_volumes_and_centers_for_one_pyramid(IVP_Real_Object *object,
 							    const IVP_U_Float_Point *triangle_points[5],
 							    const IVP_FLOAT distance[6],
-							    const int &decision,
-							    const int &index_positiv,
-							    const int &index_neg,
+							    const int decision,
+							    const int index_positiv,
+							    const int index_neg,
 							    const IVP_U_Float_Point *s_point);
 
     //compute the dampening values provided to the whole result by one triangle of the object's surface
@@ -108,9 +108,9 @@ private:
 									 const IVP_U_Float_Point *triangle_points[5],
 									 const IVP_Compact_Ledge *current_ledge,
 									 const IVP_FLOAT distance[6],
-									 const int &decision,
-									 const int &index_positiv,
-									 const int &index_neg);
+									 const int decision,
+									 const int index_positiv,
+									 const int index_neg);
 
     //returns the volume of the pyramid defined by the four point arguments
     inline IVP_FLOAT compute_pyramid_volume( const IVP_U_Float_Point *p1,

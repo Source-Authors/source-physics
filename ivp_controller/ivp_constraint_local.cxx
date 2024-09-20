@@ -1057,8 +1057,8 @@ void IVP_Constraint_Local::change_max_rotation_impulse(IVP_CONSTRAINT_FORCE_EXCE
 
 void IVP_Constraint_Local::change_Aos_to_relaxe_constraint() {
     if (m_Rfs_f_Rcs.object) m_Rfs_f_Rcs.object->ensure_in_simulation(); else m_Afs_f_Acs.object->ensure_in_simulation();
-    const IVP_U_Matrix *m_ws_f_Rcs; m_ws_f_Rcs = m_Rfs_f_Rcs.object->get_core()->get_m_world_f_core_PSI();
-    const IVP_U_Matrix *m_ws_f_Acs; m_ws_f_Acs = m_Afs_f_Acs.object->get_core()->get_m_world_f_core_PSI();
+    const IVP_U_Matrix *m_ws_f_Rcs = m_Rfs_f_Rcs.object->get_core()->get_m_world_f_core_PSI();
+    const IVP_U_Matrix *m_ws_f_Acs = m_Afs_f_Acs.object->get_core()->get_m_world_f_core_PSI();
     IVP_U_Matrix m_Rcs_f_Acs; m_ws_f_Rcs->mimult4(m_ws_f_Acs, &m_Rcs_f_Acs);
     m_Rfs_f_Rcs.mmult4(&m_Rcs_f_Acs, &m_Afs_f_Acs);
     if (m_Rfs_f_Rcs.rot){
@@ -1070,8 +1070,8 @@ void IVP_Constraint_Local::change_Aos_to_relaxe_constraint() {
 
 void IVP_Constraint_Local::change_Ros_to_relaxe_constraint() {
     if (m_Rfs_f_Rcs.object) m_Rfs_f_Rcs.object->ensure_in_simulation(); else m_Afs_f_Acs.object->ensure_in_simulation();
-    const IVP_U_Matrix *m_ws_f_Rcs; m_ws_f_Rcs = m_Rfs_f_Rcs.object->get_core()->get_m_world_f_core_PSI();
-    const IVP_U_Matrix *m_ws_f_Acs; m_ws_f_Acs = m_Afs_f_Acs.object->get_core()->get_m_world_f_core_PSI();
+    const IVP_U_Matrix *m_ws_f_Rcs = m_Rfs_f_Rcs.object->get_core()->get_m_world_f_core_PSI();
+    const IVP_U_Matrix *m_ws_f_Acs = m_Afs_f_Acs.object->get_core()->get_m_world_f_core_PSI();
     
     IVP_U_Matrix m_Acs_f_Rcs; m_ws_f_Acs->mimult4(m_ws_f_Rcs, &m_Acs_f_Rcs);
     m_Afs_f_Acs.mmult4(&m_Acs_f_Rcs, &m_Rfs_f_Rcs);

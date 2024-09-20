@@ -135,7 +135,7 @@ IVP_BOOL IVP_Buoyancy_Solver::compute_forces( const IVP_U_Float_Point *rel_speed
 
 
 
-void IVP_Buoyancy_Solver::compute_buoyancy_values_for_one_ball(const int &decision,
+void IVP_Buoyancy_Solver::compute_buoyancy_values_for_one_ball(const int decision,
 							       const IVP_FLOAT &distance,
 							       const IVP_FLOAT &radius,
 							       const IVP_U_Float_Hesse *surface_os,
@@ -175,7 +175,7 @@ void IVP_Buoyancy_Solver::compute_buoyancy_values_for_one_ball(const int &decisi
 }
 
 
-void IVP_Buoyancy_Solver::compute_dampening_values_for_one_ball(const int &decision,
+void IVP_Buoyancy_Solver::compute_dampening_values_for_one_ball(const int decision,
 								const IVP_FLOAT &distance,
 								const IVP_FLOAT &radius,
 								const IVP_U_Float_Point *geom_center_os,
@@ -1045,7 +1045,7 @@ void IVP_Buoyancy_Solver::compute_values_for_one_triangle(IVP_Real_Object *objec
     //check if triangle is under/above surface
     IVP_FLOAT distance[6];     //indicates distance of the 3 vertices of the triangle
     int sum_distance = 0;   //indicates the distance of the whole triangle: completely above/under surface, if 0 or 3
-    int index_positiv, index_neg;
+    int index_positiv = 0, index_neg = 0;
 
     for (int j=2; j>=0; j--) {
 	IVP_FLOAT x  = surface_os->get_dist(triangle_points[j]);
@@ -1087,9 +1087,9 @@ void IVP_Buoyancy_Solver::compute_values_for_one_triangle(IVP_Real_Object *objec
 void IVP_Buoyancy_Solver::compute_volumes_and_centers_for_one_pyramid(IVP_Real_Object *object,
 								      const IVP_U_Float_Point *triangle_points[5],
 								      const IVP_FLOAT distance[6],
-								      const int &decision,
-								      const int &index_positiv,
-								      const int &index_neg,
+								      const int decision,
+								      const int index_positiv,
+								      const int index_neg,
 								      const IVP_U_Float_Point *s_point) {
 	
     
@@ -1269,9 +1269,9 @@ void IVP_Buoyancy_Solver::compute_rotation_and_translation_values_for_one_triang
 										   const IVP_U_Float_Point *triangle_points[5],
 										   const IVP_Compact_Ledge *current_ledge,
 										   const IVP_FLOAT distance[6],
-										   const int &decision,
-										   const int &index_positiv,
-										   const int &index_neg) {
+										   const int decision,
+										   const int index_positiv,
+										   const int index_neg) {
 	
 	
 	
