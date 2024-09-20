@@ -555,7 +555,7 @@ void qh_findhorizon(pointT *point, facetT *facet, int *goodvisible, int *goodhor
   int numhorizon= 0, coplanar= 0;
   realT dist;
   
-  trace1((qh ferr,"qh_findhorizon: find horizon for point p%d facet f%d\n",qh_pointid(point),facet->id));
+  trace1((qh ferr,"qh_findhorizon: find horizon for point p%d facet f%u\n",qh_pointid(point),facet->id));
   *goodvisible= *goodhorizon= 0;
   zinc_(Ztotvisible);
   qh_removefacet(facet);  /* visible_list at end of qh facet_list */
@@ -604,7 +604,7 @@ void qh_findhorizon(pointT *point, facetT *facet, int *goodvisible, int *goodhor
 	    }else
 	      minimize_(qh min_vertex, dist);  /* due to merge later */
 	  }
-      	  trace2((qh ferr, "qh_findhorizon: point p%d is coplanar to horizon f%d, dist=%2.7g < qh MINvisible (%2.7g)\n",
+      	  trace2((qh ferr, "qh_findhorizon: point p%d is coplanar to horizon f%u, dist=%2.7g < qh MINvisible (%2.7g)\n",
 	      qh_pointid(point), neighbor->id, dist, qh MINvisible));
 	}else
     	  neighbor->coplanar= False;
