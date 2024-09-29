@@ -171,7 +171,7 @@ void IVP_Core::revive_adjacent_to_unmoveable() {
 		    other_core=fr_mindist->get_synapse(1)->l_obj->get_core();
 		}
 		if( other_core->physical_unmoveable ) {
-		    //printf("found_unnecassary_fmd\n");
+		    //ivp_message("found_unnecassary_fmd\n");
 		    P_DELETE( fr_mindist );
 		} else {
 		    other_core->ensure_all_core_objs_in_simulation();
@@ -1268,7 +1268,7 @@ void IVP_Core::unmovable_core_debug_friction_hash() {
       IVP_ASSERT( get_friction_info(fr_sys)->l_friction_system == fr_sys ); //error after deleting hash entry
     }
   }
-  //printf("debug_friction_hash_ok\n");
+  //ivp_message("debug_friction_hash_ok\n");
 }
 
 void IVP_Core::unlink_friction_info(IVP_Friction_Info_For_Core *my_fr_info)

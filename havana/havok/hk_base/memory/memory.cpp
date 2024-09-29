@@ -89,7 +89,7 @@ void *hk_Memory::allocate_real( hk_size_t size )
 	if ( size > HK_MEMORY_MAX_SIZE_SMALL_BLOCK )
 	{
 #ifdef HK_CHECK
-		hk_Console::get_instance()->printf("big block allocated size %zu\n", size );
+		hkprintf("big block allocated size %zu\n", size );
 #endif
 		return hk_Memory::aligned_malloc( size, HK_MEMORY_CACHE_ALIGNMENT );
 	}
@@ -104,7 +104,7 @@ void *hk_Memory::allocate_real( hk_size_t size )
 	if ( size + m_used_end > m_memory_end)
 	{
 #ifdef HK_CHECK
-		hk_Console::get_instance()->printf("running out of space: block size %zu\n", size );
+		hkprintf("running out of space: block size %zu\n", size );
 #endif
 		auto *b = static_cast<hk_Memory_Block *>(
 			hk_Memory::aligned_malloc( sizeof(hk_Memory_Block) + HK_MEMORY_EXTRA_BLOCK_SIZE, HK_MEMORY_CACHE_ALIGNMENT ) );

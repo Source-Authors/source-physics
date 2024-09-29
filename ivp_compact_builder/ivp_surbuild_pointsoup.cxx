@@ -387,7 +387,7 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_
               intp in = intp(point_indizes.element_at(i2));
 		      skip_list[in]++;
 		      IVP_ASSERT( use_list[in] );
-		      //printf("point removed %i %i\n",in, points->len());
+		      //ivp_message("point removed %i %i\n",in, points->len());
 
 		      break;
 		    }

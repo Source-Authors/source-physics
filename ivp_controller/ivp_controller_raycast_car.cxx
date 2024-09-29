@@ -162,7 +162,7 @@ bool IVP_Controller_Raycast_Car::DoSimulationWheels( IVP_Ray_Solver_Template *pR
 		{
 			IVP_IF( 1 )
 			{
-				printf( "IVP_Controller_Raycast_Car::do_simulation_controller projected_axis_direction_ws.normize failed\n" );
+				ivp_message( "IVP_Controller_Raycast_Car::do_simulation_controller projected_axis_direction_ws.normize failed\n" );
 			}
 
 			return false;
@@ -466,7 +466,7 @@ void IVP_Controller_Raycast_Car::ApplySteeringForces( IVP_Raycast_Car_Wheel_Temp
 		IVP_FLOAT flQuadSumForce = flFrForce * flFrForce + flForceStraight * flForceStraight;
 		if ( flQuadSumForce > flMaxForce * flMaxForce)
 		{
-			//printf("clipping of fr_force %f %f %f\n", force_straight, fr_force, max_force);
+			//ivp_message("clipping of fr_force %f %f %f\n", force_straight, fr_force, max_force);
 			
 			IVP_FLOAT flFactor = IVP_Inline_Math::ivp_sqrtf( flMaxForce * flMaxForce / flQuadSumForce );
 			flFrForce *= flFactor;

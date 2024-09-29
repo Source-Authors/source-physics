@@ -46,20 +46,20 @@ IVP_Constraint::~IVP_Constraint() {
     }
 }
 
-void IVP_Constraint::change_fixing_point_Ros(const IVP_U_Point *) { printf("You are changing the fixing point of a constraint which does not exist.\n");}
-void IVP_Constraint::change_target_fixing_point_Ros(const IVP_U_Point *) { printf("You are changing the fixing point of a constraint which does not exist.\n");}
-void IVP_Constraint::change_translation_axes_Ros(const IVP_U_Matrix3 * /*m_Ros_f_Rfs*/) {printf("You are changing the translation axes of a constraint which does not exist.\n");}
-void IVP_Constraint::change_target_translation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rfs) {IVP_USE(m_Ros_f_Rfs); printf("You are changing the translation axes of a constraint which does not exist.\n");}
-void IVP_Constraint::fix_translation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); printf("You are fixing a translation axis of a constraint which does not exist.\n");}
-void IVP_Constraint::free_translation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); printf("You are freeing a translation axis of a constraint which does not exist.\n");}
-void IVP_Constraint::limit_translation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right) {IVP_USE(which); IVP_USE(border_left); IVP_USE(border_right); printf("You are limiting a translation axis of a constraint which does not exist.\n");}
-void IVP_Constraint::change_max_translation_impulse(IVP_CONSTRAINT_FORCE_EXCEED forcetype, IVP_FLOAT force) {IVP_USE(forcetype); IVP_USE(force); printf("You are changing a maxforce define of a constraint which does not exist.\n");}
-void IVP_Constraint::change_rotation_axes_Ros(const IVP_U_Matrix3 *rot_axes) {IVP_USE(rot_axes); printf("You are changing the rotation axes of a constraint which does not exist.\n");}
-void IVP_Constraint::change_target_rotation_axes_Ros(const IVP_U_Matrix3 *rot_axes) {IVP_USE(rot_axes); printf("You are changing the rotation axes of a constraint which does not exist.\n");}
-void IVP_Constraint::fix_rotation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); printf("You are fixing a rotation axis of a constraint which does not exist.\n");}
-void IVP_Constraint::free_rotation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); printf("You are freeing a rotation axis of a constraint which does not exist.\n");}
-void IVP_Constraint::limit_rotation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right) {IVP_USE(which); IVP_USE(border_left); IVP_USE(border_right); printf("You are limiting a rotation axis of a constraint which does not exist.\n");}
-void IVP_Constraint::change_max_rotation_impulse(IVP_CONSTRAINT_FORCE_EXCEED forcetype, IVP_FLOAT force) {IVP_USE(forcetype); IVP_USE(force); printf("You are changing a maxtorque define of a constraint which does not exist.\n");}
+void IVP_Constraint::change_fixing_point_Ros(const IVP_U_Point *) { ivp_message("You are changing the fixing point of a constraint which does not exist.\n");}
+void IVP_Constraint::change_target_fixing_point_Ros(const IVP_U_Point *) { ivp_message("You are changing the fixing point of a constraint which does not exist.\n");}
+void IVP_Constraint::change_translation_axes_Ros(const IVP_U_Matrix3 * /*m_Ros_f_Rfs*/) {ivp_message("You are changing the translation axes of a constraint which does not exist.\n");}
+void IVP_Constraint::change_target_translation_axes_Ros(const IVP_U_Matrix3 *m_Ros_f_Rfs) {IVP_USE(m_Ros_f_Rfs); ivp_message("You are changing the translation axes of a constraint which does not exist.\n");}
+void IVP_Constraint::fix_translation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); ivp_message("You are fixing a translation axis of a constraint which does not exist.\n");}
+void IVP_Constraint::free_translation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); ivp_message("You are freeing a translation axis of a constraint which does not exist.\n");}
+void IVP_Constraint::limit_translation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right) {IVP_USE(which); IVP_USE(border_left); IVP_USE(border_right); ivp_message("You are limiting a translation axis of a constraint which does not exist.\n");}
+void IVP_Constraint::change_max_translation_impulse(IVP_CONSTRAINT_FORCE_EXCEED forcetype, IVP_FLOAT force) {IVP_USE(forcetype); IVP_USE(force); ivp_message("You are changing a maxforce define of a constraint which does not exist.\n");}
+void IVP_Constraint::change_rotation_axes_Ros(const IVP_U_Matrix3 *rot_axes) {IVP_USE(rot_axes); ivp_message("You are changing the rotation axes of a constraint which does not exist.\n");}
+void IVP_Constraint::change_target_rotation_axes_Ros(const IVP_U_Matrix3 *rot_axes) {IVP_USE(rot_axes); ivp_message("You are changing the rotation axes of a constraint which does not exist.\n");}
+void IVP_Constraint::fix_rotation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); ivp_message("You are fixing a rotation axis of a constraint which does not exist.\n");}
+void IVP_Constraint::free_rotation_axis(IVP_COORDINATE_INDEX which) {IVP_USE(which); ivp_message("You are freeing a rotation axis of a constraint which does not exist.\n");}
+void IVP_Constraint::limit_rotation_axis(IVP_COORDINATE_INDEX which, IVP_FLOAT border_left, IVP_FLOAT border_right) {IVP_USE(which); IVP_USE(border_left); IVP_USE(border_right); ivp_message("You are limiting a rotation axis of a constraint which does not exist.\n");}
+void IVP_Constraint::change_max_rotation_impulse(IVP_CONSTRAINT_FORCE_EXCEED forcetype, IVP_FLOAT force) {IVP_USE(forcetype); IVP_USE(force); ivp_message("You are changing a maxtorque define of a constraint which does not exist.\n");}
 
-void IVP_Constraint::change_Aos_to_relaxe_constraint() {printf("You are repositioning a constraint which does not exist.\n");}
-void IVP_Constraint::change_Ros_to_relaxe_constraint() {printf("You are repositioning a constraint which does not exist.\n");}
+void IVP_Constraint::change_Aos_to_relaxe_constraint() {ivp_message("You are repositioning a constraint which does not exist.\n");}
+void IVP_Constraint::change_Ros_to_relaxe_constraint() {ivp_message("You are repositioning a constraint which does not exist.\n");}

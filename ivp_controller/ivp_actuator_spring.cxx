@@ -309,7 +309,7 @@ void IVP_Actuator_Suspension::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
 	  IVP_Solver_Core_Reaction tcb;
 	  IVP_U_Float_Point direction(&dir_ws);
 	  tcb.init_reaction_solver_translation_ws(pc1,pc0, pos0_ws, &direction,0,0);
-	  printf("suspension new %f old %f\n", tcb.delta_velocity_ds.k[0], damp_speed);
+	  ivp_message("suspension new %f old %f\n", tcb.delta_velocity_ds.k[0], damp_speed);
 	}
 	/// SPECIAL Suspension treatment
 	IVP_DOUBLE damp_s;
@@ -325,13 +325,13 @@ void IVP_Actuator_Suspension::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
 
 	// maximum force for body
 	if(force_clipped < -my_spring->max_body_force){
-	    // printf("force clipped a: %g %g\n", force_clipped, -my_spring->max_body_force); 
+	    // ivp_message("force clipped a: %g %g\n", force_clipped, -my_spring->max_body_force); 
 	    force_clipped = -my_spring->max_body_force;
 	} else if(force_clipped > my_spring->max_body_force){
-	    // printf("force clipped b: %g %g\n", force_clipped, my_spring->max_body_force); 
+	    // ivp_message("force clipped b: %g %g\n", force_clipped, my_spring->max_body_force); 
 	    force_clipped = my_spring->max_body_force;
 	}
-	//	printf("force: %g\n", force); 
+	//	ivp_message("force: %g\n", force); 
 	IVP_DOUBLE impulse = force *  es->delta_time;
 	IVP_DOUBLE impulse_clipped = force_clipped *  es->delta_time;
 

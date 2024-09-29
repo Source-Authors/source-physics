@@ -54,7 +54,7 @@ void IVP_SurfaceManager_Polygon_Solver::traverse_cluster(const IVP_Compact_Ledge
 
     if ( dist_vec.quad_length() > check_dist * check_dist ) {
 	IVP_IF(0) {
-	    printf("Sphere\n");
+	    ivp_message("Sphere\n");
 	}
 	return;
     }
@@ -66,25 +66,25 @@ void IVP_SurfaceManager_Polygon_Solver::traverse_cluster(const IVP_Compact_Ledge
 
     if ( IVP_Inline_Math::fabsd(dist_vec.k[0]) >= (node->box_sizes[0] * work2 + radius) ) {
 	IVP_IF(0) {
-	    printf("Box\n");
+	    ivp_message("Box\n");
 	}
 	return;
     }
     if ( IVP_Inline_Math::fabsd(dist_vec.k[1]) >= (node->box_sizes[1] * work2 + radius) ) {
 	IVP_IF(0) {
-	    printf("Box\n");
+	    ivp_message("Box\n");
 	}
 	return;
     }
     if ( IVP_Inline_Math::fabsd(dist_vec.k[2]) >= (node->box_sizes[2] * work2 + radius) ) {
 	IVP_IF(0) {
-	    printf("Box\n");
+	    ivp_message("Box\n");
 	}
 	return;
     }
 
-    //printf("Node    : %f - %f *** %f - %f *** %f - %f\n", min_x, max_x, min_y, max_y, min_z, max_z);
-    //printf("Intruder: %f - %f *** %f - %f *** %f - %f\n", s_bb_min_x, s_bb_max_x, s_bb_min_y, s_bb_max_y, s_bb_min_z, s_bb_max_z);
+    //ivp_message("Node    : %f - %f *** %f - %f *** %f - %f\n", min_x, max_x, min_y, max_y, min_z, max_z);
+    //ivp_message("Intruder: %f - %f *** %f - %f *** %f - %f\n", s_bb_min_x, s_bb_max_x, s_bb_min_y, s_bb_max_y, s_bb_min_z, s_bb_max_z);
 #endif
     const IVP_Compact_Ledge *hull = node->get_compact_hull();
     if ( hull ){

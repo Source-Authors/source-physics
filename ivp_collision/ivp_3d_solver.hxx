@@ -30,7 +30,7 @@ public:
 	IVP_IF(0){
 	    hits++;
 	    if (misses %1000 == 0){
-		printf("cache hit ratio %f\n", IVP_DOUBLE(hits)/IVP_DOUBLE(misses+hits));
+		ivp_message("cache hit ratio %f\n", IVP_DOUBLE(hits)/IVP_DOUBLE(misses+hits));
 	    }	
 	}
 	return m_world_f_object[index];

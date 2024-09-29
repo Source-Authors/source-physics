@@ -673,7 +673,7 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
     ;
     // invert matrix and solve equation
     if (!mg_impulse_f_dvRA.solve_great_matrix_many_zero()){
-        //printf("Couldn't solve constraint matrix between %s and %s!\n", m_Rfs_f_Rcs.object->get_name(), m_Afs_f_Acs.object->get_name());
+        //ivp_message("Couldn't solve constraint matrix between %s and %s!\n", m_Rfs_f_Rcs.object->get_name(), m_Afs_f_Acs.object->get_name());
 	return;
     }
     // get the resulting impulse
@@ -738,8 +738,8 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	    break;
 	}
         IVP_IF (0) {
-	    printf("%f  %f  %f     ", IVP_Inline_Math::fabsd(impulseR_fs.k[0]) , IVP_Inline_Math::fabsd(impulseR_fs.k[1]) , IVP_Inline_Math::fabsd(impulseR_fs.k[2]));
-	    printf("%f  %f  %f\n", IVP_Inline_Math::fabsd(impulserotR_rs.k[0]) , IVP_Inline_Math::fabsd(impulserotR_rs.k[1]) , IVP_Inline_Math::fabsd(impulserotR_rs.k[2]));
+	    ivp_message("%f  %f  %f     ", IVP_Inline_Math::fabsd(impulseR_fs.k[0]) , IVP_Inline_Math::fabsd(impulseR_fs.k[1]) , IVP_Inline_Math::fabsd(impulseR_fs.k[2]));
+	    ivp_message("%f  %f  %f\n", IVP_Inline_Math::fabsd(impulserotR_rs.k[0]) , IVP_Inline_Math::fabsd(impulserotR_rs.k[1]) , IVP_Inline_Math::fabsd(impulserotR_rs.k[2]));
 	}
 	// norm < maxforce.half => nothing happens
 	if (!in_range) {
@@ -855,7 +855,7 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	result_drRA_rs.subtract(&drA_Acs, &drR_Rcs);
     }
     IVP_IF (0) {
-	printf("%f [%s]-[%s]: IT=%f  IR=%f\n", coreR->environment->get_current_time().get_time(), m_Rfs_f_Rcs.object->get_name(), m_Afs_f_Acs.object->get_name(),
+	ivp_message("%f [%s]-[%s]: IT=%f  IR=%f\n", coreR->environment->get_current_time().get_time(), m_Rfs_f_Rcs.object->get_name(), m_Afs_f_Acs.object->get_name(),
 	       impulseR_Rcs.real_length(), impulserotR_Rcs.real_length());
     }
     IVP_DOUBLE debugfactor = 0.01f;

@@ -42,10 +42,10 @@ void IVP_Statisticsmanager_Console_Callback::output_request(IVP_BetterStatistics
 
 	switch ( entity->type ) {
 	case INT_VALUE:
-	    printf("%s%d\n", entity->text, entity->data.int_value);
+	    ivp_message("%s%d\n", entity->text, entity->data.int_value);
 	    break;
 	case DOUBLE_VALUE:
-	    printf("%s%f\n", entity->text, entity->data.double_value);
+	    ivp_message("%s%f\n", entity->text, entity->data.double_value);
 	    break;
 	default:
 	    break;
@@ -55,30 +55,30 @@ void IVP_Statisticsmanager_Console_Callback::output_request(IVP_BetterStatistics
 
     case INT_ARRAY:
 	{
- 	    printf("%s\n", entity->text);
+ 	    ivp_message("%s\n", entity->text);
 
 	    int i;
 	    for (i=0; i<entity->data.int_array.size; i++) {
 		int value     = entity->data.int_array.array[i];
-		printf("%d\n", value);
+		ivp_message("%d\n", value);
 	    }
 	}
 	break;
 
     case DOUBLE_ARRAY:
 	{
- 	    printf("%s\n", entity->text);
+ 	    ivp_message("%s\n", entity->text);
 
 	    int i;
 	    for (i=0; i<entity->data.int_array.size; i++) {
 		IVP_DOUBLE value     = entity->data.double_array.array[i];
-		printf("%f\n", value);
+		ivp_message("%f\n", value);
 	    }
 	}
 	break;
     case STRING:
 	{
- 	    printf("%s\n", entity->text);
+ 	    ivp_message("%s\n", entity->text);
 	}
 	break;
     }

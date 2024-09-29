@@ -55,7 +55,7 @@ void IVP_Ray_Solver_Min_Hash::add_hit_object(IVP_Real_Object *object, const IVP_
     
     if(this->output_min_hash.counter >= IVP_MAX_NUM_RAY_HITS){
 	IVP_IF(1){
-	    printf("IVP_Ray_Solver::add_hit_object - max ray hits exceeded -> hit list truncated.\n");
+	    ivp_message("IVP_Ray_Solver::add_hit_object - max ray hits exceeded -> hit list truncated.\n");
 	}
 	// todo: if hit_dist < current hash minimum: replace any min hash entry with this hit
 	// ...
@@ -67,7 +67,7 @@ void IVP_Ray_Solver_Min_Hash::add_hit_object(IVP_Real_Object *object, const IVP_
     ray_hit->hit_compact_ledge = compact_ledge;
     ray_hit->hit_compact_triangle = compact_triangle;
     IVP_IF(0){
-	printf("object inserted: %s, dist %g\n", object->get_name(), hit_dist);
+	ivp_message("object inserted: %s, dist %g\n", object->get_name(), hit_dist);
     }
     ray_hit->hit_surface_direction_os.set(hit_sur_vec_os);
     ray_hit->hit_distance = hit_dist;
@@ -374,7 +374,7 @@ IVP_BOOL IVP_Ray_Solver_Os::check_ray_against_compact_ledge_os(const IVP_Compact
     
     if(!take_edge){
 	IVP_IF(0){
-	    printf("IVP_Ray_Solver::check_ray_against_compact_ledge - no correct face found.\n");
+	    ivp_message("IVP_Ray_Solver::check_ray_against_compact_ledge - no correct face found.\n");
 	}
 	return IVP_FALSE;
     }
@@ -434,7 +434,7 @@ continue_with_next_triangle:;
 	// now we know that we are in an endless loop
 	// ...
 	IVP_IF(1){
-	    printf("check_ray_against_compact_ledge: endl loop.\n");
+	    ivp_message("check_ray_against_compact_ledge: endl loop.\n");
 	}
 	return IVP_FALSE;
     }

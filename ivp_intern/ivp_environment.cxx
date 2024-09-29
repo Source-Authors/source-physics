@@ -288,7 +288,7 @@ IVP_Environment::~IVP_Environment(){
 //	    time_t t, e;
 //		t = time(NULL);
 //		e = 3181552896; // october 26th 2000, on a Mac
-//		printf(" Now: %.1f   Target: %.1f\n\n", (float)t, (float)e);
+//		ivp_message(" Now: %.1f   Target: %.1f\n\n", (float)t, (float)e);
 //		if (t > e)
 //	        mindist_manager=NULL;
 //#endif	

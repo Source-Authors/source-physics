@@ -218,7 +218,7 @@ void IVP_Synapse_Real::print()
 {
     char *stat_text = NULL;
     int n_points = 0;
-    printf("(syn) ");
+    ivp_message("(syn) ");
     switch(this->status){
     case IVP_ST_POINT:
      	stat_text = (char *)"Point";
@@ -242,7 +242,7 @@ void IVP_Mindist_Manager::print_mindists()
 {
     IVP_Mindist *mdist;
     int i;
-    printf("\n--------------------------\n");
+    ivp_message("\n--------------------------\n");
     for(i=0, mdist=this->exact_mindists; mdist; mdist=mdist->next, i++){
 	mdist->print("exact:");
     }

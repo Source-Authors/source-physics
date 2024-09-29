@@ -483,7 +483,7 @@ IVP_Actuator_Rot_Mot::IVP_Actuator_Rot_Mot(IVP_Environment *env,
     IVP_Real_Object *obj0 = get_actuator_anchor(0)->l_anchor_object;
     IVP_Real_Object *obj1 = get_actuator_anchor(1)->l_anchor_object;
     if ( obj0->get_original_core() != obj1->get_original_core()){
-	printf("Rot Mot Actuation has to be fixed on one object\n");
+	ivp_message("Rot Mot Actuation has to be fixed on one object\n");
     }
 
     axis_in_core_coord_system.subtract(&get_actuator_anchor(1)->core_pos,&get_actuator_anchor(0)->core_pos);
@@ -586,7 +586,7 @@ void IVP_Actuator_Rot_Mot::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
     if (domega < 0.0f) domega = -domega;
     if (domega > max_rotation_speed){
 	IVP_IF(0){
-	    printf("Rot Mot rot speed threshold reached!\n");
+	    ivp_message("Rot Mot rot speed threshold reached!\n");
 	}
 	return;	// too fast
     }
@@ -601,14 +601,14 @@ void IVP_Actuator_Rot_Mot::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
     while(max_torque != 0.0f){
 	if( rot_force > max_torque){
 	    IVP_IF(0){
-		printf("RM Force clipped to %g, was %g\n", max_torque, rot_force);
+		ivp_message("RM Force clipped to %g, was %g\n", max_torque, rot_force);
 	    }
 	    rot_force = max_torque;
 	    break;
 	}
 	if( rot_force < -max_torque){
 	    IVP_IF(0){
-		printf("RM Force clipped to %g, was %g\n", -max_torque, rot_force);
+		ivp_message("RM Force clipped to %g, was %g\n", -max_torque, rot_force);
 	    }
 	    rot_force = -max_torque;
 	}
@@ -635,7 +635,7 @@ IVP_Actuator_Torque::IVP_Actuator_Torque(IVP_Environment *env,    IVP_Template_T
     IVP_Real_Object *obj0 = get_actuator_anchor(0)->l_anchor_object;
     IVP_Real_Object *obj1 = get_actuator_anchor(1)->l_anchor_object;
     if ( obj0->get_original_core() != obj1->get_original_core()){
-		printf("Both Anchors of a Torque_Actuator must be attached to just one object.\n");
+		ivp_message("Both Anchors of a Torque_Actuator must be attached to just one object.\n");
 		CORE;
     }
     axis_in_core_coord_system.subtract(&get_actuator_anchor(1)->core_pos,&get_actuator_anchor(0)->core_pos);

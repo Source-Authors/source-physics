@@ -357,14 +357,14 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 	      }
 	      this->local_translation_in_use = IVP_FALSE;
 	      IVP_IF(1){
-		printf("plan B deactivated.\n");
+		ivp_message("plan B deactivated.\n");
 	      }
 	}
     }
     
     if(init_local_translation==IVP_TRUE){
 	IVP_IF(1){
-	    printf("plan B activated.\n");
+	    ivp_message("plan B activated.\n");
 	}
 
 
@@ -403,12 +403,12 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 #if 0
     {
 	int k;
-	printf("Inputvector:\n");
+	ivp_message("Inputvector:\n");
 	for(k=0; k<co_matrix.columns; k++){
-	    if(k%4 == 0)printf("(%d)", k);
-	    printf("%2.2f  ", co_matrix.desired_vector[k]);
+	    if(k%4 == 0)ivp_message("(%d)", k);
+	    ivp_message("%2.2f  ", co_matrix.desired_vector[k]);
 	}
-	printf("\n");
+	ivp_message("\n");
     }
 #endif
     
@@ -418,12 +418,12 @@ void IVP_Constraint_Solver_Car::do_simulation_controller( IVP_Event_Sim *es,
 #if 0
     {
 	int k;
-	printf("Outputvector:\n");
+	ivp_message("Outputvector:\n");
 	for(k=0; k<co_matrix.columns; k++){
-	    if(k%4 == 0)printf("(%d)", k);
-	    printf("%2.2f  ", co_matrix.result_vector[k]);
+	    if(k%4 == 0)ivp_message("(%d)", k);
+	    ivp_message("%2.2f  ", co_matrix.result_vector[k]);
 	}
-	printf("\n\n");
+	ivp_message("\n\n");
     }
 #endif    
 
@@ -687,7 +687,7 @@ IVP_RETURN_TYPE IVP_Constraint_Solver_Car_Builder::calc_constraint_matrix()
 		}
     }
 
-//  printf( "Constraint solver: calc_pushing_behavior done.\n" );
+//  ivp_message( "Constraint solver: calc_pushing_behavior done.\n" );
 //  this->tmp_matrix.print( "Pushing behavior matrix.\n" );
     
     // Invert matrix into Solver.
@@ -696,7 +696,7 @@ IVP_RETURN_TYPE IVP_Constraint_Solver_Car_Builder::calc_constraint_matrix()
     this->car_solver->co_matrix.columns = gm_size;
 
     IVP_RETURN_TYPE ret_val = this->tmp_matrix.invert( &this->car_solver->co_matrix );
-//  printf("Constraint solver: matrix inversion done.\n");
+//  ivp_message("Constraint solver: matrix inversion done.\n");
 
 	// Free the temp data.
     P_FREE( this->tmp_matrix.matrix_values );

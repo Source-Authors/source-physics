@@ -42,7 +42,7 @@ IVP_BOOL ivp_check_debug_mindist( IVP_Mindist *md){
 		(!P_String::string_cmp(name0, search1, IVP_FALSE) && !P_String::string_cmp(name1, search0, IVP_FALSE))){
 	const IVP_Time &time = md->get_synapse(0)->l_obj->get_environment()->get_current_time();
 	if ( time - IVP_DEBUG_TIME >= 0.0f){
-	    printf("%10s %10s %8f-%X: ", name0, name1, time.get_time(), (int)((intp)md & 0xffff) );
+	    ivp_message("%10s %10s %8f-%X: ", name0, name1, time.get_time(), (int)((intp)md & 0xffff) );
 	    return IVP_TRUE;
 	}
     }
@@ -52,7 +52,7 @@ IVP_BOOL ivp_check_debug_mindist( IVP_Mindist *md){
 
 int p_sqrt( IVP_DOUBLE val) // for debugger
 {
-    printf("%g\n", IVP_Inline_Math::sqrtd(val));
+    ivp_message("%g\n", IVP_Inline_Math::sqrtd(val));
     return 0;
 }
 
@@ -216,8 +216,8 @@ IVP_RETURN_TYPE IVP_Mindist_Minimize_Solver::proove_polypoly()
 	IVP_DOUBLE diff = IVP_Inline_Math::fabsd(dist_0 - dist_1) + P_DOUBLE_EPS;
 	
 	IVP_DOUBLE perc = diff * 100.0f / dist_1;
-        // printf("\nBrute Force Recalculation of Mindist shows differences:\n");
-	// printf("Distances: md %f, bf %f, diff: %f percent: %f\n", dist_0, dist_1, diff, perc);
+        // ivp_message("\nBrute Force Recalculation of Mindist shows differences:\n");
+	// ivp_message("Distances: md %f, bf %f, diff: %f percent: %f\n", dist_0, dist_1, diff, perc);
 
 	// check if difference is neglectible
 	if(perc < 50.0f){
@@ -225,9 +225,9 @@ IVP_RETURN_TYPE IVP_Mindist_Minimize_Solver::proove_polypoly()
 	}
 	
 	// somewhat greater differences ...
-	printf("\nBrute Force Recalculation of Mindist shows differences:\n");
-	printf("Dsts: md %f, bf %f, diff: %f percent: %f\n", dist_0, dist_1, diff, perc);
-	printf("Coords of synapses (original 0/1, brute force 0/1):\n");
+	ivp_message("\nBrute Force Recalculation of Mindist shows differences:\n");
+	ivp_message("Dsts: md %f, bf %f, diff: %f percent: %f\n", dist_0, dist_1, diff, perc);
+	ivp_message("Coords of synapses (original 0/1, brute force 0/1):\n");
 
 	//	IVP_DOUBLE qd0 = p_optimize_FF(best_t0->get_first_edge(), best_t1->get_first_edge(), &m_cache_0, &m_cache_1, min_qdist + P_DOUBLE_RES);
 	//IVP_DOUBLE qd1 = p_optimize_FF(best_t0->get_first_edge(), best_t1->get_first_edge(), &m_cache_0, &m_cache_1, min_qdist + P_DOUBLE_RES);
@@ -293,9 +293,9 @@ IVP_RETURN_TYPE IVP_Mindist_Minimize_Solver::proove_ballpoly()
     }
     
     // somewhat greater differences ...
-    printf("\nBrute Force Recalculation of Mindist shows differences:\n");
-    printf("Dsts: md %f, bf %f, diff: %f percent: %f\n", dist_0, dist_1, diff, perc);
-    printf("Coords of synapses (original 0/1, brute force 0/1):\n");
+    ivp_message("\nBrute Force Recalculation of Mindist shows differences:\n");
+    ivp_message("Dsts: md %f, bf %f, diff: %f percent: %f\n", dist_0, dist_1, diff, perc);
+    ivp_message("Coords of synapses (original 0/1, brute force 0/1):\n");
     
     //IVP_DOUBLE qd0 = IVP_CLS.calc_qlen_PF_F_space(ledge1, best_t1, &ball_Fos);
     //IVP_DOUBLE qd1 = IVP_CLS.calc_qlen_PF_F_space(ledge1, best_t1, &ball_Fos);
@@ -398,31 +398,31 @@ int situation(IVP_Cache_Ledge_Point *tri_cache, IVP_Cache_Ledge_Point *e_cache, 
     IVP_CLS.calc_unscaled_KK_vals(kkin, &kkr);
     
     /** print everything ***/
-    printf("triangle edge situation:");
-    printf(" (coords so that triangle appears flat):\n\n");
-    printf("Triangle: %f %f %f\n", tf_0.k[0], tf_0.k[1], tf_0.k[2]);
-    printf("          %f %f %f\n", tf_1.k[0], tf_1.k[1], tf_1.k[2]);
-    printf("          %f %f %f\n\n", tf_2.k[0], tf_2.k[1], tf_2.k[2]);
-    printf("Edge:     %f %f %f\n", ef_0.k[0], ef_0.k[1], ef_0.k[2]);
-    printf("          %f %f %f\n\n", ef_1.k[0], ef_1.k[1], ef_1.k[2]);
+    ivp_message("triangle edge situation:");
+    ivp_message(" (coords so that triangle appears flat):\n\n");
+    ivp_message("Triangle: %f %f %f\n", tf_0.k[0], tf_0.k[1], tf_0.k[2]);
+    ivp_message("          %f %f %f\n", tf_1.k[0], tf_1.k[1], tf_1.k[2]);
+    ivp_message("          %f %f %f\n\n", tf_2.k[0], tf_2.k[1], tf_2.k[2]);
+    ivp_message("Edge:     %f %f %f\n", ef_0.k[0], ef_0.k[1], ef_0.k[2]);
+    ivp_message("          %f %f %f\n\n", ef_1.k[0], ef_1.k[1], ef_1.k[2]);
     
     if(pierces){
-	printf("pierces %s triangle:  %f %f    q=%f r=%f \n",
+	ivp_message("pierces %s triangle:  %f %f    q=%f r=%f \n",
 	       (pierce_inside)?"inside":"outside",
 	       pierce_point_f.k[0],
 	       pierce_point_f.k[1],
 	       q,
 	       r);
     } else {
-	printf("Edge is parallel.\n");
+	ivp_message("Edge is parallel.\n");
     }
-    printf("\n");
-    printf("edge startpoint q=%f r=%f\n", q_edge_start, r_edge_start);
-    printf("                s=%f\n", IVP_CLS.calc_s_val(triangle_e0,&e_0, tri_cache));
-    printf("     endpoint   q=%f r=%f\n", q_edge_end, r_edge_end);
-    printf("                s=%f\n\n", IVP_CLS.calc_s_val(triangle_e0,&e_1, tri_cache));
+    ivp_message("\n");
+    ivp_message("edge startpoint q=%f r=%f\n", q_edge_start, r_edge_start);
+    ivp_message("                s=%f\n", IVP_CLS.calc_s_val(triangle_e0,&e_0, tri_cache));
+    ivp_message("     endpoint   q=%f r=%f\n", q_edge_end, r_edge_end);
+    ivp_message("                s=%f\n\n", IVP_CLS.calc_s_val(triangle_e0,&e_1, tri_cache));
 
-    printf("tri_edge(K) to edge(L): slK=%f skL=%f\n",
+    ivp_message("tri_edge(K) to edge(L): slK=%f skL=%f\n",
 	   kkr.checks_K[0] / (kkr.checks_K[0] + kkr.checks_K[1]) ,
 	   kkr.checks_L[0] / (kkr.checks_L[0] + kkr.checks_L[1])
 	   );
@@ -496,7 +496,7 @@ IVP_RETURN_TYPE IVP_Mindist::validate_termination_len(IVP_DOUBLE now_len)
 	CORE;
     }
     if(now_len - IVP_MIN_TERMINATION_QDLEN_EPS > t_len){ // @@@ test for '=='
-	printf("Termination Len Violation: Epsilon Problem?\n");
+	ivp_message("Termination Len Violation: Epsilon Problem?\n");
 	return IVP_FAULT;
     }
     if(now_len < ivp_mindist_settings.real_coll_dist * ivp_mindist_settings.real_coll_dist){

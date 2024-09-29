@@ -241,7 +241,7 @@ char *p_strdup(const char *s)
 
 char *p_make_string_fast(const char *templat, ...)
 {
-    // returns an allocated string with format like printf
+    // returns an allocated string with format like ivp_message
     // NULL-Strings and empty strings allowed
     // no check for overflow
     
@@ -258,7 +258,7 @@ char *p_make_string_fast(const char *templat, ...)
 
 char *p_make_string(const char *templat, ...)
 {
-    // returns an allocated string with format like printf
+    // returns an allocated string with format like ivp_message
     // NULL-Strings and empty strings allowed
     // LINUX: check for overflow
     

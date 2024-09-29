@@ -57,7 +57,7 @@ IVP_Time IVP_3D_Solver::calc_nullstelle(IVP_Time t0, IVP_Time t1, IVP_DOUBLE val
 		solver_a->calc_at_matrix(tt, &A);
 		solver_b->calc_at_matrix(tt, &B);
 		IVP_DOUBLE vv = get_value(&A,&B);
-		// 	printf("%i %G	%G:%G	%G:%G	%G:%G    %G\n", counter,value,  t0.get_time(),v0, tt.get_time(),vv, t1.get_time(),v1, vv-value);
+		// 	ivp_message("%i %G	%G:%G	%G:%G	%G:%G    %G\n", counter,value,  t0.get_time(),v0, tt.get_time(),vv, t1.get_time(),v1, vv-value);
 	
 		if(IVP_Inline_Math::fabsd(vv-value) < IVP_3D_SOLVER_NULLSTELLE_EPS){
 			return tt;
@@ -283,7 +283,7 @@ IVP_BOOL IVP_3D_Solver::find_first_t_for_value_coll(IVP_DOUBLE value, IVP_DOUBLE
     int cache1_index = 0;
     
     while(t0 - t_max < 0.0f)    {
-//printf("coll T0=%f\n",t0);
+//ivp_message("coll T0=%f\n",t0);
 
 	IVP_DOUBLE t_step = (v0 - value2) * inv_max_dev; // max_dev is >> 0.0
 

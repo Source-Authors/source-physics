@@ -50,7 +50,7 @@ int IVP_Poly_Point::point_num()
 }
 
 void IVP_Poly_Point::print(const char *text){
-    printf("num %i: ",this->point_num());
+    ivp_message("num %i: ",this->point_num());
     IVP_U_Point::print(text);
 }
 
@@ -75,7 +75,7 @@ int p_check_for_flat(IVP_Tri_Edge *a0, IVP_Tri_Edge *b0, IVP_DOUBLE eps)
 	IVP_DOUBLE dist1 = -a0->triangle->tmp.gen.hesse.get_dist(b0->prev->start_point);
 	IVP_DOUBLE dist2 = -b0->triangle->tmp.gen.hesse.get_dist(a0->prev->start_point);
 	if( (dist1<eps) || (dist2<eps)){
-	    //printf("%f %f\n",dist1,dist2);
+	    //ivp_message("%f %f\n",dist1,dist2);
 	    return 1;
 	}
 	return 0;
@@ -110,7 +110,7 @@ int IVP_Triangle::print(const char *comment)
 {
     // dimhotepus: Print again.
     const char *obj_name = "unknown name";
-    printf("%s '%s' T(%d %d %d) \n",
+    ivp_message("%s '%s' T(%d %d %d) \n",
 	   (comment)?comment:"",
 	   obj_name,
 	   this->three_edges[0].start_point->point_num(), 
@@ -138,7 +138,7 @@ void IVP_Tri_Edge::print(const char *text){
     if (!text) text = "";
     const char *name = start_point->get_real_object2()->get_name();
     if (!name) name = "noname";
-    printf("%s '%s'	start_%zi: %i	",text,name, 0xff & ( ( (intp)this->start_point->l_tetras  ) >>8), this->start_point->point_num());
+    ivp_message("%s '%s'	start_%zi: %i	",text,name, 0xff & ( ( (intp)this->start_point->l_tetras  ) >>8), this->start_point->point_num());
     this->triangle->print("\n");
 }
 
@@ -238,7 +238,7 @@ P_Sur_2D_Triangle::P_Sur_2D_Triangle(int pn0, int pn1, int pn2)
     point_nums[2] = pn2;
 
 #ifdef SUR_DEBUG
-    printf("TRIANGLE GENERATED: %d, %d, %d\n",pn0, pn1, pn2);
+    ivp_message("TRIANGLE GENERATED: %d, %d, %d\n",pn0, pn1, pn2);
 #endif
 }
 
@@ -261,7 +261,7 @@ P_Sur_2D_Line::P_Sur_2D_Line(P_Sur_2D_Point *sp, P_Sur_2D_Point *ep)
 	this->delta_y = ep->k[1] - sp->k[1];
     }
 #ifdef SUR_DEBUG
-    printf("    Line generated: %d, %d\n", sp->point_num, ep->point_num);
+    ivp_message("    Line generated: %d, %d\n", sp->point_num, ep->point_num);
 #endif
 }
 
@@ -413,7 +413,7 @@ int P_Sur_2D_Line::is_crossing_line(P_Sur_2D_Line *line_v)
    
     P_Sur_2D_Line *line_u = this;
 #ifdef SUR_DEBUG
-    printf("    crossing (%d, %d) with (%d, %d): ", line_u->start_point->point_num,
+    ivp_message("    crossing (%d, %d) with (%d, %d): ", line_u->start_point->point_num,
 	   line_u->end_point->point_num, line_v->start_point->point_num,
 	   line_v->end_point->point_num);
 #endif
@@ -431,27 +431,27 @@ int P_Sur_2D_Line::is_crossing_line(P_Sur_2D_Line *line_v)
     IVP_DOUBLE D = v_dx * u_dy - u_dx * v_dy;
     if(IVP_Inline_Math::fabsd(D) < DET_EPS){
 #ifdef SUR_DEBUG
-	printf("det < det_eps: ");
+	ivp_message("det < det_eps: ");
 #endif	
 	// linear dependency: on the line or just parallel?
 	if(IVP_Inline_Math::fabsd(line_u->dist_to_point(line_v->start_point)) < P_CROSS_EPS_QUAD){
 #ifdef SUR_DEBUG
-	    printf("on the line: ");
+	    ivp_message("on the line: ");
 #endif
 	    if( line_u->overlaps_with_line(line_v) ){
 #ifdef SUR_DEBUG
-		printf("overlapping (crossing)!\n");
+		ivp_message("overlapping (crossing)!\n");
 #endif
 		return 1; // lines are overlapping
 	    }else{
 #ifdef SUR_DEBUG
-		printf("not overlapping (no crossing)!\n");
+		ivp_message("not overlapping (no crossing)!\n");
 #endif		    
 		return 0;
 	    }
 	}else{
 #ifdef SUR_DEBUG
-	    printf("really parallel.\n");
+	    ivp_message("really parallel.\n");
 #endif	
 	    return 0; // really parallel
 	}
@@ -463,7 +463,7 @@ int P_Sur_2D_Line::is_crossing_line(P_Sur_2D_Line *line_v)
         (line_u->end_point   == line_v->start_point) ||
         (line_u->end_point   == line_v->end_point) ){
 #ifdef SUR_DEBUG
-	printf("common end/start point -> no crossing\n");
+	ivp_message("common end/start point -> no crossing\n");
 #endif
 	return 0; // shall not count as crossing
     }
@@ -484,28 +484,28 @@ int P_Sur_2D_Line::is_crossing_line(P_Sur_2D_Line *line_v)
     // check crossing on line_u
     IVP_DOUBLE u_t = v_dx*o_dy - v_dy*o_dx; // u_sp + u_t*D*(u_ep-u_sp) = crossing
 #ifdef SUR_DEBUG
-	printf("u_t %g: ", u_t/D);
+	ivp_message("u_t %g: ", u_t/D);
 #endif	
     if(u_t < left_border || u_t > right_border){
 #ifdef SUR_DEBUG
-	printf("no crossing.\n");
+	ivp_message("no crossing.\n");
 #endif	
 	return 0; // crosses beyond line interval
     }
     // check crossing on line_v
     IVP_DOUBLE v_t = u_dx*o_dy - o_dx*u_dy; // v_sp + v_t*D*(v_ep-v_sp) = crossing
 #ifdef SUR_DEBUG
-	printf("v_t %g: ", v_t/D);
+	ivp_message("v_t %g: ", v_t/D);
 #endif	
     if(v_t < left_border || v_t > right_border){
 #ifdef SUR_DEBUG
-	printf("no crossing.\n");
+	ivp_message("no crossing.\n");
 #endif	
 	return 0; // crosses beyond line interval
     }
     // real crossing
 #ifdef SUR_DEBUG
-    printf("CROSSING.\n");
+    ivp_message("CROSSING.\n");
 #endif	
     return 1;
     
@@ -552,7 +552,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_line_representation()
     IVP_Object_Polygon_Tetra *pop = orig_tetras;
     
 #ifdef SUR_DEBUG    
-    printf("\n\n\n***********************\n"
+    ivp_message("\n\n\n***********************\n"
 	   "POP: %d, SURFACE_NUM %d with %d points\n\n", (int)pop, sur->get_surface_index(),
 	   sur->n_lines);
 #endif    
@@ -591,7 +591,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_line_representation()
     if(hesse->k[max_koord] < 0.0f) trafo_is_mirrored = 1;
 
 #ifdef SUR_DEBUG
-    printf("hesse: %g %g %g; max_koord: %d; take koords %d %d; mirrored: %d\n",
+    ivp_message("hesse: %g %g %g; max_koord: %d; take koords %d %d; mirrored: %d\n",
 	   hesse->k[0], hesse->k[1], hesse->k[2], max_koord, td_k0, td_k1, trafo_is_mirrored);
 #endif
     if(max_koord==1) trafo_is_mirrored = 1-trafo_is_mirrored;
@@ -688,7 +688,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	having_islands = 1;
     }
 #ifdef SUR_DEBUG
-    printf("   Having islands would be: %d\n", having_islands);
+    ivp_message("   Having islands would be: %d\n", having_islands);
 #endif
     having_islands = 1; // forced
 
@@ -700,19 +700,19 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
     int loop_counter = 0;
     while((td_base_line=this->lines.first)){
 #ifdef SUR_DEBUG
-	printf("TAKE BASE LINE: (%d %d)\n", td_base_line->start_point->point_num,
+	ivp_message("TAKE BASE LINE: (%d %d)\n", td_base_line->start_point->point_num,
 	       td_base_line->end_point->point_num);
 #endif
 	if (loop_counter++ > 100){ //@@@@SF: changed from 100000 to 100 [05.03.2000]
-	    //printf("Degenerated polygon found:\n");
+	    //ivp_message("Degenerated polygon found:\n");
 //	    P_Sur_2D_Point *point_a = td_base_line->start_point; // a b c form a triangle
 //	    P_Sur_2D_Point *point_b = td_base_line->end_point;
-//	    printf("  %f %f %f\n", point_a->k[0], point_a->k[1], point_a->k[2]);
-//	    printf("  %f %f %f\n", point_b->k[0], point_b->k[1], point_b->k[2]);
+//	    ivp_message("  %f %f %f\n", point_a->k[0], point_a->k[1], point_a->k[2]);
+//	    ivp_message("  %f %f %f\n", point_b->k[0], point_b->k[1], point_b->k[2]);
 	    P_Sur_2D_Line *td_point_line;
  	    for(td_point_line=this->lines.first; td_point_line; td_point_line=td_point_line->next){
 		P_Sur_2D_Point *point_c = td_point_line->start_point;
-		printf("  %f %f %f\n", point_c->k[0], point_c->k[1], point_c->k[2]);
+		ivp_message("  %f %f %f\n", point_c->k[0], point_c->k[1], point_c->k[2]);
 	    }
 	    return "Cannot convert";
 	}
@@ -735,7 +735,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    if(td_point_line == td_base_line) continue;	    
 	    if(td_point_line->start_point == td_base_line->end_point) continue;
 #ifdef SUR_DEBUG
-	    printf("  Trying point %d: ", td_point_line->start_point->point_num);
+	    ivp_message("  Trying point %d: ", td_point_line->start_point->point_num);
 #endif		
 
 	    // set koords
@@ -747,22 +747,22 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    if(! (dist_flag=td_base_line->point_lies_to_the_left(point_c)) ){
 #ifdef SUR_DEBUG
 		if(dist_flag==2){
-		    printf("lies to near for triangle!");
+		    ivp_message("lies to near for triangle!");
 		}else{
-		    printf("lies on wrong side.\n");			    
+		    ivp_message("lies on wrong side.\n");			    
 		}
 #endif		
 		continue;
 	    }
 #ifdef SUR_DEBUG
-	    printf("side OK.\n");
+	    ivp_message("side OK.\n");
 #endif		
 
 	    int skip_this_point = 0;
 
 	    // provide the two other triangle sides as lines (bc & ca)
 #ifdef SUR_DEBUG
-		printf("    check sides of triangle:\n");
+		ivp_message("    check sides of triangle:\n");
 #endif		
 	    delete td_ca_line;
 	    td_ca_line = new P_Sur_2D_Line(point_c, point_a);	    
@@ -790,11 +790,11 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    }
 	    if(skip_this_point){
 		if(!ab_min_hash.find_min_elem()){
-		    printf("Couldn't find a matching point to baseline!\n");
+		    ivp_message("Couldn't find a matching point to baseline!\n");
 		    CORE;
 		}
 #ifdef SUR_DEBUG
-		printf("    ...giving up point %d because of crossing. next one!\n",
+		ivp_message("    ...giving up point %d because of crossing. next one!\n",
 		       td_point_line->start_point->point_num);
 #endif		
 		continue;
@@ -817,11 +817,11 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    }
 	    if(skip_this_point){
 		if(!td_point_line->next){
-		    printf("Couldn't find a matching point to baseline!\n");
+		    ivp_message("Couldn't find a matching point to baseline!\n");
 		    CORE;
 		}
 #ifdef SUR_DEBUG
-		printf("    ...giving up point because of point(s) inside. next one!\n");
+		ivp_message("    ...giving up point because of point(s) inside. next one!\n");
 #endif		
 		continue;
 	    }
@@ -832,7 +832,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 							      point_b->point_num);
 	    this->triangles.insert(triang);
 #ifdef SUR_DEBUG	    
-	    printf("Triangle %d: %d, %d, %d\n",triangle_count,
+	    ivp_message("Triangle %d: %d, %d, %d\n",triangle_count,
 		   point_a->point_num, point_c->point_num, point_b->point_num);
 	    triangle_count++;
 #endif
@@ -841,7 +841,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    this->lines.remove(td_base_line);
 	    
 #ifdef SUR_DEBUG
-	    printf("    line removed: %d, %d\n", td_base_line->start_point->point_num,
+	    ivp_message("    line removed: %d, %d\n", td_base_line->start_point->point_num,
 		   td_base_line->end_point->point_num);
 #endif		    
 	    P_Sur_2D_Line *td_ident_line;
@@ -853,12 +853,12 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 	    for(td_ident_line=this->lines.first; td_ident_line; td_ident_line=td_ident_line_next){
 		td_ident_line_next = td_ident_line->next;
 		// if( td_ident_line->has_points(point_c, point_a) && td_ident_line->has_points(point_c, point_b) ){
-		//    printf("scheibenkleister!\n");
+		//    ivp_message("scheibenkleister!\n");
 		// }
 		if( td_ident_line->has_points(point_c, point_a) ){
 		    this->lines.remove(td_ident_line);
 #ifdef SUR_DEBUG
-		    printf("    line removed: %d, %d\n", td_ident_line->start_point->point_num,
+		    ivp_message("    line removed: %d, %d\n", td_ident_line->start_point->point_num,
 			   td_ident_line->end_point->point_num);
 #endif		    
 		    ca_removed = 1;
@@ -867,7 +867,7 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation()
 		if( td_ident_line && td_ident_line->has_points(point_c, point_b) ){
 		    this->lines.remove(td_ident_line);
 #ifdef SUR_DEBUG
-		    printf("    line removed: %d, %d\n", td_ident_line->start_point->point_num,
+		    ivp_message("    line removed: %d, %d\n", td_ident_line->start_point->point_num,
 			   td_ident_line->end_point->point_num);
 #endif		    
 		    bc_removed = 1;
@@ -1027,7 +1027,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 			IVP_Poly_Point *h=po3;
 			po3 = po2;
 			po2 = h;
-			//printf("Points swapped for clockwise.\n");		    
+			//ivp_message("Points swapped for clockwise.\n");		    
 		    }
 		}
 		
@@ -1135,17 +1135,17 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::final_convexify_check()
 	    int conc_flag = e->check_concavity(e->opposite);
 	    if(conc_flag == -2){
 		error_flag = "error";
-		printf("convex_test: tri->edge: tmp.gen.concav_flag == -2 (partly overlapping)"); tri->print("\n");	    		
+		ivp_message("convex_test: tri->edge: tmp.gen.concav_flag == -2 (partly overlapping)"); tri->print("\n");	    		
 	    }
 	    if(conc_flag == -1){
 		error_flag = "error";
-		printf("convex_test: tri->edge: tmp.gen.concav_flag == -1 (identic)"); tri->print("\n");	    		
+		ivp_message("convex_test: tri->edge: tmp.gen.concav_flag == -1 (identic)"); tri->print("\n");	    		
 	    }
 	    if(conc_flag == 0){
 		// convex: are neighbour and myself unhidden?
 		if(!tri->flags.is_terminal && (e->opposite->triangle->flags.is_hidden ||
 		   e->triangle->flags.is_hidden)){
-		    printf("convex_test:  warning edge is convex, but neighbours are hidden."); tri->print("\n");
+		    ivp_message("convex_test:  warning edge is convex, but neighbours are hidden."); tri->print("\n");
 		}		
 	    }
 	    if(conc_flag == 1){
@@ -1153,7 +1153,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::final_convexify_check()
 		if(!e->opposite->triangle->flags.is_hidden ||
 		   !e->triangle->flags.is_hidden){
 		    if (e->concavity < - P_POP_SURFACE_CONVEX_BLUR){
-			printf("convex_test:  edge is concav %f, but neighbours are unhidden.",e->concavity); tri->print("\n");
+			ivp_message("convex_test:  edge is concav %f, but neighbours are unhidden.",e->concavity); tri->print("\n");
 			error_flag = "error";
 		    }
 		}		
@@ -1161,9 +1161,9 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::final_convexify_check()
 	}
     }
     if(!error_flag){
-	//printf("final_convexify_check: OK: %i triangles, %i extrapoints.\n", n_triangles_check, n_extra_points);
+	//ivp_message("final_convexify_check: OK: %i triangles, %i extrapoints.\n", n_triangles_check, n_extra_points);
     }else{
-	printf("final_convexify_check: ERRORS: %i triangles, %i extrapoints.\n", n_triangles_check, n_extra_points);
+	ivp_message("final_convexify_check: ERRORS: %i triangles, %i extrapoints.\n", n_triangles_check, n_extra_points);
     }
     return error_flag;
 }
@@ -1185,7 +1185,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::check_konsistency_of_triangles()
 
 	if(tri != tri->other_side->other_side){
 		error_flag = "error";
-		printf("physic_test: tri != tri->other_side->other_side in triangle "); tri->print("\n");	    
+		ivp_message("physic_test: tri != tri->other_side->other_side in triangle "); tri->print("\n");	    
 	}
 	if( (tri->three_edges[0].next != &tri->three_edges[1] ||
 	     tri->three_edges[1].next != &tri->three_edges[2] ||
@@ -1196,11 +1196,11 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::check_konsistency_of_triangles()
 	     tri->three_edges[2].prev != &tri->three_edges[0] )
 	    ){
 		error_flag = "error";
-		printf("physic_test: edges do not properly form a ring in triangle "); tri->print("\n");
+		ivp_message("physic_test: edges do not properly form a ring in triangle "); tri->print("\n");
 	}
 	if(tri->calc_areasize() < 1E-6f){
 		error_flag = "error";
-		printf("pysic_test: tri->calc_areasize() < 1E-6f in triangle: %g", tri->calc_areasize()); tri->print("\n");	    	    
+		ivp_message("pysic_test: tri->calc_areasize() < 1E-6f in triangle: %g", tri->calc_areasize()); tri->print("\n");	    	    
 	}
 
 	// check tetraeder, if hidden and
@@ -1213,21 +1213,21 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::check_konsistency_of_triangles()
 		(e->opposite->prev->start_point != e->prev->opposite->prev->start_point))   )
 	    {
 		error_flag = "error";
-		printf("physic_test:  triangle is hidden, but neighbours don't form a tetraeder."); tri->print("\n");		
+		ivp_message("physic_test:  triangle is hidden, but neighbours don't form a tetraeder."); tri->print("\n");		
 	    }
 		// are all triangles inside this tetraeder hidden?
 	    if(!(e->opposite->triangle->flags.is_hidden &&
 	       e->next->opposite->triangle->flags.is_hidden &&
 	       e->prev->opposite->triangle->flags.is_hidden)){
 		error_flag = "error";
-		printf("physic_test:  triangle is hidden, but not all neighbours are hidden."); tri->print("\n");
+		ivp_message("physic_test:  triangle is hidden, but not all neighbours are hidden."); tri->print("\n");
 	    }
 	}else{
 	    if( e->opposite->triangle->flags.is_hidden ||
 	        e->next->opposite->triangle->flags.is_hidden ||
 		e->prev->opposite->triangle->flags.is_hidden){
 		error_flag = "error";
-		printf("physic_test:  triangle is not hidden, but a neighbour is hidden."); tri->print("\n");
+		ivp_message("physic_test:  triangle is not hidden, but a neighbour is hidden."); tri->print("\n");
 	    }
 	}
 
@@ -1239,46 +1239,46 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::check_konsistency_of_triangles()
 	    // check if any hidden edge is in any hash
 	    if(tri->flags.is_hidden && edge->tmp.gen.hash_class){
 		error_flag = "error";
-		printf("physic_test: tri->is_hidden && in hash"); tri->print("\n");
+		ivp_message("physic_test: tri->is_hidden && in hash"); tri->print("\n");
 	    }
 	    
 	    if(edge->opposite->opposite != edge){
 		error_flag = "error";
-		printf("physic_test: edge->opposite->opposite != edge in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge->opposite->opposite != edge in triangle "); edge->print("\n");
 	    }
 	    if(edge->start_point != edge->opposite->next->start_point){
 		error_flag = "error";
-		printf("physic_test: edge->start_point != edge->opposite->next->startpoint in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge->start_point != edge->opposite->next->startpoint in triangle "); edge->print("\n");
 	    }
 	    if(edge != edge->other_side()->other_side()){
 		error_flag = "error";
-		printf("physic_test: edge != edge->other_side()->other_side() in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge != edge->other_side()->other_side() in triangle "); edge->print("\n");
 	    }
 	    if(edge->prev->start_point == edge->opposite->prev->start_point){
 		error_flag = "error";
-		printf("physic_test: edge->prev->sp == edge->opp->prev->sp in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge->prev->sp == edge->opp->prev->sp in triangle "); edge->print("\n");
 	    }
 	    if(edge->triangle == edge->opposite->triangle){
 		error_flag = "error";
-		printf("physic_test: edge->triangle == edge->opposite->triangle in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge->triangle == edge->opposite->triangle in triangle "); edge->print("\n");
 	    }
 	    if(edge->behind->other_side()->behind != edge->other_side()){
 		error_flag = "error";
-		printf("physic_test: edge->behind->other_side()->behind = edge->other_side in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge->behind->other_side()->behind = edge->other_side in triangle "); edge->print("\n");
 	    }
 	    if(edge->triangle != tri){
 		error_flag = "error";
-		printf("physic_test: edge->triangle != tri in triangle "); edge->print("\n");
+		ivp_message("physic_test: edge->triangle != tri in triangle "); edge->print("\n");
 	    }
 	    if((edge->behind->start_point != edge->start_point) || (edge->behind->next->start_point != edge->next->start_point)){
 		error_flag = "error";
-		printf("physic_test: (edge->behind->sp != edge->sp) || (edge->behind->next->sp != edge->next->sp) in triangle "); tri->print("\n");
+		ivp_message("physic_test: (edge->behind->sp != edge->sp) || (edge->behind->next->sp != edge->next->sp) in triangle "); tri->print("\n");
 	    }
 	}
     }
     
     if(ph->triangles.len != n_triangles_check){
-	printf("physik_test: Anzahl der Triangles (%d) != n_triangles (%d)!\n",
+	ivp_message("physik_test: Anzahl der Triangles (%d) != n_triangles (%d)!\n",
 	       n_triangles_check, ph->triangles.len);
 		error_flag = "error";
     }
@@ -1326,7 +1326,7 @@ void IVP_Object_Polygon_Tetra::calc_concavities()
 	       &&(!edge->opposite->triangle->flags.is_hidden)) {
 		int flag = this->check_concavity_and_manage(edge, P_CONVEXIFY_STATE_INIT);
 		if(flag == -1){
-		    printf("Terminal object has identical triangles!!!\n");
+		    ivp_message("Terminal object has identical triangles!!!\n");
 		    CORE;
 		}
 	    }
@@ -1691,7 +1691,7 @@ void IVP_Object_Polygon_Tetra::pop_problematic_edge(IVP_Tri_Edge *edge){
 	    is_epsilon_problem = 1;
 	}
 #ifdef CONVEX_DEBUG
-	printf("***** Problematic %s,pop: edge %i %i, other_p %i %i, dist %f\n",
+	ivp_message("***** Problematic %s,pop: edge %i %i, other_p %i %i, dist %f\n",
 	       (edge->tmp.gen.concav_flag == 0) ? "convex": "CONCAV",
 	       edge->start_point->point_num(),
 	       oppo->start_point->point_num(),
@@ -1737,7 +1737,7 @@ void IVP_Object_Polygon_Tetra::pop_problematic_edge(IVP_Tri_Edge *edge){
 	pop_too_flat_flag = p_check_for_flat( &tri_a->three_edges[0], &tri_b->three_edges[0], P_Pop_Too_Flat_Eps);
 	if(pop_too_flat_flag == 1){
 #ifdef CONVEX_DEBUG	
-	    printf("problematic pop would be too flat.\n");
+	    ivp_message("problematic pop would be too flat.\n");
 #endif
 	    p_del_double_triangles(&tri_a, &tri_b);
 	    i_got_a_real_problem = 1;
@@ -1776,7 +1776,7 @@ void IVP_Object_Polygon_Tetra::pop_problematic_edge(IVP_Tri_Edge *edge){
 										 tri_pc->three_edges[0].next, extra_points, 3);
 	if(i_flag){
 #ifdef CONVEX_DEBUG
-	    printf("********* Epsilon problem with extra point. P_Pop_Eps: %f\n", P_Pop_Eps);
+	    ivp_message("********* Epsilon problem with extra point. P_Pop_Eps: %f\n", P_Pop_Eps);
 #endif
 	    P_DELETE(extra_point);
 	    P_DELETE(extra_tetra_point);
@@ -1800,7 +1800,7 @@ void IVP_Object_Polygon_Tetra::pop_problematic_edge(IVP_Tri_Edge *edge){
     
     if (i_got_a_real_problem){
 #ifdef CONVEX_DEBUG
-	printf("********* Epsilon problem moved to epsilon hash: epsilon = %f\n", P_Pop_Eps);
+	ivp_message("********* Epsilon problem moved to epsilon hash: epsilon = %f\n", P_Pop_Eps);
 #endif
 	this->move_edge_to_epsilon_hash(edge);
     }
@@ -1847,10 +1847,10 @@ void IVP_Object_Polygon_Tetra::link_existing_pop_edge(IVP_Tri_Edge *pop_edge)
 		// encountered a pop edge -> link it
 		this->p_link_edge(e, pop_edge->opposite);
 #ifdef CONVEX_DEBUG	
-		printf("\n**********************************************pop edge already existed in neighbour region -> linked it.\n");
+		ivp_message("\n**********************************************pop edge already existed in neighbour region -> linked it.\n");
 		e->print("e");
 		pop_edge->print("e0");
-		printf("\n");
+		ivp_message("\n");
 #endif
 		break;
 	    }
@@ -1862,7 +1862,7 @@ void IVP_Object_Polygon_Tetra::pop_concav_edge(IVP_Tri_Edge *edge)
 {
     // assert edge is real concave 
 #ifdef CONVEX_DEBUG
-    printf("Try pop: edge %d %d with %d & %d. concavity %g)",
+    ivp_message("Try pop: edge %d %d with %d & %d. concavity %g)",
 	   edge->start_point->point_num(),
 	   edge->next->start_point->point_num(),
 	   edge->prev->start_point->point_num(),
@@ -1913,7 +1913,7 @@ void IVP_Object_Polygon_Tetra::pop_concav_edge(IVP_Tri_Edge *edge)
 	if(pop_too_flat_flag == 1){
 	    this->move_edge_to_epsilon_hash(edge);
 #ifdef CONVEX_DEBUG	
-	    printf("\n            too flat -> edge moved to epsilon problem hash!\n");
+	    ivp_message("\n            too flat -> edge moved to epsilon problem hash!\n");
 #endif
 	    p_del_double_triangles(&tri_a, &tri_b);
 	    return;
@@ -1939,13 +1939,13 @@ void IVP_Object_Polygon_Tetra::pop_concav_edge(IVP_Tri_Edge *edge)
 							   this->extra_points, n_new_triangles );
 	    this->record_intruding_convex_edges(status);
 #ifdef CONVEX_DEBUG	
-	    printf("\n            intrusion: edge added to problem_min_hash.\n");
+	    ivp_message("\n            intrusion: edge added to problem_min_hash.\n");
 	    status->print("test status");
 #endif
 	    delete status;
 	}else{
 #ifdef CONVEX_DEBUG	
-	    printf("\n            epsilon violation. smaller epsilon will work. shifted to eps hash.\n");
+	    ivp_message("\n            epsilon violation. smaller epsilon will work. shifted to eps hash.\n");
 #endif
 	    this->move_edge_to_epsilon_hash(edge);
 	}
@@ -1986,7 +1986,7 @@ void IVP_Object_Polygon_Tetra::pop_concav_edge(IVP_Tri_Edge *edge)
 	if (tri_b){
 	    this->link_triangle_couple(tri_b, link_to_tri_a_edge, q0, o0);
 	}else{
-	    printf("* NULL pop");
+	    ivp_message("* NULL pop");
 	    // anything else?
 	}
     }
@@ -2005,7 +2005,7 @@ void IVP_Object_Polygon_Tetra::pop_concav_edge(IVP_Tri_Edge *edge)
     } 
 
 #ifdef CONVEX_DEBUG	
-    printf(" *\n");
+    ivp_message(" *\n");
 #endif
 
 }
@@ -2015,7 +2015,7 @@ void IVP_Object_Polygon_Tetra::convexify()
     // ATT! not idempotent
     
 #ifdef CONVEX_DEBUG
-    printf("\n\nCONVEXIFY\n==============\n");
+    ivp_message("\n\nCONVEXIFY\n==============\n");
 #endif
 
     
@@ -2064,18 +2064,18 @@ void IVP_Object_Polygon_Tetra::convexify()
 #ifdef CONVEX_DEBUG	
 	this->check_konsistency_of_triangles();
 	    
-	printf("%i:",num_of_loops);
+	ivp_message("%i:",num_of_loops);
 	for (i=P_HASH_CLASS_NORMAL; i<P_HASH_CLASS_MAX;i++){
-	    printf(" %i",min_hash[i]->counter);
+	    ivp_message(" %i",min_hash[i]->counter);
 	}
-	printf(":   ");
+	ivp_message(":   ");
 	num_of_loops++;
 	if(num_of_loops == n_physical_pops -1){
-	    printf("Nearly Last Loop!\n");
+	    ivp_message("Nearly Last Loop!\n");
 	}
 
 	if(num_of_loops == n_physical_pops ){
-	    printf("P_CONVEX_LOOPS reached!\n");
+	    ivp_message("P_CONVEX_LOOPS reached!\n");
 	    break;
 	}
 #endif
@@ -2092,11 +2092,11 @@ void IVP_Object_Polygon_Tetra::convexify()
 	    P_Pop_Eps *= P_POP_EPS_REDUCE_FACTOR;
 	    P_Pop_Too_Flat_Eps = P_Pop_Eps * P_POP_TOO_FLAT_EPS_FACTOR;
 	    if(P_Pop_Eps < P_DOUBLE_EPS){
-		printf("*** P_Pop_Eps went smaller than P_DOUBLE_EPS!!\n");
+		ivp_message("*** P_Pop_Eps went smaller than P_DOUBLE_EPS!!\n");
 		continue;
 	    }
 #ifdef CONVEX_DEBUG
-	    printf("#############################    Reduced P_Pop_Eps to %f. Hashes are recalculated\n", P_Pop_Eps);
+	    ivp_message("#############################    Reduced P_Pop_Eps to %f. Hashes are recalculated\n", P_Pop_Eps);
 #endif
 	    //calc_concavities();
 	    // swap hashes
@@ -2134,7 +2134,7 @@ void IVP_Object_Polygon_Tetra::convexify()
 	    this->pop_problematic_edge(edge);
 	    continue;
 	}
-//	printf("No edges left in all three min hashes.\n");
+//	ivp_message("No edges left in all three min hashes.\n");
 	break;
     }
     
@@ -2147,7 +2147,7 @@ void IVP_Object_Polygon_Tetra::convexify()
     P_FREE(t4_points);
     
 #ifdef CONVEX_DEBUG   
-    printf("Convexify finished.\n");
+    ivp_message("Convexify finished.\n");
 #endif
 }
 

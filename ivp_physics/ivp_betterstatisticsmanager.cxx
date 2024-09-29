@@ -282,7 +282,7 @@ void IVP_BetterStatisticsmanager::set_simulation_time(IVP_DOUBLE time) {
 	return;
     }
     time_of_last_update = this->simulation_time;
-    //printf("Time: %f\n", time_of_last_update);
+    //ivp_message("Time: %f\n", time_of_last_update);
     this->update_delayed = IVP_FALSE;
 
     return;

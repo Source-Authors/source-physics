@@ -235,7 +235,7 @@ hk_result hk_Incr_LU_Matrix::decrement_l_u(int del_nr) {
 	m_U_matrix[ i * m_aligned_row_len + del_nr ] = 0.0f;
     }
     if( normize_row( del_nr ) != HK_OK ) {
-	//hk_Console::get_instance()->printf("special_case_decrement\n");
+	//hkprintf("special_case_decrement\n");
 	add_neg_row_L(m_n_sub-1,del_nr,-1.0f);
 	m_U_matrix[ del_nr * m_aligned_row_len + del_nr ] = 1.0f;
     }
@@ -361,28 +361,28 @@ void hk_Incr_LU_Matrix::add_neg_row_L(int source_row,int dest_row,hk_incrlu_real
 void hk_Incr_LU_Matrix::debug_print_l_u() {
     int i;
 #if 0
-    hk_Console::get_instance()->printf("\nindex  ");
+    hkprintf("\nindex  ");
     for(i=0;i<m_n_sub;i++) {
-	hk_Console::get_instance()->printf("%d  ",m_index_pos_contains[i]);
+	hkprintf("%d  ",m_index_pos_contains[i]);
     }
-    hk_Console::get_instance()->printf("\n");
-    hk_Console::get_instance()->printf("\ninvindex  ");
+    hkprintf("\n");
+    hkprintf("\ninvindex  ");
     for(i=0;i<m_n_sub;i++) {
-	hk_Console::get_instance()->printf("%d  ",inv_m_index_pos_contains[i]);
+	hkprintf("%d  ",inv_m_index_pos_contains[i]);
     }
-    hk_Console::get_instance()->printf("\n");
+    hkprintf("\n");
 #endif    
-    hk_Console::get_instance()->printf("  L                                      U\n");
+    hkprintf("  L                                      U\n");
     for(i=0;i<m_n_sub;i++) {
 	int j;
 	for(j=0;j<m_n_sub;j++) {
-	    hk_Console::get_instance()->printf("%.5f  ",m_L_matrix[i*m_aligned_row_len+j]);
+	    hkprintf("%.5f  ",m_L_matrix[i*m_aligned_row_len+j]);
 	}
-	hk_Console::get_instance()->printf("          ");
+	hkprintf("          ");
 	for(j=0;j<m_n_sub;j++) {
-	    hk_Console::get_instance()->printf("%.5f  ",m_U_matrix[i*m_aligned_row_len+j]);
+	    hkprintf("%.5f  ",m_U_matrix[i*m_aligned_row_len+j]);
 	}
-	hk_Console::get_instance()->printf("\n");
+	hkprintf("\n");
     }
 }
 

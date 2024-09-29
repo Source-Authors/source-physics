@@ -108,9 +108,9 @@ public:
      **********************************************************************/
     void print() const {
 	for (int i=0; i < nr_of_elements; i++) {
-	    printf("v[%d]=%1.3e ",i, element[i]);
+	    ivp_message("v[%d]=%1.3e ",i, element[i]);
 	}
-	printf("\n");
+	ivp_message("\n");
     }
 
     void set(const IVP_MI_Vector *v);                          //copies values of 'v' to 'this'

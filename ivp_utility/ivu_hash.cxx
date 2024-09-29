@@ -169,7 +169,7 @@ void *IVP_Hash::find(const char *key)const{
 void IVP_Hash::add(const char *key, void *val){
     int i = hash_index(key);
 
-//    printf("hash index: '%d', key: %lx key_string: '%s'\n", i, key, key);
+//    ivp_message("hash index: '%d', key: %lx key_string: '%s'\n", i, key, key);
     
     IVP_Hash_Elem *el = (IVP_Hash_Elem *)p_malloc(sizeof(IVP_Hash_Elem) + key_size); //-1
     memcpy(el->key,key,key_size);

@@ -331,7 +331,7 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::matrix_check_unequation_line(int lin
     {
 	return IVP_OK; 
     } else {
-	//printf("gauss_unequ %f %f\n",left_side,desired_vector[linenum]);
+	//ivp_message("gauss_unequ %f %f\n",left_side,desired_vector[linenum]);
 	return IVP_FAULT;
     }
 }
@@ -344,7 +344,7 @@ void IVP_Great_Matrix_Many_Zero::matrix_test_unequation()
 	for(int j=0;j<columns;j++){
 	    left+=result_vector[j]*matrix_values[i*aligned_row_len+j];
 	}
-	IVP_IF(1) { printf("unequation_test left %f right %f\n",left,desired_vector[i]); }
+	IVP_IF(1) { ivp_message("unequation_test left %f right %f\n",left,desired_vector[i]); }
     }
 }
 
@@ -355,9 +355,9 @@ void IVP_Great_Matrix_Many_Zero::matrix_out_before_gauss()
     {
 	for(int j=0;j<columns;j++)
 	{
-	    printf("%.5f  ",matrix_values[i*aligned_row_len+j]);
+	    ivp_message("%.5f  ",matrix_values[i*aligned_row_len+j]);
 	}
-	printf("=  %.5f\n",desired_vector[i]);
+	ivp_message("=  %.5f\n",desired_vector[i]);
     }
     }
 }
@@ -515,16 +515,16 @@ column_done: ;
     //now matrix has zeros in lower-left part
     //solve columns from bottom to top
 #if 0
-    printf("matrix_after_gauss:\n");
+    ivp_message("matrix_after_gauss:\n");
     for(j=0;j<columns;j++)
     {
 	//walk through lines
 	for(i=0;i<columns;i++)
 	{
-	    printf("%.5f  ",matrix_values[j*columns+i]);
+	    ivp_message("%.5f  ",matrix_values[j*columns+i]);
 	    old_matrix[j*columns+i]=matrix_values[j*columns+i];
 	}
-	printf(" x -> %.5f\n",desired_vector[j]);
+	ivp_message(" x -> %.5f\n",desired_vector[j]);
 	res_p[j]=desired_vector[j];
     }
 #endif
@@ -570,10 +570,10 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::solve_lower_null_matrix()
 	    if(IVP_Inline_Math::fabsd(right_side) < MATRIX_EPS*1000.0f)	    {
 		// rang(matrix) is not maximal and result space is greater 1
 		// choose an arbitrary result element (0.0f)
-		//printf("got_gauss_null %f %f\n",left_side,right_side);
+		//ivp_message("got_gauss_null %f %f\n",left_side,right_side);
 		desired_vector[i]=0.0f;
 		IVP_IF(0) {
-		    printf("gauss_singular_matrix\n");
+		    ivp_message("gauss_singular_matrix\n");
 		}
 	    } else {
 		// no result possible
@@ -589,7 +589,7 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::solve_lower_null_matrix()
 	} else {
 	    desired_vector[i]=right_side/left_side; // division left_side is not needed, it was done already above (make a vector of inverses)
 	    if(desired_vector[i]>10E11f) {
-		IVP_IF(1) { printf("\ngauss_failure\n\n"); }
+		IVP_IF(1) { ivp_message("\ngauss_failure\n\n"); }
 	    }
 	}
     }
@@ -629,9 +629,9 @@ int IVP_Great_Matrix_Many_Zero::test_result(IVP_DOUBLE *old_matrix,IVP_DOUBLE *o
 	for(i=0;i<columns;i++)
 	{
 	    left_side+=old_matrix[j*columns+i]*result_vector[i];
-	    printf("multip %.5f %.5f  ",old_matrix[j*columns+i],result_vector[i]);
+	    ivp_message("multip %.5f %.5f  ",old_matrix[j*columns+i],result_vector[i]);
 	}
-	printf("\nwanted_res was %.5f now %.5f\n",old_desired[j],left_side);
+	ivp_message("\nwanted_res was %.5f now %.5f\n",old_desired[j],left_side);
     }
     }
     return 0;
@@ -680,7 +680,7 @@ void IVP_Great_Matrix_Many_Zero::fill_from_bigger_matrix(IVP_Great_Matrix_Many_Z
 	for(int i=0;i<n_column;i++) {
 	    IVP_DOUBLE *dest = &matrix_values[i * aligned_row_len];
 	    IVP_IF(( original_pos[i] != i )) {
-		printf("original_pos_diff %d %d\n",i,original_pos[i]);
+		ivp_message("original_pos_diff %d %d\n",i,original_pos[i]);
 	    }
 	    
 	    IVP_DOUBLE *source = & big_matrix->matrix_values[  original_pos[i]*big_matrix->aligned_row_len ];
@@ -826,7 +826,7 @@ IVP_BOOL IVP_Linear_Constraint_Solver::numerical_stability_ok() {
 	}
 	if( val > TEST_EPS ) {
 	    IVP_IF(debug_lcs) {
-		printf("numerical_unstable %d %.10f should be zero\n",ignored_pos,val);
+		ivp_message("numerical_unstable %d %.10f should be zero\n",ignored_pos,val);
 	    }
 	    return IVP_FALSE;
 	}
@@ -840,13 +840,13 @@ IVP_BOOL IVP_Linear_Constraint_Solver::numerical_stability_ok() {
 	}
 	if( val > TEST_EPS ) {
 	    IVP_IF(debug_lcs) {
-		printf("numerical_unstable %d %.10f should be %.10f\n",ignored_pos,temp[actives_inactives_ignored[k]],accel[actives_inactives_ignored[k]]);
+		ivp_message("numerical_unstable %d %.10f should be %.10f\n",ignored_pos,temp[actives_inactives_ignored[k]],accel[actives_inactives_ignored[k]]);
 	    }
 	    return IVP_FALSE;
 	}
     }
     IVP_IF(0) {
-	printf("numerical_worst %.5e\n",worst_error);
+	ivp_message("numerical_worst %.5e\n",worst_error);
     }
     return IVP_TRUE;
 }
@@ -955,7 +955,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(IVP_DOUBLE *A_in
     debug_lcs=0;
     
     IVP_IF(debug_lcs) {
-	printf("\n***********************************************************\n");
+	ivp_message("\n***********************************************************\n");
 	start_debug_lcs();
     }
 
@@ -963,7 +963,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(IVP_DOUBLE *A_in
     IVP_RETURN_TYPE ret_val = solve_lc();
 
     IVP_IF((debug_no_lu_count>0) && (debug_lcs)) {
-	printf("sum_lu_failed %d\n",debug_no_lu_count);
+	ivp_message("sum_lu_failed %d\n",debug_no_lu_count);
     }
     
     IVP_IF(ret_val==IVP_OK) {
@@ -972,14 +972,14 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(IVP_DOUBLE *A_in
 	full_solver_mat.mult_aligned();
 	for(j=0;j<n_variables;j++) {
 	    if(full_solver_mat.result_vector[j] + 0.0001f < full_b[j]) {
-		printf("linear_constraint_failed %d %f should be greater %f\n",j,full_solver_mat.result_vector[j],full_b[j]);
+		ivp_message("linear_constraint_failed %d %f should be greater %f\n",j,full_solver_mat.result_vector[j],full_b[j]);
 	    }
 	}
 	for(j=0;j<r_actives;j++) {
 	    int index_full=actives_inactives_ignored[j];
 	    IVP_DOUBLE diff=IVP_Inline_Math::fabsd(full_solver_mat.result_vector[index_full] - full_b[index_full]);
 	    if(diff>0.0001f) {
-		printf("linear_constraint_failed %d %f should be equal %f\n",j,full_solver_mat.result_vector[index_full],full_b[index_full]);
+		ivp_message("linear_constraint_failed %d %f should be equal %f\n",j,full_solver_mat.result_vector[index_full],full_b[index_full]);
 	    }
 	}
     }
@@ -1008,7 +1008,7 @@ void IVP_Linear_Constraint_Solver::decrement_sub_solver( int sub_pos ) {
 	IVP_ASSERT( lu_sub_solver.n_sub == r_actives + 1 );
 	if( lu_sub_solver.decrement_l_u( sub_pos ) != IVP_OK ) {
 	    IVP_IF(1) {
-		printf("\n\ndecrement_lu_failed_need_setup\n\n");
+		ivp_message("\n\ndecrement_lu_failed_need_setup\n\n");
 	    }
 	    sub_solver_status=2;
 	}
@@ -1030,7 +1030,7 @@ void IVP_Linear_Constraint_Solver::increment_sub_solver() {
 	}
 	if( lu_sub_solver.increment_l_u() != IVP_OK ) {
 	    IVP_IF(debug_lcs) {
-		printf("\n\nincrement_lu_failed_need_setup\n\n");
+		ivp_message("\n\nincrement_lu_failed_need_setup\n\n");
 	    }
 	    sub_solver_status=2;
 	}
@@ -1079,7 +1079,7 @@ void IVP_Linear_Constraint_Solver::move_not_necessary_actives_to_inactives() {
     int i;
     for( i=0;i<r_actives;i++ ) {
 	if( full_x[ actives_inactives_ignored[i] ] < SOLVER_EPS ) {
-	    //printf("juhu_removed_not_necessary_active %d full %d\n",i,actives_inactives_ignored[i]);
+	    //ivp_message("juhu_removed_not_necessary_active %d full %d\n",i,actives_inactives_ignored[i]);
 	    full_x[ actives_inactives_ignored[i] ]=0.0f;
 	    exchange_lcs_variables( i, r_actives-1 );
 	    r_actives--;
@@ -1108,7 +1108,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
     int did_real_step=0; //real step means that active variables have changed
     int next_numeric_stability_test = IVP_NUMERIC_TEST_EVERY_N;
 
-    //printf("\n\n\n\n\ndoing_lcs_ %d\n",n_variables);
+    //ivp_message("\n\n\n\n\ndoing_lcs_ %d\n",n_variables);
     
     IVP_DOUBLE solver_eps = SOLVER_EPS;
     
@@ -1118,7 +1118,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
 	}
 	if(step_count > IVP_UNILATERAL_SOLVER_MAX_STEP) {
 	    IVP_IF(1) {
-	        printf("\n\ngiveup_stepcount_linear_constraint_solver\n\n\n");
+	        ivp_message("\n\ngiveup_stepcount_linear_constraint_solver\n\n\n");
 	    }
 	    return IVP_FAULT;
 	}
@@ -1130,7 +1130,7 @@ perform_full_setup:
 		increase_step_count(&step_count);
     		if(step_count > IVP_UNILATERAL_SOLVER_MAX_STEP) {
 		    IVP_IF(1) {
-			printf("\n\ngiveup_stepcount_linear_constraint_solver\n\n\n");
+			ivp_message("\n\ngiveup_stepcount_linear_constraint_solver\n\n\n");
 		    }
 		    return IVP_FAULT;
 		}
@@ -1155,16 +1155,16 @@ perform_full_setup:
 	    for(k=0;k<r_actives;k++) {
 		int idx=actives_inactives_ignored[k];
 		IVP_IF( IVP_Inline_Math::fabsd( accel[idx] ) > 0.01f ) {
-		    printf("incorrect_accel %f at %d  should be zero\n",accel[idx],idx);
+		    ivp_message("incorrect_accel %f at %d  should be zero\n",accel[idx],idx);
 		}
 		IVP_IF( IVP_Inline_Math::fabsd( full_x[idx] ) < solver_eps ) {
 		    if ( IVP_Inline_Math::fabsd( full_x[ignored_full_index] ) < solver_eps) {
-			printf("active_var %d shouldnt be active but inactive\n",idx);
+			ivp_message("active_var %d shouldnt be active but inactive\n",idx);
 		    }
 		}
 		if( full_x[idx]<0.0f ) {
 		    IVP_IF(1) {
-			printf("active_var %d should be positive %f\n",idx,full_x[idx]);
+			ivp_message("active_var %d should be positive %f\n",idx,full_x[idx]);
 		    }
 		}
 	    }
@@ -1174,13 +1174,13 @@ perform_full_setup:
 	    for(k=r_actives;k<ignored_pos;k++) {
 		int idx=actives_inactives_ignored[k];
 		IVP_IF( IVP_Inline_Math::fabsd( full_x[idx] ) > 0.1f ) {
-		    printf("incorrect_x %f at %d  should be zero\n",accel[idx],idx);
+		    ivp_message("incorrect_x %f at %d  should be zero\n",accel[idx],idx);
 		}
 		if(full_x[idx]<-0.001f) {
-		    printf("incorrect_negative_x %f at %d  should be zero\n",accel[idx],idx);
+		    ivp_message("incorrect_negative_x %f at %d  should be zero\n",accel[idx],idx);
 		}
 		if( accel[idx] < 0.0f ) {
-		    printf("warning_inactive_neg accel %d %f\n",idx,accel[idx]);
+		    ivp_message("warning_inactive_neg accel %d %f\n",idx,accel[idx]);
 		}	
 	    }
 	}
@@ -1200,7 +1200,7 @@ perform_full_setup:
 		    sub_solver_status=0; 
 		} else {
 		    IVP_IF(debug_lcs) {
-		    printf("setup_lu_notok\n");
+		    ivp_message("setup_lu_notok\n");
 		    }
 		}
 	    } else {
@@ -1227,7 +1227,7 @@ perform_full_setup:
 	    //compute x with Acc x = b
 	    if(get_fdirection() == IVP_FAULT) {
 		IVP_IF(debug_lcs) {
-		    printf("lcs_fdirection_total_fail\n");
+		    ivp_message("lcs_fdirection_total_fail\n");
 		}
 		goto perform_full_setup;
 	    }
@@ -1236,9 +1236,9 @@ perform_full_setup:
 	    //delta_f is now filled in original var space
 
 	    IVP_IF(0) {
-		printf("fullmat:\n");
+		ivp_message("fullmat:\n");
 		full_solver_mat.print_great_matrix("");
-		printf("\n");
+		ivp_message("\n");
 	    }
 	    	    
 	    //full_solver_mat.mult();  //delta_accel = A * delta_f
@@ -1254,7 +1254,7 @@ perform_full_setup:
 	    IVP_IF(0) {
 		for(int j=0;j<r_actives;j++) {
 		    int full_index = actives_inactives_ignored[ j ];
-		    printf("should be zero %f\n",delta_accel[full_index]);
+		    ivp_message("should be zero %f\n",delta_accel[full_index]);
 		}
 	    }
 	    
@@ -1262,7 +1262,7 @@ perform_full_setup:
 	    
 	    // step to make clamped active out of ignored_pos
 	    IVP_IF( accel[ ignored_full_index ] > 0.0f ) {
-		printf("errror_accel_ignored_negativ\n");
+		ivp_message("errror_accel_ignored_negativ\n");
 	    }
 	    if( -accel[ ignored_full_index ] < delta_accel[ ignored_full_index ] * MAX_STEP_LEN ) {
 		smallest_step = - accel[ignored_full_index] / delta_accel[ ignored_full_index ];
@@ -1309,7 +1309,7 @@ perform_full_setup:
 		    IVP_DOUBLE local_step = - accel[ index ] / del_a;
 		    if( local_step < smallest_step - solver_eps ) { // make it harder to move from inactive to active
 			IVP_IF(debug_lcs) {
-			    printf("violate_inactive: accel %.4f  delta %.4f\n",accel[index],del_a);
+			    ivp_message("violate_inactive: accel %.4f  delta %.4f\n",accel[index],del_a);
 			}			
 			// we prefer making inactives out of actives instead other way round if both is possible ( both steps are nearly zero )
 			// uuups this is all wrong
@@ -1323,7 +1323,7 @@ perform_full_setup:
 
 	    if(smallest_step < 0.0f) {
 		IVP_IF(1) {
-		    printf("error_stepsize_negative %f\n",smallest_step);
+		    ivp_message("error_stepsize_negative %f\n",smallest_step);
 		}
 		smallest_step=0.0f;
 	    }	
@@ -1333,7 +1333,7 @@ perform_full_setup:
 	    }
 
 	    IVP_IF(debug_lcs) {
-		printf("smallest_step_is %f\n",smallest_step);
+		ivp_message("smallest_step_is %f\n",smallest_step);
 	    }
 
 limiting_var_found:
@@ -1355,7 +1355,7 @@ limiting_var_found:
 		// one active var becomes inactive
 		
 		IVP_IF(debug_lcs) {
-		    printf("\nactive %d becomes inactive (relp %d)\n\n",actives_inactives_ignored[limiting_var],limiting_var);
+		    ivp_message("\nactive %d becomes inactive (relp %d)\n\n",actives_inactives_ignored[limiting_var],limiting_var);
 		}
 		
 		int indx=actives_inactives_ignored[limiting_var];
@@ -1373,7 +1373,7 @@ limiting_var_found:
 		    }
 
 		    IVP_IF(debug_lcs) {
-			printf("\ninactive %d becomes active (relp %d)\n\n",actives_inactives_ignored[limiting_var],limiting_var);
+			ivp_message("\ninactive %d becomes active (relp %d)\n\n",actives_inactives_ignored[limiting_var],limiting_var);
 		    }
 		    int indx=actives_inactives_ignored[limiting_var];
 		    IVP_ASSERT( IVP_Inline_Math::fabsd(accel[indx]) < 0.001f );
@@ -1387,7 +1387,7 @@ move_ignored_to_active:
 		    // ignored_pos comes to the active variables		    
 		    move_not_necessary_actives_to_inactives();		    
 		    IVP_IF(debug_lcs) {
-			printf("\nignored %d becomes active (relp %d)\n\n",actives_inactives_ignored[ignored_pos],ignored_pos);
+			ivp_message("\nignored %d becomes active (relp %d)\n\n",actives_inactives_ignored[ignored_pos],ignored_pos);
 		    }
 		    int indx=actives_inactives_ignored[limiting_var];
 		    IVP_ASSERT( IVP_Inline_Math::fabsd(accel[indx]) < 0.001f );
@@ -1414,11 +1414,11 @@ move_ignored_to_inactive:
 	    // ignored_pos comes to the inactives variables
 	    did_real_step=0; //active variables are unchanged
 	    IVP_IF(debug_lcs) {
-		printf("ignored %d becomes inactive (relp %d)\n\n",actives_inactives_ignored[ignored_pos],ignored_pos);
+		ivp_message("ignored %d becomes inactive (relp %d)\n\n",actives_inactives_ignored[ignored_pos],ignored_pos);
 	    }
 	    int indx=actives_inactives_ignored[ignored_pos];
 	    IVP_IF( !(IVP_Inline_Math::fabsd(full_x[indx] ) < 0.001f) ) {
-		printf("error_move_ignored_to_inactive_x_not_zero\n");
+		ivp_message("error_move_ignored_to_inactive_x_not_zero\n");
 	    }
 	    
 	    full_x[indx]=0.0f;
@@ -1479,17 +1479,17 @@ void IVP_Linear_Constraint_Solver::exchange_activ_inactiv( int change_var ) {
 void IVP_Linear_Constraint_Solver::update_step_vars( IVP_DOUBLE step_size ) {
     int i;
     IVP_IF(debug_lcs) {
-	printf("deltaa  ");
+	ivp_message("deltaa  ");
     }
     for( i = 0; i < n_variables; i++) {
 	IVP_IF(debug_lcs) {
-	    printf("%f ",delta_accel[i]);
+	    ivp_message("%f ",delta_accel[i]);
 	}
 	accel[ i ] = accel[i] + step_size * delta_accel[ i ]; //Vector Optimization possible
 	full_x[ i ] = full_x[ i ] + step_size * delta_f[ i ];           //dito
     }
     IVP_IF(debug_lcs) {
-	printf("\n");
+	ivp_message("\n");
     }
 
     //in some cases (e.g. overriding an inactive) acceleration of inactives gets negative
@@ -1555,13 +1555,13 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
 		    IVP_DOUBLE diff=lu_sub_solver.out_vec[i]-sub_solver_mat.result_vector[i];
 		    if(IVP_Inline_Math::fabsd(diff) > 0.001f) {
 		      IVP_IF(debug_lcs) {
-			printf("gauss_lu_test_fail %f %f should be equal\n",lu_sub_solver.out_vec[i],sub_solver_mat.result_vector[i]);
+			ivp_message("gauss_lu_test_fail %f %f should be equal\n",lu_sub_solver.out_vec[i],sub_solver_mat.result_vector[i]);
 		      }
 		    }
 		}
 	    } else {
 	      IVP_IF(debug_lcs) {
-		printf("gauss_lu_test_gauss_invalid\n");
+		ivp_message("gauss_lu_test_gauss_invalid\n");
 	      }
 	    }
 	    if( ret_val3 == IVP_OK ) {
@@ -1570,7 +1570,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
 		    IVP_DOUBLE diff=lu_sub_solver.out_vec[i]-debug_mat.result_vector[i];
 		    if(IVP_Inline_Math::fabsd(diff) > 0.001f) {
 		      IVP_IF(debug_lcs) {
-			printf("inv_lu_test_fail %f %f should be equal\n",lu_sub_solver.out_vec[i],debug_mat.result_vector[i]);
+			ivp_message("inv_lu_test_fail %f %f should be equal\n",lu_sub_solver.out_vec[i],debug_mat.result_vector[i]);
 		      }
 		    }
 		}
@@ -1579,7 +1579,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
 	}
     } else {
 	IVP_IF((debug_lcs)) {
-	    printf("sub_lu_is_off %d\n",r_actives);
+	    ivp_message("sub_lu_is_off %d\n",r_actives);
 	}
 	debug_no_lu_count++;
 	sub_solver_mat.columns = r_actives;
@@ -1614,81 +1614,81 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
 }
 
 void IVP_Linear_Constraint_Solver::start_debug_lcs() {
-    printf("b_vals ");
+    ivp_message("b_vals ");
     int i;
     int j;
     for(i=0;i<n_variables;i++) {
-	printf("%.4f ",full_b[i]);
+	ivp_message("%.4f ",full_b[i]);
     }
-    printf("\n");
+    ivp_message("\n");
     
-    printf("matrix:\n");
+    ivp_message("matrix:\n");
     for(i=0;i<n_variables;i++) {
 	for(j=0;j<n_variables;j++) {
-	    printf("%.4f ",full_A[i*aligned_size + j]);
+	    ivp_message("%.4f ",full_A[i*aligned_size + j]);
 	}
-	printf("\n");
+	ivp_message("\n");
     }
-    printf("\n");
+    ivp_message("\n");
 }
 
 void IVP_Linear_Constraint_Solver::debug_out_lcs() {
-    printf("r_actives %d  ignored_nr %d\n",r_actives,ignored_pos);
+    ivp_message("r_actives %d  ignored_nr %d\n",r_actives,ignored_pos);
     int i;
 
     if(ignored_pos>n_variables) {
 	ignored_pos=n_variables;
     }
     
-    printf("actives_inactives  ");
+    ivp_message("actives_inactives  ");
     for(i=0;i<r_actives;i++) {
-	printf("%d ",actives_inactives_ignored[i]);
+	ivp_message("%d ",actives_inactives_ignored[i]);
     }
-    printf("  ");
+    ivp_message("  ");
     for(i=r_actives;i<ignored_pos;i++) {
-	printf("%d ",actives_inactives_ignored[i]);
+	ivp_message("%d ",actives_inactives_ignored[i]);
     }
-    printf("  ");
+    ivp_message("  ");
     for(i=ignored_pos;i<n_variables;i++) {
-	printf("%d ",actives_inactives_ignored[i]);
+	ivp_message("%d ",actives_inactives_ignored[i]);
     }
-    printf("\n");
+    ivp_message("\n");
     
-    printf("variable_is_found  ");
+    ivp_message("variable_is_found  ");
     for(i=0;i<r_actives;i++) {
-	printf("%d ",variable_is_found_at[i]);
+	ivp_message("%d ",variable_is_found_at[i]);
     }
-    printf("  ");
+    ivp_message("  ");
     for(i=r_actives;i<ignored_pos;i++) {
-	printf("%d ",variable_is_found_at[i]);
+	ivp_message("%d ",variable_is_found_at[i]);
     }
-    printf("  ");
+    ivp_message("  ");
     for(i=ignored_pos;i<n_variables;i++) {
-	printf("%d ",variable_is_found_at[i]);
+	ivp_message("%d ",variable_is_found_at[i]);
     }
-    printf("\n");
+    ivp_message("\n");
 
-    printf("x-vals ");
+    ivp_message("x-vals ");
     for(i=0;i<n_variables;i++) {
-	printf("%.4f ",full_x[i]);
+	ivp_message("%.4f ",full_x[i]);
     }
-    printf("\n");
+    ivp_message("\n");
 
     full_solver_mat.desired_vector = full_x;
     full_solver_mat.mult_aligned(); // temporary missuse
     full_solver_mat.desired_vector = delta_f;
     
-    printf("accel1 ");
+    ivp_message("accel1 ");
     for(i=0;i<n_variables;i++) {
-	printf("%.4f ",full_solver_mat.result_vector[i] - full_b[i]);
+	ivp_message("%.4f ",full_solver_mat.result_vector[i] - full_b[i]);
     }
-    printf("\n");
+    ivp_message("\n");
 
-    printf("incr_accel ");
+    ivp_message("incr_accel ");
     for(i=0;i<n_variables;i++) {
-	printf("%.4f ",accel[i]);
+	ivp_message("%.4f ",accel[i]);
     }
-    printf("\n\n");
+    ivp_message("\n\n");
   
 }
 
@@ -1696,7 +1696,7 @@ void IVP_Linear_Constraint_Solver::debug_out_lcs() {
 IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::setup_l_u_solver() {
     int i;
     IVP_IF(0) {
-	printf("setting_up_lu\n");
+	ivp_message("setting_up_lu\n");
     }
     
     for(i=0; i <r_actives;i++) {
@@ -1737,7 +1737,7 @@ void IVP_Linear_Constraint_Solver::lcs_bubble_sort_x_vals() {
 	int i;
 	for(i=1;i<r_actives;i++) {
 	    if( full_x[ actives_inactives_ignored[ i-1 ] ] < full_x[ actives_inactives_ignored[ i ] ] ) {
-		printf("lcs_bubble_failed\n");
+		ivp_message("lcs_bubble_failed\n");
 	    }
 	}
     }
@@ -1829,7 +1829,7 @@ fast_setup_failed:
 
 IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::full_setup() {
     IVP_IF(0) {
-	printf("doing_fulll_setup\n");
+	ivp_message("doing_fulll_setup\n");
     }
     
     int i;
@@ -1851,7 +1851,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::full_setup() {
     } else {
 	sub_solver_status = 2;
 	IVP_IF(debug_lcs) {
-	    printf("setup_lu_failed\n");
+	    ivp_message("setup_lu_failed\n");
 	}
 
 	lcs_bubble_sort_x_vals(); //move actives with lowest x to the end (matrix is singular and last vars get a zero)
@@ -1876,7 +1876,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::full_setup() {
 
 	if(ret_val!=IVP_OK) {
 	    IVP_IF(1) {
-		printf("error_setup_gauss_failed_too\n");
+		ivp_message("error_setup_gauss_failed_too\n");
 	    }
 	    return ret_val;
 	}
@@ -1891,7 +1891,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::full_setup() {
     
     if( full_setup_test_ranges() > 0 ) {
 	IVP_IF(debug_lcs) {
-	    printf("\ncleared_some_illegal_vars\n\n");
+	    ivp_message("\ncleared_some_illegal_vars\n\n");
 	}
 	return full_setup();
     } else {
@@ -1963,11 +1963,11 @@ void IVP_Linear_Constraint_Solver::debug_test_all_values() {
 	for(i=0;i<n_variables;i++) {
 	    IVP_DOUBLE diff=IVP_Inline_Math::fabsd( reset_accel[i] - accel[i] );
 	    if( diff > 0.001f ) {
-		printf("accel_violated at %d %f should be %f\n",i,reset_accel[i],accel[i]);
+		ivp_message("accel_violated at %d %f should be %f\n",i,reset_accel[i],accel[i]);
 	    }
 	    diff=IVP_Inline_Math::fabsd( full_x[i] - reset_x[i] );
 	    if( diff > 0.001f ) {
-		printf("x_violated at %d\n",i);
+		ivp_message("x_violated at %d\n",i);
 	    }
 	}
     }
@@ -2377,7 +2377,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::decrement_l_u(int del_nr) {
 	U_matrix[ i * aligned_row_len + del_nr ] = 0.0f;
     }
     if( normize_row( del_nr ) != IVP_OK ) {
-	//printf("special_case_decrement\n");
+	//ivp_message("special_case_decrement\n");
 	add_neg_row_L(n_sub-1,del_nr,-1.0f);
 	U_matrix[ del_nr * aligned_row_len + del_nr ] = 1.0f;
     }
@@ -2507,28 +2507,28 @@ void IVP_Incr_L_U_Matrix::add_neg_row_L(int source_row,int dest_row,IVP_DOUBLE f
 void IVP_Incr_L_U_Matrix::debug_print_l_u() {
     int i;
 #if 0
-    printf("\nindex  ");
+    ivp_message("\nindex  ");
     for(i=0;i<n_sub;i++) {
-	printf("%d  ",index_pos_contains[i]);
+	ivp_message("%d  ",index_pos_contains[i]);
     }
-    printf("\n");
-    printf("\ninvindex  ");
+    ivp_message("\n");
+    ivp_message("\ninvindex  ");
     for(i=0;i<n_sub;i++) {
-	printf("%d  ",inv_index_pos_contains[i]);
+	ivp_message("%d  ",inv_index_pos_contains[i]);
     }
-    printf("\n");
+    ivp_message("\n");
 #endif    
-    printf("  L                                      U\n");
+    ivp_message("  L                                      U\n");
     for(i=0;i<n_sub;i++) {
 	int j;
 	for(j=0;j<n_sub;j++) {
-	    printf("%.5f  ",L_matrix[i*aligned_row_len+j]);
+	    ivp_message("%.5f  ",L_matrix[i*aligned_row_len+j]);
 	}
-	printf("          ");
+	ivp_message("          ");
 	for(j=0;j<n_sub;j++) {
-	    printf("%.5f  ",U_matrix[i*aligned_row_len+j]);
+	    ivp_message("%.5f  ",U_matrix[i*aligned_row_len+j]);
 	}
-	printf("\n");
+	ivp_message("\n");
     }
 }
 
@@ -2557,7 +2557,7 @@ void IVP_Linear_Constraint_Solver::debug_dep_var(int full_var_nr) {
     int col_nr=0;
     int sub_var_nr=variable_is_found_at[ full_var_nr ];
     if( sub_var_nr >= r_actives ) {
-	printf("works_only_with_active\n");
+	ivp_message("works_only_with_active\n");
 	return;
     }
     int i,j;
@@ -2591,19 +2591,19 @@ void IVP_Linear_Constraint_Solver::debug_dep_var(int full_var_nr) {
     }
 
     if( sub_solver_mat.solve_great_matrix_many_zero() == IVP_OK ) {
-	printf("dependency %d is ",full_var_nr);
+	ivp_message("dependency %d is ",full_var_nr);
 	col_nr=0;
 	for(i=0;i<sub_var_nr;i++) {
-	    printf("%d:%f ",actives_inactives_ignored[i],sub_solver_mat.result_vector[col_nr]);
+	    ivp_message("%d:%f ",actives_inactives_ignored[i],sub_solver_mat.result_vector[col_nr]);
 	    col_nr++;
 	}
 	for(i=sub_var_nr+1;i<r_actives;i++) {
-	    printf("%d:%f ",actives_inactives_ignored[i],sub_solver_mat.result_vector[col_nr]);
+	    ivp_message("%d:%f ",actives_inactives_ignored[i],sub_solver_mat.result_vector[col_nr]);
 	    col_nr++;
 	}
-	printf("\n");
+	ivp_message("\n");
     } else {
-	printf("variable %d is independent\n",full_var_nr);
+	ivp_message("variable %d is independent\n",full_var_nr);
     }
 }
 

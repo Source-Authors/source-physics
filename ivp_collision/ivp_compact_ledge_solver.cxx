@@ -453,7 +453,7 @@ IVP_RETURN_TYPE IVP_Compact_Ledge_Solver::calc_unscaled_KK_vals(const IVP_KK_Inp
   }
     
   IVP_IF(1){
-    printf("calc_unscaled_KK_vals: parallel edges\n");
+    ivp_message("calc_unscaled_KK_vals: parallel edges\n");
   }
   // ok edges are nearly parallel, do very carefull distance checking !!!
 
@@ -605,7 +605,7 @@ IVP_DOUBLE  IVP_Compact_Ledge_Solver::calc_qlen_PK_K_space(const IVP_U_Point *P_
     unsigned int adress=(unsigned int)P_in_K_space;
 	unsigned int aligned_a=(adress & 0xfffffff0 );
 	IVP_IF( aligned_a != adress ) {
-		printf("erroradress %lx\n",adress);
+		ivp_message("erroradress %lx\n",adress);
 		IVP_ASSERT(1==0);
 	}
 #endif

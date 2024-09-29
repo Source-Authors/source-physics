@@ -447,7 +447,7 @@ IVP_BOOL IVP_Core::revive_simulation_core()
 	const char *name0 = core->objects.element_at(0)->get_name();
 	if (	!P_String::string_cmp(name0, search0, IVP_FALSE)){
 	    if ( core->environment->get_current_time().get_time() >= IVP_DEBUG_TIME){
-		printf("revive object %s time:%f\n",      name0,    environment->get_current_time().get_time());
+		ivp_message("revive object %s time:%f\n",      name0,    environment->get_current_time().get_time());
 	    }
 	}
     }
@@ -456,7 +456,7 @@ IVP_BOOL IVP_Core::revive_simulation_core()
 	const char *name0 = core->objects.element_at(0)->get_name();
 	if (	!P_String::string_cmp(name0, search0, IVP_FALSE)){
 	    if ( core->environment->get_current_time().get_time() >= IVP_DEBUG_TIME){
-		printf("revive object %s time:%f\n",      name0,    environment->get_current_time().get_time());
+		ivp_message("revive object %s time:%f\n",      name0,    environment->get_current_time().get_time());
 	    }
 	}
     }
@@ -519,7 +519,7 @@ void IVP_Core::freeze_simulation_core(){
 	const char *name0 = r_core->objects.element_at(0)->get_name();
 	if (	!P_String::string_cmp(name0, search0, IVP_FALSE)){
 	    if ( r_core->environment->get_current_time().get_time() >= IVP_DEBUG_TIME){
-		printf("freeze object %s time:%f\n",      name0,    environment->get_current_time().get_time());
+		ivp_message("freeze object %s time:%f\n",      name0,    environment->get_current_time().get_time());
 	    }
 	}
     }
@@ -528,7 +528,7 @@ void IVP_Core::freeze_simulation_core(){
 	const char *name0 = r_core->objects.element_at(0)->get_name();
 	if (	!P_String::string_cmp(name0, search0, IVP_FALSE)){
 	    if ( r_core->environment->get_current_time().get_time() >= IVP_DEBUG_TIME){
-		printf("freeze object %s time:%f\n",      name0,    environment->get_current_time().get_time());
+		ivp_message("freeze object %s time:%f\n",      name0,    environment->get_current_time().get_time());
 	    }
 	}
     }
@@ -538,7 +538,7 @@ void IVP_Core::freeze_simulation_core(){
 }
 
 void IVP_Core::debug_out_movement_vars() {
-    printf("core_status %zi  trans %f %f %f  rot %f %f %f\n",(intp)this&0x0000ffff,speed.k[0],speed.k[1],speed.k[2],rot_speed.k[0],rot_speed.k[1],rot_speed.k[2]); 
+    ivp_message("core_status %zi  trans %f %f %f  rot %f %f %f\n",(intp)this&0x0000ffff,speed.k[0],speed.k[1],speed.k[2],rot_speed.k[0],rot_speed.k[1],rot_speed.k[2]); 
 }
 
 void IVP_Core::debug_vec_movement_state() {
@@ -583,7 +583,7 @@ IVP_Friction_System::IVP_Friction_System(IVP_Environment *env)
     IVP_IF(env->get_debug_manager()->check_fs) {
 	fprintf(env->get_debug_manager()->out_deb_file,"create_fs %f %p\n",env->get_current_time().get_time(),this);
     }
-    //printf("creating_new_fs %lx at time %f\n",(long)this,env->get_current_time());
+    //ivp_message("creating_new_fs %lx at time %f\n",(long)this,env->get_current_time());
     l_environment=env;
     next_friction_system = prev_friction_system = nullptr;
     //first_friction_obj=NULL;
@@ -598,7 +598,7 @@ IVP_Friction_System::IVP_Friction_System(IVP_Environment *env)
 
 IVP_Friction_System::~IVP_Friction_System()
 {
-    //printf("deleting_of_fs %lx at time %f\n",(long)this,l_environment->get_current_time());
+    //ivp_message("deleting_of_fs %lx at time %f\n",(long)this,l_environment->get_current_time());
     IVP_IF(l_environment->get_debug_manager()->check_fs) {
 	fprintf(l_environment->get_debug_manager()->out_deb_file,"delete_fs %f %p\n",l_environment->get_current_time().get_time(),this);
     }
@@ -723,7 +723,7 @@ void IVP_Friction_System::add_dist_to_system(IVP_Contact_Point *new_dist)
 
     //new_dist->number_in_friction = this->friction_dist_number; //dists are numbered the wrong way: last has number 0
     IVP_IF(l_environment->debug_information->debug_mindist){
-	printf("added_dist %d\n",(int)friction_dist_number);
+	ivp_message("added_dist %d\n",(int)friction_dist_number);
     }
     friction_dist_number++;
     

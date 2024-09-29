@@ -308,7 +308,7 @@ void IVP_U_Quat::set_interpolate_smoothly(const IVP_U_Quat * from,const IVP_U_Qu
 	  res->w = scale0 * from->w + scale1 * to->w;
 #if 0
 	IVP_DOUBLE len = res->acos_quat(res);
-	printf("angle quat_error: %G %G %G	\n", t,cosom,  1.0f - len);
+	ivp_message("angle quat_error: %G %G %G	\n", t,cosom,  1.0f - len);
 #endif		
         } else {        
 			    // "from" and "to" quaternions are very close 

@@ -252,11 +252,11 @@ void IVP_Simulation_Unit::sim_unit_remove_core( IVP_Core *del_core ) {
 
 IVP_Simulation_Unit::~IVP_Simulation_Unit() {
     this->clean_sim_unit();
-    ;//printf("delete_simu %lx\n",(long)this&0x0000ffff);
+    ;//ivp_message("delete_simu %lx\n",(long)this&0x0000ffff);
 }
 
 IVP_Simulation_Unit::IVP_Simulation_Unit() {
-    //printf("create_simu %lx\n",(long)this&0x0000ffff);
+    //ivp_message("create_simu %lx\n",(long)this&0x0000ffff);
     union_find_needed_for_sim_unit = IVP_FALSE;
     sim_unit_movement_type = IVP_MT_NOT_SIM;
     sim_unit_just_slowed_down = IVP_FALSE;
@@ -295,28 +295,28 @@ IVP_BOOL IVP_Simulation_Unit::sim_unit_core_exists(IVP_Core *core) {
 
 #ifdef DEBUG
 void IVP_Simulation_Unit::sim_unit_debug_out() {
-    printf("sim_unit_cores:\n");
+    ivp_message("sim_unit_cores:\n");
     int i;
     for(i=sim_unit_cores.len()-1;i>=0;i--) {
         IVP_Core *my_core=sim_unit_cores.element_at(i);
-        printf("%p: ",my_core);
+        ivp_message("%p: ",my_core);
 	IVP_Controller *my_cnt;
 	int j;
 	for(j=my_core->controllers_of_core.len()-1;j>=0;j--) {
 	    my_cnt=my_core->controllers_of_core.element_at(j);
-	    printf("%p ",my_cnt);
+	    ivp_message("%p ",my_cnt);
 	}
-	printf("\n");
+	ivp_message("\n");
     }
     
     for(i=controller_cores.len()-1;i>=0;i--) {
-        printf("    controlr %p: ",controller_cores.element_at(i)->l_controller);
+        ivp_message("    controlr %p: ",controller_cores.element_at(i)->l_controller);
 	int j;
 	IVP_Sim_Unit_Controller_Core_List *c_info=controller_cores.element_at(i);
 	for(j=c_info->cores_controlled_by.len()-1;j>=0;j--) {
-	    printf("%p ",c_info->cores_controlled_by.element_at(j));
+	    ivp_message("%p ",c_info->cores_controlled_by.element_at(j));
 	}
-	printf("\n");
+	ivp_message("\n");
     }    
 }
 #endif

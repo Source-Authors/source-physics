@@ -104,7 +104,7 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 	if (!name0) name0 = "(null)";
 	const char *name1 = obj1->get_name();
 	if (!name1) name1 = "(null)";
-	printf("Mindist rescue push between '%s' and '%s' at %f\n",
+	ivp_message("Mindist rescue push between '%s' and '%s' at %f\n",
 	       name0,name1,
 	       env->get_current_time().get_time());
     }

@@ -52,7 +52,7 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(IVP_SYNAPSE_POLYGON_STATUS
 {
     if (! loop_hash ){
 #ifdef	IVP_MINDIST_BEHAVIOUR_DEBUG
-	printf("start loop check (max passes exceeded).\n");
+	ivp_message("start loop check (max passes exceeded).\n");
 #endif	
 	this->init_loop_hash();
     }
@@ -257,7 +257,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 		if (!name0) name0 = "(null)";
 		const char *name1 = get_synapse(1)->get_object()->get_name();
 		if (!name1) name1 = "(null)";
-		printf("recalc_mindist: Endless Loop without collision or termination problem.%s %s\n",
+		ivp_message("recalc_mindist: Endless Loop without collision or termination problem.%s %s\n",
 		       name0,name1);
 	    }
 	    // MINDIST RESCUE PUSH
@@ -271,7 +271,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 		IVP_IF(1){ mms.termination_len = P_DOUBLE_MAX; }
 		P_Finish_Counter = 10; // debug purposes
 		IVP_IF(1) {
-		    printf("recalc_mindist : Endless Loop without collision or termination problem.\n");
+		    ivp_message("recalc_mindist : Endless Loop without collision or termination problem.\n");
 		}
 		continue; // helps debugging
 //		CORE;
@@ -437,7 +437,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 	      break;
 	    }
 	    default:
-                printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
+                ivp_message("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
 	  }
 	  break;
       };
@@ -448,13 +448,13 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF( const IVP_Compact_Edge 
 		break;
 	    }
 	  default:
-              printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
+              ivp_message("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
 	      break;
 	  }
 	  break;
       }
       default:
-          printf("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
+          ivp_message("IVP_Mindist_Minimize_Solver::p_minimize_FF failed(%s:%d)\n", __FILE__, __LINE__);
     }
     
     return ret_val;
@@ -486,7 +486,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_default_poly_poly(IVP_Mindist
     IVP_MRC_TYPE ret_val = IVP_MRC_UNINITIALIZED; // (un)initialize
 
     IVP_IF(ivp_check_debug_mindist(mms->mindist)){
-	printf("%32s statii: %i:%i \n","minimize_default_poly_poly", syn0->get_status(), syn1->get_status());
+	ivp_message("%32s statii: %i:%i \n","minimize_default_poly_poly", syn0->get_status(), syn1->get_status());
     }
 
 #define SYN_COMBINE(a,b) (a * IVP_ST_MAX_LEGAL + b)
@@ -518,7 +518,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_default_poly_poly(IVP_Mindist
     //mms->proove_polypoly();
 
     IVP_IF(ivp_check_debug_mindist(mms->mindist)){
-      	printf("%32s statii: %i:%i len %f\n", " '' ", syn0->get_status(), syn1->get_status(), mms->mindist->get_length());
+      	ivp_message("%32s statii: %i:%i len %f\n", " '' ", syn0->get_status(), syn1->get_status(), mms->mindist->get_length());
     }
 
     return ret_val;
@@ -546,7 +546,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_B_POLY(IVP_Mindist_Minimize_S
     m_cache_P.tmp.synapse = syn_P;
 
     IVP_IF(ivp_check_debug_mindist(mms->mindist)){
-	printf("%32s statii: %i \n","minimize_default_ball_poly", syn_P->get_status());
+	ivp_message("%32s statii: %i \n","minimize_default_ball_poly", syn_P->get_status());
     }
 
     IVP_MRC_TYPE ret_val;

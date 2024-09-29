@@ -35,14 +35,14 @@ IVP_RETURN_TYPE IVP_Friction_Solver::test_gauss_solution_suggestion(IVP_DOUBLE *
 	    IVP_Impact_Solver_Long_Term *info = contact_info_vector.element_at(orig_index);
 
 	    IVP_DOUBLE push_val = push_results[i];
-	    //printf("gauss_value %f  ",push_val);
+	    //ivp_message("gauss_value %f  ",push_val);
 	
 	    IVP_DOUBLE allowed_negative = IVP_MAX_ADHESION_GAUSS * l_environment->gravity_scalar;
 	
-	    //printf("allowed_negative %f\n",allowed_negative);
+	    //ivp_message("allowed_negative %f\n",allowed_negative);
 	    if(allowed_negative > push_val * correct_x_factor * get_inv_virtual_mass(info) ) {
 		IVP_IF((l_environment->debug_information->debug_friction)||0){
-		    printf("gauss_fault_pull %f %f\n",allowed_negative,push_val);
+		    ivp_message("gauss_fault_pull %f %f\n",allowed_negative,push_val);
 		}
 		//return IVP_FAULT;
 		gauss_failed=1;
@@ -55,7 +55,7 @@ IVP_RETURN_TYPE IVP_Friction_Solver::test_gauss_solution_suggestion(IVP_DOUBLE *
 	for(int i=0 ; i < dist_change_mat.columns ; i++)   {
 	    if(was_already_tested[i]==IVP_FALSE){
 		if(dist_change_mat.matrix_check_unequation_line(i) == IVP_FAULT)	    {
-		    //printf("gauss_unequation_failed\n");
+		    //ivp_message("gauss_unequation_failed\n");
 		    gauss_failed=1;
 		    return IVP_FAULT;
 		} 
@@ -189,13 +189,13 @@ first_try:
 	    goto finish_slp;
 	} else {
 	    IVP_IF(1) {
-		printf("too_much_energy_gained\n");
+		ivp_message("too_much_energy_gained\n");
 	    }
 	    my_fs->undo_complex_pushes();
 	}
     } else {
 	IVP_IF(1) {
-	    printf("static_friction_unequation failed\n");
+	    ivp_message("static_friction_unequation failed\n");
 	}
     }
 
@@ -242,7 +242,7 @@ void IVP_Friction_System::do_pushes_distance_keepers(const IVP_Event_Sim *es_in)
 	    fr_dist->now_friction_pressure = impulse * es_in->i_delta_time;    
 	    IVP_Friction_Solver::apply_impulse( info, impulse );
 	    //IVP_DOUBLE closing_speed2 = info->get_closing_speed();
-	    //printf("%x gap %f single old %f new %f  impulse %f\n", this, gap_diff, closing_speed, closing_speed2, impulse);
+	    //ivp_message("%x gap %f single old %f new %f  impulse %f\n", this, gap_diff, closing_speed, closing_speed2, impulse);
 	} else {
 	    fr_dist->now_friction_pressure=0.0f;
 	}
@@ -339,14 +339,14 @@ void IVP_Friction_Solver::do_penalty_method(IVP_Friction_System *fs){
 	impulses[i] = 0.5f * fr_dist->now_friction_pressure * es->delta_time;
 
 	//	IVP_DOUBLE delta_velocity = info->get_closing_speed();
-	//printf("%x %i old %f pressure %f\n", fr_dist, i, delta_velocity, impulses[i]);
+	//ivp_message("%x %i old %f pressure %f\n", fr_dist, i, delta_velocity, impulses[i]);
     }
 
     IVP_IF(0){
 	for (int i = contact_info_vector.len()-1; i>=0;i--){
 	    IVP_Impact_Solver_Long_Term *info = contact_info_vector.element_at(i);
 	    IVP_DOUBLE delta_velocity = info->get_closing_speed();
-	    printf("%i old %f\n", i, delta_velocity);
+	    ivp_message("%i old %f\n", i, delta_velocity);
 	}
     }
     
@@ -361,20 +361,20 @@ void IVP_Friction_Solver::do_penalty_method(IVP_Friction_System *fs){
 	for (int i = contact_info_vector.len()-1; i>=0;i--){
 	    IVP_Impact_Solver_Long_Term *info = contact_info_vector.element_at(i);
 	    IVP_DOUBLE delta_velocity = info->get_closing_speed();
-	    printf("%i new %f\n", i, delta_velocity);
+	    ivp_message("%i new %f\n", i, delta_velocity);
 	}
     }
     
     // do the steps (max 50)
     if (1){
 	//IVP_FLOAT max_sum_qdiff = 0.01f * 0.01f;
-	printf("penalty step: ");
+	ivp_message("penalty step: ");
 	for (int s = 10; s>=0; s--){
 	    IVP_FLOAT sum_qdiff = do_penalty_step( impulses, pretension, 0.5f, 0.9f );
-	    printf("%f ",sum_qdiff);
+	    ivp_message("%f ",sum_qdiff);
 	    //if (sum_qdiff < max_sum_qdiff) break;
 	};
-	printf("\n");
+	ivp_message("\n");
     }
     
     { ; // uncompress now_friction_pressure
@@ -433,7 +433,7 @@ void IVP_Friction_Solver::debug_distance_after_push(int counter)
     IVP_DOUBLE new_dist_speed=speed_world1.dot_product(&dist_vector_world[counter]);
     IVP_IF(environment->debug_information->debug_impact)
     {
-	printf("dist_speed_d: distance %.5f  speed:  before %.5f  after %.5f dis_change %.5f\n",dist_len[counter],dist_velocity[counter],new_dist_speed,new_dist_speed-dist_velocity[counter]);
+	ivp_message("dist_speed_d: distance %.5f  speed:  before %.5f  after %.5f dis_change %.5f\n",dist_len[counter],dist_velocity[counter],new_dist_speed,new_dist_speed-dist_velocity[counter]);
     }
 #endif    
 }
@@ -519,12 +519,12 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs)
 	    }
 	}
     }
-    //printf("n active lines %i\n", active_count);
+    //ivp_message("n active lines %i\n", active_count);
     
 #ifdef DEBUG
     IVP_IF(l_environment->debug_information->debug_friction)
     {
-	printf("pushes_ok. resulting_distance_velos:\n");
+	ivp_message("pushes_ok. resulting_distance_velos:\n");
 	this->print_dist_velocity(fs);
     }
 #endif	/* DEBUG */
@@ -569,14 +569,14 @@ void IVP_Friction_Solver::print_dist_velocity(IVP_Friction_System *fs)
 	rel_world_speed.subtract(&w_speed1,&w_speed0);
 
 	IVP_IF(1) {
-	    printf("dvelo_ %.4f   ",rel_world_speed.dot_product(&my_dist->get_lt()->surf_normal));
+	    ivp_message("dvelo_ %.4f   ",rel_world_speed.dot_product(&my_dist->get_lt()->surf_normal));
 	}
        
 	dist_counter_two++;
 	my_dist=next_dist;
     }
     IVP_IF(1) {
-	printf("\n");
+	ivp_message("\n");
     }
 }
 #endif
@@ -585,7 +585,7 @@ void IVP_Friction_Solver::print_dist_velocity(IVP_Friction_System *fs)
 void IVP_Friction_System::test_hole_fr_system_data()
 {
     IVP_IF(1) {
-    //printf("hole_fr_test %lx \n",(long)this);
+    //ivp_message("hole_fr_test %lx \n",(long)this);
     IVP_Friction_System *fs=this;    
     IVP_Contact_Point *mindist=fs->get_first_friction_dist();
     if (!mindist) return;
@@ -596,7 +596,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	startnumber=mindist->number_in_friction+1;
 	if(startnumber!=fs->friction_dist_number)
 	{
-	    printf("test_fr dist_number wrong\n");
+	    ivp_message("test_fr dist_number wrong\n");
 	    CORE;
 	}
     }
@@ -608,13 +608,13 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	startnumber--;
 	if(startnumber<0)
 	{
-	    printf("test_fr number <0");
+	    ivp_message("test_fr number <0");
 	    CORE;
 	}
 
 	if(startnumber!=mindist->number_in_friction)
 	{
-	    printf("test_fr wrong number");
+	    ivp_message("test_fr wrong number");
 	    CORE;
 	}
 #endif
@@ -626,7 +626,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	    IVP_Friction_Info_For_Core *fr_info = r_obj->get_friction_info(fs);
 
 	    if(fr_info->l_friction_system!=this){
-		printf("test_fr l_friction_system %f %p\n",time.get_time(),obj_obj); CORE;
+		ivp_message("test_fr l_friction_system %f %p\n",time.get_time(),obj_obj); CORE;
 	    }
 	    
 	    int found_mine=0;
@@ -644,13 +644,13 @@ void IVP_Friction_System::test_hole_fr_system_data()
 			temp_dist=fs->get_next_friction_dist(temp_dist);
 		    }
 		    if(!is_in_collection){
-			printf("test_fr there was mindist %zi in obj which is not in system\n",(intp)all_dists&0x0000ffff); CORE; 
+			ivp_message("test_fr there was mindist %zi in obj which is not in system\n",(intp)all_dists&0x0000ffff); CORE; 
 		    }
 		}
 	    }
 	    if(!found_mine)
 	    {
-		printf("test_fr mindist %p missing in obj\n",mindist); CORE;
+		ivp_message("test_fr mindist %p missing in obj\n",mindist); CORE;
 	    }
 	}
 
@@ -667,7 +667,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 		}
 	    }
 	    if(!found_mine) {
-		printf("test_fr dist %p not found in pairs\n",mindist);
+		ivp_message("test_fr dist %p not found in pairs\n",mindist);
 		CORE;
 	    }
 	}
@@ -689,7 +689,7 @@ void IVP_Friction_System::test_hole_fr_system_data()
 		    }
 		}
 		if(!found_mine)	{
-		    printf("test_fr pair %p containing dist %p not in system\n",fr_pair,fr_dist);
+		    ivp_message("test_fr pair %p containing dist %p not in system\n",fr_pair,fr_dist);
 		    CORE;
 		}
 	    }
@@ -709,13 +709,13 @@ void check_fr_info_mindist(IVP_Friction_Solver *fsolv,IVP_Contact_Point *my_dist
     fr_i=obj0->get_first_friction_info_of_obj();
     if(fr_i!=fsolv->friction_infos[dist_counter_two])
     {
-	printf("fr_info_damaged obj %lx\n",(long)obj0&0x0000ffff);
+	ivp_message("fr_info_damaged obj %lx\n",(long)obj0&0x0000ffff);
 	CORE;
     }
     fr_i=obj1->get_first_friction_info_of_obj();
     if(fr_i!=fsolv->friction_infos[dist_counter_two+1])
     {
-	printf("fr_info_damaged obj %lx\n",(long)obj1&0x0000ffff);
+	ivp_message("fr_info_damaged obj %lx\n",(long)obj1&0x0000ffff);
 	CORE;
     }
 }
@@ -787,14 +787,14 @@ void IVP_Friction_Solver::setup_coords_mindists(IVP_Friction_System *fs)
 	frisodat->dist_len = my_dist->get_gap_length();
 	//diff_vec_world.normize();
 	//diff_vec_world.set(0.0f,1.0f,0.0f);
-	//printf("difff %f %f %f\n",diff_vec_world.k[0],diff_vec_world.k[1],diff_vec_world.k[2]);
+	//ivp_message("difff %f %f %f\n",diff_vec_world.k[0],diff_vec_world.k[1],diff_vec_world.k[2]);
 	//frisodat->dist_vector_world=diff_vec_world;
 
 	frisodat->dist_vector_world.set_multiple(&my_dist->get_lt()->surf_normal,+1.0f);
 	
 	IVP_IF(l_environment->debug_information->debug_impact)
 	{
-	    //printf("dist_vec_world %.3f %.3f %.3f\n",dist_vector_world[dist_counter].k[0],dist_vector_world[dist_counter].k[1],dist_vector_world[dist_counter].k[2]);
+	    //ivp_message("dist_vec_world %.3f %.3f %.3f\n",dist_vector_world[dist_counter].k[0],dist_vector_world[dist_counter].k[1],dist_vector_world[dist_counter].k[2]);
 	}
 #endif
 
@@ -852,7 +852,7 @@ int IVP_Friction_Solver::calc_solver_PSI(IVP_Friction_System *fs,int *active_is_
 
     IVP_IF((l_environment->debug_information->debug_friction)||0)    {
 	global_friction_counter++;
-	printf("\ndoing_friction_calc %d\n",global_friction_counter);
+	ivp_message("\ndoing_friction_calc %d\n",global_friction_counter);
     }
     {
 	//delete distance change matrix
@@ -874,7 +874,7 @@ int IVP_Friction_Solver::calc_solver_PSI(IVP_Friction_System *fs,int *active_is_
 
 	// mark contact point as active if positive pressure
 	{
-	    //printf("has_neg_since %d\n",my_dist->has_negative_pull_since);
+	    //ivp_message("has_neg_since %d\n",my_dist->has_negative_pull_since);
 	    if(info->friction.has_negative_pull_since != 0) {
 		*active_is_at_pos = i;
 		active_is_at_pos++;
@@ -973,7 +973,7 @@ void IVP_Friction_System::reorder_mindists_for_complex() {
 	    IVP_BOOL allow1=core1->fast_piling_allowed();
 	    if(( (allow0) & (allow1))|0 ) {
 	        //not_in_complex++;
-		//printf("want_to_remove %lx\n",(long)my_frdist);
+		//ivp_message("want_to_remove %lx\n",(long)my_frdist);
 		this->remove_dist_from_system( my_frdist );
 		this->add_dist_to_system( my_frdist );		
 	    }
@@ -982,7 +982,7 @@ void IVP_Friction_System::reorder_mindists_for_complex() {
 	my_frdist=next_frdist;
     }
     this->complex_not_necessary_number=not_in_complex;
-    //printf("not_necessary_nr %ld\n",not_in_complex);
+    //ivp_message("not_necessary_nr %ld\n",not_in_complex);
 }
 
 
@@ -1012,12 +1012,12 @@ void IVP_Friction_System::exchange_friction_dists(IVP_Contact_Point *first_frd,I
 void IVP_Friction_System::ivp_debug_fs_pointers()
 {
     IVP_IF(1) {
-    printf("%zi  ",(intp)first_friction_dist&0x0000ffff);
+    ivp_message("%zi  ",(intp)first_friction_dist&0x0000ffff);
     for(IVP_Contact_Point *fr_d=get_first_friction_dist();fr_d;fr_d=get_next_friction_dist(fr_d))
     {
-	printf("%zi %zi %d %zi  ",(intp)fr_d->prev_dist_in_friction&0x0000ffff,(intp)fr_d&0x0000ffff,fr_d->has_negative_pull_since,(intp)fr_d->next_dist_in_friction&0x0000ffff);
+	ivp_message("%zi %zi %d %zi  ",(intp)fr_d->prev_dist_in_friction&0x0000ffff,(intp)fr_d&0x0000ffff,fr_d->has_negative_pull_since,(intp)fr_d->next_dist_in_friction&0x0000ffff);
     }
-    printf("\n");
+    ivp_message("\n");
     }
 }
 
@@ -1059,7 +1059,7 @@ void IVP_Friction_System::bubble_sort_dists_importance()
 void IVP_Friction_System::bubble_sort_dists_importance()
 {
     int did_exchange=1;
-    //printf("start_bubble\n");
+    //ivp_message("start_bubble\n");
     while(did_exchange) {
 	did_exchange=0;
 	IVP_Contact_Point *moving_dist=this->get_first_friction_dist();
@@ -1067,13 +1067,13 @@ void IVP_Friction_System::bubble_sort_dists_importance()
 	    return; //degenerated system (without any mindist)
 	}
 	IVP_Contact_Point *test_dist;
-	//printf("tlp_for %lx  ",(long)moving_dist&0x0000ffff);
+	//ivp_message("tlp_for %lx  ",(long)moving_dist&0x0000ffff);
 	//ivp_debug_fs_pointers();
 	while((test_dist=this->get_next_friction_dist(moving_dist))!=NULL) {
 	    if(moving_dist->has_negative_pull_since<test_dist->has_negative_pull_since) {
 		this->exchange_friction_dists(moving_dist,test_dist);
 		did_exchange=1;
-		//printf("exchgg %lx %lx  ",(long)moving_dist&0x0000ffff,(long)test_dist&0x0000ffff);
+		//ivp_message("exchgg %lx %lx  ",(long)moving_dist&0x0000ffff,(long)test_dist&0x0000ffff);
 		//ivp_debug_fs_pointers();
 	    } else {
 		moving_dist=test_dist;
@@ -1086,22 +1086,22 @@ void IVP_Friction_System::bubble_sort_dists_importance()
 	    IVP_Contact_Point *test_d=get_next_friction_dist(fr_d);
 	    if(test_d) {
 		if(fr_d->has_negative_pull_since<test_d->has_negative_pull_since) {
-		    printf("bubble_sort_error\n");
+		    ivp_message("bubble_sort_error\n");
 		    CORE;
 		}
 	    }
 	}
     }
-    //printf("after_bs  ");
+    //ivp_message("after_bs  ");
     //ivp_debug_fs_pointers();
     IVP_IF(0)
     {
-        printf("sort_dists ");
+        ivp_message("sort_dists ");
 	for(IVP_Contact_Point *fr_d=get_first_friction_dist();fr_d;fr_d=get_next_friction_dist(fr_d))
 	{
-	    printf("%d ",fr_d->has_negative_pull_since);
+	    ivp_message("%d ",fr_d->has_negative_pull_since);
 	}
-	printf("\n");
+	ivp_message("\n");
     }
 }
 #endif
@@ -1119,7 +1119,7 @@ IVP_BOOL IVP_Friction_System::core_is_terminal_in_fs(IVP_Core *test_core) {
 	}
     }
     if(total_number_of_partners>1) return IVP_FALSE;
-    //printf("found_terminal %lx\n",(long)test_core&0x0000ffff);
+    //ivp_message("found_terminal %lx\n",(long)test_core&0x0000ffff);
     return IVP_TRUE;
 }
 
@@ -1150,11 +1150,11 @@ void IVP_Friction_System::do_friction_system(const IVP_Event_Sim *es_in)
     
     friction_global_counter++;
     IVP_IF(l_environment->debug_information->debug_friction)    {
-	printf("doing_friction_nr %d\n",friction_global_counter);
+	ivp_message("doing_friction_nr %d\n",friction_global_counter);
 	if(friction_global_counter==14)	{
-	    printf("losgehts\n");
+	    ivp_message("losgehts\n");
         }
-	printf("friction_system_simulating %d distances\n",this->friction_dist_number);
+	ivp_message("friction_system_simulating %d distances\n",this->friction_dist_number);
     }    
 
     this->bubble_sort_dists_importance();   // to to put heavy pushed mindists ontop of the list

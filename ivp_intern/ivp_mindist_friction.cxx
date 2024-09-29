@@ -123,7 +123,7 @@ void IVP_Contact_Point::p_calc_friction_qr_PF(const IVP_U_Point *pp,
 	dist_vec_world.subtract(&point_on_surf,pp);
 	IVP_DOUBLE test_val = info->surf_normal.dot_product(&dist_vec_world);
 	if( test_val < 0.0f ) {
-	    printf("recalc_friction_s_point_surface wrong surf_normal %f should be >0\n",test_val);
+	    ivp_message("recalc_friction_s_point_surface wrong surf_normal %f should be >0\n",test_val);
 	}
     }
 
@@ -192,7 +192,7 @@ void IVP_Contact_Point::p_calc_friction_s_PK(const IVP_U_Point *pp, const IVP_Co
 	IVP_DOUBLE len= info->span_friction_v[0].real_length();
 	len=1.0f-len;
 	if( IVP_Inline_Math::fabsd(len) > 0.001f) {
-	    printf("span_friction_v_pk not normized\n");
+	    ivp_message("span_friction_v_pk not normized\n");
 	}	
     }
 
@@ -538,7 +538,7 @@ IVP_Contact_Point *IVP_Friction_Manager::generate_contact_point(IVP_Mindist *min
 // make new friction mindist
     IVP_Contact_Point *friction =  new IVP_Contact_Point(mindist);
     //insert_contact_point(friction);
-    //printf("insert_nmd %lx\n",(long)friction&0x0000ffff);
+    //ivp_message("insert_nmd %lx\n",(long)friction&0x0000ffff);
 
     *successful=IVP_TRUE;
     return friction;

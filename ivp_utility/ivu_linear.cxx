@@ -254,17 +254,17 @@ IVP_DOUBLE IVP_U_Float_Point::fast_real_length() const {
 
 void IVP_U_Point::print(const char *comment){
     if(comment){
-	printf("%s Point %f %f %f\n",comment, k[0],k[1],k[2]);
+	ivp_message("%s Point %f %f %f\n",comment, k[0],k[1],k[2]);
     }else{
-	printf("Point %f %f %f\n", k[0],k[1],k[2]);
+	ivp_message("Point %f %f %f\n", k[0],k[1],k[2]);
     }
 }
 
 void IVP_U_Float_Point::print(const char *comment)const{
     if(comment){
-	printf("%s Point %f %f %f\n",comment, k[0],k[1],k[2]);
+	ivp_message("%s Point %f %f %f\n",comment, k[0],k[1],k[2]);
     }else{
-	printf("Point %f %f %f\n", k[0],k[1],k[2]);
+	ivp_message("Point %f %f %f\n", k[0],k[1],k[2]);
     }
 }
 
@@ -338,7 +338,7 @@ IVP_RETURN_TYPE IVP_U_Matrix3::get_angles(IVP_FLOAT *alpha, IVP_FLOAT *beta, IVP
     mat = *this;
 
     if(!mat.orthonormize()){
-	printf("No valid matrix in get_angles!\n");
+	ivp_message("No valid matrix in get_angles!\n");
 	return IVP_FAULT;	// could not be normized
     }
     
@@ -371,7 +371,7 @@ IVP_RETURN_TYPE IVP_U_Matrix3::get_angles(IVP_FLOAT *alpha, IVP_FLOAT *beta, IVP
     v.set(mat_no_g_no_b.get_elem(0,0), mat_no_g_no_b.get_elem(1,0), 0.0f); // OS ?? or:  1 and 4
     if(!v.normize()){
 	*alpha = 0.0f;
-	printf("very strange: no alpha vec in get_angles!\n");
+	ivp_message("very strange: no alpha vec in get_angles!\n");
     }else{
 	*alpha = (IVP_FLOAT)IVP_Inline_Math::atan2d(v.k[1], v.k[0]); // or vice versa...
     }
@@ -1146,13 +1146,13 @@ IVP_ERROR_STRING IVP_U_Matrix::write_to_file(FILE *fp, const char *key)
 
 
 void IVP_U_Matrix::print(const char *headline){
-    if (headline) printf("%s\n",headline);
-    printf("mm\t%g %g %g\n\t%g %g %g\n\t%g %g %g\n",
+    if (headline) ivp_message("%s\n",headline);
+    ivp_message("mm\t%g %g %g\n\t%g %g %g\n\t%g %g %g\n",
 	   this->get_elem(0,0), this->get_elem(0,1), this->get_elem(0,2),
 	   this->get_elem(1,0), this->get_elem(1,1), this->get_elem(1,2),
 	   this->get_elem(2,0), this->get_elem(2,1), this->get_elem(2,2));
 
-    printf("vv\t%g %g %g\n",
+    ivp_message("vv\t%g %g %g\n",
 	   this->vv.k[0], this->vv.k[1], this->vv.k[2]);
 }
 
@@ -1185,7 +1185,7 @@ IVP_ERROR_STRING IVP_U_Matrix::read_from_file(FILE *fp)
 	if( strcasecmp("MATRIX_END",cmd)==0 ){
 	    break;
 	}
-	printf("Load IVP_U_Matrix: Unknown Command\n'%s'!\n",
+	ivp_message("Load IVP_U_Matrix: Unknown Command\n'%s'!\n",
 	       cmd);
 	CORE;
 	return "ERROR in read Matrix";

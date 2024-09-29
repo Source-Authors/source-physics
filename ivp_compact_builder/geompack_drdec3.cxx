@@ -382,7 +382,7 @@ Retry_convex_decomposition:
 	    ivp_debugmanager.dprint(IVP_DM_GEOMPACK_LEVEL2, "VCL (vertex coordinate list)\n");
 	    for (i=1; i<=this->n_original_vertices; i++) {
 		int j;
-		printf("#%d : \t", i);
+		ivp_message("#%d : \t", i);
 		for (j=1; j<=3; j++) {
 		    ivp_debugmanager.dprint(IVP_DM_GEOMPACK_LEVEL2, "%f   ", this->g_vcl[j+(i*3)-4]);
 		}

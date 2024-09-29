@@ -202,13 +202,13 @@ static void ProcessPoint( IVP_Compact_Poly_Point& point, IVP_U_BigVector<IVP_Com
 		{
 			pre_swapped_points->add(&point);
 			point.byte_swap(); // SWAP
-		//	printf("point [ %.4f %.4f %.4f ]\n", point.k[0], point.k[1], point.k[2] );
+		//	ivp_message("point [ %.4f %.4f %.4f ]\n", point.k[0], point.k[1], point.k[2] );
 		}
 	}
 	else
 	{
 		point.byte_swap(); // SWAP
-	//	printf("point [ %.4f %.4f %.4f ]\n", point.k[0], point.k[1], point.k[2] );
+	//	ivp_message("point [ %.4f %.4f %.4f ]\n", point.k[0], point.k[1], point.k[2] );
 	}			
 }
 	

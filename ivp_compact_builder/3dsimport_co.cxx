@@ -461,14 +461,14 @@ void repair_geometry(IVP_Concave_Polyhedron *concave_polyhedron) {
 		}
 
 		if ( is_point_on_edge(p, concave_polyhedron->points.element_at(start), concave_polyhedron->points.element_at(end)) ) {
-		    printf("T-Junction found for point with offset <%d>\n", concave_polyhedron->points.index_of(p));
+		    ivp_message("T-Junction found for point with offset <%d>\n", concave_polyhedron->points.index_of(p));
 		    IVP_Concave_Polyhedron_Face_Pointoffset *new_offset = new IVP_Concave_Polyhedron_Face_Pointoffset();
 		    new_offset->offset = concave_polyhedron->points.index_of(p);
 		    face->point_offset.insert_after(z, new_offset);
 		    n_points++;
 		}
 //		else {
-//		    printf("Valid point\n");
+//		    ivp_message("Valid point\n");
 //		}
 
 	    }

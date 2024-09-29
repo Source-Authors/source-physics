@@ -125,7 +125,7 @@ hk_result hk_Gauss_Elm_Solver::solve_lower_null_matrix()
 	    if(hk_Math::fabs(right_side) < m_gauss_eps*hk_GAUSS_SOLUTION_TOLERANCE)	    {
 		// rang(matrix) is not maximal and result space is greater 1
 		// choose an arbitrary result element (0.0f)
-		//printf("got_gauss_null %f %f\n",left_side,right_side);
+		//hkprintf("got_gauss_null %f %f\n",left_side,right_side);
 		m_b[i]=0.0f;
 	    } else {
 		// no result possible

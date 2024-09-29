@@ -152,7 +152,7 @@ bool IVP_Controller_Raycast_Airboat::PostRaycasts( IVP_Ray_Solver_Template *pRay
 		pTempPontoonPoint->projected_axis_direction_ws.set_orthogonal_part( &pTempPontoonPoint->axis_direction_ws, &pTempPontoonPoint->ground_normal_ws );
 		if ( pTempPontoonPoint->projected_axis_direction_ws.normize() == IVP_FAULT )
 		{
-			printf( "IVP_Controller_Raycast_Airboat::do_simulation_controller projected_axis_direction_ws.normize failed\n" );
+			ivp_message( "IVP_Controller_Raycast_Airboat::do_simulation_controller projected_axis_direction_ws.normize failed\n" );
 			return false;
 		}
 	}

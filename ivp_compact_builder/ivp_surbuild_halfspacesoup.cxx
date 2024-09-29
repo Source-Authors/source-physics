@@ -33,7 +33,7 @@ IVP_U_Point *IVP_SurfaceBuilder_Halfspacesoup::insert_point_into_list(IVP_U_Poin
 	IVP_U_Point *old_point = points->element_at(i);
 	if ( point->quad_distance_to(old_point) < quad_threshold ) {
 #ifdef INSERT_POINT_INTO_LIST_DEBUG
-	    printf("  +++ Dropping almost similar point {%f, %f, %f} in favour of {%f, %f, %f}\n",
+	    ivp_message("  +++ Dropping almost similar point {%f, %f, %f} in favour of {%f, %f, %f}\n",
 		   point->k[0], point->k[1], point->k[2],
 		   old_point->k[0], old_point->k[1], old_point->k[2]);
 #endif	    
@@ -45,7 +45,7 @@ IVP_U_Point *IVP_SurfaceBuilder_Halfspacesoup::insert_point_into_list(IVP_U_Poin
     
     points->add(point);
 #ifdef INSERT_POINT_INTO_LIST_DEBUG	
-    printf("  +++ Insert point {%f, %f, %f}\n", point->k[0], point->k[1], point->k[2]);
+    ivp_message("  +++ Insert point {%f, %f, %f}\n", point->k[0], point->k[1], point->k[2]);
 #endif
 
     return(point);
@@ -85,10 +85,10 @@ int IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points(IVP_Halfsp
 
 #ifdef PLANES_TO_POINT_DEBUG
 		if ( debug_plane ) {
-		    printf("Combining:\n");
-		    printf("  {%f,%f,%f}, %f\n", plane1->k[0], plane1->k[1], plane1->k[2], plane1->hesse_val);
-		    printf("  {%f,%f,%f}, %f\n", plane2->k[0], plane2->k[1], plane2->k[2], plane2->hesse_val);
-		    printf("  {%f,%f,%f}, %f\n", plane3->k[0], plane3->k[1], plane3->k[2], plane3->hesse_val);
+		    ivp_message("Combining:\n");
+		    ivp_message("  {%f,%f,%f}, %f\n", plane1->k[0], plane1->k[1], plane1->k[2], plane1->hesse_val);
+		    ivp_message("  {%f,%f,%f}, %f\n", plane2->k[0], plane2->k[1], plane2->k[2], plane2->hesse_val);
+		    ivp_message("  {%f,%f,%f}, %f\n", plane3->k[0], plane3->k[1], plane3->k[2], plane3->hesse_val);
 		}
 #endif
 		
@@ -97,7 +97,7 @@ int IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points(IVP_Halfsp
 
 #ifdef PLANES_TO_POINT_DEBUG			    
 		    if ( debug_plane ) {
-			printf(" --> intersection at {%f, %f, %f}\n", point.k[0], point.k[1], point.k[2]);
+			ivp_message(" --> intersection at {%f, %f, %f}\n", point.k[0], point.k[1], point.k[2]);
 		    }
 #endif
 		    
@@ -114,11 +114,11 @@ int IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points(IVP_Halfsp
 #ifdef PLANES_TO_POINT_DEBUG
 			    if ( debug_plane ) {
 				if ( debug_plane == plane ) {
-				    printf("Combining:\n");
-				    printf("  {%f,%f,%f}, %f\n", plane1->k[0], plane1->k[1], plane1->k[2], plane1->hesse_val);
-				    printf("  {%f,%f,%f}, %f\n", plane2->k[0], plane2->k[1], plane2->k[2], plane2->hesse_val);
-				    printf("  {%f,%f,%f}, %f\n", plane3->k[0], plane3->k[1], plane3->k[2], plane3->hesse_val);
-				    printf("  +++ Dropping point {%f, %f, %f}\n      because outside of plane {%f, %f, %f}, %f\n      Distance = %f\n",
+				    ivp_message("Combining:\n");
+				    ivp_message("  {%f,%f,%f}, %f\n", plane1->k[0], plane1->k[1], plane1->k[2], plane1->hesse_val);
+				    ivp_message("  {%f,%f,%f}, %f\n", plane2->k[0], plane2->k[1], plane2->k[2], plane2->hesse_val);
+				    ivp_message("  {%f,%f,%f}, %f\n", plane3->k[0], plane3->k[1], plane3->k[2], plane3->hesse_val);
+				    ivp_message("  +++ Dropping point {%f, %f, %f}\n      because outside of plane {%f, %f, %f}, %f\n      Distance = %f\n",
 					   point.k[0], point.k[1], point.k[2],
 					   plane->k[0], plane->k[1], plane->k[2], plane->hesse_val,
 					   plane->get_dist(&point));
@@ -137,13 +137,13 @@ int IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points(IVP_Halfsp
 		}else {
 #ifdef P_LANES_TO_POINT_DEBUG
 		    if ( debug_plane ) {
-			printf(" --> no intersection\n");
+			ivp_message(" --> no intersection\n");
 		    }
 #endif
 		}
 #ifdef PLANES_TO_POINT_DEBUG			    
 		if ( debug_plane ) {
-		    printf("\n");
+		    ivp_message("\n");
 		}
 #endif		
 	    }
@@ -161,7 +161,7 @@ int IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points(IVP_Halfsp
 	    IVP_U_Point *p2 = points->element_at(j);
 	    if ( p1->quad_distance_to(p2) < threshold ) {
 		IVP_IF(1) {
-		    printf("*** IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points - removing ");
+		    ivp_message("*** IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_points - removing ");
 		    p2->print();
 		}
 		points->remove(p2);
@@ -200,7 +200,7 @@ IVP_Compact_Surface *IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_
 	ledge_soup.insert_ledge(ledge);
 	cs = ledge_soup.compile();
     } else {
-	printf("*** IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_compact_surface - skipping ledge due to invalid topology\n");
+	ivp_message("*** IVP_SurfaceBuilder_Halfspacesoup::convert_halfspacesoup_to_compact_surface - skipping ledge due to invalid topology\n");
     }
     return(cs);
 }

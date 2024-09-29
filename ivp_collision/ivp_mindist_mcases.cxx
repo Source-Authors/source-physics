@@ -540,7 +540,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_Leave_KK(const IVP_Compact_
 		min_qr = qr;
 	    }else{
 		IVP_IF(1) {
-		    printf("negative r value in KK: %g\n",qr.checks[0]);
+		    ivp_message("negative r value in KK: %g\n",qr.checks[0]);
 		}
 	    }
 	}
@@ -696,7 +696,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_BP(IVP_Cache_Ball *m_cache_
     IVP_CLS.calc_unscaled_s_val_K_space(m_cache_P->get_compact_ledge(), Kmax, &center_ball_Pmos, &sr); //
     if (sr.checks[1] <= 0){
       IVP_IF(1){
-	printf("BP epsilon problem\n");
+	ivp_message("BP epsilon problem\n");
       }
       goto end_BP;
     }
@@ -825,7 +825,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_PP(const IVP_Compact_Edge *
     IVP_CLS.calc_unscaled_s_val_K_space(m_cache_K_max->get_compact_ledge(), Kmax, P_Pmos_max, &sr); //
     if (sr.checks[1] <= 0){
       IVP_IF(1){
-	printf("PP epsilon problem\n");
+	ivp_message("PP epsilon problem\n");
       }
       goto end_PP;
     }
@@ -1130,7 +1130,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_Leave_PK(const IVP_Compact_
 	  IVP_RETURN_TYPE check = IVP_CLS.calc_unscaled_KK_vals(kkin, &kkr);
 	  if (check == IVP_FAULT || kkr.checks_L[0] < 0.0f){
 	    IVP_IF(0) {
-	      printf("PK_KK epsilon problem\n");
+	      ivp_message("PK_KK epsilon problem\n");
 	    }
 	    break;
 	  }

@@ -68,13 +68,13 @@ void ivp_print_mi_matrix(int n, int m, IVP_MI_Vector **A) {
     int i, j;
 
     for (i=0; i<m; i++) {
-	    printf("     [ ");
+	    ivp_message("     [ ");
 	for (j=0; j<=n; j++) {
-	    printf("% 1.3e ", A[j]->element[i]);
+	    ivp_message("% 1.3e ", A[j]->element[i]);
 	}
-	printf("] \n");
+	ivp_message("] \n");
     }
-    printf("\n");
+    ivp_message("\n");
 }
 
 
@@ -271,7 +271,7 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::check_interpolation(const IVP
 	    success = linfit(nr_of_elements_input, nr_of_vectors_involved-1, scratchboard_A, interpolation_weights, &res);
 
 #ifdef WITH_DEBUG_OUTPUT
-	    printf("nr_of_vectors_involved = %d, nr_occupied = %d, res = %1.4e\n", nr_of_vectors_involved, nr_occupied, res);
+	    ivp_message("nr_of_vectors_involved = %d, nr_occupied = %d, res = %1.4e\n", nr_of_vectors_involved, nr_occupied, res);
 #endif
 	    
 	    if (success) {
@@ -281,7 +281,7 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::check_interpolation(const IVP
 		if (res > max_res) {
 		    success = IVP_FAULT;
 #ifdef WITH_DEBUG_OUTPUT
-		    printf("res is over limit!\n");
+		    ivp_message("res is over limit!\n");
 		    nr_res_over_limit[nr_of_vectors_involved-1]++;
 #endif
 		} else {
@@ -291,7 +291,7 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::check_interpolation(const IVP
 			if (IVP_Inline_Math::fabsd(interpolation_weights[ix] - 0.5f) > 0.7f) {
 			    success = IVP_FAULT;
 #ifdef WITH_DEBUG_OUTPUT
-			    printf("interpolation_weigh is over limit!\n");
+			    ivp_message("interpolation_weigh is over limit!\n");
 			    nr_int_weight_over_limit[nr_of_vectors_involved-1]++;
 #endif
 			    break;
@@ -302,18 +302,18 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::check_interpolation(const IVP
 		    if ((IVP_Inline_Math::fabsd(interpolation_weigh_first - 0.5f) > 0.7f) && success) {
 			success = IVP_FAULT;
 #ifdef WITH_DEBUG_OUTPUT
-			printf("interpolation_weigh_first is over limit!\n");
+			ivp_message("interpolation_weigh_first is over limit!\n");
 			nr_int_weight_over_limit[nr_of_vectors_involved-1]++;
 #endif
 		    }
 		}
 
 #ifdef WITH_DEBUG_OUTPUT
-		printf("int_w[0] = %e ", interpolation_weigh_first);
+		ivp_message("int_w[0] = %e ", interpolation_weigh_first);
 		for (int g=0; g<nr_of_vectors_involved-1; g++) {
-		    printf("int_w[%d] = %e ", g+1, interpolation_weights[g]);
+		    ivp_message("int_w[%d] = %e ", g+1, interpolation_weights[g]);
 		}
-		printf("\n");
+		ivp_message("\n");
 #endif
 		
 		if (success) {
@@ -374,7 +374,7 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::check_interpolation(const IVP
 		test_vector->set(k, test_vector->element[k] + interpolation_weigh_first * previous_inputs[0]->element[k]);
 	    }
 
-	    printf("interpolated_output_vector:\n");
+	    ivp_message("interpolated_output_vector:\n");
 	    output->print();
 	}
 #endif
@@ -384,7 +384,7 @@ IVP_RETURN_TYPE IVP_Multidimensional_Interpolator::check_interpolation(const IVP
 	
 #ifdef WITH_DEBUG_OUTPUT
     for (int y=0; y<nr_occupied; y++) {
-	printf("timestamp = %f  ", previous_inputs[y]->time_stamp);
+	ivp_message("timestamp = %f  ", previous_inputs[y]->time_stamp);
 	previous_inputs[y]->print();
     }
 #endif

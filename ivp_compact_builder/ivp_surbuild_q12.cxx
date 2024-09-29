@@ -342,7 +342,7 @@ int IVP_SurfaceBuilder_Q12::load_q12bsp_file(char *filename)
 
     IVP_IF(1) {
 	if ( header->version > BSPVERSION ) {
-		printf("****** ERROR ******\n%s is version %i, not %i\n", filename, header->version, BSPVERSION);
+		ivp_message("****** ERROR ******\n%s is version %i, not %i\n", filename, header->version, BSPVERSION);
 	}
     }
 
@@ -369,7 +369,7 @@ int IVP_SurfaceBuilder_Q12::load_q12bsp_file(char *filename)
     this->swap_bsp_data();
 
     IVP_IF(1) {
-	printf("Number of models in bsp file: %d\n", n_models);
+	ivp_message("Number of models in bsp file: %d\n", n_models);
     }
 
     this->bsptree_loaded_from_disk = IVP_TRUE;
@@ -397,7 +397,7 @@ void IVP_SurfaceBuilder_Q12::init_q12bsp_from_memory(int version,
 {
     IVP_IF(1) {
 	if ( version > BSPVERSION ) {
-	    printf("****** ERROR ******\nSupplied bsptree is version %i, not %i\n", version, BSPVERSION);
+	    ivp_message("****** ERROR ******\nSupplied bsptree is version %i, not %i\n", version, BSPVERSION);
 	}
     }
 
@@ -432,11 +432,11 @@ void IVP_SurfaceBuilder_Q12::convert_model(int model)
     this->convert_node(dmodels[model].headnode[0]);
 
     IVP_IF(1) {
-	printf("\nBSP tree conversion statistics:\n");
-	printf("  # of original solid nodes : %d\n", this->n_solid_nodes);
-	printf("  # of converted nodes      : %d\n", this->n_converted_nodes);
-	printf("  # of dropped nodes        : %d\n", this->n_solid_nodes-this->n_converted_nodes);
-	printf("\n\n");
+	ivp_message("\nBSP tree conversion statistics:\n");
+	ivp_message("  # of original solid nodes : %d\n", this->n_solid_nodes);
+	ivp_message("  # of converted nodes      : %d\n", this->n_converted_nodes);
+	ivp_message("  # of dropped nodes        : %d\n", this->n_solid_nodes-this->n_converted_nodes);
+	ivp_message("\n\n");
     }
 
     this->nodes.clear();
@@ -623,8 +623,8 @@ void IVP_SurfaceBuilder_Q12::clipnodes_to_planes()
 void IVP_SurfaceBuilder_Q12::create_and_insert_plane(IVP_FLOAT nx, IVP_FLOAT ny, IVP_FLOAT nz, IVP_FLOAT dist)
 {
 #ifdef CREATE_AND_INSERT_PLANE_DEBUG    
-    printf("New ivp plane         : {x:%f, y:%f, z:%f}, %f\n", nx, -nz, ny, -dist);
-    printf("  (original bsp plane : {x:%f, y:%f, z:%f}, %f)\n", nx, ny, nz, dist);
+    ivp_message("New ivp plane         : {x:%f, y:%f, z:%f}, %f\n", nx, -nz, ny, -dist);
+    ivp_message("  (original bsp plane : {x:%f, y:%f, z:%f}, %f)\n", nx, ny, nz, dist);
 #endif    
 
     IVP_U_Hesse plane;

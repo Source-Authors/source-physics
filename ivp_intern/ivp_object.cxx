@@ -103,7 +103,7 @@ void IVP_Real_Object::change_mass( IVP_FLOAT new_mass ) {
 }
 
 void IVP_Real_Object::change_unmovable_flag( IVP_BOOL flag ) {
-    //printf("changing_unmov_flag to %d at time %f  csimfl %d  osimfl %d\n",flag,get_core()->environment->get_current_time(),this->get_core()->movement_state,this->object_movement_state);
+    //ivp_message("changing_unmov_flag to %d at time %f  csimfl %d  osimfl %d\n",flag,get_core()->environment->get_current_time(),this->get_core()->movement_state,this->object_movement_state);
     
     //friction info is stored differently in movables and unmovables, so destroy first
     IVP_Core *my_core=this->get_core();
@@ -115,7 +115,7 @@ void IVP_Real_Object::change_unmovable_flag( IVP_BOOL flag ) {
 	IVP_Real_Object *r_obj=my_core->objects.element_at(d);
 	r_obj->unlink_contact_points(IVP_FALSE);
     }
-    //printf("for_umove_info %lx\n",(long)my_core->core_friction_info.for_unmoveables.l_friction_info_hash);
+    //ivp_message("for_umove_info %lx\n",(long)my_core->core_friction_info.for_unmoveables.l_friction_info_hash);
     if(my_core->physical_unmoveable) {
 	P_DELETE(my_core->core_friction_info.for_unmoveables.l_friction_info_hash);
     } else {
@@ -128,7 +128,7 @@ void IVP_Real_Object::change_unmovable_flag( IVP_BOOL flag ) {
     my_core->physical_unmoveable = flag;
     if(flag==IVP_TRUE) {
 	//switched from movable to unmovable
-	//printf("switch_to_unmovable: controllers: %d\n",my_core->controllers_of_core.len());
+	//ivp_message("switch_to_unmovable: controllers: %d\n",my_core->controllers_of_core.len());
 	if(my_core->sim_unit_of_core) {
 	    my_core->sim_unit_of_core->sim_unit_remove_core(my_core);
 	    my_core->sim_unit_of_core=new IVP_Simulation_Unit();
@@ -145,7 +145,7 @@ void IVP_Real_Object::change_unmovable_flag( IVP_BOOL flag ) {
 	    my_core->add_core_controller(my_core->environment->standard_gravity_controller);
 	}	
     } else {
-	//printf("switch_to_movable\n");
+	//ivp_message("switch_to_movable\n");
     }
 }
 
@@ -616,15 +616,15 @@ void IVP_Real_Object::unlink_contact_points(IVP_BOOL silent) {
 	IVP_IF(debug_once) {
 	    debug_once=1;
 	    IVP_Synapse_Friction *debug_syn=this->get_first_friction_synapse();
-	    printf("still_left_fd ");
+	    ivp_message("still_left_fd ");
 	    while(debug_syn) {
-		printf("fd %p sys %p  ",debug_syn->get_contact_point(),
+		ivp_message("fd %p sys %p  ",debug_syn->get_contact_point(),
 		    debug_syn->get_contact_point()->l_friction_system); 
 		debug_syn=debug_syn->get_next();
 	    }
-	    printf("\n");
+	    ivp_message("\n");
 	    fr_sys->debug_fs_out_ascii();
-	    printf("newl\n");
+	    ivp_message("newl\n");
 	}
 	IVP_Core *core0,*core1;
 	core0=fr_mindist->get_synapse(0)->l_obj->friction_core;
@@ -1087,7 +1087,7 @@ void IVP_Real_Object::ensure_in_simulation(){
     if (this->get_movement_state()!=IVP_MT_NOT_SIM){
 	this->get_core()->reset_freeze_check_values();
     }else{
-	//printf("add_reviving\n");
+	//ivp_message("add_reviving\n");
 	IVP_ASSERT( !this->get_core()->physical_unmoveable );
 	environment->add_revive_core(this->friction_core); 
     }
