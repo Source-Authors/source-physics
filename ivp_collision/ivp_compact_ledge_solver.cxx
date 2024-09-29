@@ -452,7 +452,7 @@ IVP_RETURN_TYPE IVP_Compact_Ledge_Solver::calc_unscaled_KK_vals(const IVP_KK_Inp
     return IVP_OK;
   }
     
-  IVP_IF(1){
+  IVP_IF(0){
     ivp_message("calc_unscaled_KK_vals: parallel edges\n");
   }
   // ok edges are nearly parallel, do very carefull distance checking !!!
