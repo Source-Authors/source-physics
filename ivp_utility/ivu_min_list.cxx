@@ -70,7 +70,7 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add(void *elem, IVP_U_MINLIST_FIXED_POINT va
 		{
 			if (nNewMallocSize > 2000)
 			{
-				ivp_message("Warning! Large min_list array size! Could indicate long sweeps\n");
+				ivp_message("Warning! Large min_list array size (%d)! Could indicate long sweeps\n", nNewMallocSize);
 				++g_ErrorCount;
 			}
 		}

@@ -32,8 +32,6 @@ void P_String::uppercase(char *str)
 	}
 }
 
-#define P_MIN(a,b)(((a)<(b))?(a):(b))
-
 const char *P_String::find_string(const char *str, const char *key, int upper_case)
 {
 /* checks for a substring in another string
@@ -251,7 +249,7 @@ char *p_make_string_fast(const char *templat, ...)
     
     char buffer[MAX_MAKE_STRING_LEN];
     va_list parg;
-    memset(buffer,0,P_MIN(1000, MAX_MAKE_STRING_LEN)); // nur bei sparc-debugging
+    memset(buffer,0,std::min(1000, MAX_MAKE_STRING_LEN)); // nur bei sparc-debugging
     va_start(parg,templat);	
     vsprintf(buffer,templat,parg);
     va_end(parg);
@@ -268,7 +266,7 @@ char *p_make_string(const char *templat, ...)
     
     char buffer[MAX_MAKE_STRING_LEN];
     va_list parg;
-    memset(buffer,0,P_MIN(1000, MAX_MAKE_STRING_LEN)); // only for sparc-debugging
+    memset(buffer,0,std::min(1000, MAX_MAKE_STRING_LEN)); // only for sparc-debugging
     va_start(parg,templat);
 #ifdef LINUX
     vsnprintf(buffer,MAX_MAKE_STRING_LEN,templat,parg);
@@ -288,7 +286,7 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...)
     char buffer[MAX_ERROR_BUFFER_LEN];
     char *p = buffer;
     va_list	parg;
-    memset(buffer,0, P_MIN(1000, MAX_ERROR_BUFFER_LEN)); // only for sparc-debugging
+    memset(buffer,0, std::min(1000, MAX_ERROR_BUFFER_LEN)); // only for sparc-debugging
     sprintf (buffer,"ERROR: ");
     p += strlen(p);
     
@@ -308,21 +306,24 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...)
 void ivp_message(const char *fmt, ...)
 {
     // for general error management... z.B. p_error_message()
-    char buffer[MAX_ERROR_BUFFER_LEN] = { 'E', 'R', 'R', 'O', 'R', ':', ' ', '\0' };
+    char buffer_tmp[MAX_ERROR_BUFFER_LEN] = { 'E', 'R', 'R', 'O', 'R', ':', ' ', '\0' };
     va_list	args;
 
     va_start(args, fmt);
 #ifdef LINUX
-    vsnprintf(buffer, MAX_MAKE_STRING_LEN, fmt, args);
+    vsnprintf(buffer_tmp, MAX_MAKE_STRING_LEN, fmt, args);
 #else
-    vsprintf(buffer, fmt, args);
+    vsprintf(buffer_tmp, fmt, args);
 #endif
     va_end(args);
 
+    char buffer_out[MAX_ERROR_BUFFER_LEN];
+    snprintf(buffer_out, std::size(buffer_out), "[havok] %s", buffer_tmp);
+
 #ifdef WIN32
-    OutputDebugString(buffer);
+    OutputDebugStringA(buffer_out);
 #else
-    fprintf(stderr, "%s", buffer);
+    fprintf(stderr, "%s", buffer_out);
 #endif
 }
 
@@ -331,15 +332,15 @@ IVP_ERROR_STRING p_get_error(){
     return p_error_buffer;
 }
 
-void p_print_error(){
-#ifdef WIN32
-    OutputDebugString(p_get_error());
-#else
-    fprintf(stderr, "%s", p_get_error());
-#endif
+void p_print_error() {
+    char buffer_out[MAX_ERROR_BUFFER_LEN];
+    snprintf(buffer_out, std::size(buffer_out), "[havok] %s", p_get_error());
 
-  //char *buf = p_error_buffer;
-  //    fprintf(stdout,"ERROR: %s\n",buf); // @#@ OS linker problems on playstation
+#ifdef WIN32
+    OutputDebugStringA(buffer_out);
+#else
+    fprintf(stderr, "%s", buffer_out);
+#endif
 }
 
 char *p_read_first_token(FILE *fp){
