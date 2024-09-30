@@ -257,7 +257,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 		if (!name0) name0 = "(null)";
 		const char *name1 = get_synapse(1)->get_object()->get_name();
 		if (!name1) name1 = "(null)";
-		ivp_message("recalc_mindist: Endless Loop without collision or termination problem.%s %s\n",
+		ivp_message("recalc_mindist: Endless loop. No collision or termination between '%s' and '%s'.\n",
 		       name0,name1);
 	    }
 	    // MINDIST RESCUE PUSH
@@ -271,7 +271,7 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist()
 		IVP_IF(1){ mms.termination_len = P_DOUBLE_MAX; }
 		P_Finish_Counter = 10; // debug purposes
 		IVP_IF(1) {
-		    ivp_message("recalc_mindist : Endless Loop without collision or termination problem.\n");
+		    ivp_message("recalc_mindist: Endless loop problem. No collision or termination.\n");
 		}
 		continue; // helps debugging
 //		CORE;

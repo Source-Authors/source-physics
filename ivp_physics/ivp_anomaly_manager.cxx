@@ -104,7 +104,7 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 	if (!name0) name0 = "(null)";
 	const char *name1 = obj1->get_name();
 	if (!name1) name1 = "(null)";
-	ivp_message("Mindist rescue push between '%s' and '%s' at %f\n",
+	ivp_message("Pushed (simple) '%s' and '%s' at %fs away to solve interpenetration.\n",
 	       name0,name1,
 	       env->get_current_time().get_time());
     }
@@ -188,6 +188,16 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 		moving_obj->async_add_speed_object_ws( &world_push_vec );
     }
 
+    IVP_IF(1){
+	IVP_Environment *env = obj0->get_environment();
+	const char *name0 = obj0->get_name();
+	if (!name0) name0 = "(null)";
+	const char *name1 = obj1->get_name();
+	if (!name1) name1 = "(null)";
+	ivp_message("Pushed (slow) '%s' and '%s' at %fs away to solve interpenetration.\n",
+	       name0,name1,
+	       env->get_current_time().get_time());
+    }
 #endif
 }
 
