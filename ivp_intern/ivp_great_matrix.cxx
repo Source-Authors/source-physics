@@ -905,7 +905,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(IVP_DOUBLE *A_in
     ignored_pos=0;
     SOLVER_EPS=1E-7f; //do not make this one bigger
     GAUSS_EPS=SOLVER_EPS;
-    TEST_EPS=SOLVER_EPS*1000.0f;
+    TEST_EPS=SOLVER_EPS*1000.0;
     sub_solver_status=0;
     MAX_STEP_LEN=10000;
     
@@ -938,7 +938,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(IVP_DOUBLE *A_in
     for(i=0;i<aligned_size;i++) {
 	actives_inactives_ignored[i]=i;
 	variable_is_found_at[i] = i;
-	result_vec_out[i] = 0.0f;
+	result_vec_out[i] = 0.0;
 	accel[i] = -b_in[i];
     }
 
@@ -967,19 +967,21 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(IVP_DOUBLE *A_in
     }
     
     IVP_IF(ret_val==IVP_OK) {
-	int j;
 	full_solver_mat.desired_vector=full_x;
 	full_solver_mat.mult_aligned();
-	for(j=0;j<n_variables;j++) {
-	    if(full_solver_mat.result_vector[j] + 0.0001f < full_b[j]) {
-		ivp_message("linear_constraint_failed %d %f should be greater %f\n",j,full_solver_mat.result_vector[j],full_b[j]);
+
+	constexpr IVP_DOUBLE eps{0.0001};
+
+	for(int j=0;j<n_variables;j++) {
+	    if(full_solver_mat.result_vector[j] + eps < full_b[j]) {
+		ivp_message("linear_constraint_failed #%d %f > %f\n",j,full_solver_mat.result_vector[j],full_b[j]);
 	    }
 	}
-	for(j=0;j<r_actives;j++) {
+	for(int j=0;j<r_actives;j++) {
 	    int index_full=actives_inactives_ignored[j];
 	    IVP_DOUBLE diff=IVP_Inline_Math::fabsd(full_solver_mat.result_vector[index_full] - full_b[index_full]);
-	    if(diff>0.0001f) {
-		ivp_message("linear_constraint_failed %d %f should be equal %f\n",j,full_solver_mat.result_vector[index_full],full_b[index_full]);
+	    if(diff>eps) {
+		ivp_message("linear_constraint_failed #%d %f == %f (diff %f > %.4f)\n",j,full_solver_mat.result_vector[index_full],full_b[index_full],diff,eps);
 	    }
 	}
     }

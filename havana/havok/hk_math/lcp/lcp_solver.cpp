@@ -223,17 +223,18 @@ hk_result hk_LCP_Solver::solve_lcp(hk_LCP_Input &in,hk_LCP_Temp &tmp,hk_LCP_Outp
     HK_LCP_IF(ret_val==HK_OK) {
 	input_struct->m_A->mult_vector( out.m_result, temp );
 
-	int j;
-	for(j=0;j<n_variables;j++) {
-	    if(temp[j] + 0.0001f < full_b[j]) {
-		hkprintf("linear_constraint_failed %d %f should be greater %f\n",j,temp[j],full_b[j]);
+	constexpr hk_real eps = 0.0001f;
+
+	for(int j=0;j<n_variables;j++) {
+	    if(temp[j] + eps < full_b[j]) {
+		hkprintf("linear_constraint_failed #%d %f > %f\n",j,temp[j],full_b[j]);
 	    }
 	}
-	for(j=0;j<r_actives;j++) {
+	for(int j=0;j<r_actives;j++) {
 	    int index_full=actives_inactives_ignored[j];
 	    hk_real diff=hk_Math::fabs(temp[index_full] - full_b[index_full]);
-	    if(diff>0.0001f) {
-		hkprintf("linear_constraint_failed %d %f should be equal %f\n",j,temp[index_full],full_b[index_full]);
+	    if(diff>eps) {
+		hkprintf("linear_constraint_failed #%d %f == %f (diff %f > %.4f)\n",j,temp[index_full],full_b[index_full],diff,eps);
 	    }
 	}
     }    
