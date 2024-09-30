@@ -104,7 +104,7 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 	if (!name0) name0 = "(null)";
 	const char *name1 = obj1->get_name();
 	if (!name1) name1 = "(null)";
-	ivp_message("Pushed (simple) '%s' and '%s' at %fs away to solve interpenetration.\n",
+	ivp_message("Pushed (simple) '%s' and '%s' at %.3fs away to solve penetration.\n",
 	       name0,name1,
 	       env->get_current_time().get_time());
     }
@@ -194,7 +194,7 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 	if (!name0) name0 = "(null)";
 	const char *name1 = obj1->get_name();
 	if (!name1) name1 = "(null)";
-	ivp_message("Pushed (slow) '%s' and '%s' at %fs away to solve interpenetration.\n",
+	ivp_message("Pushed (medium) '%s' and '%s' at %.3fs away to solve penetration.\n",
 	       name0,name1,
 	       env->get_current_time().get_time());
     }
