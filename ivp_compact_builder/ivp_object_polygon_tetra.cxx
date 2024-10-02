@@ -993,7 +993,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 	    IVP_ERROR_STRING error = td_sur->calc_line_representation();
 
 	    if(error){
-			fprintf(stderr, "make_triangles:calc_line_representation: %s\n", error);
+			ivp_message("make_triangles:calc_line_representation: %s\n", error);
 			// dimhotepus: Free on error.
 			P_DELETE(hash);
 			return "No 2d representation";
@@ -1001,7 +1001,7 @@ IVP_ERROR_STRING IVP_Object_Polygon_Tetra::make_triangles()
 
 	    error = td_sur->calc_triangle_representation();
 	    if(error){
-			fprintf(stderr, "make_triangles:calc_triangle_representation: %s\n", error);
+			ivp_message("make_triangles:calc_triangle_representation: %s\n", error);
 			// dimhotepus: Free on error.
 			P_DELETE(hash);
 			return "no 3d representation";
