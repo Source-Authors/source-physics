@@ -1,5 +1,5 @@
 template <class T>
-hk_Array<T>::hk_Array( int initial_size )
+hk_Array<T>::hk_Array( hk_array_store_index initial_size )
 {
 	m_n_elems = 0;
 	if ( initial_size) {
@@ -13,7 +13,7 @@ hk_Array<T>::hk_Array( int initial_size )
 
 
 template <class T>
-hk_Array<T>::hk_Array(T* elems, int initial_size)
+hk_Array<T>::hk_Array(T* elems, hk_array_store_index initial_size)
 {
 	HK_ASSERT( (char *)elems == (char *)(this +1 ));
 	m_n_elems = 0;
@@ -57,7 +57,7 @@ template <class T>
 void hk_Array<T>::remove_element( hk_array_index idx,
 		void (*static_member_func)( T&, hk_Array<T>* , hk_array_store_index ) )
 {
-	m_n_elems --;
+	m_n_elems--;
 	if (idx < m_n_elems)
 	{
 		(*static_member_func)( get_elems()[ m_n_elems ], this, idx );
@@ -69,10 +69,10 @@ void hk_Array<T>::remove_element( hk_array_index idx,
 template <class T>
 void hk_Array<T>::search_and_remove_element( T& t)
 {
-	int index = index_of(t);
+	hk_array_index index = index_of(t);
 	HK_ASSERT(index>=0);
 
-	m_n_elems --;
+	m_n_elems--;
 	if (index < m_n_elems)
 	{
 		get_elems()[index ] = get_elems()[ m_n_elems ];
@@ -82,10 +82,10 @@ void hk_Array<T>::search_and_remove_element( T& t)
 template <class T>
 void hk_Array<T>::search_and_remove_element_sorted( T& t)
 {
-	int index = index_of(t);
+	hk_array_index index = index_of(t);
 	HK_ASSERT(index>=0);
 
-	m_n_elems --;
+	m_n_elems--;
 	while ( index < m_n_elems ){
 		get_elems()[index ] = get_elems()[ index+1];
 		index++;
@@ -168,11 +168,13 @@ void hk_Array<T>::reserve(int n)
 {
 	if ( m_memsize < n + m_n_elems)
 	{
-		int new_size = m_memsize + m_memsize;
+		int new_size = static_cast<int>(m_memsize) + m_memsize;
 		if ( new_size == 0) new_size = 2;
+
 		while ( new_size < n + m_n_elems ){
 			new_size += new_size;
 		}
+
 		grow_mem( sizeof(T), new_size - m_memsize );
 	}
 }
@@ -186,7 +188,7 @@ T& hk_Array<T>::get_element( iterator i )
 template <class T>
 hk_bool hk_Array<T>::is_valid( iterator i)
 {
-	return hk_bool(i>=0);
+	return hk_bool(i >= 0);
 }
 
 template <class T>
@@ -209,6 +211,3 @@ void hk_Array<T>::set( hk_Array<T> &t ) // OS: name to be discussed
 	std::swap( m_n_elems, t.m_n_elems );
 	std::swap( m_elems, t.m_elems );
 }
-
-
-

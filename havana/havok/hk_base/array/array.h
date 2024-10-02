@@ -28,7 +28,7 @@ template<class T>
 class hk_Array :  protected hk_Array_Base
 {
 	public:
-		inline hk_Array( int initial_size = 0 );
+		inline hk_Array( hk_array_store_index initial_size = 0 );
 		inline ~hk_Array();
 
 		typedef hk_array_index iterator;
@@ -68,7 +68,7 @@ class hk_Array :  protected hk_Array_Base
 
 		T *get_elems(){ return (T*)m_elems; }
 	protected:
-		inline hk_Array(T *elems, int initial_size);
+		inline hk_Array(T *elems, hk_array_store_index initial_size);
 		// for preallocated array
 };
 
