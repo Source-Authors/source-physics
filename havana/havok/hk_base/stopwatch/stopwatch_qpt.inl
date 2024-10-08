@@ -29,9 +29,9 @@ inline void hk_query_performance_timer_frequency(hk_uint64* freq)
 #ifdef _WIN32
 	LARGE_INTEGER waitTime, startCount, curCount;
 
-	// Take 1/32 of a second for the measurement.
+	// Take 1/128 of a second for the measurement.
 	QueryPerformanceFrequency( &waitTime );
-	unsigned scale = 5;
+	unsigned scale = 7;
 	waitTime.QuadPart >>= scale;
 
 	QueryPerformanceCounter( &startCount );
