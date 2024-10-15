@@ -253,19 +253,19 @@ void  hk_Memory::deallocate_stored_size(void* p, hk_MEMORY_CLASS cl)
 
 void *hk_Memory::aligned_malloc( hk_size_t size, hk_size_t alignment )
 {
-#if defined(WIN32_)
+#if defined(_WIN32)
 	return _aligned_malloc ( size, alignment );
 #else
-	return ::malloc(size);
+	return std::aligned_alloc( size, alignment );
 #endif
 }
 
 void hk_Memory::aligned_free( void *data )
 {
-#if defined(WIN32_)
+#if defined(_WIN32)
 	_aligned_free ( data );
 #else
-	::free(data);
+	std::free(data);
 #endif
 
 }
