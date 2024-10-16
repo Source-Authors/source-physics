@@ -370,7 +370,8 @@ int p_get_num(){
 IVP_DOUBLE p_get_float(){
     char *str = p_str_tok(NULL, IVP_WHITESPACE);
     if (!str) return 0.0f;
-    return IVP_DOUBLE(atof(str));
+	// dimhotepus: atof -> strtof
+    return IVP_DOUBLE(strtof(str, nullptr));
 }
 
 
@@ -407,7 +408,8 @@ char *p_str_tok(char *a,const char *deli){
 
 IVP_DOUBLE p_atof(const char *s){
     if (!s) return(0.0f);
-    return IVP_DOUBLE(atof(s));
+	// dimhotepus: atof -> strtof
+    return IVP_DOUBLE(strtof(s, nullptr));
 };
 
 int p_atoi(const char *s){
