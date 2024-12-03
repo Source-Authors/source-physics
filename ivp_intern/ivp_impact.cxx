@@ -1242,6 +1242,7 @@ void IVP_Mindist::do_impact(){
 		// BUGBUG: someone changed a collision filter and didn't tell us!
 		IVP_ASSERT(0);
 		delete this;
+		g_fDeferDeleteMindist = false;
 		return;
 	}
 
