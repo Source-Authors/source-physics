@@ -47,14 +47,17 @@ IVP_Template_Real_Object::~IVP_Template_Real_Object()
 
 
 void IVP_Template_Real_Object::set_nocoll_group_ident(const char *id){
-    if (!id){
-	nocoll_group_ident[0] = 0;
-	return;
+    if (!id) {
+	    nocoll_group_ident[0] = 0;
+	    return;
     }
+
     if (strlen(id) > IVP_NO_COLL_GROUP_STRING_LEN){
-	CORE;
+	    CORE;
     }
+
     strncpy( nocoll_group_ident, id, IVP_NO_COLL_GROUP_STRING_LEN);
+    nocoll_group_ident[ IVP_NO_COLL_GROUP_STRING_LEN - 1 ] = '\0';
 }
 
 
