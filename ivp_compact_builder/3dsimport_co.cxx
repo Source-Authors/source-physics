@@ -527,9 +527,10 @@ IVP_Concave_Polyhedron * IVP_SurfaceBuilder_3ds::convert_3ds_to_concave(const ch
                       else { ivp_message( "Missing object name!\n");
                              return 1; }
             case 'S': if(n+3<argc) { flags |= SCALE;
-                                     xscale = atof(argv[++n]);
-                                     yscale = atof(argv[++n]);
-                                     zscale = atof(argv[++n]);
+                                     // dimhotepus: atof -> strtof.
+                                     xscale = strtof(argv[++n], nullptr);
+                                     yscale = strtof(argv[++n], nullptr);
+                                     zscale = strtof(argv[++n], nullptr);
                                      break; }
                       else { ivp_message( "Missing scale value!\n");
                              return 1; }
