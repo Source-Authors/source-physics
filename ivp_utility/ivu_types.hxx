@@ -237,7 +237,7 @@ enum IVP_RETURN_TYPE {
 #   endif
 #endif
 
-#include <string.h>
+#include <cstring>
 
 
 	char * IVP_CDECL p_calloc(size_t nelem, size_t size);

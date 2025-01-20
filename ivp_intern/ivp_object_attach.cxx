@@ -5,7 +5,7 @@
 #endif
 
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 
 #include <ivp_templates.hxx>
 #include <ivp_cache_object.hxx>

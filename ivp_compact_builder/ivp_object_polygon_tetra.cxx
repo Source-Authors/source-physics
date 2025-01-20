@@ -2,7 +2,7 @@
 
 
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 #include <ivu_float.hxx>
 
 #include <ivu_list.hxx>

@@ -8,7 +8,7 @@
 
 
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 #include <ivu_hash.hxx>
 #include <ivp_object_polygon_tetra.hxx>
 #include <ivp_i_point_vhash.hxx>

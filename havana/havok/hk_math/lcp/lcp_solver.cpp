@@ -13,10 +13,10 @@
 #	define HK_LCP_IF(flag)	if (0==1)
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdarg>
+#include <cstring>
 #include <ctype.h>
 
 #define HK_LCP_SOLVER_EPS (1E-7f)

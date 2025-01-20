@@ -4,7 +4,7 @@
 
 #include <ivp_physics.hxx>
 
-#include <stdarg.h>
+#include <cstdarg>
 
 #include <ivp_betterdebugmanager.hxx>
 

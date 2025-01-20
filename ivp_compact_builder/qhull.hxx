@@ -32,7 +32,7 @@
 /*=========================== -included files ==============*/
 
 #include <setjmp.h>
-#include <float.h>
+#include <cfloat>
 #if !defined(PSXII) && !defined(GEKKO)
 #	include <time.h>
 #endif

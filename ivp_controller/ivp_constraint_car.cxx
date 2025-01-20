@@ -3,7 +3,7 @@
 #include <ivp_physics.hxx>
 #include <ivp_solver_core_reaction.hxx>
 #include <ivp_great_matrix.hxx>
-#include <math.h>
+#include <cmath>
 #include <ivu_vector.hxx>
 #include <ivp_constraint_local.hxx>
 #include <ivp_constraint_car.hxx>

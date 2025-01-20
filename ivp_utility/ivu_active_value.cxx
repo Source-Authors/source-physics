@@ -11,7 +11,7 @@
 // values when it is necessary. It is used e.g. for IVP_Actuator_Forces.
 
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 #ifndef WIN32
 #	pragma implementation "ivu_active_value.hxx"
 #	pragma implementation "ivu_active_value_hash.hxx"

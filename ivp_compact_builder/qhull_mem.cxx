@@ -33,9 +33,9 @@
 */
 #include <ivp_physics.hxx>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "qhull_mem.hxx"
 
 #ifndef qhDEFqhull

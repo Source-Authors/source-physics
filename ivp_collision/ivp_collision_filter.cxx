@@ -5,7 +5,7 @@
 
 #include <ivp_physics.hxx>
 
-#include <string.h>
+#include <cstring>
 
 #include <ivu_vhash.hxx>
 #include <ivp_collision_filter.hxx>

@@ -8,7 +8,7 @@
 
 // IVP includes
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 
 #include <ivp_betterstatisticsmanager.hxx>
 

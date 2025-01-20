@@ -5,7 +5,7 @@
  *	Description:	compacted ledge representation
  ********************************************************************************/
 
-//#include <string.h>
+//#include <cstring>
 #include <ivp_physics.hxx>
 #include <ivu_hash.hxx>
 

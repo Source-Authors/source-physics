@@ -10,8 +10,8 @@
 */
 
 #include <ivp_physics.hxx>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 /*** uncomment here and qhull_a.h 
      if string.h does not define memcpy()
 #include <memory.h>

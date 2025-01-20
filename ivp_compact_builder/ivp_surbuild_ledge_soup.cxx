@@ -1,7 +1,7 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 
 //#define STATS
 //#define IVP_CLUSTER_SHORTRANGE_BOTTOMUP

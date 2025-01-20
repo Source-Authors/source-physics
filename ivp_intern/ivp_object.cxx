@@ -7,7 +7,7 @@
 #endif
  
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 
 #include <ivu_matrix_macros.hxx>
 #include <ivu_float.hxx>

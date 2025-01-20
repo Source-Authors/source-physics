@@ -1,7 +1,7 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 #include <ivu_hash.hxx>
 #include <ivu_string_hash.hxx>
 

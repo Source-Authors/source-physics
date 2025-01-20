@@ -9,7 +9,7 @@
 
 // IVP physics includes
 #include <ivp_physics.hxx>
-#include <string.h>
+#include <cstring>
 #include <ivp_material.hxx>
 #include <ivp_betterstatisticsmanager.hxx>
 

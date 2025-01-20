@@ -1,5 +1,5 @@
 #ifdef WIN32
-#include <float.h>
+#include <cfloat>
 #endif
 
 #if defined(IVP_NO_DOUBLE) && !defined(SUN)
