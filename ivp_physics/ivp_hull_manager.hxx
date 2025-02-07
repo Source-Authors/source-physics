@@ -27,7 +27,7 @@ public:
     inline void increase_hull_by_x(IVP_Time t_now, IVP_FLOAT delta_time, IVP_FLOAT gradient, IVP_FLOAT center_gradient_);
 
     // inline functions, include ivp_hull_manager_macros.hxx
-    inline void check_hull_synapses();
+    inline void check_hull_synapses(IVP_Environment* pEnv);
     inline IVP_BOOL are_events_in_hull(); // quick check for events in hull
     
     inline void check_for_reset(){
@@ -68,6 +68,8 @@ public:
     gradient = 0.0f;
     center_gradient = 0.0f;
   }
+
+  int get_synapse_check_count( IVP_Environment* pEnvironment );
     
 protected:  
     IVP_Hull_Manager();

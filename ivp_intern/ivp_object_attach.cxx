@@ -227,7 +227,7 @@ IVP_RETURN_TYPE IVP_Object_Attach::reposition_object_Ros( IVP_Real_Object *paren
 	attached_object->recalc_exact_mindists_of_object();
 	attached_object->recalc_invalid_mindists_of_object();
 
-	h_manager->check_hull_synapses();
+	h_manager->check_hull_synapses(attached_object->environment);
 	h_manager->check_for_reset();
 
     return IVP_OK;

@@ -320,7 +320,7 @@ void IVP_Calc_Next_PSI_Solver::set_transformation( const IVP_U_Quat *rotation, c
 			env->get_mindist_manager()->recheck_ov_element(r_obj);
 		}
 
-		h_manager->check_hull_synapses();
+		h_manager->check_hull_synapses(env);
 		h_manager->check_for_reset();
 	}
 	
@@ -366,16 +366,16 @@ void IVP_Calc_Next_PSI_Solver::commit_all_calc_next_PSI_matrix(IVP_Environment *
     }
 }
 
-void IVP_Calc_Next_PSI_Solver::commit_one_hull_manager( IVP_Environment *, IVP_U_Vector<IVP_Hull_Manager_Base> *active_hull_managers){
+void IVP_Calc_Next_PSI_Solver::commit_one_hull_manager( IVP_Environment *env, IVP_U_Vector<IVP_Hull_Manager_Base> *active_hull_managers){
     if (active_hull_managers->len()){
 	IVP_ASSERT( active_hull_managers->len() == 1 );
 	IVP_Hull_Manager *hm = (IVP_Hull_Manager*)active_hull_managers->element_at(0);
-	hm->check_hull_synapses();
+	hm->check_hull_synapses(env);
 	hm->check_for_reset();
     }
 }
 
-void IVP_Calc_Next_PSI_Solver::commit_all_hull_managers( IVP_Environment *, IVP_U_Vector<IVP_Hull_Manager_Base> *active_hull_managers){
+void IVP_Calc_Next_PSI_Solver::commit_all_hull_managers( IVP_Environment *env, IVP_U_Vector<IVP_Hull_Manager_Base> *active_hull_managers){
 	//h_manager->check_hull_synapses();
 	//h_manager->check_for_reset();
     int i;
@@ -387,18 +387,18 @@ void IVP_Calc_Next_PSI_Solver::commit_all_hull_managers( IVP_Environment *, IVP_
 	    hm1->prefetch1_hull();
 	}
 	IVP_Hull_Manager *hm = (IVP_Hull_Manager *)active_hull_managers->element_at(i);
-	hm->check_hull_synapses();
+	hm->check_hull_synapses(env);
 	hm->check_for_reset();
     }
     if (i == 1){
 	IVP_Hull_Manager *hm = (IVP_Hull_Manager*)active_hull_managers->element_at(1);
-	hm->check_hull_synapses();
+	hm->check_hull_synapses(env);
 	hm->check_for_reset();
 	i--;
     }
     if (i == 0){
 	IVP_Hull_Manager *hm = (IVP_Hull_Manager*)active_hull_managers->element_at(0);
-	hm->check_hull_synapses();
+	hm->check_hull_synapses(env);
 	hm->check_for_reset();
     }
 }

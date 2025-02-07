@@ -11,6 +11,7 @@
 #include <ivu_min_hash.hxx>
 #include <ivp_hull_manager.hxx>
 #include "ivp_hull_manager_macros.hxx"
+#include "ivp_anomaly_manager.hxx"
 
 // IVP_EXPORT_PRIVATE
 
@@ -56,4 +57,9 @@ void IVP_Hull_Manager::reset_times(){
 
 void IVP_Hull_Manager::reset_time(IVP_Time offset){
     last_vpsi_time -= offset;
+}
+
+int IVP_Hull_Manager::get_synapse_check_count( IVP_Environment* pEnvironment )
+{
+    return pEnvironment->get_anomaly_limits()->max_collision_checks_per_psi;
 }
