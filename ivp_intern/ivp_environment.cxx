@@ -487,12 +487,7 @@ void IVP_Environment::delete_draw_vector_debug(){
 
 void IVP_Environment::force_psi_on_next_simulation()
 {
-    double now_seconds = current_time.get_seconds();
-    IVP_Time_Event_PSI *last_event = time_manager->psi_event;
-    double diff_seconds = now_seconds - time_manager->base_time.get_seconds();
-
-    time_manager->min_hash->remove_minlist_elem(last_event->index);
-    last_event->index = time_manager->min_hash->add(last_event, diff_seconds);
+    time_manager->update_event( time_manager->psi_event, current_time );
 }
 
 IVP_Polygon *IVP_Environment::create_polygon(IVP_SurfaceManager *vic, const IVP_Template_Real_Object *templ,
