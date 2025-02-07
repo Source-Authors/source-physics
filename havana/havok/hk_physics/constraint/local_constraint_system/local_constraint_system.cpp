@@ -207,12 +207,12 @@ void hk_Local_Constraint_System::clear_error()
 
 void hk_Local_Constraint_System::report_square_error(float errSq)
 {
-//	m_errorThisTick = ((m_errorTolerance * m_errorTolerance) < errSq);
+	if ( errSq > (m_errorTolerance * m_errorTolerance) )
+		m_errorThisTick = true;
 }
 
 void hk_Local_Constraint_System::solve_penetration(IVP_Real_Object* pivp0, IVP_Real_Object* pivp1)
 {
-#if 0
 	if (m_penetrationCount >= 4)
 		return;
 
@@ -222,9 +222,8 @@ void hk_Local_Constraint_System::solve_penetration(IVP_Real_Object* pivp0, IVP_R
 	m_penetrationPairs[m_penetrationCount].obj0 = m_bodies.index_of(b0);
 	m_penetrationPairs[m_penetrationCount].obj1 = m_bodies.index_of(b1);
 
-	if (m_penetrationPairs[m_penetrationCount].obj0 && m_penetrationPairs[m_penetrationCount].obj1)
+	if (m_penetrationPairs[m_penetrationCount].obj0 >= 0 && m_penetrationPairs[m_penetrationCount].obj1 >= 0)
 		m_penetrationCount++;
-#endif
 }
 
 void hk_Local_Constraint_System::get_effected_entities(hk_Array<hk_Entity*>& ent_out)
@@ -239,13 +238,12 @@ void hk_Local_Constraint_System::get_effected_entities(hk_Array<hk_Entity*>& ent
 
 //virtual hk_real get_minimum_simulation_frequency(hk_Array<hk_Entity> *);
 
-IVP_FLOAT GetMoveableMass(const IVP_Core* pCore)
+static IVP_DOUBLE GetMoveableMass(const IVP_Core* pCore)
 {
-	if (static_cast<int>(pCore->movement_state) & (IVP_MT_STATIC | IVP_MT_SLOW)) {
-		return pCore->get_rot_inertia()->hesse_val;
-	}
+	if ( pCore->physical_unmoveable || pCore->pinned )
+		return pCore->get_mass();
 
-	return 0;
+	return 0.0;
 }
 
 void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk_Entity*>*)
@@ -291,13 +289,12 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 		}
 	}
 
-#if 0
 	if (m_penetrationCount)
 	{
 		IVP_DOUBLE d_time = m_environment->get_delta_PSI_time();
 		IVP_DOUBLE grav = m_environment->get_gravity()->real_length();
 		IVP_DOUBLE speed_change = (grav * 2.0f) * d_time;
-		IVP_FLOAT mass = 0;
+		IVP_DOUBLE mass = 0.0;
 
 		for (hk_Array<hk_Entity*>::iterator i = m_bodies.start();
 			m_bodies.is_valid(i);
@@ -327,20 +324,21 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 			}
 
 			IVP_U_Float_Point p0;
-			p0.set_multiple(&vec01, -speed_change * mass);
-
-			if (IVP_MTIS_SIMULATED(core0->movement_state) && !core0->pinned)
-			{
-				obj0->async_push_object_ws(&m_world_f_core0->vv, &p0);
-				IVP_U_Float_Point rot_speed_object(-d_time, 0, 0);
-				obj0->async_add_rot_speed_object_cs(&rot_speed_object);
-			}
+			p0.set_multiple(&vec01, speed_change * mass);
 
 			if (IVP_MTIS_SIMULATED(core1->movement_state) && !core1->pinned)
 			{
-				obj1->async_push_object_ws(&m_world_f_core0->vv, &p0);
+				obj1->async_push_object_ws(&m_world_f_core1->vv, &p0); // PiMoN: was m_world_f_core0, but this is a bug in Valve's code
 				IVP_U_Float_Point rot_speed_object(d_time, 0, 0);
 				obj1->async_add_rot_speed_object_cs(&rot_speed_object);
+			}
+
+			if (IVP_MTIS_SIMULATED(core0->movement_state) && !core0->pinned)
+			{
+				p0.mult( -1.0f );
+				obj0->async_push_object_ws(&m_world_f_core0->vv, &p0);
+				IVP_U_Float_Point rot_speed_object(-d_time, 0, 0);
+				obj0->async_add_rot_speed_object_cs(&rot_speed_object);
 			}
 		}
 		m_penetrationCount = 0;
@@ -354,7 +352,6 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi, hk_Array<hk
 
 	if( m_errorCount <= m_minErrorTicks )
 		m_errorCount++;
-#endif
 }
 
 hk_real hk_Local_Constraint_System::get_epsilon()

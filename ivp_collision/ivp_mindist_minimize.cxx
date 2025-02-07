@@ -127,8 +127,8 @@ void IVP_Mindist::mindist_rescue_push(){
     
     IVP_Real_Object *obj0 = get_synapse(0)->get_object();
     IVP_Real_Object *obj1 = get_synapse(1)->get_object();
-	// todo(crack); should a delta speed be calculated here?
-    obj0->get_environment()->get_anomaly_manager()->inter_penetration( this, obj0, obj1 , 0);
+	IVP_Anomaly_Manager* anomaly_manager = obj0->get_environment()->get_anomaly_manager();
+	anomaly_manager->inter_penetration( this, obj0, obj1, anomaly_manager->get_push_speed_penetration( obj0, obj1 ) );
 }
 
 

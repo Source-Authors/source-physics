@@ -63,7 +63,7 @@ void IVP_Anomaly_Manager::max_angular_velocity_exceeded(IVP_Anomaly_Limits *al, 
     angular_velocity_in_out->mult(0.9f * max_rot_speed / IVP_Inline_Math::ivp_sqrtf(square_rot_speed));
 }
 
-void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0, IVP_Real_Object *obj1){
+void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0, IVP_Real_Object *obj1, IVP_DOUBLE speed_change){
         IVP_Environment *env = obj0->get_environment();
     IVP_DOUBLE d_time = env->get_delta_PSI_time();
     IVP_Core *core0 = obj0->get_core();
@@ -81,8 +81,6 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 		vec01.set( 1, 0, 0 );
 	}
 
-    IVP_DOUBLE speed_change = get_push_speed_penetration( obj0, obj1);
-
     if(IVP_MTIS_SIMULATED(core0->movement_state) && !core0->pinned){
 	IVP_U_Float_Point p0;
 	p0.set_multiple(&vec01, -speed_change * core0->get_mass());
@@ -94,7 +92,7 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
     if(IVP_MTIS_SIMULATED(core1->movement_state) && !core1->pinned){
 	IVP_U_Float_Point p1;
 	p1.set_multiple(&vec01, speed_change * core1->get_mass());
-	obj1->async_push_object_ws(&m_world_f_core0->vv, &p1);
+	obj1->async_push_object_ws(&m_world_f_core1->vv, &p1); // PiMoN: was m_world_f_core0, but this is a bug in Valve's code
 	IVP_U_Float_Point rot_speed_object(d_time,0,0);
 	obj1->async_add_rot_speed_object_cs( &rot_speed_object);
     }
@@ -111,7 +109,7 @@ void IVP_Anomaly_Manager::solve_inter_penetration_simple( IVP_Real_Object *obj0,
 }
 
 // TODO(nillerusr) in the decompiler output, this function is different, but this should not affect the result
-void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Object *obj0, IVP_Real_Object *obj1, IVP_DOUBLE speedChange){
+void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Object *obj0, IVP_Real_Object *obj1, IVP_DOUBLE speed_change){
 	
 	IVP_Real_Object *my_objects[2];
 	my_objects[0]=obj0;
@@ -124,7 +122,7 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 	}
 
 	if( !my_objects[swapped]->get_core()->physical_unmoveable ) {
-		solve_inter_penetration_simple( obj0,obj1 );
+		solve_inter_penetration_simple( obj0, obj1, speed_change );
 		return;
 	}
  
@@ -133,7 +131,7 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 
 #if 1
 	if( mindist->synapse[swapped].get_status() > IVP_ST_TRIANGLE ) {
-	    solve_inter_penetration_simple( obj0, obj1 );
+	    solve_inter_penetration_simple( obj0, obj1, speed_change );
 		return;
 	}
 
@@ -180,8 +178,6 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
     IVP_U_Float_Point world_push_vec;
 	world_push_vec.set(&world_push_dir);
 
-    IVP_DOUBLE speed_change = get_push_speed_penetration( obj0, obj1);
-
 	IVP_Core *moving_core=moving_obj->get_core();
     if(IVP_MTIS_SIMULATED(moving_core->movement_state)){
 		world_push_vec.mult( speed_change );
@@ -204,7 +200,7 @@ void IVP_Anomaly_Manager::inter_penetration(IVP_Mindist *mindist, IVP_Real_Objec
 IVP_FLOAT IVP_Anomaly_Manager::get_push_speed_penetration( IVP_Real_Object *obj0, IVP_Real_Object *) {
 	IVP_DOUBLE d_time=obj0->get_environment()->get_delta_PSI_time();
     IVP_DOUBLE grav = obj0->get_environment()->get_gravity()->real_length();
-    IVP_DOUBLE speed_change = (grav*2.0f) * d_time;
+    IVP_DOUBLE speed_change = (grav*4.0f) * d_time;
 	return speed_change;
 }
 
