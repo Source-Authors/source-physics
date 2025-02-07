@@ -26,17 +26,91 @@ void IVP_Controller_Phantom::remove_listener_phantom( IVP_Listener_Phantom *list
 	listeners.remove(listener);
 }
 
-IVP_Controller_Phantom::~IVP_Controller_Phantom(){
-	for (int i = listeners.len()-1;i>=0;i--){
-		IVP_Listener_Phantom *l = listeners.element_at(i);
-		l->phantom_is_going_to_be_deleted_event(this);
+void IVP_Controller_Phantom::add_sleeping_object( IVP_Real_Object* obj )
+{
+	obj->add_listener_object( this );
+	set_of_sleeping_cores->add_element( obj->get_core() );
+}
+
+void IVP_Controller_Phantom::remove_sleeping_object( IVP_Real_Object* obj )
+{
+	obj->remove_listener_object( this );
+	set_of_sleeping_cores->remove_element( obj->get_core() );
+}
+
+void IVP_Controller_Phantom::wake_all_sleeping_objects()
+{
+	IVP_U_Set_Enumerator<IVP_Core> all_sleeping_cores( set_of_sleeping_cores );
+	while ( IVP_Core* core = all_sleeping_cores.get_next_element( set_of_sleeping_cores ) )
+	{
+		for ( int i = core->objects.len() - 1; i >= 0; i-- )
+		{
+			IVP_Real_Object* obj = core->objects.element_at( i );
+			obj->ensure_in_simulation();
+		}
 	}
+
+	IVP_U_Set_Enumerator<IVP_Core> all_cores( set_of_cores );
+	while ( IVP_Core* core = all_cores.get_next_element( set_of_cores ) )
+	{
+		for ( int i = core->objects.len() - 1; i >= 0; i-- )
+		{
+			IVP_Real_Object* obj = core->objects.element_at( i );
+			obj->ensure_in_simulation();
+		}
+	}
+}
+
+void IVP_Controller_Phantom::fire_event_core_entered( IVP_Core* core )
+{
+	for ( int i = listeners.len() - 1; i >= 0; i-- )
+	{
+		IVP_Listener_Phantom* l = listeners.element_at( i );
+		l->core_entered_volume( this, core );
+	}
+}
+
+void IVP_Controller_Phantom::fire_event_core_left( IVP_Core* core )
+{
+	for ( int i = listeners.len() - 1; i >= 0; i-- )
+	{
+		IVP_Listener_Phantom* l = listeners.element_at( i );
+		l->core_left_volume( this, core );
+	}
+}
+
+IVP_Controller_Phantom::~IVP_Controller_Phantom()
+{
+	IVP_U_Set_Enumerator<IVP_Core> all_cores( set_of_cores );
+	while ( IVP_Core* core = all_cores.get_next_element( set_of_cores ) )
+		fire_event_core_left( core );
+
+	IVP_U_Set_Enumerator<IVP_Core> all_sleeping_cores( set_of_sleeping_cores );
+	while ( IVP_Core* core = all_sleeping_cores.get_next_element( set_of_sleeping_cores ) )
+	{
+		fire_event_core_left( core );
+
+		for ( int i = core->objects.len() - 1; i >= 0; i-- )
+		{
+			IVP_Real_Object* obj = core->objects.element_at( i );
+			obj->remove_listener_object( this );
+		}
+	}
+
+	for ( int i = listeners.len() - 1; i >= 0; i-- )
+	{
+		IVP_Listener_Phantom* l = listeners.element_at( i );
+		l->phantom_is_going_to_be_deleted_event( this );
+	}
+
 	object->controller_phantom = 0;
-	P_DELETE(mindist_core_counter);
-	P_DELETE(mindist_object_counter);
+	P_DELETE( mindist_core_counter );
+	P_DELETE( mindist_object_counter );
+
+	P_DELETE( set_of_objects );
 	
-	P_DELETE(set_of_objects);
-	P_DELETE(set_of_cores);
+	P_DELETE( set_of_sleeping_cores );
+	P_DELETE( set_of_cores );
 }
 
 void IVP_Controller_Phantom::mindist_entered_volume(class IVP_Mindist *mindist)
@@ -86,11 +160,10 @@ void IVP_Controller_Phantom::mindist_entered_volume(class IVP_Mindist *mindist)
 		{
 			mindist_core_counter->add_elem( other_core, (void *)1);
 			set_of_cores->add_element(other_core);
-			for (int i = listeners.len()-1;i>=0;i--)
-			{
-				IVP_Listener_Phantom *l = listeners.element_at(i);
-				l->core_entered_volume(this,other_core);
-			}
+			if ( set_of_sleeping_cores->find_element( other_core ) )
+				remove_sleeping_object( other_object );
+			else
+				fire_event_core_entered( other_core );
 		}
 	}
 	
@@ -147,11 +220,10 @@ void IVP_Controller_Phantom:: mindist_left_volume(class IVP_Mindist *mindist)
 		{
 			mindist_core_counter->remove_elem( other_core);
 			set_of_cores->remove_element(other_core);
-			for (int i = listeners.len()-1;i>=0;i--)
-			{
-				IVP_Listener_Phantom *l = listeners.element_at(i);
-				l->core_left_volume(this,other_core);
-			}
+			if ( other_object->get_movement_state() == IVP_MT_NOT_SIM )
+				add_sleeping_object( other_object );
+			else
+				fire_event_core_left( other_core );
 		}
 	}
 	
@@ -163,6 +235,7 @@ void IVP_Controller_Phantom:: mindist_left_volume(class IVP_Mindist *mindist)
 }
 
 IVP_Controller_Phantom::IVP_Controller_Phantom(IVP_Real_Object *object_in, const IVP_Template_Phantom *templat):
+listeners(0),
 set_of_mindists(16)
 {
 	object = object_in;
@@ -181,10 +254,16 @@ set_of_mindists(16)
 	{
 		set_of_cores = new IVP_U_Set_Active<IVP_Core>(16);
 		mindist_core_counter = new IVP_VHash_Store(16);
+
+		if ( templat->manage_sleeping_cores )
+			set_of_sleeping_cores = new IVP_U_Set<IVP_Core>( 16 );
+		else
+			set_of_sleeping_cores = NULL;
 	} 
 	else 
 	{
 		set_of_cores = NULL;
+		set_of_sleeping_cores = NULL;
 		mindist_core_counter = NULL;
 	}
 	
@@ -259,6 +338,21 @@ set_of_mindists(16)
 		}
 	}
 	client_data = 0;
+}
+
+void IVP_Controller_Phantom::event_object_revived( IVP_Event_Object* obj )
+{
+	if ( set_of_sleeping_cores->find_element( obj->real_object->get_core() ) )
+	{
+		obj->real_object->remove_listener_object( this );
+		set_of_sleeping_cores->remove_element( obj->real_object->get_core() );
+
+		if ( set_of_cores )
+		{
+			if ( !mindist_core_counter->find_elem( obj->real_object->get_core() ) )
+				fire_event_core_left( obj->real_object->get_core() );
+		}
+	}
 }
 
 

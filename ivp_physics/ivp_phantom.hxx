@@ -9,6 +9,8 @@
 #	include <ivu_set.hxx>
 #endif
 
+#include <ivp_listener_object.hxx>
+
 class IVP_Mindist_Base;
 
 /*********************************************************************
@@ -91,7 +93,7 @@ public:
  *	Note:		To access the IVP_Controller_Phantom call
  *			IVP_Real_Object::get_controller_phantom()
  *********************************************************************/
-class IVP_Controller_Phantom {
+class IVP_Controller_Phantom: public IVP_Listener_Object {
   friend class IVP_Mindist_Manager;
 protected:
   IVP_Real_Object *object;
@@ -102,6 +104,7 @@ protected:
     IVP_VHash_Store *mindist_object_counter;
     IVP_VHash_Store *mindist_core_counter;
   IVP_U_Set_Active<IVP_Core> *set_of_cores;   // optional set of objects
+  IVP_U_Set<IVP_Core> *set_of_sleeping_cores;
   IVP_Time time_of_last_set_transformation;
 
   friend class IVP_Real_Object;
@@ -116,19 +119,21 @@ public:
   IVP_U_Set_Active<IVP_Core> *get_intruding_cores() const { return set_of_cores ; }  // returns NULL if manage_set was IVP_FALSE 
   IVP_U_Set_Active<IVP_Mindist_Base> *get_intruding_mindists(){ return &set_of_mindists ; }             // returns mindist
   IVP_Real_Object *get_object() const { return object; }
-  void wake_all_sleeping_objects()
-  {
-      if (object)
-      {
-          object->ensure_in_simulation();
-      }
-      // TODO(mastercoms): what is all?
-  }
   
   void add_listener_phantom( IVP_Listener_Phantom *listener);
   void remove_listener_phantom( IVP_Listener_Phantom *listener);
+  void add_sleeping_object( IVP_Real_Object* );
+  void remove_sleeping_object( IVP_Real_Object* );
+  void wake_all_sleeping_objects();
+  void fire_event_core_entered( IVP_Core* );
+  void fire_event_core_left( IVP_Core* );
   
   ~IVP_Controller_Phantom();   // Note: Has side effect, switches phantom object to real object
+
+  virtual void event_object_deleted( IVP_Event_Object* obj ) { event_object_revived( obj ); }
+  virtual void event_object_created( IVP_Event_Object* obj ) {}
+  virtual void event_object_revived( IVP_Event_Object* obj );
+  virtual void event_object_frozen( IVP_Event_Object* obj ) {}
 
   void *client_data; // for use by game code
 };
