@@ -232,7 +232,7 @@ int	hk_Prismatic_Constraint::setup_and_step_constraint(
 
 
 	hk_Fixed_Dense_Matrix<5>& mass_matrix = query_engine.get_vmq_storage().get_fixed_dense_matrix();
-	hk_result invert_ok = hk_Dense_Matrix_Util::invert_5x5( mass_matrix, 0.0f);
+	[[maybe_unused]] hk_result invert_ok = hk_Dense_Matrix_Util::invert_5x5( mass_matrix, 0.0f);
 
 	HK_ASSERT(invert_ok == HK_OK);
 
