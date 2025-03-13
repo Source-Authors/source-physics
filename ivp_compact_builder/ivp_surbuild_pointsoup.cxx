@@ -501,7 +501,7 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_le
     IVP_BOOL try_unjumbled = IVP_TRUE;
     IVP_BOOL qhull_free_flag = IVP_FALSE;
     for ( IVP_DOUBLE random_eps = 1e-12f; random_eps < 0.02f;  ){  
-      sprintf(flags, "qhull Qs Pp C-0 W1e-14 E1.0e-18"); // "qhull QbB Pp"
+      snprintf(flags, sizeof(flags), "qhull Qs Pp C-0 W1e-14 E1.0e-18"); // "qhull QbB Pp"
       int exitcode = 0;
       if (try_unjumbled){
 	  if (qhull_free_flag)	  qh_freeqhull(!qh_ALL);                   /* free long memory  */
@@ -513,7 +513,7 @@ IVP_Compact_Ledge *IVP_SurfaceBuilder_Pointsoup::convert_pointsoup_to_compact_le
 	  ivp_debugmanager.dprint(IVP_DM_SURBUILD_POINTSOUP, "*** Qhull failed. Retrying with different parameters.\n");
 	}
 
-	sprintf(flags, "qhull Qs QJ%G C-0 Pp W1e-14 E1.0e-18",random_eps); // "qhull QbB Pp"
+	snprintf(flags, sizeof(flags), "qhull Qs QJ%G C-0 Pp W1e-14 E1.0e-18",random_eps); // "qhull QbB Pp"
 	if (qhull_free_flag)	  qh_freeqhull(!qh_ALL);                   /* free long memory  */
 	exitcode = qh_new_qhull(dim, numpoints, points2, ismalloc, flags, outfile, errfile);
 	qhull_free_flag = IVP_TRUE;
