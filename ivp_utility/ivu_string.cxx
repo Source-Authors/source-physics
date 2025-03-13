@@ -251,7 +251,7 @@ char *p_make_string_fast(const char *templat, ...)
     va_list parg;
     memset(buffer,0,std::min(1000, MAX_MAKE_STRING_LEN)); // nur bei sparc-debugging
     va_start(parg,templat);	
-    vsprintf(buffer,templat,parg);
+    vsnprintf(buffer,std::size(buffer),templat,parg);
     va_end(parg);
     return p_strdup(buffer);
 }
@@ -268,11 +268,7 @@ char *p_make_string(const char *templat, ...)
     va_list parg;
     memset(buffer,0,std::min(1000, MAX_MAKE_STRING_LEN)); // only for sparc-debugging
     va_start(parg,templat);
-#ifdef LINUX
-    vsnprintf(buffer,MAX_MAKE_STRING_LEN,templat,parg);
-#else
-    vsprintf(buffer, templat,parg);
-#endif
+    vsnprintf(buffer, std::size(buffer), templat, parg);
     va_end(parg);
     return p_strdup(buffer);
 }
@@ -287,15 +283,11 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...)
     char *p = buffer;
     va_list	parg;
     memset(buffer,0, std::min(1000, MAX_ERROR_BUFFER_LEN)); // only for sparc-debugging
-    sprintf (buffer,"ERROR: ");
+    snprintf (buffer, std::size(buffer), "ERROR: ");
     p += strlen(p);
     
     va_start(parg,templat);	
-#ifdef LINUX
-    vsnprintf(buffer,MAX_MAKE_STRING_LEN,templat,parg);
-#else
-    vsprintf(buffer, templat,parg);
-#endif
+    vsnprintf(buffer,std::size(buffer),templat,parg);
     va_end(parg);
 
     P_FREE(p_error_buffer);
@@ -310,11 +302,7 @@ void ivp_message(const char *fmt, ...)
     va_list	args;
 
     va_start(args, fmt);
-#ifdef LINUX
-    vsnprintf(buffer_tmp, MAX_MAKE_STRING_LEN, fmt, args);
-#else
-    vsprintf(buffer_tmp, fmt, args);
-#endif
+    vsnprintf(buffer_tmp, std::size(buffer_tmp), fmt, args);
     va_end(args);
 
     char buffer_out[MAX_ERROR_BUFFER_LEN];

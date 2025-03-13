@@ -107,7 +107,7 @@ inline void BREAKPOINT()
 			if(!(cond)) \
 			{ \
 						char error[128]; \
-						sprintf(error, (char*)"\pASSERT FAILURE: \nFILE: %s\nLINE: %d\n\n", __FILE__, __LINE__);  \
+						snprintf(error, std::size(error), (char*)"\pASSERT FAILURE: \nFILE: %s\nLINE: %d\n\n", __FILE__, __LINE__);  \
 		 			DebugStr((unsigned char *)error); \
 			} \
 		}
