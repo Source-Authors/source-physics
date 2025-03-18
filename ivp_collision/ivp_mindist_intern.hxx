@@ -169,7 +169,7 @@ public:
   inline void  update_synapse(const IVP_Compact_Edge *e, IVP_SYNAPSE_POLYGON_STATUS s){
     IVP_IF(s!=IVP_ST_BALL){	check_consistency_of_ledge(e);    }
     edge = e;
-    status = s;
+    status = static_cast<short>(s);
 }
 protected:
     IVP_Synapse_Real(){}
