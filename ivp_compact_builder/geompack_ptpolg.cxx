@@ -183,7 +183,6 @@ void IVP_Geompack::ptpolg_(
     if (abs(dir[2]) > (d__1 = dir[m - 1], abs(d__1))) {
 	m = 3;
     }
-    k = 1;
 
 /*     For remaining edges of polygon, check whether ray intersects edge. */
 /*     Vertices or edges lying on ray are handled by looking at preceding */
