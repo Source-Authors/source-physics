@@ -273,32 +273,6 @@ IVP_Environment::~IVP_Environment(){
     this->delete_draw_vector_debug();
 } 
 
-//IVP_BOOL IVP_Environment::must_perform_movement_check() {
-//    next_movement_check--;
-//    if(next_movement_check==0) {
-//#ifdef IVP_ENCRYPT_EXISTS
-//        pw_count--;
-//        if(pw_count==0) {
-//	    IVP_UINT32 crypt_val = IVP_Encrypt::encrypt_strings(auth_costumer_name,IVP_IPION_AUTH_CHECK);
-//	    if(auth_costumer_code != crypt_val) {
-//	        mindist_manager=NULL;
-//	    }
-//	    }
-//
-//	    time_t t, e;
-//		t = time(NULL);
-//		e = 3181552896; // october 26th 2000, on a Mac
-//		ivp_message(" Now: %.1f   Target: %.1f\n\n", (float)t, (float)e);
-//		if (t > e)
-//	        mindist_manager=NULL;
-//#endif	
-//	next_movement_check=IVP_MOVEMENT_CHECK_COUNT*3/2 + (short)(ivp_rand()* (IVP_MOVEMENT_CHECK_COUNT/2));
-//	return IVP_TRUE;
-//    } else {
-//	return IVP_FALSE;
-//    }
-//}
-
 void IVP_Environment::fire_object_is_removed_from_collision_detection(IVP_Real_Object *obj){
     for (int k = collision_delegator_roots.len()-1;k>=0;k--){
       IVP_Collision_Delegator_Root *cdr = collision_delegator_roots.element_at(k);
