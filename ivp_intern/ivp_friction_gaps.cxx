@@ -41,7 +41,7 @@ IVP_RETURN_TYPE IVP_Friction_Solver::test_gauss_solution_suggestion(IVP_DOUBLE *
 	
 	    //ivp_message("allowed_negative %f\n",allowed_negative);
 	    if(allowed_negative > push_val * correct_x_factor * get_inv_virtual_mass(info) ) {
-		IVP_IF((l_environment->debug_information->debug_friction)||0){
+		IVP_IF((l_environment->debug_information->debug_friction)){
 		    ivp_message("gauss_fault_pull %f %f\n",allowed_negative,push_val);
 		}
 		//return IVP_FAULT;
@@ -462,7 +462,7 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs)
 	  m_index++, my_dist=fs->get_next_friction_dist(my_dist)){
 	IVP_DOUBLE impulse_now;
 	
-	if((m_index < fs->complex_not_necessary_number)||0) {
+	if((m_index < fs->complex_not_necessary_number)) {
 	    impulse_now=0.0f;
 	    goto no_complex_done;
 	}
@@ -850,7 +850,7 @@ void IVP_Friction_Solver::calc_distance_matrix_column(int current_contact_point_
 // main task is to fill 'dist_change_mat'
 int IVP_Friction_Solver::calc_solver_PSI(IVP_Friction_System *fs,int *active_is_at_pos){
 
-    IVP_IF((l_environment->debug_information->debug_friction)||0)    {
+    IVP_IF((l_environment->debug_information->debug_friction))    {
 	global_friction_counter++;
 	ivp_message("\ndoing_friction_calc %d\n",global_friction_counter);
     }

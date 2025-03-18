@@ -883,7 +883,7 @@ void IVP_Friction_Solver::ease_friction_pair(IVP_Friction_Core_Pair *my_pair,IVP
 		    dir_conform=IVP_Inline_Math::fabsd(dir_conform)-1.0f;
 		    dir_conform=IVP_Inline_Math::fabsd(dir_conform);
 		    //ivp_message("dirconform %f\n",dir_conform);
-		    if((dir_conform<1E-3f)||0) //due to random stray in distances the vectors between point-surface and edge-edge are not really parallel
+		    if((dir_conform<1E-3f)) //due to random stray in distances the vectors between point-surface and edge-edge are not really parallel
 		    {
 		        //ivp_message("eaase ");
 			ease_two_mindists(fr_dist2,fr_dist,&ease_diff_force_vec_stack[j],&ease_diff_force_vec_stack[i],easing_factor);

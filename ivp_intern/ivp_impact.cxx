@@ -586,7 +586,7 @@ void IVP_Impact_Solver::do_rescue_push(IVP_U_Float_Point *push_dir_norm,IVP_BOOL
 	    }
 	}
 	
-	IVP_IF(core[0]->environment->debug_information->debug_impact||0)
+	IVP_IF(core[0]->environment->debug_information->debug_impact)
 	    {
 		ivp_message("doing_res_push %f dvc %f\n",resulting_push,desired_velo_change);
 	    }
