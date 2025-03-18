@@ -22,10 +22,10 @@
  *******************************************************************************
  ******************************************************************************/
 
-IVP_BOOL IVP_Clustering_Visualizer_Object_Hash::compare(void *elem0, void *elem1) const {
+IVP_BOOL IVP_Clustering_Visualizer_Object_Hash::compare(const void *elem0, const void *elem1) const {
 
-    IVP_Real_Object *obj0 = (IVP_Real_Object *)elem0;
-    IVP_Real_Object *obj1 = (IVP_Real_Object *)elem1;
+    const IVP_Real_Object *obj0 = (const IVP_Real_Object *)elem0;
+    const IVP_Real_Object *obj1 = (const IVP_Real_Object *)elem1;
     
     if ( obj0 != obj1 ) return(IVP_FALSE);
     

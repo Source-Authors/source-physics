@@ -258,7 +258,7 @@ const IVP_Compact_Ledge *IVP_Compact_Edge::get_compact_ledge() const
 {
     const IVP_Compact_Triangle *c_tri = this->get_triangle();
     c_tri -= c_tri->get_tri_index(); // first triangle
-    return (IVP_Compact_Ledge *)(((char *)c_tri) - sizeof(IVP_Compact_Ledge));
+    return (const IVP_Compact_Ledge *)(((const char *)c_tri) - sizeof(IVP_Compact_Ledge));
 }
 
 
@@ -316,7 +316,7 @@ const IVP_Compact_Ledge *IVP_Compact_Triangle::get_compact_ledge() const
 {
   const IVP_Compact_Triangle *c_tri = this;
     c_tri -= c_tri->get_tri_index(); // first triangle
-    return (IVP_Compact_Ledge *)(((char *)c_tri) - sizeof(IVP_Compact_Ledge));
+    return (const IVP_Compact_Ledge *)(((const char *)c_tri) - sizeof(IVP_Compact_Ledge));
 }
 
 

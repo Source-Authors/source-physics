@@ -66,7 +66,7 @@ public:
  ********************************************************************************/
 class IVP_CFEP_Hash : protected IVP_VHash {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int pair_to_index(IVP_CFEP_Objectpair *pair);
 
 public:
@@ -78,10 +78,10 @@ public:
     ~IVP_CFEP_Hash();
 };
 
-IVP_BOOL IVP_CFEP_Hash::compare(void *elem0, void *elem1) const
+IVP_BOOL IVP_CFEP_Hash::compare(const void *elem0, const void *elem1) const
 {
-    IVP_CFEP_Objectpair *pair0 = (IVP_CFEP_Objectpair *)elem0;
-    IVP_CFEP_Objectpair *pair1 = (IVP_CFEP_Objectpair *)elem1;
+    const IVP_CFEP_Objectpair *pair0 = (const IVP_CFEP_Objectpair *)elem0;
+    const IVP_CFEP_Objectpair *pair1 = (const IVP_CFEP_Objectpair *)elem1;
     
     if ( pair0->object0 != pair1->object0) return(IVP_FALSE);
     if ( pair0->object1 != pair1->object1) return(IVP_FALSE);

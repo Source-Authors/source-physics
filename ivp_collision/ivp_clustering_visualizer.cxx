@@ -494,7 +494,7 @@ IVP_Clustering_Visualizer_Longrange_Callback::~IVP_Clustering_Visualizer_Longran
  ********************************************************************************/
 class IVP_Clustering_Visualizer_Longrange_Hash : protected IVP_VHash {
 protected:
-    IVP_BOOL          compare     (void *elem0, void *elem1) const override;
+    IVP_BOOL          compare     (const void *elem0, const void *elem1) const override;
     int               obj_to_index(IVP_Real_Object *obj);
 
 public:
@@ -506,10 +506,10 @@ public:
     ~IVP_Clustering_Visualizer_Longrange_Hash();
 };
 
-IVP_BOOL IVP_Clustering_Visualizer_Longrange_Hash::compare(void *elem0, void *elem1) const {
+IVP_BOOL IVP_Clustering_Visualizer_Longrange_Hash::compare(const void *elem0, const void *elem1) const {
 
-    IVP_Real_Object *obj0 = (IVP_Real_Object *)elem0;
-    IVP_Real_Object *obj1 = (IVP_Real_Object *)elem1;
+    const IVP_Real_Object *obj0 = (const IVP_Real_Object *)elem0;
+    const IVP_Real_Object *obj1 = (const IVP_Real_Object *)elem1;
     
     if ( obj0 != obj1 ) return(IVP_FALSE);
     

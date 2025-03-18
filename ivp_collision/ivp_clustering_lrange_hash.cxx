@@ -15,10 +15,10 @@ int IVP_ov_tree_hash::node_to_index(IVP_OV_Node *node)
 }
 
 
-IVP_BOOL IVP_ov_tree_hash::compare(void *elem0, void *elem1) const
+IVP_BOOL IVP_ov_tree_hash::compare(const void *elem0, const void *elem1) const
 {
-    IVP_OV_Node *node0 = (IVP_OV_Node *)elem0;
-    IVP_OV_Node *node1 = (IVP_OV_Node *)elem1;
+    const IVP_OV_Node *node0 = (const IVP_OV_Node *)elem0;
+    const IVP_OV_Node *node1 = (const IVP_OV_Node *)elem1;
 
     if ( node0->data.rasterlevel != node1->data.rasterlevel) return(IVP_FALSE);
     
