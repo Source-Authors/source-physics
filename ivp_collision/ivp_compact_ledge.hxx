@@ -250,7 +250,7 @@ const IVP_Compact_Triangle *IVP_Compact_Edge::get_triangle() const
 #if defined(PLATFORM_64BITS)
     return (IVP_Compact_Triangle *)(((uintp)this) & 0xfffffffffffffff0);
 #else
-    return (IVP_Compact_Triangle *)(((unsigned int)this) & 0xfffffff0);
+    return (IVP_Compact_Triangle *)(((uintp)this) & 0xfffffff0);
 #endif
 }
 
