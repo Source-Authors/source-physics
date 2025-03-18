@@ -19,8 +19,8 @@ constexpr inline hk_uchar size_to_row( hk_uint16 size )
 
 	if (size <= 8 ) return 1;
 	else if (size <= 16 ) return 2;
-	else if (size <= 32 ) return 3;
-	else if (size <= 48 ) return 4;
+	else if (size <= 32 ) return 3; //-V112
+	else if (size <= 48 ) return 4; //-V112
 	else if (size <= 64 ) return 5;
 	else if (size <= 96 ) return 6;
 	else if (size <= 128 ) return 7;
@@ -30,7 +30,7 @@ constexpr inline hk_uchar size_to_row( hk_uint16 size )
 	else if (size <= 512 ) return 11;
 	else{
 		HK_BREAK;
-		return UCHAR_MAX;
+		return 0;
 	}
 }
 
@@ -68,6 +68,9 @@ void hk_Memory::init_memory( char *buffer, hk_size_t buffer_size )
 
 hk_Memory::hk_Memory()
 {
+	// dimhotepus: Ensure zeroed.
+	memset(m_statistics, 0, sizeof(m_statistics));
+
 #ifdef HK_MEMORY_POOL_INITIAL_SIZE
 	init_memory( new char[HK_MEMORY_POOL_INITIAL_SIZE], 0 );
 #else
@@ -77,6 +80,9 @@ hk_Memory::hk_Memory()
 
 hk_Memory::hk_Memory(char *buffer, hk_size_t buffer_size)
 {
+	// dimhotepus: Ensure zeroed.
+	memset(m_statistics, 0, sizeof(m_statistics));
+
 	init_memory( buffer, buffer_size );
 }
 
@@ -111,7 +117,7 @@ void *hk_Memory::allocate_real( hk_size_t size )
 
 		b->m_next = m_allocated_memory_blocks;
 		m_allocated_memory_blocks = b;
-		m_memory_start = (char *)(b+1);
+		m_memory_start = reinterpret_cast<char *>(b+1);
 		m_used_end = m_memory_start;
 		m_memory_end = m_used_end + HK_MEMORY_EXTRA_BLOCK_SIZE;
 	}
@@ -170,7 +176,7 @@ void* hk_Memory::allocate(hk_size_t size, hk_MEMORY_CLASS cl)
 		if ( n ){
 			m_free_list[row] = n->m_next;
 			n->m_magic = 0;
-			return (void *)n;
+			return static_cast<void *>(n);
 		}
 	}
 	return allocate_real( size );

@@ -32,7 +32,7 @@ void hk_Console::printf( const char *fmt, ...)
 {
     va_list args;
     char buffer_tmp[MAX_ERROR_BUFFER_LEN];
-    va_start(args, fmt);
+    va_start(args, fmt); //-V2018 //-V2019
     vsnprintf(buffer_tmp, std::size(buffer_tmp), fmt, args);
     va_end(args);
 
@@ -58,5 +58,5 @@ void hk_Console::flush()
 
 void hk_Console::exit( int code )
 {
-	::exit(code);
+	::exit(code); //-V2014
 }

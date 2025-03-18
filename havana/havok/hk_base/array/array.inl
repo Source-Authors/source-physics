@@ -15,9 +15,9 @@ hk_Array<T>::hk_Array( hk_array_store_index initial_size )
 template <class T>
 hk_Array<T>::hk_Array(T* elems, hk_array_store_index initial_size)
 {
-	HK_ASSERT( (char *)elems == (char *)(this +1 ));
+	HK_ASSERT( static_cast<void *>(elems) == static_cast<void *>(this +1 ));
 	m_n_elems = 0;
-	m_elems = (char *)elems;
+	m_elems = reinterpret_cast<char *>(elems);
 	m_memsize = initial_size;
 }
 
@@ -27,7 +27,7 @@ hk_Array<T>::~hk_Array()
 {
 	if (m_elems)
 	{
-		HK_ASSERT( get_elems() != (T *)(this+1));
+		HK_ASSERT( get_elems() != reinterpret_cast<T *>(this+1));
 		hk_deallocate( get_elems(), m_memsize, hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
 	}
 }
@@ -97,13 +97,13 @@ void hk_Array<T>::search_and_remove_element_sorted( T& t)
 template <class T>
 T& hk_Array<T>::operator() (int i)
 {
-	return get_elems()[i];
+	return get_elems()[i]; //-V108
 }
 
 template <class T>
 const T& hk_Array<T>::operator() (int i) const
 {
-	return get_elems()[i];
+	return get_elems()[i]; //-V108
 }
 
 template <class T>
@@ -111,7 +111,7 @@ hk_array_index hk_Array<T>::index_of( T& t)
 {
 	for (int i = m_n_elems-1; i>=0 ;i--)
 	{
-		if(get_elems()[i]==t)
+		if(get_elems()[i]==t) //-V108
 		{
 			return i;
 		}
@@ -120,15 +120,15 @@ hk_array_index hk_Array<T>::index_of( T& t)
 }
 
 template <class T>
-T& hk_Array<T>::element_at( int i )
+T& hk_Array<T>::element_at( int i ) //-V524
 {
-	return get_elems()[i];
+	return get_elems()[i]; //-V108
 }
 
 template <class T>
-const T& hk_Array<T>::element_at( int i ) const 
+const T& hk_Array<T>::element_at( int i ) const  //-V524
 {
-	return get_elems()[i];
+	return get_elems()[i]; //-V108
 }
 
 template <class T>
@@ -140,7 +140,7 @@ void hk_Array<T>::remove_all()
 template <class T>
 void hk_Array<T>::free_elem_array()
 {
-	if ( m_elems && ((char *)m_elems != (char *)(this + 1)))
+	if ( m_elems && (static_cast<void *>(m_elems) != static_cast<void *>(this + 1)))
 	{
 		hk_deallocate( m_elems, m_memsize * sizeof(T), hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
 	}
@@ -182,13 +182,13 @@ void hk_Array<T>::reserve(int n)
 template <class T>
 T& hk_Array<T>::get_element( iterator i )
 {
-	return get_elems()[i];
+	return get_elems()[i]; //-V108
 }
 
 template <class T>
 hk_bool hk_Array<T>::is_valid( iterator i)
 {
-	return hk_bool(i >= 0);
+	return static_cast<hk_bool>(i >= 0);
 }
 
 template <class T>

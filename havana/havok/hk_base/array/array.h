@@ -66,7 +66,7 @@ class hk_Array :  protected hk_Array_Base
 
 	HK_PUBLIC:
 
-		T *get_elems(){ return (T*)m_elems; }
+		T *get_elems(){ return reinterpret_cast<T*>(m_elems); }
 	protected:
 		inline hk_Array(T *elems, hk_array_store_index initial_size);
 		// for preallocated array

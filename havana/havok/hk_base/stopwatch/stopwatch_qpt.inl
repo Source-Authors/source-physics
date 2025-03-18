@@ -120,7 +120,7 @@ inline void hk_Stopwatch_qpt::reset()
 
 inline hk_real hk_Stopwatch_qpt::get_elapsed_time() const
 {
-	return hk_real(m_ticks_total) / hk_real(s_ticks_per_second);
+	return static_cast<hk_real>(m_ticks_total) / static_cast<hk_real>(s_ticks_per_second);
 }
 
 inline hk_real hk_Stopwatch_qpt::get_split_time()
@@ -128,6 +128,6 @@ inline hk_real hk_Stopwatch_qpt::get_split_time()
 	hk_uint64 ticks_now = hk_query_performance_timer_stop();
 	hk_uint64 sticks = ticks_now - m_ticks_at_split;
 	m_ticks_at_split = ticks_now;
-	return hk_real(sticks) / hk_real(s_ticks_per_second);
+	return static_cast<hk_real>(sticks) / static_cast<hk_real>(s_ticks_per_second);
 }
 
