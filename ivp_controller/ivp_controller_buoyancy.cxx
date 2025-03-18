@@ -646,9 +646,9 @@ IVP_Controller_Buoyancy::~IVP_Controller_Buoyancy() {
 
 
 IVP_Attacher_To_Cores_Buoyancy::IVP_Attacher_To_Cores_Buoyancy(IVP_Template_Buoyancy &templ, IVP_U_Set_Active<IVP_Core> *set_of_cores_, IVP_Liquid_Surface_Descriptor *liquid_surface_descriptor_)
-    : IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>(set_of_cores_)
+    : IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>(set_of_cores_),
+    template_buoyancy{templ}
 {
-    template_buoyancy = templ;
     set_of_cores = set_of_cores_;
     liquid_surface_descriptor = liquid_surface_descriptor_;
 };
