@@ -13,6 +13,7 @@
 #ifdef LINUX
 #	include <string.h>
 #endif
+#include <type_traits>
 #include <ivp_compact_ledge.hxx>
 
 #include <ivp_halfspacesoup.hxx>
@@ -129,7 +130,8 @@ int    BigLong (int l)
     return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
-int    LittleLong (int l)
+template<typename T, typename = std::enable_if_t<std::is_signed_v<T>>>
+constexpr T LittleLong (T l)
 {
     return l;
 }
