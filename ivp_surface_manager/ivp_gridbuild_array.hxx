@@ -132,7 +132,7 @@ public:
 							   const IVP_Template_Compact_Grid *parameters,
 							   IVP_FLOAT *height_field);
 
-    ~IVP_GridBuilder_Array();
+    ~IVP_GridBuilder_Array() =  default;
 };
 
 

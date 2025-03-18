@@ -95,13 +95,6 @@ int IVP_GridBuilder_Array::install_point(const IVP_U_Float_Point *point){
 
 
 
-IVP_GridBuilder_Array::~IVP_GridBuilder_Array(){
-    //P_FREE(height_points);  // memory management system used
-    //P_FREE(ledge_reference_field);
-
-}
-
-
 void IVP_GridBuilder_Array::add_triangle(int s_p0_off, int s_p1_off, int s_p2_off,
 										 int opp0, int opp1, int opp2)
 {
