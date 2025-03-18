@@ -23,7 +23,8 @@ public:
 		bool limitTranslation = true
 	);
 
-	const hk_Ragdoll_Constraint_BP *get_blueprint(){ return &m_ragdoll_constraint_bp; }
+	const hk_Ragdoll_Constraint_BP *get_blueprint() const { return &m_ragdoll_constraint_bp; }
+	hk_Ragdoll_Constraint_BP *get_blueprint() { return &m_ragdoll_constraint_bp; }
 };
 
 #endif /*HK_PHYSICS_RAGDOLL_CONSTRAINT_BP_BUILDER_H*/
