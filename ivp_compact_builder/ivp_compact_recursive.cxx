@@ -44,8 +44,8 @@ void IVP_Compact_Recursive::build_convex_hull(){
       for (int e = 0; e<3;e++){
 	const IVP_Compact_Edge *edge = tri->get_edge(e);
 	const IVP_U_Float_Point *p = &point_array[edge->get_start_point_index()];
-	if ( point_hash.find( (char *)p )) continue;
-	point_hash.add((char *)p,(void *)p);
+	if ( point_hash.find( (const char *)p )) continue;
+	point_hash.add((const char *)p,(void *)p);
 	points.add( new IVP_U_Point(p));
       }
       tri = tri->get_next_tri();
@@ -103,9 +103,9 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
       int pi[3];
       // convert points to unique point nums
       for (int i = 0; i<3;i++){
-	int ind = (int)(intp)point_hash.find( (char *)p[i]);
+	int ind = (int)(intp)point_hash.find( (const char *)p[i]);
 	if (ind<0){
-	  point_hash.add( (char *)p[i], (void *)static_cast<intp>(n_points_in_hash));
+	  point_hash.add( (const char *)p[i], (void *)static_cast<intp>(n_points_in_hash));
 	  ind = n_points_in_hash++;
 	}
 	pi[i] = ind;
@@ -141,12 +141,12 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
       int pi[3];
       // convert points to unique point nums
       for (int i = 0; i<3;i++){
-    int ind = (int)(intp)point_hash.find( (char *)p[i]);
+    int ind = (int)(intp)point_hash.find( (const char *)p[i]);
 	pi[i] = ind;
       }
       // find triangle in hash
       triangle_key.set_tri(pi[0], pi[1], pi[2]);
-      if (!triangle_hash.find( (char *)&triangle_key )){
+      if (!triangle_hash.find( (const char *)&triangle_key )){
 	tri->set_is_virtual(1);
       }
 
@@ -154,7 +154,7 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull(){
       for (int j = 0; j<3;j++){
 	edge_key.set_edge( pi[j], pi[ (j+1)%3]);
 	if (!edge_hash.find( (char *)&edge_key)){
-	  ((IVP_Compact_Edge *)tri->get_edge(j))->set_is_virtual(1);
+	  tri->get_edge(j)->set_is_virtual(1);
 	  // edges_not_found ++;
 	}else{
 	  // edges_found ++;
