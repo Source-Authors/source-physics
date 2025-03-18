@@ -429,10 +429,10 @@ unsigned qh_gethash (int hashsize, setT *set, int size, int firstindex, void *sk
     i= 3;
     do {     /* this is about 10% in 10-d */
       if ((elem= (ptr_intT)*elemp++) != (ptr_intT)skipelem) {
-        hash ^= (elem << i) + (elem >> (32-i));
+        hash ^= (elem << i) + (elem >> (32-i)); //-V112
 	i += 3;
-	if (i >= 32)
-	  i -= 32;
+	if (i >= 32) //-V112
+	  i -= 32; //-V112
       }
     }while(*elemp);
     break;
@@ -888,7 +888,7 @@ void qh_matchnewfacets (void) {
 #endif /* !qh_NOtrace */
   qh_setfree (&qh hash_table);
   if (qh PREmerge || qh MERGEexact) {
-    if (qh IStracing >= 4)
+    if (qh IStracing >= 4) //-V112
       qh_printfacetlist (qh newfacet_list, NULL, qh_ALL);
     FORALLnew_facets {
       if (newfacet->normal)

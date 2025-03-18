@@ -196,7 +196,7 @@ void IVP_Geompack::dsphdc_() {
 	if (facesdata[f * 3 + 2] > 0) {
 	    ccw = 3;
 	} else {
-	    ccw = 4;
+	    ccw = 4; //-V112
 	}
 	j = facesdata[f * 3 + 1];
 	lb = faceverticeslist[j * 6 + 1];

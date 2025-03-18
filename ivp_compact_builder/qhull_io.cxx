@@ -348,7 +348,7 @@ pointT *qh_detvnorm (vertexT *vertex, vertexT *vertexA, setT *centers, realT *of
   gmcoord= qh gm_matrix;
   point0= SETfirstt_(simplex, pointT);
   FOREACHpoint_(simplex) {
-    if (qh IStracing >= 4)
+    if (qh IStracing >= 4) //-V112
       qh_printmatrix(qh ferr, "qh_detvnorm: Voronoi vertex or midpoint", 
                               &point, 1, dim);
     if (point != point0) {
@@ -1264,18 +1264,18 @@ void qh_printbegin (FILE *fp, int format, facetT *facetlist, setT *facets, boolT
       qh_printvertexlist (fp, "Vertices and facets:\n", facetlist, facets, printall);
     break;
   case qh_PRINTgeom: 
-    if (qh hull_dim > 4)  /* qh_initqhull_globals also checks */
+    if (qh hull_dim > 4)  /* qh_initqhull_globals also checks */ //-V112
       goto LABELnoformat;
     if (qh VORONOI && qh hull_dim > 3)  /* PRINTdim == DROPdim == hull_dim-1 */
       goto LABELnoformat;
     if (qh hull_dim == 2 && (qh PRINTridges || qh DOintersections))
       ivp_message( "qhull warning: output for ridges and intersections not implemented in 2-d\n");
-    if (qh hull_dim == 4 && (qh PRINTinner || qh PRINTouter ||
-			     (qh PRINTdim == 4 && qh PRINTcentrums)))
+    if (qh hull_dim == 4 && (qh PRINTinner || qh PRINTouter || //-V112
+			     (qh PRINTdim == 4 && qh PRINTcentrums))) //-V112
       ivp_message( "qhull warning: output for outer/inner planes and centrums not implemented in 4-d\n");
-    if (qh PRINTdim == 4 && (qh PRINTspheres))
+    if (qh PRINTdim == 4 && (qh PRINTspheres)) //-V112
       ivp_message( "qhull warning: output for vertices not implemented in 4-d\n");
-    if (qh PRINTdim == 4 && qh DOintersections && qh PRINTnoplanes)
+    if (qh PRINTdim == 4 && qh DOintersections && qh PRINTnoplanes) //-V112
       ivp_message( "qhull warning: 'Gnh' generates no output in 4-d\n");
     if (qh PRINTdim == 2) {
       fprintf(fp, "{appearance {linewidth 3} LIST # %s | %s\n",
@@ -1283,7 +1283,7 @@ void qh_printbegin (FILE *fp, int format, facetT *facetlist, setT *facets, boolT
     }else if (qh PRINTdim == 3) {
       fprintf(fp, "{appearance {+edge -evert linewidth 2} LIST # %s | %s\n",
 	      qh rbox_command, qh qhull_command);
-    }else if (qh PRINTdim == 4) {
+    }else if (qh PRINTdim == 4) { //-V112
       qh visit_id++;
       num= 0;
       FORALLfacet_(facetlist)    /* get number of ridges to be printed */
@@ -1299,7 +1299,7 @@ void qh_printbegin (FILE *fp, int format, facetT *facetlist, setT *facets, boolT
       num= qh num_points + qh_setsize (qh other_points);
       if (qh DELAUNAY && qh ATinfinity)
 	num--;
-      if (qh PRINTdim == 4)
+      if (qh PRINTdim == 4) //-V112
         fprintf (fp, "4VECT %d %d 1\n", num, num);
       else
 	fprintf (fp, "VECT %d %d 1\n", num, num);
@@ -1317,21 +1317,21 @@ void qh_printbegin (FILE *fp, int format, facetT *facetlist, setT *facets, boolT
       fprintf (fp, "# 1 color for all\n");
       FORALLpoints {
         if (!qh DELAUNAY || !qh ATinfinity || qh_pointid(point) != qh num_points-1) {
-	  if (qh PRINTdim == 4)
+	  if (qh PRINTdim == 4) //-V112
 	    qh_printpoint (fp, NULL, point);
 	  else
 	    qh_printpoint3 (fp, point);
 	}
       }
       FOREACHpoint_(qh other_points) {
-	if (qh PRINTdim == 4)
+	if (qh PRINTdim == 4) //-V112
 	  qh_printpoint (fp, NULL, point);
 	else
 	  qh_printpoint3 (fp, point);
       }
       fprintf (fp, "0 1 1 1  # color of points\n");
     }
-    if (qh PRINTdim == 4  && !qh PRINTnoplanes)
+    if (qh PRINTdim == 4  && !qh PRINTnoplanes) //-V112
       /* 4dview loads up multiple 4OFF objects slowly */
       fprintf(fp, "4OFF %d %d 1\n", 3*qh ridgeoutnum, qh ridgeoutnum);
     qh PRINTcradius= 2 * qh DISTround;  /* include test DISTround */
@@ -1350,7 +1350,7 @@ void qh_printbegin (FILE *fp, int format, facetT *facetlist, setT *facets, boolT
     maximize_(qh PRINTradius, qh MINvisible); 
     if (qh JOGGLEmax < REALmax/2)
       qh PRINTradius += qh JOGGLEmax * sqrt (qh hull_dim);
-    if (qh PRINTdim != 4 &&
+    if (qh PRINTdim != 4 && //-V112
 	(qh PRINTcoplanar || qh PRINTspheres || qh PRINTcentrums)) {
       vertices= qh_facetvertices (facetlist, facets, printall);
       if (qh PRINTspheres && qh PRINTdim <= 3)
@@ -1577,7 +1577,7 @@ void qh_printcentrum (FILE *fp, facetT *facet, realT radius) {
   if (qh hull_dim == 2) {
     xaxis[2]= 0;
     normal[2]= 0;
-  }else if (qh hull_dim == 4) {
+  }else if (qh hull_dim == 4) { //-V112
     qh_projectdim3 (xaxis, xaxis);
     qh_projectdim3 (normal, normal);
     qh_normalize2 (normal, qh PRINTdim, True, NULL, NULL);
@@ -1612,7 +1612,7 @@ void qh_printend (FILE *fp, int format, facetT *facetlist, setT *facets, boolT p
     ivp_message( "qhull warning: no facets printed\n");
   switch (format) {
   case qh_PRINTgeom:
-    if (qh hull_dim == 4 && qh DROPdim < 0  && !qh PRINTnoplanes) {
+    if (qh hull_dim == 4 && qh DROPdim < 0  && !qh PRINTnoplanes) { //-V112
       qh visit_id++;
       num= 0;
       FORALLfacet_(facetlist)
@@ -2797,7 +2797,7 @@ void qh_printhyperplaneintersection(FILE *fp, facetT *facet1, facetT *facet2,
   i= qh_setsize(vertices);
   if (qh hull_dim == 3)
     fprintf(fp, "VECT 1 %d 1 %d 1 ", i, i);
-  else if (qh hull_dim == 4 && qh DROPdim >= 0)
+  else if (qh hull_dim == 4 && qh DROPdim >= 0) //-V112
     fprintf(fp, "OFF 3 1 1 ");
   else
     qh printoutvar++;
@@ -2825,7 +2825,7 @@ void qh_printhyperplaneintersection(FILE *fp, facetT *facet1, facetT *facet2,
   }
   if (qh hull_dim == 3)
     fprintf(fp, "%8.4g %8.4g %8.4g 1.0\n", color[0], color[1], color[2]); 
-  else if (qh hull_dim == 4 && qh DROPdim >= 0)  
+  else if (qh hull_dim == 4 && qh DROPdim >= 0)   //-V112
     fprintf(fp, "3 0 1 2 %8.4g %8.4g %8.4g 1.0\n", color[0], color[1], color[2]);
 } /* printhyperplaneintersection */
 
@@ -3407,7 +3407,7 @@ void qh_printvneighbors (FILE *fp, facetT* facetlist, setT *facets, boolT printa
       fprintf (fp, "%d", numneighbors);
       if (qh hull_dim == 3)
         qh_order_vertexneighbors (vertex);
-      else if (qh hull_dim >= 4)
+      else if (qh hull_dim >= 4) //-V112
         qsort (SETaddr_(vertex->neighbors, facetT), numneighbors,
              sizeof (facetT *), qh_compare_facetvisit);
       FOREACHneighbor_(vertex) 
@@ -3508,7 +3508,7 @@ void qh_printvoronoi (FILE *fp, int format, facetT *facetlist, setT *facets, boo
     if (vertex) {
       if (qh hull_dim == 3)
         qh_order_vertexneighbors(vertex);
-      else if (qh hull_dim >= 4)
+      else if (qh hull_dim >= 4) //-V112
         qsort (SETaddr_(vertex->neighbors, vertexT), 
 	     qh_setsize (vertex->neighbors),
 	     sizeof (facetT *), qh_compare_facetvisit);
@@ -3622,7 +3622,7 @@ void qh_projectdim3 (pointT *source, pointT *destination) {
   int i,k;
 
   for (k= 0, i=0; k < qh hull_dim; k++) {
-    if (qh hull_dim == 4) {
+    if (qh hull_dim == 4) { //-V112
       if (k != qh DROPdim)
         destination[i++]= source[k];
     }else if (k == qh DROPdim)

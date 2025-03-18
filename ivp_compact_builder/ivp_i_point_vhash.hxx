@@ -15,7 +15,7 @@ class IVP_Poly_Point;
 class IVP_point_hash: protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int point_to_index(IVP_Poly_Point *point);
     
 public:
@@ -44,7 +44,7 @@ public:
 class IVP_I_Point_VHash: protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int point_to_index(IVP_U_Point *point);
     
 public:

@@ -18,7 +18,7 @@ void IVP_Geompack::edght_(
     int bptr, newp, k, aa, bb, ptr;
 
     int *edge = this->g_intworkarray;
-    int max_n_edges = (int)(this->size_intworkarray / 4)-1; // max_n_edges = size of int work array / 4 because we have to store 4 values for each edge!
+    int max_n_edges = (int)(this->size_intworkarray / 4)-1; // max_n_edges = size of int work array / 4 because we have to store 4 values for each edge! //-V112
 
 
 /*     Written and copyright by: */
@@ -111,7 +111,7 @@ recheck_size:
 //	    *addr_of_size_intworkarray *= 2;
 	    this->size_intworkarray += 1024;
 	    edge = this->g_intworkarray;
-	    max_n_edges = (int)(this->size_intworkarray / 4)-1;
+	    max_n_edges = (int)(this->size_intworkarray / 4)-1; //-V112
 	    goto recheck_size;
 	}
     }

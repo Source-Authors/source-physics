@@ -1984,7 +1984,7 @@ boolT qh_sethalfspace (int dim, coordT *coords, coordT **nextp,
     }
   }
   *nextp= coordp;
-  if (qh IStracing >= 4) {
+  if (qh IStracing >= 4) { //-V112
     ivp_message( "qh_sethalfspace: halfspace at offset %6.2g to point: ", *offset);
     for (k= dim, coordp= coords; k--; ) {
       r= *coordp++;

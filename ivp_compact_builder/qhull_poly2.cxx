@@ -1896,7 +1896,7 @@ vertexT *qh_makenewfacets (pointT *point /*visible_list*/) {
   }
   trace1((qh ferr, "qh_makenewfacets: created %d new facets from point p%d to horizon\n",
 	  numnew, qh_pointid(point)));
-  if (qh IStracing >= 4)
+  if (qh IStracing >= 4) //-V112
     qh_printfacetlist (qh newfacet_list, NULL, qh_ALL);
   return apex;
 } /* makenewfacets */
@@ -2005,7 +2005,7 @@ void qh_matchduplicates (facetT *atfacet, int atskip, int hashsize, int *hashcou
       trace0((qh ferr, "qh_matchduplicates: duplicate f%d skip %d matched with new f%d skip %d keep\n",
 	      maxmatch->id, maxskip, maxmatch2->id, maxskip2));
       qh_precision ("ridge with multiple neighbors");
-      if (qh IStracing >= 4)
+      if (qh IStracing >= 4) //-V112
 	qh_errprint ("DUPLICATED/MATCH", maxmatch, maxmatch2, NULL, NULL);
     }
   }

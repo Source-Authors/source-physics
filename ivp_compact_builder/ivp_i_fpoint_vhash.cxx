@@ -22,7 +22,7 @@ int IVP_I_FPoint_VHash::point_to_index(IVP_U_Float_Point *point)
     return hash_index( (char *)&point->k[0], sizeof(IVP_FLOAT)*3);
 }
 
-IVP_BOOL IVP_I_FPoint_VHash::compare(void *elem0, void *elem1) const {
+IVP_BOOL IVP_I_FPoint_VHash::compare(const void *elem0, const void *elem1) const {
     if( memcmp(elem0, elem1, sizeof(IVP_FLOAT)*3) == 0){
 	return IVP_TRUE;
     }

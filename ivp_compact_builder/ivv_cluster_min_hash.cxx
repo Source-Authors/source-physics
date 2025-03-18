@@ -7,7 +7,7 @@ extern unsigned int IVP_Hash_crctab[];
 
 inline int IVV_Cluster_Min_Hash::hash_index(const char *key)const{
 	unsigned int c;		
-	unsigned int index = 0xffffffffL;
+	unsigned int index = 0xffffffffL; //-V112
 	int i;
 	for (i=sizeof(void *)-1;i>=0;i--){
 	    c = *((unsigned char *)(key++));
@@ -20,10 +20,10 @@ inline int IVV_Cluster_Min_Hash::hash_index(const char *key)const{
 IVV_Cluster_Min_Hash::IVV_Cluster_Min_Hash(int sizei){
     size = sizei;
     int i;
-    for (i=0;i<32;i++){
+    for (i=0;i<32;i++){ //-V112
 	if ( (1<<i) == sizei) break;
     }
-    IVP_ASSERT (i!=32); // must be power 2
+    IVP_ASSERT (i!=32); // must be power 2 //-V112
     
     elems = (IVV_Cluster_Min_Hash_Elem **)p_calloc(sizeof(void *),size);
     stadel = (IVV_Cluster_Min_Hash_Elem **)p_calloc(sizeof(void *),size*2);

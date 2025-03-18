@@ -18,9 +18,9 @@ IVP_Template_Polygon::IVP_Template_Polygon(int point_count,
     this->n_points = point_count;
     this->n_lines = line_count;
     this->n_surfaces = surface_count;
-    this->lines = new IVP_Template_Line[n_lines];
-    this->points = new IVP_Template_Point[n_points];
-    this->surfaces = new IVP_Template_Surface[n_surfaces];
+    this->lines = new IVP_Template_Line[n_lines]; //-V121
+    this->points = new IVP_Template_Point[n_points]; //-V121
+    this->surfaces = new IVP_Template_Surface[n_surfaces]; //-V121
     int i;
     for (i=0;i<this->n_surfaces;i++){
 	this->surfaces[i].templ_poly = this;
@@ -59,7 +59,7 @@ void IVP_Template_Surface::init_surface(int line_count)
 {
     this->n_lines = line_count;
     this->lines = (ushort *)p_calloc(sizeof(lines), line_count);
-    this->revert_line = new char[line_count];
+    this->revert_line = new char[line_count]; //-V121
 }
 
 int IVP_Template_Surface::get_surface_index()

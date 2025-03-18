@@ -141,14 +141,14 @@ void qh_distplane (pointT *point, facetT *facet, realT *dist) {
     break;
   }
   zinc_(Zdistplane);
-  if (!qh RANDOMdist && qh IStracing < 4)
+  if (!qh RANDOMdist && qh IStracing < 4) //-V112
     return;
   if (qh RANDOMdist) {
     randr= qh_RANDOMint;
     *dist += (2.0 * randr / qh_RANDOMmax - 1.0) *
       qh RANDOMfactor * qh MAXabs_coord;
   }
-  if (qh IStracing >= 4) {
+  if (qh IStracing >= 4) { //-V112
     ivp_message( "qh_distplane: ");
     ivp_message( qh_REAL_1, *dist);
     ivp_message( "from p%d to f%d\n", qh_pointid(point), facet->id);
@@ -555,7 +555,7 @@ void qh_gausselim(realT **rows, int numrow, int numcol, boolT *sign, boolT *near
     if (pivot_abs <= qh NEARzero[k]) {
       *nearzero= True;
       if (pivot_abs == 0.0) {   /* remainder of column == 0 */
-	if (qh IStracing >= 4) {
+	if (qh IStracing >= 4) { //-V112
 	  ivp_message( "qh_gausselim: 0 pivot at column %d. (%2.2g < %2.2g)\n", k, pivot_abs, qh DISTround);
 	  qh_printmatrix (qh ferr, "Matrix:", rows, numrow, numcol);
 	}
@@ -766,13 +766,13 @@ void qh_normalize2 (coordT *normal, int dim, boolT toporient,
     norm= sqrt((*normal)*(*normal) + (*norm1)*(*norm1));
   else if (dim == 3)
     norm= sqrt((*normal)*(*normal) + (*norm1)*(*norm1) + (*norm2)*(*norm2));
-  else if (dim == 4) {
+  else if (dim == 4) { //-V112
     norm= sqrt((*normal)*(*normal) + (*norm1)*(*norm1) + (*norm2)*(*norm2) 
                + (*norm3)*(*norm3));
-  }else if (dim > 4) {
+  }else if (dim > 4) { //-V112
     norm= (*normal)*(*normal) + (*norm1)*(*norm1) + (*norm2)*(*norm2) 
                + (*norm3)*(*norm3);
-    for (k= dim-4, colp= normal+4; k--; colp++)
+    for (k= dim-4, colp= normal+4; k--; colp++) //-V112
       norm += (*colp) * (*colp);
     norm= sqrt(norm);
   }
@@ -792,13 +792,13 @@ void qh_normalize2 (coordT *normal, int dim, boolT toporient,
       ; /* all done */
     else if (dim == 3)
       *norm2 /= norm;
-    else if (dim == 4) {
+    else if (dim == 4) { //-V112
       *norm2 /= norm;
       *norm3 /= norm;
-    }else if (dim >4) {
+    }else if (dim >4) { //-V112
       *norm2 /= norm;
       *norm3 /= norm;
-      for (k= dim-4, colp= normal+4; k--; )
+      for (k= dim-4, colp= normal+4; k--; ) //-V112
         *colp++ /= norm;
     }
   }else if (norm == 0.0) {
@@ -900,7 +900,7 @@ void qh_setfacetplane(facetT *facet) {
     ivp_message( "\n\nCurrent summary is:\n");
       qh_printsummary (qh ferr);
   }
-  if (qh hull_dim <= 4) {
+  if (qh hull_dim <= 4) { //-V112
     i= 0;
     if (qh RANDOMdist) {
       gmcoord= qh gm_matrix;
@@ -917,7 +917,7 @@ void qh_setfacetplane(facetT *facet) {
     qh_sethyperplane_det(qh hull_dim, qh gm_row, point0, facet->toporient,
                 facet->normal, &facet->offset, &nearzero);
   }
-  if (qh hull_dim > 4 || nearzero) {
+  if (qh hull_dim > 4 || nearzero) { //-V112
     i= 0;
     gmcoord= qh gm_matrix;
     FOREACHvertex_(facet->vertices) {
@@ -1085,7 +1085,7 @@ void qh_sethyperplane_det (int dim, coordT **rows, coordT *point0,
 	}
       }
     }
-  }else if (dim == 4) {
+  }else if (dim == 4) { //-V112
     normal[0]= - det3_(dY(2,0), dZ(2,0), dW(2,0),
 			dY(1,0), dZ(1,0), dW(1,0),
 			dY(3,0), dZ(3,0), dW(3,0));

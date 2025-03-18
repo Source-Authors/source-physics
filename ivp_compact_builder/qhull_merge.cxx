@@ -62,7 +62,7 @@ void qh_premerge (vertexT *apex, realT maxcentrum, realT maxangle) {
     return;    
   trace2((qh ferr, "qh_premerge: premerge centrum %2.2g angle %2.2g for apex v%d facetlist f%d\n",
 	    maxcentrum, maxangle, apex->id, getid_(qh newfacet_list)));
-  if (qh IStracing >= 4 && qh num_facets < 50)
+  if (qh IStracing >= 4 && qh num_facets < 50) //-V112
     qh_printlists();
   qh centrum_radius= maxcentrum;
   qh cos_max= maxangle;
@@ -257,7 +257,7 @@ void qh_all_merges (boolT othermerge, boolT vneighbors) {
     } /* while mergeset */
     if (qh VERTEXneighbors) {
       isreduce= False;
-      if (qh hull_dim >=4 && qh POSTmerging) {
+      if (qh hull_dim >=4 && qh POSTmerging) { //-V112
 	FORALLvertices  
 	  vertex->delridge= True;
 	isreduce= True;
@@ -287,7 +287,7 @@ void qh_all_merges (boolT othermerge, boolT vneighbors) {
   }
   trace1((qh ferr, "qh_all_merges: merged %d coplanar facets %d concave facets and %d degen or redundant facets.\n",
     numcoplanar, numconcave, numdegenredun));
-  if (qh IStracing >= 4 && qh num_facets < 50)
+  if (qh IStracing >= 4 && qh num_facets < 50) //-V112
     qh_printlists ();
 } /* all_merges */
 
@@ -577,7 +577,7 @@ extern "C" {
 static int qh_comparemerge(const void *p1, const void *p2) {
   mergeT *a= *((mergeT **)p1), *b= *((mergeT **)p2);
  
-  return (a->type - b->type);
+  return static_cast<int>(a->type - b->type);
 } /* comparemerge */
 #ifdef SUN
 }
@@ -783,7 +783,7 @@ vertexT *qh_find_newvertex (vertexT *oldvertex, setT *vertices, setT *ridges) {
   int hash;
 
 #ifndef qh_NOtrace
-  if (qh IStracing >= 4) {
+  if (qh IStracing >= 4) { //-V112
     ivp_message( "qh_find_newvertex: find new vertex for v%d from ",
 	     oldvertex->id);
     FOREACHvertex_(vertices) 
@@ -1767,18 +1767,18 @@ void qh_mergecycle (facetT *samecycle, facetT *newfacet) {
         zzval_(Ztotmerge), samecycle->id, newfacet->id));
   if (newfacet == qh tracefacet) {
     tracerestore= qh IStracing;
-    qh IStracing= 4;
+    qh IStracing= 4; //-V112
     ivp_message( "qh_mergecycle: ========= trace merge %d of samecycle %d into trace f%d, furthest is p%d\n",
 	       zzval_(Ztotmerge), samecycle->id, newfacet->id,  qh furthest_id);
     traceonce= True;
   }
-  if (qh IStracing >=4) {
+  if (qh IStracing >=4) { //-V112
     ivp_message( "  same cycle:");
     FORALLsame_cycle_(samecycle)
       ivp_message( " f%d", same->id);
     ivp_message( "\n");
   }
-  if (qh IStracing >=4)
+  if (qh IStracing >=4) //-V112
     qh_errprint ("MERGING CYCLE", samecycle, newfacet, NULL, NULL);
 #endif /* !qh_NOtrace */
   apex= SETfirstt_(samecycle->vertices, vertexT);
@@ -2278,7 +2278,7 @@ void qh_mergefacet(facetT *facet1, facetT *facet2, realT *mindist, realT *maxdis
 	     fmax_(-*mindist, *maxdist), facet1->id, facet2->id, qh furthest_id);
     }else if (facet1 == qh tracefacet || facet2 == qh tracefacet) {
       tracerestore= qh IStracing;
-      qh IStracing= 4;
+      qh IStracing= 4; //-V112
       traceonce= True;
       ivp_message( "qh_mergefacet: ========= trace merge #%d involving f%d, furthest is p%d\n",
 		 zzval_(Ztotmerge), qh tracefacet_id,  qh furthest_id);
@@ -2316,7 +2316,7 @@ try 'C-0.001' instead of 'C-0.1' or 'A-0.999' instead of 'A-0.9'.\n",
     qh_vertexneighbors();
   qh_makeridges(facet1);
   qh_makeridges(facet2);
-  if (qh IStracing >=4)
+  if (qh IStracing >=4) //-V112
     qh_errprint ("MERGING", facet1, facet2, NULL, NULL);
   if (mindist) {
     maximize_(qh max_outside, *maxdist);
@@ -2940,7 +2940,7 @@ boolT qh_reducevertices (void) {
   FORALLvertex_(qh newvertex_list) {
     if (vertex->delridge && !vertex->deleted) {
       vertex->delridge= False;
-      if (qh hull_dim >= 4 && qh_redundant_vertex (vertex)) {
+      if (qh hull_dim >= 4 && qh_redundant_vertex (vertex)) { //-V112
 	numrename++;
 	if (qh_merge_degenredundant()) {
 	  degenredun= True;
@@ -3395,7 +3395,7 @@ void qh_tracemerge (facetT *facet1, facetT *facet2) {
   boolT waserror= False;
 
 #ifndef qh_NOtrace
-  if (qh IStracing >= 4) 
+  if (qh IStracing >= 4)  //-V112
     qh_errprint ("MERGED", facet2, NULL, NULL, NULL);
   if (facet2 == qh tracefacet || (qh tracevertex && qh tracevertex->newlist)) {
     ivp_message( "qh_tracemerge: trace facet and vertex after merge of f%d and f%d, furthest p%d\n", facet1->id, facet2->id, qh furthest_id);
@@ -3418,7 +3418,7 @@ void qh_tracemerge (facetT *facet1, facetT *facet2) {
       qh_errexit (qh_ERRqhull, qh tracefacet, NULL);
   }
 #endif /* !qh_NOtrace */
-  if (qh CHECKfrequently || qh IStracing >= 4) { /* can't check polygon here */
+  if (qh CHECKfrequently || qh IStracing >= 4) { /* can't check polygon here */ //-V112
     qh_checkfacet (facet2, True, &waserror);
     if (waserror)
       qh_errexit(qh_ERRqhull, NULL, NULL);

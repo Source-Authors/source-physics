@@ -1272,7 +1272,7 @@ void qh_initqhull_globals (coordT *points, int numpoints, int dim, boolT ismallo
   qh hull_dim= qh input_dim= dim;
   if (!qh NOpremerge && !qh MERGEexact && !qh PREmerge && qh JOGGLEmax > REALmax/2) {
     qh MERGING= True;
-    if (qh hull_dim <= 4) {
+    if (qh hull_dim <= 4) { //-V112
       qh PREmerge= True;
       qh_option ("_pre-merge", NULL, NULL);
     }else {
@@ -1429,7 +1429,7 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
     qh_errexit(qh_ERRinput, NULL, NULL);
   }
   if (qh PRINTtransparent) {
-    if (qh hull_dim != 4 || !qh DELAUNAY || qh VORONOI || qh DROPdim >= 0) {
+    if (qh hull_dim != 4 || !qh DELAUNAY || qh VORONOI || qh DROPdim >= 0) { //-V112
       fprintf(qh ferr,"qhull input error: transparent Delaunay ('Gt') needs 3-d Delaunay ('d') w/o 'GDn'\n");
       qh_errexit(qh_ERRinput, NULL, NULL);
     }
@@ -1471,7 +1471,7 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
     qh_errexit (qh_ERRinput, NULL, NULL);
   }
   if (printgeom) {
-    if (qh hull_dim > 4) {
+    if (qh hull_dim > 4) { //-V112
       ivp_message( "qhull input error: Geomview output is only available for 2-d, 3-d and 4-d\n");
       qh_errexit (qh_ERRinput, NULL, NULL);
     }
@@ -1485,7 +1485,7 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
       qh_errexit (qh_ERRinput, NULL, NULL);
     }
     /* can not warn about furthest-site Geomview output: no lower_threshold */
-    if (qh hull_dim == 4 && qh DROPdim == -1 &&
+    if (qh hull_dim == 4 && qh DROPdim == -1 && //-V112
 	(qh PRINTcoplanar || qh PRINTspheres || qh PRINTcentrums)) {
       ivp_message( "qhull input warning: coplanars, vertices, and centrums output not\n\
 available for 4-d output (ignored).  Could use 'GDn' instead.\n");

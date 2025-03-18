@@ -12,7 +12,7 @@
 class IVP_I_FPoint_VHash: protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int point_to_index(IVP_U_Float_Point *point);
     
 public:

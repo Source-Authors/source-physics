@@ -511,10 +511,10 @@ IVP_INTRUSION_CHECK_RESULTS IVP_Tetra_Intrude::check_intrusion(IVP_Tri_Edge *old
     tri_edges[3] = pop_edge_b;
     /* ****** reset  of tetra points ***/
     {
-	int k;for (k=0;k<4;k++){
+	int k;for (k=0;k<4;k++){ //-V112
 	    t_points[k] = tri_edges[k]->tmp.gen.tetra_point;
 	    hesse_of_t[k] = tri_edges[k]->triangle->tmp.gen.hesse;
-	    if (k < 4-n_new_triangles){
+	    if (k < 4-n_new_triangles){ //-V112
 		pop_eps_of_t[k] = P_Pop_Eps;
 	    }else{
 		pop_eps_of_t[k] = P_Pop_Eps;
@@ -525,8 +525,8 @@ IVP_INTRUSION_CHECK_RESULTS IVP_Tetra_Intrude::check_intrusion(IVP_Tri_Edge *old
     {
 	int a,b,c;
 	c = 0;
-	for(a=0;a<4;a++){
-	    for (b=a+1;b<4;b++){
+	for(a=0;a<4;a++){ //-V112
+	    for (b=a+1;b<4;b++){ //-V112
 		IVP_Tri_Edge *e;
 		for ( e= tri_edges[a];
 		      e->start_point == tri_edges[b]->start_point ||
@@ -555,7 +555,7 @@ IVP_INTRUSION_CHECK_RESULTS IVP_Tetra_Intrude::check_intrusion(IVP_Tri_Edge *old
 	int pnr;
 	lmax.set(t_points[0]->opoint);
 	lmin.set(t_points[0]->opoint);
-	for (pnr = 1; pnr <4; pnr++){
+	for (pnr = 1; pnr <4; pnr++){ //-V112
 	    lmax.line_max(t_points[pnr]->opoint);
 	    lmin.line_min(t_points[pnr]->opoint);
 	}

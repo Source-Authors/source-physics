@@ -176,7 +176,7 @@ L10:
     if (f > 0) {
 	ccw = 3;
     } else {
-	ccw = 4;
+	ccw = 4; //-V112
 	f = -f;
     }
     a = facesdata[f * 3 + 1];

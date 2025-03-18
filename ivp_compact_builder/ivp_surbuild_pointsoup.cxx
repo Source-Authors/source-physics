@@ -191,7 +191,7 @@ IVP_Template_Polygon *IVP_SurfaceBuilder_Pointsoup::planes_to_template(IVP_U_Vec
     // now we have all lines (without duplicates) in our 'lines_vector' list and just
     // need to copy the data to the IVP_Template_Line structure.
 
-    templ->lines = new IVP_Template_Line[templ->n_lines];
+    templ->lines = new IVP_Template_Line[templ->n_lines]; //-V121
     for (x=0; x<lines_vector.len(); x++) {
 	struct point_hash_key2 *pphk = lines_vector.element_at(x);
 	templ->lines[x].p[0] = pphk->offset_point1;
@@ -217,7 +217,7 @@ IVP_Template_Polygon *IVP_SurfaceBuilder_Pointsoup::planes_to_template(IVP_U_Vec
 	templ->surfaces[x].templ_poly    = templ;
 	templ->surfaces[x].normal.set(plane);
 	templ->surfaces[x].lines         = (ushort *)p_calloc(templ->surfaces[x].n_lines, sizeof(ushort));
-	templ->surfaces[x].revert_line   = new char[templ->surfaces[x].n_lines];
+	templ->surfaces[x].revert_line   = new char[templ->surfaces[x].n_lines]; //-V121
 
 
 	int punktezahl = templ->surfaces[x].n_lines;

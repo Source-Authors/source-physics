@@ -136,7 +136,7 @@ int    LittleLong (int l)
 
 IVP_FLOAT	BigFloat (IVP_FLOAT l)
 {
-    union {byte b[4]; IVP_FLOAT f;} in, out;
+    union {byte b[4]; IVP_FLOAT f;} in, out; //-V112
 	
     in.f = l;
     out.b[0] = in.b[3];
@@ -332,7 +332,7 @@ int IVP_SurfaceBuilder_Q12::load_q12bsp_file(char *filename)
 
     // swap the header
     int i;
-    for (i=0 ; i< (int)sizeof(dheader_t)/4 ; i++) {
+    for (i=0 ; i< (int)sizeof(dheader_t)/4 ; i++) { //-V112
 #if defined(SUN4) || defined(SUN)
 	((int *)header)[i] = BigLong( ((int *)header)[i]);
 #else

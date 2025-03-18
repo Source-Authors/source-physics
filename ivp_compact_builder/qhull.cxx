@@ -247,7 +247,7 @@ boolT qh_addpoint (pointT *furthest, facetT *facet, boolT checkdist) {
   qh_deletevisible (/*qh visible_list*/);
   zmax_(Zmaxvertex, qh num_vertices);
   qh NEWfacets= False;
-  if (qh IStracing >= 4)
+  if (qh IStracing >= 4) //-V112
     qh_printfacetlist (qh newfacet_list, NULL, True);
   if (qh CHECKfrequently) {
     if (qh num_facets < 50)
@@ -566,7 +566,7 @@ void qh_findhorizon(pointT *point, facetT *facet, int *goodvisible, int *goodhor
   qh visible_list= facet;
   facet->visible= True;
   facet->f.replace= NULL;
-  if (qh IStracing >=4)
+  if (qh IStracing >=4) //-V112
     qh_errprint ("visible", facet, NULL, NULL, NULL);
   qh visit_id++;
   FORALLvisible_facets {
@@ -586,7 +586,7 @@ void qh_findhorizon(pointT *point, facetT *facet, int *goodvisible, int *goodhor
 	qh num_visible++;
 	if (neighbor->good)
 	  (*goodvisible)++;
-        if (qh IStracing >=4)
+        if (qh IStracing >=4) //-V112
           qh_errprint ("visible", neighbor, NULL, NULL, NULL);
       }else {
  	if (dist > - qh MAXcoplanar) {
@@ -612,7 +612,7 @@ void qh_findhorizon(pointT *point, facetT *facet, int *goodvisible, int *goodhor
         numhorizon++;
 	if (neighbor->good)
 	  (*goodhorizon)++;
-        if (qh IStracing >=4)
+        if (qh IStracing >=4) //-V112
           qh_errprint ("horizon", neighbor, NULL, NULL, NULL);
       }
     }
@@ -626,7 +626,7 @@ Point p%d was above all facets.\n", qh_pointid(point));
   }
   trace1((qh ferr, "qh_findhorizon: %d horizon facets (good %d), %d visible (good %d), %d coplanar\n", 
        numhorizon, *goodhorizon, qh num_visible, *goodvisible, coplanar));
-  if (qh IStracing >= 4 && qh num_facets < 50) 
+  if (qh IStracing >= 4 && qh num_facets < 50)  //-V112
     qh_printlists ();
 } /* findhorizon */
 
@@ -848,7 +848,7 @@ void qh_partitionall(setT *vertices, pointT *points, int numpoints){
   zzadd_(Zpartitionall, zzval_(Zpartition));
   zzval_(Zpartition)= 0;
   qh_settempfree(&pointset);
-  if (qh IStracing >= 4)
+  if (qh IStracing >= 4) //-V112
     qh_printfacetlist (qh facet_list, NULL, True);
 } /* partitionall */
 
