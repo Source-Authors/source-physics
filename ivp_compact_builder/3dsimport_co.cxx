@@ -884,7 +884,7 @@ int p_graphlib_robust_convert_3dmax_object_to_compact_ledges(P_Hardware *hw, con
 		if(scene->meshobjlist[n].maps > v) {
 			ivp_message( "%-14s more maps than vertices, quitting!\n",
 					scene->meshobjlist[n].name);
-			if(outf!=stdout) fclose(outf);
+			if(outf && outf!=stdout) fclose(outf);
 			return 1;
 		}
 		// Get the total number of vertices in all objects
