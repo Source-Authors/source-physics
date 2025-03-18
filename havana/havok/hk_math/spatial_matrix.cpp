@@ -61,7 +61,7 @@ void hk_Spatial_Matrix::set_spatial_transform( const hk_Transform& cartesian_fra
 	m_Block[1][0] = rR;*/
 }
 
-void hk_Spatial_Matrix::set_mul( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b )
+void hk_Spatial_Matrix::set_mul( const hk_Spatial_Matrix& a, const hk_Spatial_Matrix& b )
 {
 	hk_Matrix3 work;
 
@@ -84,7 +84,7 @@ void hk_Spatial_Matrix::set_mul( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b )
 }
 
 
-void hk_Spatial_Matrix::set_add( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b )
+void hk_Spatial_Matrix::set_add( const hk_Spatial_Matrix& a, const hk_Spatial_Matrix& b )
 {
 
 	m_Block[0][0] = a.m_Block[0][0];
@@ -102,7 +102,7 @@ void hk_Spatial_Matrix::set_add( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b )
 }
 
 
-void hk_Spatial_Matrix::set_sub( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b )
+void hk_Spatial_Matrix::set_sub( const hk_Spatial_Matrix& a, const hk_Spatial_Matrix& b )
 {
 
 	m_Block[0][0] = a.m_Block[0][0];
@@ -207,7 +207,7 @@ int max_order_row_index;
 
 	if( dim > order_size ){
 		delete[] order;
-		order = new int[ dim ]; //(int *)malloc( dim * sizeof(real) );
+		order = new int[ dim ]; //(int *)malloc( dim * sizeof(real) ); //-V121
 		order_size = dim;
 	}
 

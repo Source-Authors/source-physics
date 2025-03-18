@@ -51,13 +51,13 @@ class hk_Clock_Time
 			if(m_subsecond >= 1)
 			{
 				hk_real overflow = hk_Math::floor(m_subsecond);
-				m_seconds += int(overflow);
+				m_seconds += static_cast<int>(overflow);
 				m_subsecond -= overflow;
 			}
 		}
-		hk_real as_real()
+		hk_real as_real() const
 		{
-			return hk_real(m_seconds) + m_subsecond;
+			return static_cast<hk_real>(m_seconds) + m_subsecond;
 		}
 
 		int m_seconds;

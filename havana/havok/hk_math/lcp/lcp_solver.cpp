@@ -145,9 +145,9 @@ hk_bool hk_LCP_Solver::numerical_stability_ok() {
 
 hk_result hk_LCP_Solver::solve_lcp(hk_LCP_Input &in,hk_LCP_Temp &tmp,hk_LCP_Output &out) {
     input_struct=&in;
-    m_gauss_inp.m_A=(hk_gauss_real*)tmp.m_L_matrix; //aligned Matrix
-    m_gauss_inp.m_b=(hk_gauss_real*)tmp.m_temp_vec; //aligned vector  
-    m_gauss_out.m_result=(hk_gauss_real*)tmp.m_inout_vec; //aligned vector
+    m_gauss_inp.m_A=tmp.m_L_matrix; //aligned Matrix
+    m_gauss_inp.m_b=tmp.m_temp_vec; //aligned vector  
+    m_gauss_out.m_result=tmp.m_inout_vec; //aligned vector
     //Gauss solver shares all its memory with LU_Solver. Gauss is only needed when LU is invalid
 
     lu_sub_solver.m_L_matrix=tmp.m_L_matrix; //aligned Matrix
@@ -179,7 +179,7 @@ hk_result hk_LCP_Solver::solve_lcp(hk_LCP_Input &in,hk_LCP_Temp &tmp,hk_LCP_Outp
     accel =        tmp.m_accel;
     delta_accel =  tmp.m_delta_accel;
     delta_x     =  tmp.m_delta_f;
-    temp  =        (hk_real*)tmp.m_temp_vec;
+    temp  =        tmp.m_temp_vec;
 
     int i;
     for(i=0;i<aligned_size;i++)
@@ -913,7 +913,7 @@ hk_result hk_LCP_Solver::get_xdirection() {
     
     //copy clamped
     for(i=0;i<r_actives;i++) {
-	this->delta_x[ actives_inactives_ignored[i] ] = (hk_real)lu_sub_solver.m_inout_vec[i];
+	this->delta_x[ actives_inactives_ignored[i] ] = lu_sub_solver.m_inout_vec[i];
     }
 
     this->delta_x[ actives_inactives_ignored[ignored_pos] ] = 1.0f;
@@ -1099,7 +1099,7 @@ begin_of_while:
 			for(i=0;i<r_actives;i++)
 			{
 				int index=actives_inactives_ignored[i];
-				full_x[index]=(hk_real)lu_sub_solver.m_inout_vec[i];
+				full_x[index]=lu_sub_solver.m_inout_vec[i];
 			}
 			get_values_when_setup(); //fills x[i] and accel[i]
 
@@ -1168,7 +1168,7 @@ hk_result hk_LCP_Solver::full_setup() {
 	lu_sub_solver.solve_lin_equ();
 	for(i=0;i<r_actives;i++) {
 	    int index=actives_inactives_ignored[i];
-	    full_x[index]=(hk_real)lu_sub_solver.m_inout_vec[i];
+	    full_x[index]=lu_sub_solver.m_inout_vec[i];
 	}
     } else {
 	sub_solver_status = 2;
@@ -1205,7 +1205,7 @@ hk_result hk_LCP_Solver::full_setup() {
     
 	for(i=0;i<r_actives;i++) {
 	    int index=actives_inactives_ignored[i];
-	    full_x[index]=(hk_real)m_gauss_out.m_result[i];
+	    full_x[index]=m_gauss_out.m_result[i];
 	}
     }
 

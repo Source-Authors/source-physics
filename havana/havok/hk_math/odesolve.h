@@ -26,7 +26,7 @@ public:
   
 protected:
 
-  virtual void ode_realloc(int new_size);
+	virtual void ode_realloc(int new_size);
 	unsigned int state_size;  // limit of ~65,000 right now
 	hk_real *dy;  //the derivatives
 	hk_real *Iy;

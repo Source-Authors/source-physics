@@ -27,16 +27,16 @@ class hk_Spatial_Matrix
 		void set_identity();
 			//: set diagonal elements of the 6x6 matrix to 1
 		
-		void set_mul( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b );
+		void set_mul( const hk_Spatial_Matrix& a, const hk_Spatial_Matrix& b );
 			//: mulitply two spatial matrixes together
 		
 		void set_vector_mul_vector( const hk_Spatial_Vector &a, const hk_Spatial_Vector &b );
 			//: M = a*!b    where !b = spatial transpose
 
-		void set_add( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b );
+		void set_add( const hk_Spatial_Matrix& a, const hk_Spatial_Matrix& b );
 			//: add two spatial matrixes together
 
-		void set_sub( hk_Spatial_Matrix& a, hk_Spatial_Matrix& b );
+		void set_sub( const hk_Spatial_Matrix& a, const hk_Spatial_Matrix& b );
 			//: subtract two spatial matrixes
 
 		inline hk_real operator() (int r, int c) const;

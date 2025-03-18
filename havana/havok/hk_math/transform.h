@@ -44,8 +44,8 @@ class hk_Transform : public hk_Rotation
 					   const hk_Vector3& c2,
 					   const hk_Vector3& c3);
 			//:
-		inline void _set_interpolate( hk_QTransform &a, hk_QTransform &b , hk_real t);
-		void set_interpolate( hk_QTransform &a, hk_QTransform &b , hk_real t);
+		inline void _set_interpolate( const hk_QTransform &a, const hk_QTransform &b , hk_real t);
+		void set_interpolate( const hk_QTransform &a, const hk_QTransform &b , hk_real t);
 
 		void get_4x4_column_major(hk_Transform* p) const;
 			//: write a 4x4 column major matrix into p

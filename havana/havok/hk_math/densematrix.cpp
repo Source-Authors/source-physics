@@ -2,7 +2,7 @@
 #include <hk_math/densematrix.h>
 #include <hk_math/vector_fpu/vector_fpu.h>
 
-void hk_Dense_Matrix::mult_vector( hk_real *x_vector, hk_real *result_vector ) const
+void hk_Dense_Matrix::mult_vector( const hk_real *x_vector, hk_real *result_vector ) const
 {
     int i;
     for(i=getNumRows()-1;i>=0;i--)
@@ -29,5 +29,5 @@ hk_Dynamic_Dense_Matrix::hk_Dynamic_Dense_Matrix(int r, int c)
 
 hk_Dynamic_Dense_Matrix::~hk_Dynamic_Dense_Matrix()
 {
-	hk_deallocate(m_elt, HK_NEXT_MULTIPLE_OF(4,m_cols)*m_rows, hk_MEMORY_CLASS::HK_MEMORY_CLASS_DENSE_VECTOR);
+	hk_deallocate(m_elt, HK_NEXT_MULTIPLE_OF(4,m_cols)*m_rows, hk_MEMORY_CLASS::HK_MEMORY_CLASS_DENSE_VECTOR); //-V112
 }

@@ -26,7 +26,7 @@ void hk_Transform::set_rotation( const hk_Quaternion& q )
 }
 
 
-void hk_Transform::_set_interpolate( hk_QTransform &a, hk_QTransform &b , hk_real t)
+void hk_Transform::_set_interpolate( const hk_QTransform &a, const hk_QTransform &b , hk_real t)
 {
 	hk_Quaternion qt; 
 	qt.set_slerp(	a.get_rotation(), b.get_rotation(), t );

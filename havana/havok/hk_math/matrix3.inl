@@ -48,12 +48,12 @@ inline void hk_Matrix3::_get_row( int row, hk_Vector3& r)
 
 inline hk_Vector3& hk_Matrix3::get_column(int x)
 {
-	return *(hk_Vector3 *)&m_elems[ 4 * x ];
+	return *reinterpret_cast<hk_Vector3 *>(&m_elems[ 4 * x ]);
 }
 
 inline const hk_Vector3& hk_Matrix3::get_column(int x) const
 {
-	return *(hk_Vector3 *)&m_elems[ 4 * x ];
+	return *reinterpret_cast<const hk_Vector3 *>(&m_elems[ 4 * x ]);
 }
 
 #endif //HK_PS2

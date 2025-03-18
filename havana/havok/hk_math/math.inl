@@ -5,29 +5,29 @@
 #include <algorithm>
 
 #ifdef _WIN32
-inline hk_double hk_Math::fabsd( hk_double r ) { return hk_double(::fabs(r)); }
+inline hk_double hk_Math::fabsd( hk_double r ) { return static_cast<hk_double>(::fabs(r)); }
 
-inline hk_real hk_Math::sqrt( hk_real r) { return hk_real(::sqrtf(r)); }
-inline hk_real hk_Math::sqrt_inv( hk_real r) { return 1.0f / hk_real(::sqrtf(r)); }
+inline hk_real hk_Math::sqrt( hk_real r) { return static_cast<hk_real>(::sqrtf(r)); }
+inline hk_real hk_Math::sqrt_inv( hk_real r) { return 1.0f / static_cast<hk_real>(::sqrtf(r)); }
 
-inline hk_real hk_Math::fast_sqrt( hk_real r) { return hk_real(::sqrtf(r)); }
-inline hk_real hk_Math::fast_sqrt_inv( hk_real r) { return 1.0f / hk_real(::sqrtf(r)); }
+inline hk_real hk_Math::fast_sqrt( hk_real r) { return static_cast<hk_real>(::sqrtf(r)); } //-V524
+inline hk_real hk_Math::fast_sqrt_inv( hk_real r) { return 1.0f / static_cast<hk_real>(::sqrtf(r)); } //-V524
 
-inline hk_real hk_Math::fabs( hk_real r) { return hk_real(::fabsf(r)); }
-inline hk_real hk_Math::tan( hk_real r) { return hk_real(::tanf(r)); }
-inline hk_real hk_Math::sin( hk_real r) { return hk_real(::sinf(r)); }
-inline hk_real hk_Math::cos( hk_real r) { return hk_real(::cosf(r)); }
-inline hk_real hk_Math::atan2( hk_real a, hk_real b)  { return hk_real(::atan2f(a,b)); }
-inline hk_real hk_Math::asin( hk_real r) { return hk_real(::asinf(r)); }
-inline hk_real hk_Math::acos( hk_real r) { return hk_real(::acosf(r)); }
+inline hk_real hk_Math::fabs( hk_real r) { return static_cast<hk_real>(::fabsf(r)); }
+inline hk_real hk_Math::tan( hk_real r) { return static_cast<hk_real>(::tanf(r)); }
+inline hk_real hk_Math::sin( hk_real r) { return static_cast<hk_real>(::sinf(r)); }
+inline hk_real hk_Math::cos( hk_real r) { return static_cast<hk_real>(::cosf(r)); }
+inline hk_real hk_Math::atan2( hk_real a, hk_real b)  { return static_cast<hk_real>(::atan2f(a,b)); }
+inline hk_real hk_Math::asin( hk_real r) { return static_cast<hk_real>(::asinf(r)); }
+inline hk_real hk_Math::acos( hk_real r) { return static_cast<hk_real>(::acosf(r)); }
 inline hk_real hk_Math::max( hk_real a, hk_real b) { return a>b ? a : b; }
 inline hk_real hk_Math::min( hk_real a, hk_real b) { return a<b ? a : b; }
 
-inline hk_real hk_Math::exp( hk_real e) { return hk_real(::expf(e)); }
+inline hk_real hk_Math::exp( hk_real e) { return static_cast<hk_real>(::expf(e)); }
 
-inline hk_real hk_Math::floor( hk_real r ) { return hk_real(::floorf(r)); }
-inline hk_real hk_Math::ceil( hk_real r) { return hk_real(::ceilf(r)); }
-inline hk_real hk_Math::pow( hk_real r, hk_real p) { return hk_real(::powf(r,p)); }
+inline hk_real hk_Math::floor( hk_real r ) { return static_cast<hk_real>(::floorf(r)); }
+inline hk_real hk_Math::ceil( hk_real r) { return static_cast<hk_real>(::ceilf(r)); }
+inline hk_real hk_Math::pow( hk_real r, hk_real p) { return static_cast<hk_real>(::powf(r,p)); }
 
 #elif POSIX
 
@@ -50,29 +50,29 @@ namespace c_math
 	}
 }
 
-inline hk_double hk_Math::fabsd( hk_double r ) { return hk_double(c_math::fabs(r)); }
+inline hk_double hk_Math::fabsd( hk_double r ) { return static_cast<hk_double>(c_math::fabs(r)); }
 
-inline hk_real hk_Math::sqrt( hk_real r) { return hk_real(c_math::sqrt(r)); }
-inline hk_real hk_Math::sqrt_inv( hk_real r) { return 1.0f / hk_real(c_math::sqrt(r)); }
+inline hk_real hk_Math::sqrt( hk_real r) { return static_cast<hk_real>(c_math::sqrt(r)); }
+inline hk_real hk_Math::sqrt_inv( hk_real r) { return 1.0f / static_cast<hk_real>(c_math::sqrt(r)); }
 
-inline hk_real hk_Math::fast_sqrt( hk_real r) { return hk_real(c_math::sqrt(r)); }
-inline hk_real hk_Math::fast_sqrt_inv( hk_real r) { return 1.0f / hk_real(c_math::sqrt(r)); }
+inline hk_real hk_Math::fast_sqrt( hk_real r) { return static_cast<hk_real>(c_math::sqrt(r)); }
+inline hk_real hk_Math::fast_sqrt_inv( hk_real r) { return 1.0f / static_cast<hk_real>(c_math::sqrt(r)); }
 
-inline hk_real hk_Math::fabs( hk_real r) { return hk_real(c_math::fabs(r)); }
-inline hk_real hk_Math::tan( hk_real r) { return hk_real(c_math::tan(r)); }
-inline hk_real hk_Math::sin( hk_real r) { return hk_real(c_math::sin(r)); }
-inline hk_real hk_Math::cos( hk_real r) { return hk_real(c_math::cos(r)); }
-inline hk_real hk_Math::atan2( hk_real a, hk_real b)  { return hk_real(c_math::atan2(a,b)); }
-inline hk_real hk_Math::asin( hk_real r) { return hk_real(c_math::asin(r)); }
-inline hk_real hk_Math::acos( hk_real r) { return hk_real(c_math::acos(r)); }
+inline hk_real hk_Math::fabs( hk_real r) { return static_cast<hk_real>(c_math::fabs(r)); }
+inline hk_real hk_Math::tan( hk_real r) { return static_cast<hk_real>(c_math::tan(r)); }
+inline hk_real hk_Math::sin( hk_real r) { return static_cast<hk_real>(c_math::sin(r)); }
+inline hk_real hk_Math::cos( hk_real r) { return static_cast<hk_real>(c_math::cos(r)); }
+inline hk_real hk_Math::atan2( hk_real a, hk_real b)  { return static_cast<hk_real>(c_math::atan2(a,b)); }
+inline hk_real hk_Math::asin( hk_real r) { return static_cast<hk_real>(c_math::asin(r)); }
+inline hk_real hk_Math::acos( hk_real r) { return static_cast<hk_real>(c_math::acos(r)); }
 inline hk_real hk_Math::max( hk_real a, hk_real b) { return a>b ? a : b; }
 inline hk_real hk_Math::min( hk_real a, hk_real b) { return a<b ? a : b; }
 
-inline hk_real hk_Math::exp( hk_real e) { return hk_real(c_math::exp(e)); }
+inline hk_real hk_Math::exp( hk_real e) { return static_cast<hk_real>(c_math::exp(e)); }
 
-inline hk_real hk_Math::floor( hk_real r ) { return hk_real(c_math::floor(r)); }
-inline hk_real hk_Math::ceil( hk_real r) { return hk_real(c_math::ceil(r)); }
-inline hk_real hk_Math::pow( hk_real r, hk_real p) { return hk_real(c_math::pow(r,p)); }
+inline hk_real hk_Math::floor( hk_real r ) { return static_cast<hk_real>(c_math::floor(r)); }
+inline hk_real hk_Math::ceil( hk_real r) { return static_cast<hk_real>(c_math::ceil(r)); }
+inline hk_real hk_Math::pow( hk_real r, hk_real p) { return static_cast<hk_real>(c_math::pow(r,p)); }
 #endif
 
 inline hk_real hk_Math::clamp( hk_real r, hk_real mn, hk_real mx)
@@ -126,9 +126,9 @@ inline hk_real hk_Math::_rand01()
 	// BSD rand function
 	constexpr unsigned a = 1103515245;
 	constexpr unsigned c = 12345;
-	constexpr unsigned m = unsigned(-1) >> 1;
+	constexpr unsigned m = UINT_MAX >> 1;
 	hk_random_seed = (a * hk_random_seed + c ) & m;
-	return hk_real(hk_random_seed) / m;
+	return static_cast<hk_real>(hk_random_seed) / m;
 }
 
 inline hk_real hk_Math::fast_approx_atan2_normized( hk_real y, hk_real x)

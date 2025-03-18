@@ -12,10 +12,11 @@
 			//:
 void hk_Euler_Angles::set_euler_angles( const hk_Quaternion& q, hk_EULER_ANGLES_ORDER order)
 {
-	const hk_real &qx = q.get_imag().x;
-	const hk_real &qy = q.get_imag().y;
-	const hk_real &qz = q.get_imag().z;
-	const hk_real &qw = q.get_real();
+	const hk_Vector3 &img = q.get_imag();
+	const hk_real qx = img.x;
+	const hk_real qy = img.y;
+	const hk_real qz = img.z;
+	const hk_real qw = q.get_real();
 	switch (order ){
 	case HK_ORDER_XYZ:
 		{

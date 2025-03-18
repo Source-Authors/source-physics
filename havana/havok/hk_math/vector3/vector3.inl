@@ -10,12 +10,12 @@ inline hk_Vector3::hk_Vector3(hk_real a, hk_real b, hk_real c)
 }
 
 inline hk_Vector3::hk_Vector3(const double* d)
-	: x(hk_real(d[0])), y(hk_real(d[1])), z(hk_real(d[2])), w(0)
+	: x(static_cast<hk_real>(d[0])), y(static_cast<hk_real>(d[1])), z(static_cast<hk_real>(d[2])), w(0)
 {
 }
 
 inline hk_Vector3::hk_Vector3(const float* d)
-	: x(hk_real(d[0])), y(hk_real(d[1])), z(hk_real(d[2])), w(0)
+	: x(static_cast<hk_real>(d[0])), y(static_cast<hk_real>(d[1])), z(static_cast<hk_real>(d[2])), w(0)
 {
 }
 
@@ -36,7 +36,7 @@ inline void hk_Vector3::operator= (const hk_Vector3& v)
 
 void hk_Vector3::operator=  (const class Havok::Vector3&v)
 {
-	*this = ((const hk_Vector3 *)&v)[0];
+	*this = (reinterpret_cast<const hk_Vector3 *>(&v))[0];
 }
 
 /* expression templates */

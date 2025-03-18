@@ -40,7 +40,7 @@ class hk_Dense_Matrix
 		hk_real* getRealPointer() { return m_elt; }
 		const hk_real* getConstRealPointer() const { return m_elt; }
 
-		void mult_vector( hk_real *x_vector, hk_real *result_vector ) const; //both vectors are aligned
+		void mult_vector( const hk_real *x_vector, hk_real *result_vector ) const; //both vectors are aligned
 
 		// dimhotepus: Add setter for memory. Overcomes issue with derived class ctor.
 		void set_real_pointer(hk_real* mem) { m_elt = mem; }
@@ -66,24 +66,24 @@ class hk_Fixed_Dense_Matrix : public hk_Dense_Matrix
 {
 	private:
 
-		hk_real m_elt_buffer[ N * HK_NEXT_MULTIPLE_OF(4,N) ];
+		hk_real m_elt_buffer[ N * HK_NEXT_MULTIPLE_OF(4,N) ]; //-V112
 
 	public:
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Fixed_Dense_Matrix<N> )
 
-		inline hk_Fixed_Dense_Matrix()
-			: hk_Dense_Matrix(m_elt_buffer, N, N, (N+3)&(~3)) { }
+		inline hk_Fixed_Dense_Matrix() //-V730
+			: hk_Dense_Matrix(m_elt_buffer, N, N, (N+3)&(~3)) { } //-V1050
 
 		inline int get_num_rows() const { return N; }
 		inline int get_num_cols() const { return N; }
-		inline int get_lda()     const { return HK_NEXT_MULTIPLE_OF(4,N);  }
+		inline int get_lda()     const { return HK_NEXT_MULTIPLE_OF(4,N);  } //-V112
 
-		inline hk_real& operator() (int r, int c) { return m_elt_buffer[r+c * HK_NEXT_MULTIPLE_OF(4,N)]; }
-		inline const hk_real& operator() (int r, int c) const { return m_elt_buffer[r + c * HK_NEXT_MULTIPLE_OF(4,N)]; }
+		inline hk_real& operator() (int r, int c) { return m_elt_buffer[r+c * HK_NEXT_MULTIPLE_OF(4,N)]; } //-V112
+		inline const hk_real& operator() (int r, int c) const { return m_elt_buffer[r + c * HK_NEXT_MULTIPLE_OF(4,N)]; } //-V112
 
 		hk_real* get_elems() { return &m_elt_buffer[0]; }
-		hk_real* getRealPointer() { return &m_elt_buffer[0]; }
+		hk_real* getRealPointer() { return &m_elt_buffer[0]; } //-V524
 		const hk_real* getConstRealPointer() const { return &m_elt_buffer[0]; }
 };
 
@@ -96,7 +96,7 @@ class hk_Dense_Matrix_6x6 : public hk_Dense_Matrix
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Dense_Matrix_6x6 )
 
-		inline hk_Dense_Matrix_6x6()
+		inline hk_Dense_Matrix_6x6() //-V730
 			: hk_Dense_Matrix( & m_elt_buffer[0], 6, 6, 8 )
 		{
 		}
@@ -113,7 +113,7 @@ class hk_Dense_Matrix_3x3 : public hk_Dense_Matrix
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Dense_Matrix_3x3 )
 
 		inline	hk_Dense_Matrix_3x3 ()
-			: hk_Dense_Matrix( nullptr, 3, 3, 4 ), m_elt_buffer{}
+			: hk_Dense_Matrix( nullptr, 3, 3, 4 ), m_elt_buffer{} //-V112
 		{
 			// dimhotepus: Fix UB during access of uninitialized m_elt_buffer.
 			set_real_pointer( m_elt_buffer.get_elem_address(0, 0) );
@@ -135,8 +135,8 @@ class hk_Dense_Matrix_1x1 : public hk_Dense_Matrix
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Dense_Matrix_1x1 )
 
-		inline	hk_Dense_Matrix_1x1 ()
-			: hk_Dense_Matrix( & m_elt_buffer[0], 1, 1, 4 )
+		inline	hk_Dense_Matrix_1x1 () //-V730
+			: hk_Dense_Matrix( & m_elt_buffer[0], 1, 1, 4 ) //-V112
 		{
 		}
 

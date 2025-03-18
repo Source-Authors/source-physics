@@ -1,9 +1,9 @@
 #include <hk_math/vecmath.h>
 
 hk_Transform::hk_Transform(const hk_Quaternion &q, const hk_Vector3 &t)
+    : m_translation{t}
 {
 	this->set(q);
-	m_translation = t;
 }
 
 void hk_Transform::set_transform(const hk_Quaternion &q, const hk_Vector3 &t)
@@ -44,7 +44,7 @@ void hk_Transform::get_4x4_column_major(hk_Transform* p) const
 }
 
 
-void hk_Transform::set_interpolate( hk_QTransform &a, hk_QTransform &b , hk_real t)
+void hk_Transform::set_interpolate( const hk_QTransform &a, const hk_QTransform &b , hk_real t)
 {
 	_set_interpolate(a,b,t);
 }

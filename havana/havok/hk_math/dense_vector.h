@@ -55,8 +55,8 @@ class hk_Fixed_Dense_Vector : public hk_Dense_Vector
 
 		HK_DECLARE_NONVIRTUAL_CLASS_ALLOCATOR(HK_MEMORY_CLASS_CONSTRAINT, hk_Fixed_Dense_Vector<N> )
 
-		hk_Fixed_Dense_Vector()
-			: hk_Dense_Vector(m_elt_buffer, N, HK_NEXT_MULTIPLE_OF(4,N) ) { }
+		hk_Fixed_Dense_Vector() //-V730
+			: hk_Dense_Vector(m_elt_buffer, N, HK_NEXT_MULTIPLE_OF(4,N) ) { } //-V112 //-V1050
 
 	// SK says XXX fix me
 		inline void set_add_mul( const hk_Fixed_Dense_Vector<N> &a, hk_real factor, const hk_real b[]);
@@ -64,7 +64,7 @@ class hk_Fixed_Dense_Vector : public hk_Dense_Vector
 
 	private:
 		hk_real dummy;
-		hk_real m_elt_buffer[ HK_NEXT_MULTIPLE_OF(4,N) ];
+		hk_real m_elt_buffer[ HK_NEXT_MULTIPLE_OF(4,N) ]; //-V112
 };
 
 class hk_Dynamic_Dense_Vector : public hk_Dense_Vector
