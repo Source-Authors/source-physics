@@ -79,6 +79,9 @@ public:
     //statistic section
     IVP_Time last_statistic_output;
 
+    // dimhotepus: Move here to reduce memory fooprint.
+    IVP_DOUBLE sum_energy_destr;
+
     // impact section
     IVP_FLOAT max_rescue_speed;
     IVP_FLOAT max_speed_gain;
@@ -91,8 +94,6 @@ public:
     int impact_coll_checks;	// number of AT collision checks during impacts
     int impact_unmov;
     
-    IVP_DOUBLE sum_energy_destr;
-
     // collision checks section
     int sum_of_mindists;	// number of mindists (not cleared by clear_statistic)
     int mindists_generated;	// number of mindist just created
