@@ -125,9 +125,10 @@ int IVP_Convex_Decompositor::perform_convex_decomposition_on_concave_polyhedron(
 	// fill array with points
 	IVP_U_BigVector<IVP_U_Point> *points = &concave_polyhedron_in->points;
 	for (i=0; i<n_points; i++) {
-	    vcl[(i*3)+0] = points->element_at(i)->k[0];
-	    vcl[(i*3)+1] = points->element_at(i)->k[1];
-	    vcl[(i*3)+2] = points->element_at(i)->k[2];
+		const IVP_U_Point *point = points->element_at(i);
+	    vcl[(i*3)+0] = point->k[0];
+	    vcl[(i*3)+1] = point->k[1];
+	    vcl[(i*3)+2] = point->k[2];
 	}
     }
 
