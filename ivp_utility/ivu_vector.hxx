@@ -188,7 +188,10 @@ public:
 class IVP_Vector_of_Cores_2: public IVP_U_Vector<class IVP_Core> {
     IVP_Core *elem_buffer[2];
 public:
-    IVP_Vector_of_Cores_2(): IVP_U_Vector<IVP_Core>( (void **)&elem_buffer[0],2 ){}
+    IVP_Vector_of_Cores_2(): IVP_U_Vector<IVP_Core>( (void **)&elem_buffer[0],2 ){
+		elem_buffer[0] = nullptr;
+		elem_buffer[1] = nullptr;
+	}
 };
 
 #endif
