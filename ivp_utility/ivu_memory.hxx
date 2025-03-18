@@ -15,7 +15,7 @@
 
 struct p_Memory_Elem {
 	struct p_Memory_Elem *next;
-	char	data[4];
+	char	data[4]; //-V112
 };
 
 class IVP_U_Memory {

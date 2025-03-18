@@ -79,7 +79,7 @@ public:
 // basic function for calculating the hash_index
 inline int IVP_VHash::hash_index(const char *key, intp key_size){
 	unsigned int c;		
-	unsigned int index = 0xffffffffL;
+	unsigned int index = 0xffffffffL; //-V112
 	intp i;
 	for (i=key_size-1;i>=0;i--){
 	    c = *((unsigned char *)(key++));
@@ -96,7 +96,7 @@ inline int IVP_VHash::fast_hash_index(int key){
 
 // basic function for calculating the hash_index of key is a long long
 inline int IVP_VHash::fast_hash_index(long long key) {
-  int index = static_cast<int>(((key * 1001) >> 32) + key * 75);
+  int index = static_cast<int>(((key * 1001) >> 32) + key * 75); //-V112
   return index | IVP_VHASH_TOUCH_BIT;  // set touch bit
 }
 
@@ -172,7 +172,7 @@ public:
 // basic function for calculating the hash_index
 inline int IVP_VHash_Store::hash_index_store(const char *key, int key_size){
 	unsigned int c;		
-	unsigned int index = 0xffffffffL;
+	unsigned int index = 0xffffffffL; //-V112
 	int i;
 	for (i=key_size-1;i>=0;i--){
 	    c = *((unsigned char *)(key++));

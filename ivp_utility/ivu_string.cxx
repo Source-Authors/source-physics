@@ -250,7 +250,7 @@ char *p_make_string_fast(const char *templat, ...)
     char buffer[MAX_MAKE_STRING_LEN];
     va_list parg;
     memset(buffer,0,std::min(1000, MAX_MAKE_STRING_LEN)); // nur bei sparc-debugging
-    va_start(parg,templat);	
+    va_start(parg,templat);	 //-V2019
     vsnprintf(buffer,std::size(buffer),templat,parg);
     va_end(parg);
     return p_strdup(buffer);
@@ -267,7 +267,7 @@ char *p_make_string(const char *templat, ...)
     char buffer[MAX_MAKE_STRING_LEN];
     va_list parg;
     memset(buffer,0,std::min(1000, MAX_MAKE_STRING_LEN)); // only for sparc-debugging
-    va_start(parg,templat);
+    va_start(parg,templat); //-V2019
     vsnprintf(buffer, std::size(buffer), templat, parg);
     va_end(parg);
     return p_strdup(buffer);
@@ -286,7 +286,7 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...)
     snprintf (buffer, std::size(buffer), "ERROR: ");
     p += strlen(p);
     
-    va_start(parg,templat);	
+    va_start(parg,templat);	 //-V2019
     vsnprintf(buffer,std::size(buffer),templat,parg);
     va_end(parg);
 
@@ -301,7 +301,7 @@ void ivp_message(const char *fmt, ...)
     char buffer_tmp[MAX_ERROR_BUFFER_LEN] = { 'E', 'R', 'R', 'O', 'R', ':', ' ', '\0' };
     va_list	args;
 
-    va_start(args, fmt);
+    va_start(args, fmt); //-V2019
     vsnprintf(buffer_tmp, std::size(buffer_tmp), fmt, args);
     va_end(args);
 
