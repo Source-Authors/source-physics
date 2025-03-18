@@ -854,10 +854,6 @@ void IVP_Constraint_Local::do_simulation_controller(IVP_Event_Sim *es,IVP_U_Vect
 	m_rs_f_Acs.vmult3(&drA_Acs, &drA_Acs);
 	result_drRA_rs.subtract(&drA_Acs, &drR_Rcs);
     }
-    IVP_IF (0) {
-	ivp_message("%f [%s]-[%s]: IT=%f  IR=%f\n", coreR->environment->get_current_time().get_time(), m_Rfs_f_Rcs.object->get_name(), m_Afs_f_Acs.object->get_name(),
-	       impulseR_Rcs.real_length(), impulserotR_Rcs.real_length());
-    }
     IVP_DOUBLE debugfactor = 0.01f;
     if (coreR && !coreR->physical_unmoveable) {
 	coreR->push_core(&pointR_Rcs, &impulseR_Rcs, &impulseR_ws);
