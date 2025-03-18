@@ -308,7 +308,7 @@ const IVP_Compact_Edge *IVP_Compact_Edge::get_opposite() const
 
 IVP_Compact_Edge *IVP_Compact_Edge::get_opposite()
 {
-    int idx = get_opposite_index(); // index is relative!
+    int idx = opposite_index; // index is relative!
     return (IVP_Compact_Edge *)(this + idx);
 }
 
