@@ -109,6 +109,7 @@ public:
     inline       IVP_Compact_Edge *get_first_edge()       { return &c_three_edges[0]; }
 
     inline const IVP_Compact_Edge *get_edge(int index) const { return &c_three_edges[index]; }
+    inline IVP_Compact_Edge *get_edge(int index) { return &c_three_edges[index]; }
     inline const IVP_Compact_Ledge *get_compact_ledge() const;
     inline const IVP_Compact_Triangle *get_next_tri() const { return this+1; }
     inline       IVP_Compact_Triangle *get_next_tri()       { return this+1; }
