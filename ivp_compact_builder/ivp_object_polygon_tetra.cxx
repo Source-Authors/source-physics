@@ -1402,7 +1402,7 @@ void IVP_Object_Polygon_Tetra::add_edge_to_min_list(IVP_Tri_Edge *edge,P_HASH_CL
     if (opp<edge) edge = opp;
     IVP_ASSERT(edge->tmp.gen.hash_class == P_HASH_CLASS_NONE);
     min_hash[hash_class]->add((void *)edge,rating);
-    edge->tmp.gen.hash_class = hash_class;
+    edge->tmp.gen.hash_class = static_cast<char>(hash_class);
 }
 
 void IVP_Object_Polygon_Tetra::remove_edge_from_min_list(IVP_Tri_Edge *edge){
