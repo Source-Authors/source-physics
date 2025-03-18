@@ -853,8 +853,8 @@ delaying_test:
 
 void IVP_Impact_Solver::delay_decision(IVP_Core *pushed_cores[2]) {
     //for movables increase impact counter 
-    core[0]->impacts_since_last_PSI+=(1-(int)core[0]->physical_unmoveable);
-    core[1]->impacts_since_last_PSI+=(1-(int)core[1]->physical_unmoveable);
+    core[0]->impacts_since_last_PSI+=static_cast<short>(1-(bool)core[0]->physical_unmoveable);
+    core[1]->impacts_since_last_PSI+=static_cast<short>(1-(bool)core[1]->physical_unmoveable);
     
     if(delaying_is_allowed) {
 		
