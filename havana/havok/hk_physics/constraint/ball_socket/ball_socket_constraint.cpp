@@ -159,7 +159,7 @@ void hk_Ball_Socket_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_
 	query_engine.update_velocities(HK_BODY_B, b1);
 	
 	hk_Vector3 delta_dist_3;
-	hk_Preallocated_Dense_Vector delta (delta_dist_3.get_real_pointer(), 3, 4);
+	hk_Preallocated_Dense_Vector delta (delta_dist_3.get_real_pointer(), 3, 4); //-V112
 
 	delta_dist_3.set_mul( tau_factor * m_tau * pi.get_inv_delta_time(), dir );
 	delta_dist_3.add_mul( -1.0f * damp_factor * m_strength, *(hk_Vector3 *) approaching_velocity );

@@ -336,11 +336,11 @@ public:
 #else
     static IVP_DOUBLE fabsd(IVP_DOUBLE f){ return fabs(f); }
     static IVP_DOUBLE ivp_sqrtf(IVP_DOUBLE f){ return sqrt(f); }
-    static IVP_DOUBLE sqrtd(IVP_DOUBLE f){ return sqrt(f); }
+    static IVP_DOUBLE sqrtd(IVP_DOUBLE f){ return sqrt(f); } //-V524
     static IVP_DOUBLE ivp_sinf(IVP_DOUBLE f) { return sin(f); }
     static IVP_DOUBLE ivp_cosf(IVP_DOUBLE f) { return cos(f); }
-    static IVP_DOUBLE sind(IVP_DOUBLE f) { return sin(f); }
-    static IVP_DOUBLE cosd(IVP_DOUBLE f) { return cos(f); }
+    static IVP_DOUBLE sind(IVP_DOUBLE f) { return sin(f); } //-V524
+    static IVP_DOUBLE cosd(IVP_DOUBLE f) { return cos(f); } //-V524
     static IVP_DOUBLE acosd(IVP_DOUBLE f){ return acos(f); }
     static IVP_DOUBLE asind(IVP_DOUBLE f){ return asin(f); }
     static IVP_DOUBLE atand(IVP_DOUBLE f){ return atan(f); }

@@ -16,8 +16,6 @@ hk_Local_Constraint_System::hk_Local_Constraint_System(hk_Environment* env, hk_L
 	: hk_Link_EF(env)
 {
 	m_environment = env;
-	m_size_of_all_vmq_storages = 0;
-	m_is_active = 0;
 	m_errorCount = 0;
 	m_client_data = NULL;
 	//m_scErrorThisTick = Four_Zeros;
@@ -29,6 +27,9 @@ hk_Local_Constraint_System::hk_Local_Constraint_System(hk_Environment* env, hk_L
 	m_size_of_all_vmq_storages = 0;
 	m_is_active = false;
 	m_errorThisTick = 0;
+
+	// dimhotepus: Initialize penetration pairs.
+	memset(m_penetrationPairs, 0, sizeof(m_penetrationPairs));
 
 	clear_error();
 }
@@ -238,9 +239,9 @@ void hk_Local_Constraint_System::get_effected_entities(hk_Array<hk_Entity*>& ent
 
 //virtual hk_real get_minimum_simulation_frequency(hk_Array<hk_Entity> *);
 
-IVP_FLOAT GetMoveableMass(IVP_Core* pCore)
+IVP_FLOAT GetMoveableMass(const IVP_Core* pCore)
 {
-	if (pCore->movement_state & (IVP_MT_STATIC | IVP_MT_SLOW)) {
+	if (static_cast<int>(pCore->movement_state) & (IVP_MT_STATIC | IVP_MT_SLOW)) {
 		return pCore->get_rot_inertia()->hesse_val;
 	}
 

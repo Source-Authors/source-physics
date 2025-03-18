@@ -20,7 +20,7 @@ class hk_Ball_Socket_BP  //: public hk_Effector_BP
 			m_bodies[1] = UINT_MAX;
 		}
 
-		void set_position_os ( int bodyIndex, hk_Vector3 &position_os )
+		void set_position_os ( int bodyIndex, const hk_Vector3 &position_os )
 		{
 			m_translation_os_ks[bodyIndex] = position_os;
 		}

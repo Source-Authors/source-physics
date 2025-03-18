@@ -11,7 +11,7 @@ enum IVP_CONSTRAINT_AXIS_TYPE {
     IVP_CONSTRAINT_AXIS_LIMITED = 0x2,     // this axis has a limited area
     //IVP_CONSTRAINT_AXIS_NOT_LIMITED = 0xD, // Do not use this constant
     //IVP_CONSTRAINT_AXIS_NOT_FIXED = 0xE,    // Do not use this constant
-    IVP_CONSTRAINT_AXIS_DUMMY = 0xffffffff
+    IVP_CONSTRAINT_AXIS_DUMMY = 0xffffffff //-V112
 };
 
 enum IVP_CONSTRAINT_FORCE_EXCEED {  // Do not use this enum yet.

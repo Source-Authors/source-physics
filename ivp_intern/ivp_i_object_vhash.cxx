@@ -24,10 +24,10 @@ int IVP_Object_Callback_Table_Hash::object_to_index(IVP_Real_Object *real_object
     return hash_index( (char *)&real_obj, sizeof(real_obj) );
 }
 
-IVP_BOOL IVP_Object_Callback_Table_Hash::compare(void *elem0, void *elem1) const
+IVP_BOOL IVP_Object_Callback_Table_Hash::compare(const void *elem0, const void *elem1) const
 {
-    IVP_Object_Callback_Table *table0 = (IVP_Object_Callback_Table *)elem0;
-    IVP_Object_Callback_Table *table1 = (IVP_Object_Callback_Table *)elem1;
+    const IVP_Object_Callback_Table *table0 = (const IVP_Object_Callback_Table *)elem0;
+    const IVP_Object_Callback_Table *table1 = (const IVP_Object_Callback_Table *)elem1;
 
     if ( table0->real_object != table1->real_object) return(IVP_FALSE);
     

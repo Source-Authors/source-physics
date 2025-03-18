@@ -9,7 +9,7 @@ public:
 	static inline void do_angular_limit(
 		hk_PSI_Info& pi,
 		hk_Rigid_Body *b0,
-		hk_Vector3 &rot_axis_Ref_ws,		// the axis the objects are rotating around
+		const hk_Vector3 &rot_axis_Ref_ws,		// the axis the objects are rotating around
 		hk_real    alpha,				// the current angle
 		hk_Rigid_Body *b1,
 		hk_Constraint_Limit &limit,
@@ -89,10 +89,10 @@ public:
 	}
 
 	static inline void init_angular_limit(
-		hk_Vector3 &cos_axis_Ref_ws,	// the axis of Ref object which is used to sinus measure the angle
-		hk_Vector3 &sin_axis_Ref_ws,	// the axis of Ref object which is used to cosin measure the angle
+		const hk_Vector3 &cos_axis_Ref_ws,	// the axis of Ref object which is used to sinus measure the angle
+		const hk_Vector3 &sin_axis_Ref_ws,	// the axis of Ref object which is used to cosin measure the angle
 		hk_Constraint_Limit &limit,
-		hk_Vector3 &axis_Att_ws
+		const hk_Vector3 &axis_Att_ws
 		)
 	{
 		hk_real sin_alpha = axis_Att_ws.dot( sin_axis_Ref_ws );
@@ -132,9 +132,9 @@ public:
 		hk_PSI_Info& pi,
 		hk_Rigid_Body *b0,
 		hk_Rigid_Body *b1,
-		hk_Vector3 &pos_ws,
-		hk_Vector3 &axis_ws,		// the axis the objects are rotating around
-		hk_Vector3 &delta_ws,		// the axis of Att object which is used to measure the angle (should be equal to the sin_axis to get zero angles
+		const hk_Vector3 &pos_ws,
+		const hk_Vector3 &axis_ws,		// the axis the objects are rotating around
+		const hk_Vector3 &delta_ws,		// the axis of Att object which is used to measure the angle (should be equal to the sin_axis to get zero angles
 		hk_Constraint_Limit &limit,
 		hk_real		tau_factor,
 		hk_real		damp_factor
@@ -200,8 +200,8 @@ public:
 	}
 
 	static inline void init_linear_limit(
-		hk_Vector3 &axis_ws,
-		hk_Vector3 &delta,
+		const hk_Vector3 &axis_ws,
+		const hk_Vector3 &delta,
 		hk_Constraint_Limit &limit
 		)
 	{
@@ -214,8 +214,8 @@ public:
 		hk_PSI_Info& pi,
 		hk_Rigid_Body *b0,
 		hk_Rigid_Body *b1,
-		hk_Vector3  &axis_ws,		// the axis the objects are rotating around
-		hk_Vector3	&plane_normal_ws,		// the plane we are clipping 
+		const hk_Vector3  &axis_ws,		// the axis the objects are rotating around
+		const hk_Vector3	&plane_normal_ws,		// the plane we are clipping 
 		hk_real	    alpha,			// the current distance (e.g. initialized with axis_ws.dot( plane_normal_ws )
 		hk_Constraint_Limit &limit,
 		hk_real		tau_factor,

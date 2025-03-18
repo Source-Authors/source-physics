@@ -62,7 +62,9 @@ union IVP_Core_Friction_Info {
 class IVP_Vector_of_Objects:public  IVP_U_Vector<IVP_Real_Object> {
     IVP_Real_Object *elem_buffer[1];
 public:
-    IVP_Vector_of_Objects(): IVP_U_Vector<IVP_Real_Object>( (void **)&elem_buffer[0],1 ){}
+    IVP_Vector_of_Objects(): IVP_U_Vector<IVP_Real_Object>( (void **)&elem_buffer[0],1 ){
+        elem_buffer[0] = nullptr;
+    }
     void reset(){ elems = (void **)&elem_buffer[0]; memsize = 1; }
 };
 /********************************************************************************

@@ -61,7 +61,7 @@ inline void IVP_U_Float_Point::add_multiple(const IVP_U_Float_Point *v2, IVP_DOU
 }
 
 inline void IVP_U_Float_Point::set_multiple(const IVP_U_Quat *q_source, IVP_DOUBLE f){
-    this->set_multiple( (IVP_U_Float_Point *)q_source, f);
+    this->set_multiple( (const IVP_U_Float_Point *)q_source, f);
 }
 
 
@@ -160,43 +160,43 @@ inline IVP_RETURN_TYPE IVP_Inline_Math::invert_2x2_matrix(
 
 
 inline void IVP_U_Matrix3::get_row(IVP_COORDINATE_INDEX row, IVP_U_Point *row_out) const {
-    row_out->set( &rows[row] );
+    row_out->set( &rows[static_cast<int>(row)] );
 }
 
 inline void IVP_U_Matrix3::get_row(IVP_COORDINATE_INDEX row, IVP_U_Float_Point *row_out) const {
-    row_out->set( &rows[row] );
+    row_out->set( &rows[static_cast<int>(row)] );
 }
 
 inline void IVP_U_Matrix3::get_col(IVP_COORDINATE_INDEX col, IVP_U_Point *col_out) const {
-    col_out->k[0] = get_elem(0,col);
-    col_out->k[1] = get_elem(1,col);
-    col_out->k[2] = get_elem(2,col);
+    col_out->k[0] = get_elem(0,static_cast<int>(col));
+    col_out->k[1] = get_elem(1,static_cast<int>(col));
+    col_out->k[2] = get_elem(2,static_cast<int>(col));
 }
 
 inline void IVP_U_Matrix3::get_col(IVP_COORDINATE_INDEX col, IVP_U_Float_Point *col_out) const {
-    col_out->k[0] = get_elem(0,col);
-    col_out->k[1] = get_elem(1,col);
-    col_out->k[2] = get_elem(2,col);
+    col_out->k[0] = get_elem(0,static_cast<int>(col));
+    col_out->k[1] = get_elem(1,static_cast<int>(col));
+    col_out->k[2] = get_elem(2,static_cast<int>(col));
 }
 
 inline void IVP_U_Matrix3::set_row(IVP_COORDINATE_INDEX row, const IVP_U_Point *row_in) {
-    rows[row].set( row_in );
+    rows[static_cast<int>(row)].set( row_in );
 }
 
 inline void IVP_U_Matrix3::set_row(IVP_COORDINATE_INDEX row, const IVP_U_Float_Point *row_in) {
-    rows[row].set( row_in );
+    rows[static_cast<int>(row)].set( row_in );
 }
 
 inline void IVP_U_Matrix3::set_col(IVP_COORDINATE_INDEX col, const IVP_U_Point *col_in) {
-    set_elem( 0,col, col_in->k[0]);
-    set_elem( 1,col, col_in->k[1]);
-    set_elem( 2,col, col_in->k[2]);
+    set_elem( 0,static_cast<int>(col), col_in->k[0]);
+    set_elem( 1,static_cast<int>(col), col_in->k[1]);
+    set_elem( 2,static_cast<int>(col), col_in->k[2]);
 }
 
 inline void IVP_U_Matrix3::set_col(IVP_COORDINATE_INDEX col, const IVP_U_Float_Point *col_in) {
-    set_elem( 0,col, col_in->k[0]);
-    set_elem( 1,col, col_in->k[1]);
-    set_elem( 2,col, col_in->k[2]);
+    set_elem( 0,static_cast<int>(col), col_in->k[0]);
+    set_elem( 1,static_cast<int>(col), col_in->k[1]);
+    set_elem( 2,static_cast<int>(col), col_in->k[2]);
 }
 
 

@@ -37,7 +37,7 @@ template<class T>
 class IVP_U_Set: public IVP_VHash {
   //friend class IVP_U_Set_Enumerator;
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override { return (elem0 == elem1)?IVP_TRUE:IVP_FALSE; }
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override { return (elem0 == elem1)?IVP_TRUE:IVP_FALSE; }
     int      elem_to_index(T *elem){ return fast_hash_index((intp) elem); }
 public:
   void add_element(T *elem){

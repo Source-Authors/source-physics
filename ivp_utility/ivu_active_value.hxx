@@ -141,7 +141,7 @@ public:
     virtual ~IVP_U_Active_Value();
     IVP_U_Active_Value(const char *name_);
     
-    const char *get_name() { return name; }
+    const char *get_name() const { return name; }
 };
 
 class IVP_U_Active_Float: public  IVP_U_Active_Value //

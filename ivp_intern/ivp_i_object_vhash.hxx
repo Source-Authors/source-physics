@@ -18,7 +18,7 @@ public:
 class IVP_Object_Callback_Table_Hash : protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int      object_to_index(IVP_Real_Object *real_object);
 
 public:

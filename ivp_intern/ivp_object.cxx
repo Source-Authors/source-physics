@@ -961,7 +961,7 @@ int IVP_Controller_VHash::controller_to_index(IVP_Controller *controller)
     return hash_index( (char *)&controller, sizeof(controller) );
 }
 
-IVP_BOOL IVP_Controller_VHash::compare(void *elem0, void *elem1) const
+IVP_BOOL IVP_Controller_VHash::compare(const void *elem0, const void *elem1) const
 {
     if ( elem0 !=elem1 ) return(IVP_FALSE);   
     return(IVP_TRUE);

@@ -309,7 +309,7 @@ void hk_Ragdoll_Constraint::step_constraint( hk_PSI_Info& pi, void *mem, hk_real
 		query_engine.update_velocities(HK_BODY_B, b1);
 		
 		hk_Vector3 delta_dist_3;
-		hk_Preallocated_Dense_Vector delta (delta_dist_3.get_real_pointer(), 3, 4);
+		hk_Preallocated_Dense_Vector delta (delta_dist_3.get_real_pointer(), 3, 4); //-V112
 
 		hk_real *approaching_velocity = query_engine.get_vmq_storage().get_velocities();
 		delta_dist_3.set_mul( tau_factor * m_tau * pi.get_inv_delta_time(), dir );

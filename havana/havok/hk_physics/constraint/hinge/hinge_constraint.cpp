@@ -109,7 +109,7 @@ hk_Hinge_Constraint::hk_Hinge_Constraint(hk_Environment* env,
 		const hk_Hinge_BP* bp, hk_Rigid_Body* a ,hk_Rigid_Body* b )
 	: hk_Constraint( env, a, b, HK_PRIORITY_LOCAL_CONSTRAINT)
 {
-	init_constraint(bp);
+	hk_Hinge_Constraint::init_constraint(bp);
 }
 
 
@@ -120,7 +120,7 @@ hk_Hinge_Constraint::hk_Hinge_Constraint(
 	hk_Rigid_Body* b )
 	: hk_Constraint( constraint_system, a, b, HK_PRIORITY_LOCAL_CONSTRAINT, HK_NEXT_MULTIPLE_OF(16,sizeof(hk_Hinge_Constraint_Work)))
 {
-	init_constraint(bp);
+	hk_Hinge_Constraint::init_constraint(bp);
 }
 
 
@@ -199,8 +199,8 @@ int	hk_Hinge_Constraint::setup_and_step_constraint(
 		query_engine.add_angular( 3, HK_BODY_A, b0, perp_x_ws,  1.0f );
 		query_engine.add_angular( 3, HK_BODY_B, b1, perp_x_ws, -1.0f );
 
-		query_engine.add_angular( 4, HK_BODY_A, b0, perp_y_ws,  1.0f );
-		query_engine.add_angular( 4, HK_BODY_B, b1, perp_y_ws, -1.0f );
+		query_engine.add_angular( 4, HK_BODY_A, b0, perp_y_ws,  1.0f ); //-V112
+		query_engine.add_angular( 4, HK_BODY_B, b1, perp_y_ws, -1.0f ); //-V112
 		
 		query_engine.commit_entries(5);
 	}
@@ -216,7 +216,7 @@ int	hk_Hinge_Constraint::setup_and_step_constraint(
 		delta_dist.set_mul( pi.get_inv_delta_time(), delta_dist);
 
 		work.m_correction(3) =  pi.get_inv_delta_time() * perp_y_ws.dot(line_ws[1]);
-		work.m_correction(4) =  pi.get_inv_delta_time() * -perp_x_ws.dot(line_ws[1]);
+		work.m_correction(4) =  pi.get_inv_delta_time() * -perp_x_ws.dot(line_ws[1]); //-V112
 
 		delta.set_mul_add_mul( m_tau * tau_factor, work.m_correction, -1.0f * m_strength * strength_factor, vmq_velocity );
 	}

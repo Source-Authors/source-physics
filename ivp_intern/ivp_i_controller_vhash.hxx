@@ -14,7 +14,7 @@ class IVP_Controller_VHash : protected IVP_VHash
 {
 protected:
     IVP_Real_Object *real_object;
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int      controller_to_index(IVP_Controller *cntrl);
 
 public:

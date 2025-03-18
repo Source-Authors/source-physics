@@ -119,8 +119,8 @@ int hk_Fixed_Constraint::setup_and_step_constraint(hk_PSI_Info& pi, void *mem, h
 			qe.add_angular(3, HK_BODY_A, b0, joint_axes_ws.get_column(0),  1.0f);
 			qe.add_angular(3, HK_BODY_B, b1, joint_axes_ws.get_column(0), -1.0f);
 
-			qe.add_angular(4, HK_BODY_A, b0, joint_axes_ws.get_column(1),  1.0f);
-			qe.add_angular(4, HK_BODY_B, b1, joint_axes_ws.get_column(1), -1.0f);
+			qe.add_angular(4, HK_BODY_A, b0, joint_axes_ws.get_column(1),  1.0f); //-V112
+			qe.add_angular(4, HK_BODY_B, b1, joint_axes_ws.get_column(1), -1.0f); //-V112
 
 			qe.add_angular(5, HK_BODY_A, b0, joint_axes_ws.get_column(2),  1.0f);
 			qe.add_angular(5, HK_BODY_B, b1, joint_axes_ws.get_column(2), -1.0f);
@@ -140,7 +140,7 @@ int hk_Fixed_Constraint::setup_and_step_constraint(hk_PSI_Info& pi, void *mem, h
 		delta_dist.set_mul( pi.get_inv_delta_time(), delta_dist );
 
 		work.m_correction(3) = pi.get_inv_delta_time() * t1.get_column(1).dot(joint_axes_ws.get_column(2));
-		work.m_correction(4) = pi.get_inv_delta_time() * -t1.get_column(0).dot(joint_axes_ws.get_column(2));
+		work.m_correction(4) = pi.get_inv_delta_time() * -t1.get_column(0).dot(joint_axes_ws.get_column(2)); //-V112
 		work.m_correction(5) = pi.get_inv_delta_time() * t1.get_column(0).dot(joint_axes_ws.get_column(1));
 
 		delta.set_mul_add_mul( m_tau * tau_factor, work.m_correction, -1.0f * m_strength * strength_factor, vmq_velocity );

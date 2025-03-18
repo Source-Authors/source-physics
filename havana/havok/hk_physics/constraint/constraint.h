@@ -38,7 +38,7 @@ public:
 		return m_constraint_system;
 	}
 
-	inline void constraint_system_deleted_event( hk_Local_Constraint_System *pSystem )
+	inline void constraint_system_deleted_event( const hk_Local_Constraint_System *pSystem )
 	{
 		if ( m_constraint_system == pSystem )
 			m_constraint_system = NULL;

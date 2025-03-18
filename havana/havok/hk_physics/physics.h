@@ -127,12 +127,12 @@ public:
 		return IVP_Core::get_inv_mass();
 	}
 
-	hk_Diagonal_Matrix &_get_inv_body_inertia(){
-		return *(hk_Diagonal_Matrix *)get_inv_rot_inertia();
+	const hk_Diagonal_Matrix &_get_inv_body_inertia(){
+		return *(const hk_Diagonal_Matrix *)get_inv_rot_inertia();
 	}
 
-	hk_Diagonal_Matrix &_get_body_inertia(){
-		return *(hk_Diagonal_Matrix *)get_rot_inertia();
+	const hk_Diagonal_Matrix &_get_body_inertia(){
+		return *(const hk_Diagonal_Matrix *)get_rot_inertia();
 	}
 
 	void add_to_mass_matrix_inv(	hk_Core_VMQ_Input &input,	hk_Dense_Matrix& matrix_out,	hk_real velocities_out[]);

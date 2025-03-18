@@ -11,7 +11,7 @@ class IVP_U_Active_Value;
 class IVP_Active_Value_Hash : protected IVP_VHash
 {
 protected:
-    IVP_BOOL compare(void *elem0, void *elem1) const override;
+    IVP_BOOL compare(const void *elem0, const void *elem1) const override;
     int      object_to_index(IVP_U_Active_Value *av);
 
 public:

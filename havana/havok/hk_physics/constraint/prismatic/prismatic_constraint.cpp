@@ -178,7 +178,7 @@ int	hk_Prismatic_Constraint::setup_and_step_constraint(
 	}
 	{
 		work.m_correction(3) = tau_factor * m_tau * pi.get_inv_delta_time() * delta_ws.dot( perp_axis_ws );
-		work.m_correction(4) = tau_factor * m_tau * pi.get_inv_delta_time() * delta_ws.dot( perp_axis2_ws );
+		work.m_correction(4) = tau_factor * m_tau * pi.get_inv_delta_time() * delta_ws.dot( perp_axis2_ws ); //-V112
 	}
 
 	hk_Vector3 pos_ws;
@@ -214,8 +214,8 @@ int	hk_Prismatic_Constraint::setup_and_step_constraint(
 			query_engine.add_linear( 3, HK_BODY_A, b0, mcr_0, perp_axis_ws,  1.0f );
 			query_engine.add_linear( 3, HK_BODY_B, b1, mcr_1, perp_axis_ws, -1.0f );
 
-			query_engine.add_linear( 4, HK_BODY_A, b0, mcr_0, perp_axis2_ws, 1.0f );
-			query_engine.add_linear( 4, HK_BODY_B, b1, mcr_1, perp_axis2_ws,-1.0f );
+			query_engine.add_linear( 4, HK_BODY_A, b0, mcr_0, perp_axis2_ws, 1.0f ); //-V112
+			query_engine.add_linear( 4, HK_BODY_B, b1, mcr_1, perp_axis2_ws,-1.0f ); //-V112
 		}
 		query_engine.commit_entries(5);
 	}

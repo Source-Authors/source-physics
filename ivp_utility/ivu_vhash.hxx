@@ -38,7 +38,7 @@ protected:
 
     IVP_VHash(int size);// assert(size = 2**x)
     IVP_VHash(IVP_VHash_Elem *static_elems, int size);// assert(size = 2**x)
-    virtual IVP_BOOL compare(void *elem0, void *elem1)const = 0;  // return TRUE if equal
+    virtual IVP_BOOL compare(const void *elem0, const void *elem1)const = 0;  // return TRUE if equal
 public:
     static inline int hash_index(const char *data, intp size);            // useable index calculation, result is [0,0xfffffff]
     static inline int fast_hash_index(int key);       // useable index calculation when size == 4 , result is [0,0xfffffff]

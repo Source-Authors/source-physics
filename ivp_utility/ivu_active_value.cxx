@@ -37,10 +37,10 @@ int IVP_Active_Value_Hash::object_to_index(IVP_U_Active_Value *av)
     return hash_index( name, strlen( name) );
 }
 
-IVP_BOOL IVP_Active_Value_Hash::compare(void *elem0, void *elem1) const
+IVP_BOOL IVP_Active_Value_Hash::compare(const void *elem0, const void *elem1) const
 {
-    IVP_U_Active_Value *av0 = (IVP_U_Active_Value *)elem0;
-    IVP_U_Active_Value *av1 = (IVP_U_Active_Value *)elem1;
+    const IVP_U_Active_Value *av0 = (const IVP_U_Active_Value *)elem0;
+    const IVP_U_Active_Value *av1 = (const IVP_U_Active_Value *)elem1;
 
     const char *name0 = av0->get_name();
     const char *name1 = av1->get_name();

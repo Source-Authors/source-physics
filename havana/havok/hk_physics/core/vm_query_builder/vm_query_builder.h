@@ -20,7 +20,7 @@ class hk_VMQ_Storage
 	public:
 
 		inline hk_VMQ_Storage() = default;
-		inline ~hk_VMQ_Storage(){ }
+		inline ~hk_VMQ_Storage() = default; 
 
 		inline void initialize()
 		{
@@ -58,7 +58,7 @@ class hk_VMQ_Storage
 
 	protected:
 
-		hk_real m_velocities[ HK_NEXT_MULTIPLE_OF(4,N) ];
+		hk_real m_velocities[ HK_NEXT_MULTIPLE_OF(4,N) ]; //-V112
 		char m_buffer_0[ HK_MAX_SIZEOF_CACHED_FORCE_AXIS_DESCRIPTION * N];
 		char m_buffer_1[ HK_MAX_SIZEOF_CACHED_FORCE_AXIS_DESCRIPTION * N];
 		HK_ALIGNED_VARIABLE(hk_real m_impulse_info[2][sizeof( hk_Virtual_Mass_Query ) * N / sizeof( hk_real)],16);
@@ -121,7 +121,7 @@ class hk_VM_Query_Builder
 		{
 			HK_ASSERT(	int(index_offset + m_vmq_offset/sizeof(hk_Virtual_Mass_Query)) < m_vmq_storage.length() );
 
-			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(body_index), index_offset);
+			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(static_cast<int>(body_index)), index_offset);
 			vmq.m_linear.set_zero();
 			vmq.m_angular.set_mul( sign, axis_ws );
 
@@ -137,7 +137,7 @@ class hk_VM_Query_Builder
 		{
 			HK_ASSERT( int(index_offset + m_vmq_offset/sizeof(hk_Virtual_Mass_Query)) < m_vmq_storage.length() );
 
-			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(body_index), index_offset);
+			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(static_cast<int>(body_index)), index_offset);
 
 			hk_Vector3 mass_center_relative; mass_center_relative.set_sub( position_ws, rb->get_center_of_mass() );
 
@@ -154,7 +154,7 @@ class hk_VM_Query_Builder
 		{
 			HK_ASSERT( int(index_offset + m_vmq_offset/sizeof(hk_Virtual_Mass_Query)) < m_vmq_storage.length() );
 
-			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(body_index), index_offset);
+			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(static_cast<int>(body_index)), index_offset);
 			const hk_Vector3 &mass_center_relative = pos_rel.m_vector;
 
 			vmq.m_linear.set_mul( signum, direction_ws);
@@ -172,14 +172,14 @@ class hk_VM_Query_Builder
 		{
 			HK_ASSERT( int(index_offset + m_vmq_offset/sizeof(hk_Virtual_Mass_Query)) < m_vmq_storage.length() );
 
-			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(body_index), index_offset);
+			hk_Virtual_Mass_Query &vmq = *offset_vmq (m_vmq_storage.get_vmq(static_cast<int>(body_index)), index_offset);
 			vmq.m_linear.set_zero();
 			vmq.m_linear( axis ) = signum;
 
 			const hk_Vector3 &mcr = mass_center_relative.m_vector;
 #if 1
-			if (axis == 0){			vmq.m_angular.set( 0.0f, signum * mcr.z, -mcr.y * signum  );
-			}else if ( axis == 1){	vmq.m_angular.set( -mcr.z * signum, 0.0f, mcr.x *signum );
+			if (axis == HK_X_DIRECTION){			vmq.m_angular.set( 0.0f, signum * mcr.z, -mcr.y * signum  );
+			}else if ( axis == HK_Y_DIRECTION){	vmq.m_angular.set( -mcr.z * signum, 0.0f, mcr.x *signum );
 			}else{					vmq.m_angular.set( mcr.y * signum, -mcr.x * signum, 0.0f   );
 			}
 #else
@@ -195,7 +195,7 @@ class hk_VM_Query_Builder
 		inline void commit_entries(int size)
 		{
 			m_dense_matrix_offset += size;
-			m_vmq_offset += size * sizeof( hk_Virtual_Mass_Query );
+			m_vmq_offset += size * static_cast<unsigned>(sizeof( hk_Virtual_Mass_Query ));
 		}
 
 		inline void commit(hk_Body_Index body_index, hk_Rigid_Body *rb)
@@ -207,7 +207,7 @@ class hk_VM_Query_Builder
 			hk_Dense_Matrix &matrix = m_vmq_storage.get_dense_matrix();
 			hk_real *velocities = m_vmq_storage.get_velocities();
 
-			core->add_to_mass_matrix_inv( m_input[ body_index ],matrix, velocities);
+			core->add_to_mass_matrix_inv( m_input[ static_cast<int>(body_index) ],matrix, velocities);
 		}
 
 		inline void clear_velocities(hk_Body_Index body_index, hk_Rigid_Body *rb)
@@ -217,7 +217,7 @@ class hk_VM_Query_Builder
 
 		inline void update_velocities(hk_Body_Index body_index, hk_Rigid_Body *rb)
 		{
-			rb->get_rigid_body_core()->add_to_velocities(	m_input[ body_index ],
+			rb->get_rigid_body_core()->add_to_velocities(	m_input[ static_cast<int>(body_index) ],
 															m_vmq_storage.get_velocities());
 		}
 
@@ -231,7 +231,7 @@ class hk_VM_Query_Builder
 					HK_CHECK( impulses[i] < HK_MAX_IMPULSE );
 				}
 			}
-			rb->get_rigid_body_core()->apply_impulses(	m_input[ body_index ],	impulses);
+			rb->get_rigid_body_core()->apply_impulses(	m_input[ static_cast<int>(body_index) ],	impulses);
 		}
 	protected:
 

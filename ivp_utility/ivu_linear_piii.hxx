@@ -247,7 +247,7 @@ inline void IVP_U_Quat::inline_set_mult_quat(const IVP_U_Quat* q1,const  IVP_U_Q
 }
 
 inline void IVP_U_Quat::inline_set_mult_quat(const IVP_U_Quat* q1,const  IVP_U_Float_Quat* q2) {
-    this->inline_set_mult_quat( q1, (IVP_U_Quat *)q2 );
+    this->inline_set_mult_quat( q1, (const IVP_U_Quat *)q2 );
 }
 
 void IVP_U_Quat::normize_correct_step(int steps) {
@@ -258,7 +258,7 @@ void IVP_U_Quat::normize_correct_step(int steps) {
 	if (steps > 1)    factor += 0.5f - ( factor * factor * square );
 	if (steps > 2)    factor += 0.5f - ( factor * factor * square );
 	if (steps > 3)    factor += 0.5f - ( factor * factor * square );
-	if (steps > 4)    factor += 0.5f - ( factor * factor * square );
+	if (steps > 4)    factor += 0.5f - ( factor * factor * square ); //-V112
 	if (steps > 5)    factor += 0.5f - ( factor * factor * square );
 	quat->x *= factor;
 	quat->y *= factor;
