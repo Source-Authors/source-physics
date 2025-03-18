@@ -27,13 +27,17 @@ enum IVP_SURMAN_TYPE {
 class IVP_Vector_of_Ledges_16: public IVP_U_BigVector<IVP_Compact_Ledge> {
     IVP_Compact_Ledge *elem_buffer[16];
 public:
-    IVP_Vector_of_Ledges_16(): IVP_U_BigVector<IVP_Compact_Ledge>( (void **)&elem_buffer[0],16 ){}
+    IVP_Vector_of_Ledges_16(): IVP_U_BigVector<IVP_Compact_Ledge>( (void **)&elem_buffer[0],16 ){
+        memset(elem_buffer, 0, sizeof(elem_buffer));
+    }
 };
 
 class IVP_Vector_of_Ledges_256: public IVP_U_BigVector<IVP_Compact_Ledge> {
     IVP_Compact_Ledge *elem_buffer[256];
 public:
-    IVP_Vector_of_Ledges_256(): IVP_U_BigVector<IVP_Compact_Ledge>( (void **)&elem_buffer[0],256 ){}
+    IVP_Vector_of_Ledges_256(): IVP_U_BigVector<IVP_Compact_Ledge>( (void **)&elem_buffer[0],256 ){
+        memset(elem_buffer, 0, sizeof(elem_buffer));
+    }
 };
 
 

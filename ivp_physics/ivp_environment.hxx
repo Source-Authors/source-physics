@@ -93,7 +93,7 @@ public:
     int impact_delayed_counter;	// number of impacts, where one object gets a delayed speed update
     int impact_coll_checks;	// number of AT collision checks during impacts
     int impact_unmov;
-    
+
     // collision checks section
     int sum_of_mindists;	// number of mindists (not cleared by clear_statistic)
     int mindists_generated;	// number of mindist just created
@@ -465,13 +465,17 @@ public:
 class IVP_Vector_of_Hulls_128: public IVP_U_Vector<IVP_Hull_Manager_Base> {
     IVP_Hull_Manager_Base *elem_buffer[128];
 public:
-    IVP_Vector_of_Hulls_128(): IVP_U_Vector<IVP_Hull_Manager_Base>((void **)&elem_buffer[0], 128){}
+    IVP_Vector_of_Hulls_128(): IVP_U_Vector<IVP_Hull_Manager_Base>((void **)&elem_buffer[0], 128){
+        memset(elem_buffer, 0, sizeof(elem_buffer));
+    }
 };
 
 class IVP_Vector_of_Cores_128: public IVP_U_Vector<IVP_Core> {
     void *elem_buffer[128];
 public:
-    IVP_Vector_of_Cores_128(): IVP_U_Vector<IVP_Core>(&elem_buffer[0], 128){}
+    IVP_Vector_of_Cores_128(): IVP_U_Vector<IVP_Core>(&elem_buffer[0], 128){
+        memset(elem_buffer, 0, sizeof(elem_buffer));
+    }
 };
 
 
