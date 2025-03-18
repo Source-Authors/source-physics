@@ -1803,9 +1803,11 @@ IVP_Friction_Core_Pair::~IVP_Friction_Core_Pair() {
 
 IVP_Friction_Core_Pair::IVP_Friction_Core_Pair()
 {
+    next_ease_nr_psi=1;
     last_impact_time_pair=-1000.0f; //negative time
     integrated_anti_energy=0.0f;
-    next_ease_nr_psi=1;
+    objs[0] = nullptr;
+    objs[1] = nullptr;
 }
 
 void IVP_Friction_Core_Pair::set_friction_vectors(IVP_U_Float_Point *average_friction) {
