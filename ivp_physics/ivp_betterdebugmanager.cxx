@@ -47,7 +47,7 @@ void IVP_BetterDebugmanager::dprint(IVP_DEBUG_CLASS class_id, const  char *forma
     char buffer[4096];
     va_list args;
 
-    va_start(args, formatstring);	
+    va_start(args, formatstring);	 //-V2019
     vsnprintf(buffer, sizeof(buffer), formatstring, args);
     va_end(args);
 
