@@ -477,7 +477,7 @@ void IVP_Contact_Point::recalc_friction_s_vals(){
     this->last_contact_point_ws.set( &info->contact_point_ws );
     // dimhotepus: Cache surface normal as needed by external code.
     // tmp_contact_info nulled in debug_clean_tmp_info.
-    this->last_surf_normal_ws.set( &info->surf_normal );
+    this->surf_normal_ws.set( &info->surf_normal );
 	}
 }
 

@@ -187,7 +187,7 @@ protected:
     IVP_Time last_time_of_recalc_friction_s_vals; // move to friction system
     IVP_U_Float_Point last_contact_point_ws;
     // dimhotepus: Cached surf_normal from tmp_contact_info as latter nulled.
-    IVP_U_Float_Point last_surf_normal_ws; // the normized normal of the contact surface (world space), pointing to second obj
+    IVP_U_Float_Point surf_normal_ws; // the normized normal of the contact surface (world space), pointing to second obj
 };
 
 class IVP_Contact_Point: public IVP_Contact_Point_Fast {

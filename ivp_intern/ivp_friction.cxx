@@ -1013,6 +1013,10 @@ IVP_Contact_Point::~IVP_Contact_Point(){
 	contact_situation.objects[0] = obj0;
 	contact_situation.objects[1] = obj1;
 
+	// dimhotepus: Set contact point and surface normal for delete notification.
+	contact_situation.surf_normal = surf_normal_ws;
+	contact_situation.contact_point_ws = last_contact_point_ws;
+
 	contact_situation.compact_edges[0] = get_synapse(0)->edge;
 	contact_situation.compact_edges[1] = get_synapse(1)->edge;
 
@@ -1071,7 +1075,7 @@ IVP_FLOAT IVP_Contact_Point_API::get_vert_force(IVP_Contact_Point *friction_hand
 void IVP_Contact_Point_API::get_surface_normal_ws(const IVP_Contact_Point* friction_handle, IVP_U_Float_Point* normal){
     // dimhotepus: Use cached surface normal as tmp_contact_info
 	// be nulled in debug_clean_tmp_info. 
-	*normal = friction_handle->last_surf_normal_ws;
+	*normal = friction_handle->surf_normal_ws;
 }
 
 void IVP_Friction_Info_For_Core::friction_info_insert_friction_dist(IVP_Contact_Point *dist)
