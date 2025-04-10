@@ -130,8 +130,8 @@ int    BigLong (int l)
     return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
-template<typename T, typename = std::enable_if_t<std::is_signed_v<T>>>
-constexpr T LittleLong (T l)
+template<typename T>
+constexpr std::enable_if_t<std::is_signed_v<T>, T> LittleLong (T l)
 {
     return l;
 }
