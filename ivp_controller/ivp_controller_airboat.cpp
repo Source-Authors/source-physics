@@ -747,11 +747,11 @@ void IVP_Controller_Raycast_Airboat::GetCarSystemDebugData( IVP_CarSystemDebugDa
 	}
 }
 
-void IVP_Controller_Raycast_Airboat::update_booster( IVP_FLOAT booster )
+void IVP_Controller_Raycast_Airboat::update_booster([[maybe_unused]] IVP_FLOAT booster)
 {
 }
 
-void IVP_Controller_Raycast_Airboat::change_max_body_force(IVP_POS_WHEEL wheel , IVP_FLOAT mforce)
+void IVP_Controller_Raycast_Airboat::change_max_body_force([[maybe_unused]] IVP_POS_WHEEL wheel, [[maybe_unused]] IVP_FLOAT mforce)
 {
 }
 

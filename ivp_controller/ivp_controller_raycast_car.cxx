@@ -668,7 +668,7 @@ void IVP_Controller_Raycast_Car::get_skid_info( IVP_Wheel_Skid_Info *array_of_sk
 	}
 }
 
-void IVP_Controller_Raycast_Car::set_powerslide(IVP_FLOAT front_accel, IVP_FLOAT rear_accel)
+void IVP_Controller_Raycast_Car::set_powerslide([[maybe_unused]] IVP_FLOAT front_accel, [[maybe_unused]] IVP_FLOAT rear_accel)
 {
 }
 
