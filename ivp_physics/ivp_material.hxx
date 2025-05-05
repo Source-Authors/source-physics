@@ -100,11 +100,11 @@ class IVP_Material_Manager
 {
     IVP_BOOL delete_on_env_delete; // see deconstructor
 public:
-    virtual [[nodiscard]] IVP_Material *get_material_by_index(const IVP_U_Point *world_position, int index); // returns the material, if material index in compact_triangle != 0
-    virtual [[nodiscard]] IVP_DOUBLE get_friction_factor(IVP_Contact_Situation *situation);	// returns values >0, value of 1.0f means object stands on a 45 degres hill
-    virtual [[nodiscard]] IVP_DOUBLE get_elasticity(IVP_Contact_Situation *situation);		// range [0, 1.0f[, the relative speed after a collision compared to the speed before
+    [[nodiscard]] virtual IVP_Material *get_material_by_index(const IVP_U_Point *world_position, int index); // returns the material, if material index in compact_triangle != 0
+    [[nodiscard]] virtual IVP_DOUBLE get_friction_factor(IVP_Contact_Situation *situation);	// returns values >0, value of 1.0f means object stands on a 45 degres hill
+    [[nodiscard]] virtual IVP_DOUBLE get_elasticity(IVP_Contact_Situation *situation);		// range [0, 1.0f[, the relative speed after a collision compared to the speed before
     // INTERN_START
-    virtual [[nodiscard]] IVP_DOUBLE get_adhesion(IVP_Contact_Situation *situation);		//
+    [[nodiscard]] virtual IVP_DOUBLE get_adhesion(IVP_Contact_Situation *situation);		//
     // INTERN_END
     IVP_Material_Manager(IVP_BOOL delete_on_env_delete);
     virtual ~IVP_Material_Manager(){}
