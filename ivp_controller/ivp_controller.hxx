@@ -5,6 +5,8 @@
 #ifndef IVP_CONTROLLER_INCLUDED
 #define IVP_CONTROLLER_INCLUDED
 
+#include <limits>
+
 #ifndef _IVP_ENVIRONMENT_INCLUDED
 #   include <ivp_environment.hxx>
 #endif
@@ -139,7 +141,7 @@ class IVP_Controller_Dependent: public IVP_Controller {
 
 class IVP_Standard_Gravity_Controller : public IVP_Controller_Independent {
 public:
-    IVP_Standard_Gravity_Controller() : grav_vec(NAN, NAN, NAN) {}
+    IVP_Standard_Gravity_Controller() : grav_vec(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN()) {}
     IVP_U_Float_Point grav_vec;
 
     void set_standard_gravity(IVP_U_Point *new_gravity);

@@ -5,6 +5,8 @@
 #if !defined(IVP_ACTUATOR_INCLUDED)
 #	define IVP_ACTUATOR_INCLUDED
 
+#include <limits>
+
 class IVP_Template_Check_Dist;
 class IVP_Template_Force;
 class IVP_Template_Extra;
@@ -484,7 +486,7 @@ public:
     IVP_Actuator_Check_Dist *l_actuator_check_dist;
     IVP_U_Float_Point object_pos;	// original position of object space
 
-    IVP_Anchor_Check_Dist() : real_object(nullptr), l_actuator_check_dist(nullptr), object_pos{NAN, NAN, NAN} {}
+    IVP_Anchor_Check_Dist() : real_object(nullptr), l_actuator_check_dist(nullptr), object_pos{std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN()} {}
     void init_anchor_check_dist(IVP_Real_Object *object, IVP_U_Point *position_world_space, IVP_Actuator_Check_Dist *my_act_check_dist);
     virtual ~IVP_Anchor_Check_Dist();
 };
