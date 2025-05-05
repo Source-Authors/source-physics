@@ -33,7 +33,7 @@ void hk_Spatial_Matrix::set_spatial_transform( const hk_Matrix3& R, const hk_Vec
 // [ R    0 ]   where R is transform taking vector from F to G
 // [ -r~R R ]   and r is vector from origin of F to origin of G in G's frame of reference
 // 
-void hk_Spatial_Matrix::set_spatial_transform( const hk_Transform& cartesian_frame )
+void hk_Spatial_Matrix::set_spatial_transform( [[maybe_unused]] const hk_Transform& cartesian_frame )
 {
 	HK_ASSERT(0);
 /*	hk_Matrix3 rR;
