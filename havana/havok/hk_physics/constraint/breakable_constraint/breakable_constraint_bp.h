@@ -1,6 +1,7 @@
 #ifndef HK_PHYSICS_BREAKABLE_BP_H
 #define HK_PHYSICS_BREAKABLE_BP_H
 
+#include <limits>
 
 // IVP_EXPORT_PUBLIC
 
@@ -15,8 +16,8 @@ class hk_Breakable_Constraint_BP  //: public hk_Effector_BP
 				m_linear_strength(0),
 				m_angular_strength(0)
 		{
-			m_bodyMassScale[0] = NAN;
-			m_bodyMassScale[1] = NAN;
+			m_bodyMassScale[0] = std::numeric_limits<float>::quiet_NaN();
+			m_bodyMassScale[1] = std::numeric_limits<float>::quiet_NaN();
 			m_bodies[0] = UINT_MAX;
 			m_bodies[1] = UINT_MAX;
 		}
