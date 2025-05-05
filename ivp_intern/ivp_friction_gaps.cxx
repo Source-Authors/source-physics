@@ -456,7 +456,6 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs)
 {
 
     int m_index = 0;
-    int active_count = 0;
     for ( IVP_Contact_Point *my_dist=fs->get_first_friction_dist();
 	  my_dist;
 	  m_index++, my_dist=fs->get_next_friction_dist(my_dist)){
@@ -496,7 +495,6 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs)
 	    IVP_Impact_Solver_Long_Term *info = my_dist->get_lt();	    
 	    this->async_apply_impulse(info, impulse_now);
 	}
-	active_count ++;
     
 	  cont_for_next:	    
 	if(impulse_now<0.0f) {
@@ -519,7 +517,6 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs)
 	    }
 	}
     }
-    //ivp_message("n active lines %i\n", active_count);
     
 #ifdef DEBUG
     IVP_IF(l_environment->debug_information->debug_friction)
