@@ -10,6 +10,8 @@
 #ifndef _IVP_REAL_OBJECT_INCLUDED
 #define _IVP_REAL_OBJECT_INCLUDED
 
+#include <limits>
+
 #ifndef IVP_U_MINLIST_INCLUDED
 #	include <ivu_min_list.hxx>
 #endif
@@ -108,7 +110,7 @@ protected:
           invalid_synapses(nullptr),
           friction_synapses(nullptr),
           q_core_f_object(nullptr),
-          shift_core_f_object{NAN, NAN, NAN} {}
+          shift_core_f_object{std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN()} {}
 
 public:
     const IVP_U_Float_Point *get_shift_core_f_object() const { return &shift_core_f_object; }
