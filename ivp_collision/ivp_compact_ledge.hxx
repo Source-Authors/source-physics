@@ -25,15 +25,19 @@ class IVP_Compact_Ledgetree_Node;
 // based on hesse to enforce alignment of data
 class IVP_Compact_Poly_Point : public IVP_U_Float_Hesse {
 public:
-    IVP_Compact_Poly_Point(IVP_U_Point *ipoint){
+    IVP_Compact_Poly_Point(IVP_U_Point *ipoint) {
 	this->set(ipoint);
     }
-    void set_client_data( void * cl ){
-	((void **)&this->hesse_val)[0] = cl;
-    }
-    void *get_client_data ( ) const {
-	return ((void **)&this->hesse_val)[0];
-    }
+    void set_client_data( void * cl ) = delete;
+    // {
+    //   dimhotepus: x86-64 - Writing 8 bytes to 4 bytes float! 
+    //   ((void **)&this->hesse_val)[0] = cl;
+    // }
+    void *get_client_data ( ) const = delete;
+    // {
+    //   dimhotepus: x86-64 - Writing 8 bytes to 4 bytes float!
+    //   return ((void **)&this->hesse_val)[0];
+    // }
 };
 
 #define IVP_MAX_TRIANGLES_PER_LEDGE 8192
