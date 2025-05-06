@@ -109,7 +109,7 @@ const T& hk_Array<T>::operator() (int i) const
 template <class T>
 hk_array_index hk_Array<T>::index_of( T& t)
 {
-	for (int i = m_n_elems-1; i>=0 ;i--)
+	for (int i = static_cast<int>(m_n_elems)-1; i>=0 ;i--)
 	{
 		if(get_elems()[i]==t) //-V108
 		{
