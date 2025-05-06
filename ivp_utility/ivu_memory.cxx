@@ -143,7 +143,7 @@ void *ivp_malloc_aligned(size_t size, unsigned short alignment) {
     if (data) {
         data->magic_number = IVP_MEMORY_MAGIC;
 
-        void *ret = (void *)((((uintp)data) + alignment + sizeof(IVP_Aligned_Memory) - 1) & (-static_cast<int>(alignment)));
+        void *ret = (void *)((((uintp)data) + alignment + sizeof(IVP_Aligned_Memory) - 1) & (-static_cast<intp>(alignment)));
         ((void **)ret)[-1] = (void *)data;
         return ret;
     }
@@ -160,7 +160,7 @@ void* IVP_CDECL ivp_calloc_aligned(size_t size, unsigned short alignment) {
         memset(data, 0, size);
         data->magic_number = IVP_MEMORY_MAGIC;
 
-        void *ret = (void *)((((uintp)data) + alignment + sizeof(IVP_Aligned_Memory) - 1) & (-static_cast<int>(alignment)));
+        void *ret = (void *)((((uintp)data) + alignment + sizeof(IVP_Aligned_Memory) - 1) & (-static_cast<intp>(alignment)));
         ((void **)ret)[-1] = (void *)data;
         return ret;
     }
