@@ -10,7 +10,7 @@
 class hk_Array_Base
 {
 	public:
-			inline hk_Array_Base() = default;
+			inline hk_Array_Base() : m_memsize{0}, m_n_elems{0}, m_elems{nullptr} {}
 	protected:
 			inline hk_Array_Base(char *elems, int n_elems);
 
