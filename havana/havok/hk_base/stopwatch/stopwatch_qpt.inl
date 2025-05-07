@@ -114,7 +114,7 @@ inline void hk_Stopwatch_qpt::reset()
 	m_ticks_at_start = 0;
 	m_ticks_at_split = 0;
 	m_ticks_total = 0;
-	m_running_flag = 0;
+	m_running_flag = false;
 	m_num_timings = 0;
 }
 
