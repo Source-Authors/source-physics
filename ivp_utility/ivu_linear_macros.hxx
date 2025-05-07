@@ -70,7 +70,7 @@ inline void IVP_U_Float_Point::set_multiple(const IVP_U_Quat *q_source, IVP_DOUB
 
 inline IVP_FLOAT IVP_Inline_Math::save_acosf(IVP_FLOAT angle) {
     //on windows compiler we ge not a number when angle >= 1.0
-    return angle >= 1.0f ? 0.0f : IVP_Inline_Math::acosd(angle);
+    return angle >= 1.0f ? 0.0f : acos(angle);
 }
 
 
