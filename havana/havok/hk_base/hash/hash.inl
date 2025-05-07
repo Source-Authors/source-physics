@@ -110,5 +110,5 @@ hk_Hash<KV>::hk_Hash(int size, hk_Memory *mem)
 template<class KV>
 hk_Hash<KV>::~hk_Hash()
 {
-	hk_deallocate( m_elems, static_cast<size_t>(m_size_mm+1), hk_MEMORY_CLASS::HK_MEMORY_CLASS_HASH );
+	hk_deallocate( m_elems, static_cast<size_t>(m_size_mm)+1, hk_MEMORY_CLASS::HK_MEMORY_CLASS_HASH );
 }
