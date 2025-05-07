@@ -80,7 +80,7 @@ public:
 inline int IVP_VHash::hash_index(const char *key, intp key_size){
 	unsigned int c;		
 	unsigned int index = 0xffffffffL; //-V112
-	intp i;
+	for (intp i=key_size-1;i>=0;i--){
 	for (i=key_size-1;i>=0;i--){
 	    c = *((const unsigned char *)(key++));
 	    index = IVP_Hash_crctab[((int) index ^ c) & 0xff] ^ (index >> 8);

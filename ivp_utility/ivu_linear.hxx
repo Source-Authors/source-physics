@@ -400,7 +400,7 @@ public:
     inline IVP_DOUBLE get_dist(const IVP_U_Float_Point *p) const;				// get the distance between a point and the plane
 
     IVP_U_Float_Hesse() = default;
-    IVP_U_Float_Hesse(IVP_DOUBLE xi, IVP_DOUBLE yi, IVP_DOUBLE zi, IVP_DOUBLE val) { k[0]=(IVP_FLOAT)xi; k[1]=(IVP_FLOAT)yi; k[2]=(IVP_FLOAT)zi; hesse_val=val; }
+    IVP_U_Float_Hesse(IVP_DOUBLE xi, IVP_DOUBLE yi, IVP_DOUBLE zi, IVP_DOUBLE val) { k[0]=(IVP_FLOAT)xi; k[1]=(IVP_FLOAT)yi; k[2]=(IVP_FLOAT)zi; hesse_val=(IVP_FLOAT)val; }
 
 	void byte_swap() { ivp_byte_swap4( (uint&) hesse_val ); IVP_U_Float_Point::byte_swap(); }
 };
