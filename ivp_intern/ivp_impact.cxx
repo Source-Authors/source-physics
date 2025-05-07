@@ -1155,9 +1155,8 @@ void IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(IVP_Mindist *mindist,
     }
 #endif
 
-void IVP_Contact_Point::get_material_info(IVP_Material *mtl[2]) {
-    int k;
-    for(k=0;k<2;k++) {
+void IVP_Contact_Point::get_material_info(IVP_Material* (&mtl)[2]) {
+    for(int k=0;k<2;k++) {
     	int mat_index = this->get_synapse(k)->get_material_index();
 	if (mat_index == 0){
 	    mtl[k] = get_synapse(k)->get_object()->l_default_material;
