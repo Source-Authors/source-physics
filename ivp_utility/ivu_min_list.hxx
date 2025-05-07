@@ -29,9 +29,10 @@ class IVP_U_Min_List_Element {
 
 class IVP_U_Min_List {
     friend class IVP_U_Min_List_Enumerator;
+	// dimhotepus: Reordered members to reduce size on x86-64.
+    IVP_U_Min_List_Element *elems;
     unsigned short	malloced_size;
     unsigned short	free_list;
-    IVP_U_Min_List_Element *elems;
 public:
     IVP_U_MINLIST_FIXED_POINT min_value;
 #ifdef IVP_U_MINLIST_USELONG
