@@ -33,14 +33,13 @@ inline void IVP_U_Float_Point::set_multiple(const IVP_U_Point *v, IVP_DOUBLE f){
 }
 
 inline void IVP_U_Float_Point::inline_subtract_and_mult(const IVP_U_Point *v1,const IVP_U_Point *v2, IVP_DOUBLE factor){	// vektor addition
-    IVP_DOUBLE a,b,c;
-    a = (v1->k[0] - v2->k[0]);
-    b = (v1->k[1] - v2->k[1]);	a *= factor;
-    c = (v1->k[2] - v2->k[2]);	b *= factor;
+    IVP_DOUBLE a = (v1->k[0] - v2->k[0]);
+    IVP_DOUBLE b = (v1->k[1] - v2->k[1]);	a *= factor;
+    IVP_DOUBLE c = (v1->k[2] - v2->k[2]);	b *= factor;
     c *=factor;
-    k[0] = a;
-    k[1] = b;
-    k[2] = c;
+    k[0] = (IVP_FLOAT)a;
+    k[1] = (IVP_FLOAT)b;
+    k[2] = (IVP_FLOAT)c;
 }
 
 

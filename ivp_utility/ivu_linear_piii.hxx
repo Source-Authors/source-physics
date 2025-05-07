@@ -3,31 +3,29 @@
 //IVP_EXPORT_PROTECTED
 
 inline void IVP_U_Float_Point::set_negative(const IVP_U_Float_Point *p_source){
-	IVP_DOUBLE a = p_source->k[0];
-	IVP_DOUBLE b = p_source->k[1];	a = -a;
-	IVP_DOUBLE c = p_source->k[2];	b = -b;
+	IVP_FLOAT a = p_source->k[0];
+	IVP_FLOAT b = p_source->k[1];	a = -a;
+	IVP_FLOAT c = p_source->k[2];	b = -b;
 	c = -c;
-	k[0]= (IVP_FLOAT)a;
-	k[1]= (IVP_FLOAT)b;
-	k[2]= (IVP_FLOAT)c;
+	k[0]= a;
+	k[1]= b;
+	k[2]= c;
 }
 
 
 inline void IVP_U_Float_Point::mult(IVP_DOUBLE factor){
-	IVP_DOUBLE a,b,c;
-	a = k[0] * factor;
-	b = k[1] * factor;
-	c = k[2] * factor;
+	IVP_DOUBLE a = k[0] * factor;
+	IVP_DOUBLE b = k[1] * factor;
+	IVP_DOUBLE c = k[2] * factor;
 	k[0] = (IVP_FLOAT)a; k[1] = (IVP_FLOAT)b; k[2] = (IVP_FLOAT)c;
 }
 
 
 
 inline void IVP_U_Float_Point::set_pairwise_mult (const IVP_U_Float_Point *v1, const IVP_U_Float_Point *v2){	// pairwise multiple
-	IVP_DOUBLE a,b,c;
-	a = v1->k[0] * v2->k[0];
-	b = v1->k[1] * v2->k[1];
-	c = v1->k[2] * v2->k[2];
+	IVP_FLOAT a = v1->k[0] * v2->k[0];
+	IVP_FLOAT b = v1->k[1] * v2->k[1];
+	IVP_FLOAT c = v1->k[2] * v2->k[2];
 	
 	k[0] = a;
 	k[1] = b;
@@ -36,22 +34,21 @@ inline void IVP_U_Float_Point::set_pairwise_mult (const IVP_U_Float_Point *v1, c
 
 
 inline void IVP_U_Float_Point::add(const IVP_U_Float_Point *v1, const IVP_U_Float_Point *v2){
-	IVP_DOUBLE a = v1->k[0] + v2->k[0];
-	IVP_DOUBLE b = v1->k[1] + v2->k[1];
-	IVP_DOUBLE c = v1->k[2] + v2->k[2];
-	k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;k[2] = (IVP_FLOAT)c;
+	IVP_FLOAT a = v1->k[0] + v2->k[0];
+	IVP_FLOAT b = v1->k[1] + v2->k[1];
+	IVP_FLOAT c = v1->k[2] + v2->k[2];
+	k[0] = a;k[1] = b;k[2] = c;
 }
 
 
 inline void IVP_U_Float_Point::subtract(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2){
-	IVP_DOUBLE a,b,c;
-	a = v1->k[0] - v2->k[0];
-	b = v1->k[1] - v2->k[1];
-	c = v1->k[2] - v2->k[2];
+	IVP_FLOAT a = v1->k[0] - v2->k[0];
+	IVP_FLOAT b = v1->k[1] - v2->k[1];
+	IVP_FLOAT c = v1->k[2] - v2->k[2];
 	
-	k[0] = (IVP_FLOAT)a;
-	k[1] = (IVP_FLOAT)b;
-	k[2] = (IVP_FLOAT)c;
+	k[0] = a;
+	k[1] = b;
+	k[2] = c;
 }
 
 
@@ -78,12 +75,12 @@ inline void IVP_U_Float_Point::set_to_zero() {
 }
 
 inline void IVP_U_Float_Point::set(const IVP_U_Float_Point *p_source){
-	IVP_DOUBLE a = p_source->k[0];
-	IVP_DOUBLE b = p_source->k[1];
-	IVP_DOUBLE c = p_source->k[2];
-	k[0]= (IVP_FLOAT)a;
-	k[1]= (IVP_FLOAT)b;
-	k[2]= (IVP_FLOAT)c;
+	IVP_FLOAT a = p_source->k[0];
+	IVP_FLOAT b = p_source->k[1];
+	IVP_FLOAT c = p_source->k[2];
+	k[0]= a;
+	k[1]= b;
+	k[2]= c;
 }
 
 
@@ -178,36 +175,36 @@ inline void IVP_U_Matrix::inline_vmult4(const IVP_U_Float_Point *p_in, IVP_U_Flo
 
 void IVP_U_Float_Point::inline_calc_cross_product(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2)
 {
-	IVP_DOUBLE a  = v1->k[1] * v2->k[2];
-	IVP_DOUBLE a2 = v2->k[1] * v1->k[2];
-	IVP_DOUBLE b  = v1->k[2] * v2->k[0];	
-	IVP_DOUBLE b2 = v2->k[2] * v1->k[0];	a -= a2;
-	IVP_DOUBLE c  = v1->k[0] * v2->k[1];
-	IVP_DOUBLE c2 = v2->k[0] * v1->k[1];	b -= b2;
-	k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;	c -= c2;
-	k[2] = (IVP_FLOAT)c;
+	IVP_FLOAT a  = v1->k[1] * v2->k[2];
+	IVP_FLOAT a2 = v2->k[1] * v1->k[2];
+	IVP_FLOAT b  = v1->k[2] * v2->k[0];	
+	IVP_FLOAT b2 = v2->k[2] * v1->k[0];	a -= a2;
+	IVP_FLOAT c  = v1->k[0] * v2->k[1];
+	IVP_FLOAT c2 = v2->k[0] * v1->k[1];	b -= b2;
+	k[0] = a;k[1] = b;	c -= c2;
+	k[2] = c;
 }
 
 void IVP_U_Float_Point::inline_calc_cross_product_and_normize(const IVP_U_Float_Point *v1,const IVP_U_Float_Point *v2)
 {
-	IVP_DOUBLE a  = v1->k[1] * v2->k[2];
-	IVP_DOUBLE a2 = v2->k[1] * v1->k[2];
-	IVP_DOUBLE b  = v1->k[2] * v2->k[0];	
-	IVP_DOUBLE b2 = v2->k[2] * v1->k[0];	a -= a2;
-	IVP_DOUBLE c  = v1->k[0] * v2->k[1];
-	IVP_DOUBLE c2 = v2->k[0] * v1->k[1];	b -= b2;
-	k[0] = (IVP_FLOAT)a;k[1] = (IVP_FLOAT)b;	c -= c2;
-	k[2] = (IVP_FLOAT)c;
+	IVP_FLOAT a  = v1->k[1] * v2->k[2];
+	IVP_FLOAT a2 = v2->k[1] * v1->k[2];
+	IVP_FLOAT b  = v1->k[2] * v2->k[0];	
+	IVP_FLOAT b2 = v2->k[2] * v1->k[0];	a -= a2;
+	IVP_FLOAT c  = v1->k[0] * v2->k[1];
+	IVP_FLOAT c2 = v2->k[0] * v1->k[1];	b -= b2;
+	k[0] = a;k[1] = b;	c -= c2;
+	k[2] = c;
 	this->normize();
 }
 
 void IVP_U_Float_Point::inline_set_vert_to_area_defined_by_three_points(const IVP_U_Float_Point *tp0,const IVP_U_Float_Point *tp1,const IVP_U_Float_Point *tp2)
 {
-	IVP_DOUBLE a0, a1, a2, b0, b1, b2;
+	IVP_FLOAT a0, a1, a2, b0, b1, b2;
 	// calculate (not-normized) normal
-	IVP_DOUBLE fp0 = tp0->k[0];
-	IVP_DOUBLE fp1 = tp0->k[1];
-	IVP_DOUBLE fp2 = tp0->k[2];
+	IVP_FLOAT fp0 = tp0->k[0];
+	IVP_FLOAT fp1 = tp0->k[1];
+	IVP_FLOAT fp2 = tp0->k[2];
 	a0 = tp1->k[0] - fp0;
 	a1 = tp1->k[1] - fp1;
 	a2 = tp1->k[2] - fp2;
@@ -215,9 +212,9 @@ void IVP_U_Float_Point::inline_set_vert_to_area_defined_by_three_points(const IV
 	b1 = tp2->k[1] - fp1;
 	b2 = tp2->k[2] - fp2;
 
-	IVP_DOUBLE c0 = b1*a2 - a1*b2;
-	IVP_DOUBLE c1 = b2*a0 - a2*b0;
-	IVP_DOUBLE c2 = b0*a1 - a0*b1;
+	IVP_FLOAT c0 = b1*a2 - a1*b2;
+	IVP_FLOAT c1 = b2*a0 - a2*b0;
+	IVP_FLOAT c2 = b0*a1 - a0*b1;
 	
 	// calculate hesse-area
 	this->k[0]=	c0;
