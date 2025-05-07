@@ -26,10 +26,11 @@ extern unsigned int IVP_Hash_crctab[];
 class IVP_U_Min_Hash {
     friend class IVP_U_Min_Hash_Enumerator;
     inline int hash_index(const int *key) const;
-    unsigned int	size;
+    // dimhotepus: Reordered members to reduce size on x86-64.
     IVP_U_Min_Hash_Elem **stadel;
     IVP_U_Min_Hash_Elem **min_per_array_pos;
     IVP_U_Min_Hash_Elem **elems;
+    unsigned int size;
     void min_added_at_index(IVP_U_Min_Hash_Elem *elem, int i);
     void min_removed_at_index(IVP_U_Min_Hash_Elem *elem, int i);
     
