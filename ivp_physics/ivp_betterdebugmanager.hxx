@@ -5,8 +5,13 @@
 #ifndef _IVP_BETTERDEBUGMANAGER_INCLUDED
 #define _IVP_BETTERDEBUGMANAGER_INCLUDED
 
-
-#define IVP_IFDEBUG(dci)	if (ivp_debugmanager.is_debug_enabled(dci))
+#ifndef IVP_NO_DEBUGMANAGER
+#define IVP_IFDEBUG(dci, func)	if (ivp_debugmanager.is_debug_enabled(dci)) func
+#define IVP_DEBUGCODE(func) func
+#else
+#define IVP_IFDEBUG(a, b) if (0) {}
+#define IVP_DEBUGCODE(func)
+#endif
 
 
 // NOTE: The values from 0-1023 are reserved for internal
