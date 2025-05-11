@@ -85,6 +85,10 @@
 #endif
 
 
+#ifndef _IVP_BETTERDEBUGMANAGER_INCLUDED
+#	include <ivp_betterdebugmanager.hxx>
+#endif
+
 #include <ivu_string.hxx>
 
 #define IVP_NO_MD_INTERPOLATION 

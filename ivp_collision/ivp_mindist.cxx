@@ -880,15 +880,14 @@ void IVP_Mindist_Manager::recalc_all_exact_mindists(){
 /* check length, check for hull, check for coll events*/
 void IVP_Mindist::update_exact_mindist_events(IVP_BOOL allow_hull_conversion, IVP_MINDIST_EVENT_HINT event_hint)
 {
-	IVP_IF(1) 
-	{
+	IVP_IFDEBUG(1,
 		IVP_ASSERT( mindist_status == IVP_MD_EXACT);
 		IVP_Debug_Manager *dm=get_environment()->get_debug_manager();
 		if(dm->file_out_impacts) 
 		{
 			fprintf(dm->out_deb_file,"doing_mindist_events %zi at %f\n",0x0000ffff&(hk_intp)this,get_environment()->get_current_time().get_time());
 		}
-	}
+	)
 	
 	IVP_Synapse_Real *syn0 = get_sorted_synapse(0);
 	IVP_Synapse_Real *syn1 = get_sorted_synapse(1);
