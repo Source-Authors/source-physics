@@ -448,7 +448,7 @@ public:
     //for debugging
     void debug_clean_tmp_info();
     void debug_check_system_consistency();
-    IVP_DOUBLE sum_energy_destroyed;
+    //IVP_DOUBLE sum_energy_destroyed;
     void test_hole_fr_system_data(); 
     void print_all_dists();
     static int friction_global_counter;
