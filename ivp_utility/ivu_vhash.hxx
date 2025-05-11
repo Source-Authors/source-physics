@@ -81,12 +81,11 @@ inline int IVP_VHash::hash_index(const char *key, intp key_size){
 	unsigned int c;		
 	unsigned int index = 0xffffffffL; //-V112
 	for (intp i=key_size-1;i>=0;i--){
-	for (i=key_size-1;i>=0;i--){
 	    c = *((const unsigned char *)(key++));
 	    index = IVP_Hash_crctab[((int) index ^ c) & 0xff] ^ (index >> 8);
 	}
 	return index | IVP_VHASH_TOUCH_BIT;	// set touch bit
-    };
+};
 
 // basic function for calculating the hash_index of key is a long
 inline int IVP_VHash::fast_hash_index(int key){
