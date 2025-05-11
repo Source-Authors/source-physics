@@ -110,8 +110,8 @@ public:
   IVP_Synapse_Friction 	 *next, *prev;		        // per object list
   IVP_Real_Object  *l_obj;				// back link to object
 protected:
-  // dimhotepus: x86-64 - short -> intp
-  intp contact_point_offset;               // back link to my controlling mindist
+  // dimhotepus: x86-64 - short -> hk_intp
+  hk_intp contact_point_offset;               // back link to my controlling mindist
   short status:8;			    // type IVP_SYNAPSE_POLYGON_STATUS  point, edge, tri, ball ....
 public:
     
@@ -324,6 +324,7 @@ public:
     virtual ~IVP_Friction_Sys_Energy() {}
     void core_is_going_to_be_deleted_event(IVP_Core *core) override;
     IVP_DOUBLE get_mimumum_simulation_frequency() { return 1.0f; }
+	virtual const char* get_controller_name() override { return "ivp:friction_sys_energy"; };
 };
 
 class IVP_Friction_Sys_Static : public IVP_Controller_Independent {
@@ -338,6 +339,7 @@ public:
     
     void core_is_going_to_be_deleted_event(IVP_Core *del_core) override;
     IVP_DOUBLE get_minimum_simulation_frequency() override { return 1.0f; }
+	virtual const char* get_controller_name() override { return "ivp:friction_sys_static"; };
 };
 
 // a physical unmovable object can have more than one friction system and for every friction systems several distances
@@ -446,7 +448,7 @@ public:
     //for debugging
     void debug_clean_tmp_info();
     void debug_check_system_consistency();
-    IVP_DOUBLE sum_energy_destroyed;
+    //IVP_DOUBLE sum_energy_destroyed;
     void test_hole_fr_system_data(); 
     void print_all_dists();
     static int friction_global_counter;
@@ -454,6 +456,7 @@ public:
     void debug_fs_out_ascii();
     void ivp_debug_fs_pointers();
     void debug_fs_after_complex();
+	virtual const char* get_controller_name() override { return "ivp:friction_system"; };
 };
 
 class IVP_Mutual_Energizer {
