@@ -538,7 +538,7 @@ void IVP_Core::freeze_simulation_core(){
 }
 
 void IVP_Core::debug_out_movement_vars() {
-    ivp_message("core_status %zi  trans %f %f %f  rot %f %f %f\n",(intp)this&0x0000ffff,speed.k[0],speed.k[1],speed.k[2],rot_speed.k[0],rot_speed.k[1],rot_speed.k[2]); 
+    ivp_message("core_status %zi  trans %f %f %f  rot %f %f %f\n",(hk_intp)this&0x0000ffff,speed.k[0],speed.k[1],speed.k[2],rot_speed.k[0],rot_speed.k[1],rot_speed.k[2]); 
 }
 
 void IVP_Core::debug_vec_movement_state() {
@@ -551,7 +551,7 @@ void IVP_Core::debug_vec_movement_state() {
 	int v_color;
 	ivp_start.set(my_core->get_position_PSI());	
 	ivp_pointer.set(0.0f,-7.0f,0.0f);
-	out_text=p_make_string("oob%zi_sp%.3f",(intp)one_object&0x0000ffff,one_object->speed.real_length());//,one_object->get_energy_on_test(&one_object->speed,&one_object->rot_speed));
+	out_text=p_make_string("oob%zi_sp%.3f",(hk_intp)one_object&0x0000ffff,one_object->speed.real_length());//,one_object->get_energy_on_test(&one_object->speed,&one_object->rot_speed));
 	if(my_core->movement_state==IVP_MT_CALM)	{
 	    //out_text=p_export_error("%lxo_calm%lx",(long)one_object&0x0000ffff,(long)fr_i&0x0000ffff);
 	    //sprintf(out_text,"%ldobj_calm%lx",counter,(long)one_object);
@@ -580,9 +580,9 @@ void IVP_Core::debug_vec_movement_state() {
 
 IVP_Friction_System::IVP_Friction_System(IVP_Environment *env)
 {
-    IVP_IF(env->get_debug_manager()->check_fs) {
-	fprintf(env->get_debug_manager()->out_deb_file,"create_fs %f %p\n",env->get_current_time().get_time(),this);
-    }
+    IVP_IFDEBUG(env->get_debug_manager()->check_fs, 
+		fprintf(env->get_debug_manager()->out_deb_file,"create_fs %f %p\n",env->get_current_time().get_time(),this);
+	)
     //ivp_message("creating_new_fs %lx at time %f\n",(long)this,env->get_current_time());
     l_environment=env;
     next_friction_system = prev_friction_system = nullptr;
@@ -599,9 +599,9 @@ IVP_Friction_System::IVP_Friction_System(IVP_Environment *env)
 IVP_Friction_System::~IVP_Friction_System()
 {
     //ivp_message("deleting_of_fs %lx at time %f\n",(long)this,l_environment->get_current_time());
-    IVP_IF(l_environment->get_debug_manager()->check_fs) {
-	fprintf(l_environment->get_debug_manager()->out_deb_file,"delete_fs %f %p\n",l_environment->get_current_time().get_time(),this);
-    }
+    IVP_IFDEBUG(l_environment->get_debug_manager()->check_fs,
+		fprintf(l_environment->get_debug_manager()->out_deb_file,"delete_fs %f %p\n",l_environment->get_current_time().get_time(),this);
+	)
     // deleteing of real friction systems filled with information is not yet implemented (not trivial : unlink whole friction infos)
 
     //Assertion: when
@@ -658,9 +658,9 @@ IVP_BOOL IVP_Friction_System::dist_removed_update_pair_info(IVP_Contact_Point *o
 
 void IVP_Friction_System::remove_dist_from_system(IVP_Contact_Point *old_dist)
 {
-    IVP_IF(l_environment->get_debug_manager()->check_fs) {
-	fprintf(l_environment->get_debug_manager()->out_deb_file,"rem_dist_from_fs %f %p from %p\n",l_environment->get_current_time().get_time(),old_dist,this);
-    }
+    IVP_IFDEBUG(l_environment->get_debug_manager()->check_fs,
+		fprintf(l_environment->get_debug_manager()->out_deb_file,"rem_dist_from_fs %f %p from %p\n",l_environment->get_current_time().get_time(),old_dist,this);
+	)
 
     //manage list of all dists
     {
@@ -704,9 +704,9 @@ void IVP_Friction_System::dist_added_update_pair_info(IVP_Contact_Point *new_dis
 
 void IVP_Friction_System::add_dist_to_system(IVP_Contact_Point *new_dist)
 {
-    IVP_IF(l_environment->get_debug_manager()->check_fs) {
-	fprintf(l_environment->get_debug_manager()->out_deb_file,"add_dist_to_fs %f %p to %p\n",l_environment->get_current_time().get_time(),new_dist,this);
-    }
+    IVP_IFDEBUG(l_environment->get_debug_manager()->check_fs,
+		fprintf(l_environment->get_debug_manager()->out_deb_file,"add_dist_to_fs %f %p to %p\n",l_environment->get_current_time().get_time(),new_dist,this);
+	)
 
     new_dist->l_friction_system=this;
     //manage list of all dists
@@ -732,9 +732,9 @@ void IVP_Friction_System::add_dist_to_system(IVP_Contact_Point *new_dist)
 
 void IVP_Friction_System::add_core_to_system(IVP_Core *new_obj)
 {
-    IVP_IF(l_environment->get_debug_manager()->check_fs) {
-	fprintf(l_environment->get_debug_manager()->out_deb_file,"add_core_to_fs %f %p to %p\n",l_environment->get_current_time().get_time(),new_obj,this);
-    }
+    IVP_IFDEBUG(l_environment->get_debug_manager()->check_fs,
+		fprintf(l_environment->get_debug_manager()->out_deb_file,"add_core_to_fs %f %p to %p\n",l_environment->get_current_time().get_time(),new_obj,this);
+	)
 
     cores_of_friction_system.add(new_obj);
     if(!new_obj->physical_unmoveable) {
@@ -752,9 +752,9 @@ void IVP_Friction_System::add_core_to_system(IVP_Core *new_obj)
  
 void IVP_Friction_System::remove_core_from_system(IVP_Core *old_obj)
 {
-    IVP_IF(l_environment->get_debug_manager()->check_fs) {
-	fprintf(l_environment->get_debug_manager()->out_deb_file,"remove_core_from_fs %f %p from %p\n",l_environment->get_current_time().get_time(),old_obj,this);
-    }
+    IVP_IFDEBUG(l_environment->get_debug_manager()->check_fs,
+		fprintf(l_environment->get_debug_manager()->out_deb_file,"remove_core_from_fs %f %p from %p\n",l_environment->get_current_time().get_time(),old_obj,this);
+	)
 
     if(!old_obj->physical_unmoveable) {
         moveable_cores_of_friction_system.remove(old_obj);

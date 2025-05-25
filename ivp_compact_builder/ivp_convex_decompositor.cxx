@@ -9,7 +9,7 @@
 
 
 
-void IVP_Concave_Polyhedron_Face::add_offset(intp offset_in) {
+void IVP_Concave_Polyhedron_Face::add_offset(hk_intp offset_in) {
 
     IVP_Concave_Polyhedron_Face_Pointoffset *p_offset = new IVP_Concave_Polyhedron_Face_Pointoffset();
     p_offset->offset = offset_in;
@@ -51,11 +51,11 @@ class IVP_Convex_Subpart_Work {
 public:
     IVP_U_Vector<int> offsets; // @@@SF: replace with IVP_VHash someday!!!
 
-    void add_offset(intp offset_in);
+    void add_offset(hk_intp offset_in);
 };
 
 
-void IVP_Convex_Subpart_Work::add_offset(intp offset_in) {
+void IVP_Convex_Subpart_Work::add_offset(hk_intp offset_in) {
 
     int i;
     for (i=0; i<this->offsets.len(); i++) {
@@ -114,11 +114,11 @@ int IVP_Convex_Decompositor::perform_convex_decomposition_on_concave_polyhedron(
 	// alloc an array for n points, consisting of 3 floats each
 	vcl = (double *)p_calloc(n_points*3, sizeof(double));
 	if ( !vcl ) {
-	    IVP_IFDEBUG(IVP_DEBUG_IPION_ERROR_MSG) {
+	    IVP_IFDEBUG(IVP_DEBUG_IPION_ERROR_MSG, {
 		ivp_debugmanager.dprint(IVP_DEBUG_IPION_ERROR_MSG,
 					"IVP_Convex_Decompositor::perform_convex_decomposition_on_concave_polyhedron()\n"
 					"Not enough memory to allocate 'points_list' (needed: %d bytes)\n", n_points*3*sizeof(float));
-	    }
+	    })
 	    return(0);
 	}
 
@@ -288,21 +288,21 @@ fclose(fp);
 	    IVP_Convex_Subpart_Work *subpart_work = subparts_offsets.element_at(i);
 	    IVP_Convex_Subpart *subpart = convex_subparts_out->element_at(i);
 	    IVP_IF(1) {
-		IVP_IFDEBUG(IVP_DM_CONVEX_DECOMPOSITOR) {
+		IVP_IFDEBUG(IVP_DM_CONVEX_DECOMPOSITOR, {
 		    ivp_debugmanager.dprint(IVP_DM_CONVEX_DECOMPOSITOR, "Points of convex subpart:\n");
-		}
+		})
 	    }
 	    int j;
 	    for (j=0; j<subpart_work->offsets.len(); j++) {
-        intp offset = (intp)subpart_work->offsets.element_at(j)-1;
+        hk_intp offset = (hk_intp)subpart_work->offsets.element_at(j)-1;
 		IVP_U_Point *point = new IVP_U_Point();
 		point->k[0] = vcl_out[(offset*3)+0];
 		point->k[1] = vcl_out[(offset*3)+1];
 		point->k[2] = vcl_out[(offset*3)+2];
 		IVP_IF(1) {
-		    IVP_IFDEBUG(IVP_DM_CONVEX_DECOMPOSITOR) {
+		    IVP_IFDEBUG(IVP_DM_CONVEX_DECOMPOSITOR, {
 			ivp_debugmanager.dprint(IVP_DM_CONVEX_DECOMPOSITOR, "   %.6f %.6f %.6f\n", point->k[0], point->k[1], point->k[2]);
-		    }
+		    })
 		}
 		subpart->points.add(point);
 	    }
