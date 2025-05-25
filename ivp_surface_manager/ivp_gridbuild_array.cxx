@@ -174,7 +174,7 @@ void IVP_GridBuilder_Array::insert_opposite_index( const IVP_Compact_Edge *edge,
 IVP_Compact_Ledge *IVP_GridBuilder_Array::convert_convex_triangle_to_compact_ledge( int strip_points[] ){
 
     int num_triangles = 2;
-    //const int n_points = 3;
+    //constexpr int n_points = 3;
     triangle_count= 0;
 
     // get memory for Ledge Header, Triangles and Points
@@ -228,7 +228,7 @@ IVP_Compact_Ledge *IVP_GridBuilder_Array::convert_convex_triangle_to_compact_led
 IVP_Compact_Ledge *IVP_GridBuilder_Array::convert_convex_square_to_compact_ledge( int strip_points[], IVP_BOOL is_right_starter){
 
     int num_triangles = 4;
-    const int n_points = 4;
+    constexpr int n_points = 4;
     triangle_count= 0;
 
     // get memory for Ledge Header, Triangles and Points
