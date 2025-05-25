@@ -846,7 +846,7 @@ void IVP_Core::calc_calc(){
 
     IVP_DOUBLE qdiff = diff_vec.quad_length();
     IVP_DOUBLE qrlen = iri->quad_length();
-    const IVP_DOUBLE eps = 0.1f;
+    constexpr IVP_DOUBLE eps = 0.1f;
     if ( qdiff < qrlen * (eps * eps) ){
         rot_inertias_are_equal = IVP_TRUE;
     }else{
