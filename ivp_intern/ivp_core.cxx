@@ -826,7 +826,7 @@ void IVP_Core::calc_calc(){
     IVP_U_Float_Point &ri = rot_inertia;
     for ( int i = 0; i < 3; i++ )
     {
-        if ( _finite( ri.k[i] ) && ri.k[i] <= 1e18f )
+        if ( std::isfinite( ri.k[i] ) && ri.k[i] <= 1e18f )
         {
             if ( ri.k[i] < -1e18f )
                 ri.k[i] = -1e18f;
