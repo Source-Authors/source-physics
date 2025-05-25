@@ -7,6 +7,7 @@
 #include <cstring>
 
 #include <cctype>
+#include <array>  // std::size
 
 #if !defined(__MWERKS__) || !defined(__POWERPC__)
 #ifdef OSX
