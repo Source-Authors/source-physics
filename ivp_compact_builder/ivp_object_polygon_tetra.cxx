@@ -1308,7 +1308,7 @@ void IVP_Object_Polygon_Tetra::calc_concavities()
 
     // calc concavity values
     IVP_Triangle *tri;
-    const IVP_DOUBLE uninit = 123456.0f;
+    constexpr IVP_DOUBLE uninit = 123456.0f;
     for (tri = this->triangles.first; tri; tri = tri->next){
 	IVP_Tri_Edge *edge = &tri->three_edges[0];
 	for(int i=2; i>=0; edge=edge->next, i--){
