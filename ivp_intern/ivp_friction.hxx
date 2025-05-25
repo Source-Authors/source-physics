@@ -448,6 +448,7 @@ public:
     //for debugging
     void debug_clean_tmp_info();
     void debug_check_system_consistency();
+    // dimhotepus: Not used, commented.
     //IVP_DOUBLE sum_energy_destroyed;
     void test_hole_fr_system_data(); 
     void print_all_dists();
