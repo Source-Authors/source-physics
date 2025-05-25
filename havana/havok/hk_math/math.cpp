@@ -10,9 +10,9 @@ void hk_Math::srand01( unsigned seedVal )
 
 hk_real hk_Math::rand01()
 {
-	const unsigned a = 1103515245;
-	const unsigned c = 12345;
-	const unsigned m = UINT_MAX >> 1;
+	constexpr unsigned a = 1103515245;
+	constexpr unsigned c = 12345;
+	constexpr unsigned m = UINT_MAX >> 1;
 	hk_random_seed = (a * hk_random_seed + c ) & m;
 	return static_cast<hk_real>(hk_random_seed) / m;
 }

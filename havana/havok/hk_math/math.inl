@@ -135,7 +135,7 @@ inline hk_real hk_Math::fast_approx_atan2_normized( hk_real y, hk_real x)
 {
 	//const hk_real delta_at_pi_4 = HK_PI * 0.25f - hk_Math::sin(HK_PI * 0.25f);
 	//const hk_real f = delta_at_pi_4 / hk_Math::sin(HK_PI * 0.25f) / hk_Math::sin(HK_PI * 0.25f)/ hk_Math::sin(HK_PI * 0.25f);
-	const hk_real f = 0.2214414775f;
+	constexpr hk_real f = 0.2214414775f;
 	hk_real r;
 	if ( x > y ){
 		if ( x > - y){
@@ -165,7 +165,7 @@ inline hk_real hk_Math::fast_approx_atan2( hk_real y, hk_real x)
 {
 	//const hk_real delta_at_pi_4 = HK_PI * 0.25f - hk_Math::sin(HK_PI * 0.25f);
 	//const hk_real f = delta_at_pi_4 / hk_Math::sin(HK_PI * 0.25f) / hk_Math::sin(HK_PI * 0.25f)/ hk_Math::sin(HK_PI * 0.25f);
-	const hk_real f = 0.2214414775f;
+	constexpr hk_real f = 0.2214414775f;
 	hk_real r;
 	hk_real q = hk_Math::sqrt_inv( x * x + y * y );
 	if ( x > y ){
