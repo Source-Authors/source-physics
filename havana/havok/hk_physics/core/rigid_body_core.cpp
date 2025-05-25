@@ -49,7 +49,7 @@ void hk_Rigid_Body_Core::add_to_mass_matrix_inv(
 void hk_Rigid_Body_Core::apply_impulses( hk_Core_VMQ_Input &input,
 		const hk_real impulse_strength[])
 {
-	if ( physical_unmoveable || pinned || isnan(impulse_strength[0]) ) return;
+	if ( physical_unmoveable || pinned || std::isnan(impulse_strength[0]) ) return;
 	int i = input.m_n_queries-1;
 	hk_Impulse_Info *mq = input.m_vmq;
 	hk_Single_Rigid_Body_CFAD *ds = (hk_Single_Rigid_Body_CFAD *)input.m_buffer;
