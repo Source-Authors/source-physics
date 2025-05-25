@@ -1818,9 +1818,8 @@ void IVP_Contact_Point::calc_coll_distance(){
     IVP_DEBUGCODE(
 		IVP_IFDEBUG(env->get_debug_manager()->file_out_impacts,
 			FILE *fp=env->get_debug_manager()->out_deb_file;
-			IVP_Core *core0,*core1;
-			core0=get_synapse(0)->l_obj->friction_core;
-			core1=get_synapse(1)->l_obj->friction_core;
+			IVP_Core *core0=get_synapse(0)->l_obj->friction_core;
+			IVP_Core *core1=get_synapse(1)->l_obj->friction_core;
 			fprintf(fp,"  %zi %zi-%zi: ",0x0000ffff&(hk_intp)this,0x0000ffff&(hk_intp)core0,0x0000ffff&(hk_intp)core1);
 			fprintf(fp,"di %.4f  ",get_gap_length());
 			IVP_DOUBLE debug_cs = closing_speed + info->impact.rescue_speed_addon*0.5f;

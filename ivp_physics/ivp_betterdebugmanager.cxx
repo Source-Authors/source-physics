@@ -30,7 +30,7 @@ void IVP_BetterDebugmanager::disable_debug_output(IVP_DEBUG_CLASS class_id) {
 }
 
 
-IVP_BOOL IVP_BetterDebugmanager::is_debug_enabled(IVP_DEBUG_CLASS class_id) {
+IVP_BOOL IVP_BetterDebugmanager::is_debug_enabled(IVP_DEBUG_CLASS class_id) const {
 
     if (class_id >= IVP_DEBUG_MAX_N_CLASSES ) {
 	return(IVP_FALSE);
@@ -39,6 +39,12 @@ IVP_BOOL IVP_BetterDebugmanager::is_debug_enabled(IVP_DEBUG_CLASS class_id) {
 	return(IVP_FALSE);
     }
     return(IVP_TRUE);
+}
+
+
+IVP_BOOL IVP_BetterDebugmanager::is_debug_enabled(IVP_BOOL toggle) const {
+
+    return(toggle);
 }
 
 

@@ -6,7 +6,9 @@
 #define _IVP_BETTERDEBUGMANAGER_INCLUDED
 
 #ifndef IVP_NO_DEBUGMANAGER
-#define IVP_IFDEBUG(dci, func)	if (ivp_debugmanager.is_debug_enabled(dci)) func
+// dimhotepus: Use func parameter
+#define IVP_IFDEBUG(dci, func)	if (ivp_debugmanager.is_debug_enabled(dci)) { func }
+// dimhotepus: Use func parameter
 #define IVP_DEBUGCODE(func) func
 #else
 #define IVP_IFDEBUG(a, b) if (0) {}
@@ -43,7 +45,8 @@ public:
     void     enable_debug_output(IVP_DEBUG_CLASS class_id);
     void     disable_debug_output(IVP_DEBUG_CLASS class_id);
 
-    IVP_BOOL is_debug_enabled(IVP_DEBUG_CLASS class_identifier);
+    IVP_BOOL is_debug_enabled(IVP_DEBUG_CLASS class_identifier) const;
+    IVP_BOOL is_debug_enabled(IVP_BOOL toggle) const;
     void     dprint(IVP_DEBUG_CLASS class_id, const char *formatstring, ...);
 
     // feel free to override this method with your customized

@@ -880,7 +880,7 @@ void IVP_Mindist_Manager::recalc_all_exact_mindists(){
 /* check length, check for hull, check for coll events*/
 void IVP_Mindist::update_exact_mindist_events(IVP_BOOL allow_hull_conversion, IVP_MINDIST_EVENT_HINT event_hint)
 {
-	IVP_IFDEBUG(1,
+	IVP_IFDEBUG(IVP_TRUE,
 		IVP_ASSERT( mindist_status == IVP_MD_EXACT);
 		IVP_Debug_Manager *dm=get_environment()->get_debug_manager();
 		if(dm->file_out_impacts) 
