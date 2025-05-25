@@ -86,9 +86,9 @@ inline int IVP_VHash::hash_index(const char *key, hk_intp key_size){
 	return index | IVP_VHASH_TOUCH_BIT;	// set touch bit
 };
 
-// basic function for calculating the hash_index of key is a long long
-constexpr int keyBits = sizeof(hk_intp) * 4;
+// basic function for calculating the hash_index of key is a hk_intp
 inline int IVP_VHash::fast_hash_index(hk_intp key) {
+  constexpr int keyBits = sizeof(key) * 4;
   int index = static_cast<int>(((key * 1001) >> keyBits) + key * 75); //-V112
   return index | IVP_VHASH_TOUCH_BIT;  // set touch bit
 }
