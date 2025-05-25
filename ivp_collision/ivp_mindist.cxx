@@ -678,7 +678,7 @@ void IVP_Mindist_Manager::recheck_ov_element(IVP_Real_Object *object){
     const IVP_U_Point *object_position = core->get_position_PSI();
     
 #if 0
-    const IVP_DOUBLE use_old_hull_factor = 0.5f;
+    constexpr IVP_DOUBLE use_old_hull_factor = 0.5f;
     IVP_U_Point sphere_position; sphere_position.set(elem->center);
 
     IVP_DOUBLE moved_distance = sphere_position.quad_distance_to(object_position);
@@ -1206,7 +1206,7 @@ void IVP_Mindist::mindist_hull_limit_exceeded_event( IVP_HTIME hull_intrusion_va
 
       if ( qdistance > qradius){ // seems like two small objects
 
-	const IVP_DOUBLE look_ahead_time = 0.5f;
+	constexpr IVP_DOUBLE look_ahead_time = 0.5f;
 	IVP_DOUBLE hull_radius = radius + speed * look_ahead_time;
 	qradius = hull_radius * hull_radius;
 

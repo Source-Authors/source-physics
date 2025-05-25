@@ -44,8 +44,8 @@ IVP_Time IVP_3D_Solver::calc_nullstelle(IVP_Time t0, IVP_Time t1, IVP_DOUBLE val
 		if ( (counter & 0x3) == 3){	// sometimes split interval int
 			if (counter > 64) return t0;	// endless loop, take left value
 
-			const IVP_DOUBLE ratio = 0.25f;		// int
-			const IVP_DOUBLE inv_ratio = 1.0f - ratio;
+			constexpr IVP_DOUBLE ratio = 0.25f;		// int
+			constexpr IVP_DOUBLE inv_ratio = 1.0f - ratio;
 			IVP_DOUBLE dt0 = t0 - tt;
 			IVP_DOUBLE dt1 = t1 - tt;
 	    

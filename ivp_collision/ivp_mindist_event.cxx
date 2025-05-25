@@ -95,7 +95,7 @@ IVP_DOUBLE IVP_3D_Solver_DISTANCE_OF_TWO_POINTS::get_value(IVP_U_Matrix *A_w_f_c
     dir_world.subtract(&B_world, &A_world);
     IVP_DOUBLE res = dir_world.quad_length();
 
-    const IVP_DOUBLE linear_factor = 1.2f;
+    constexpr IVP_DOUBLE linear_factor = 1.2f;
     // check linear
     IVP_DOUBLE linear_dist = dir_world.dot_product(&normized_direction_world_at_t0) * linear_factor;
 
