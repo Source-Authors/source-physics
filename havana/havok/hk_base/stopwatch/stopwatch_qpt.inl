@@ -93,7 +93,7 @@ inline hk_uint64 hk_query_cpu_current_frequency()
 		return hk_query_cpu_current_frequency();
 	}
 
-	hk_uint64 freq = (endTicks - startTicks) << scale;
+	hk_uint64 freq = (endTicks - startTicks - hk_measure_cpu_timer_overhead()) << scale;
 	if ( freq == 0 )
 	{
 		// Steam was seeing Divide-by-zero crashes on some Windows machines due to
