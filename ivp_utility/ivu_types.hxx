@@ -193,7 +193,7 @@ using uchar = unsigned char; // feel free to remove these three typedefs
 using ushort = unsigned short;
 using uint = unsigned int;
 
-using hk_intp = ptrdiff_t;
+using hk_intp = std::ptrdiff_t;
 using hk_uintp = size_t;
 
 using IVP_ERROR_STRING = const char *;

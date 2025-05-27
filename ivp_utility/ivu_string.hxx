@@ -27,7 +27,7 @@ extern char *	p_make_string(const char *templat, ...);
 extern char *	p_make_string_fast(const char *templat, ...); // doesn't check overflow
 
 int p_strcmp(const char *s1, const char *s2);
-ptrdiff_t p_strlen(const char *s);
+std::ptrdiff_t p_strlen(const char *s);
 char *p_read_first_token(FILE *fp);
 char *p_get_next_token();
 int   p_get_num();

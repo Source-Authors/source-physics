@@ -364,7 +364,7 @@ IVP_DOUBLE p_get_float(){
 }
 
 
-ptrdiff_t p_strlen(const char *s)
+std::ptrdiff_t p_strlen(const char *s)
 {
     if(!s || s[0] == 0) return 0;
     return strlen(s);
