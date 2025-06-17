@@ -533,7 +533,7 @@ void IVP_SurfaceBuilder_Ledge_Soup::cluster_spheres_bottomup(IVP_DOUBLE threshol
 		// retrieve smallest mothersphere (if available!)
 		IVV_Cluster_Min_Hash_Key key;
 		key.key = (hk_uintp)cluster_min_hash.find_min_elem();
-		if ( key.key != (hk_uintp)NULL ) { // verify that there were at least 2 spheres in vector and a new minimal sphere could be generated!
+		if ( key.key != 0 ) { // verify that there were at least 2 spheres in vector and a new minimal sphere could be generated!
 		    //IVP_DOUBLE radius = cluster_min_hash->find_min_value(); // radius of minimal sphere
 		    int sphere_1_number = key.spheres.s1;
 		    int sphere_2_number = key.spheres.s2;
