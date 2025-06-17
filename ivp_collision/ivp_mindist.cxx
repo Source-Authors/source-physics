@@ -309,13 +309,13 @@ public:
 
 class IVP_MM_CMP {
 public:
-    static inline int calc_hash_index( IVP_MM_CMP_Key * o){
-	int x = (hk_intp)o->ledge[0] ^ ( hk_intp(o->ledge[1])* 75 );
+    static inline hk_intp calc_hash_index( IVP_MM_CMP_Key * o){
+	hk_intp x = (hk_intp)o->ledge[0] ^ ( hk_intp(o->ledge[1])* 75 );
 	return x + 1023 * (x>>8);
     }
 
     // calc hash index of c, con is a reference
-    static inline int calc_hash_index( IVP_Collision *c, IVP_MM_CMP_Key * /*ref_key*/){
+    static inline hk_intp calc_hash_index( IVP_Collision *c, IVP_MM_CMP_Key * /*ref_key*/){
 	const IVP_Compact_Ledge *ledge[2];
 	c->get_ledges(ledge);
     hk_intp x = (hk_intp)ledge[0] ^ ( hk_intp(ledge[1])* 75 );
@@ -626,13 +626,13 @@ void IVP_Mindist_Manager::insert_and_recalc_phantom_mindist( IVP_Mindist *new_mi
 
 class IVP_OO_CMP {
 public:
-    static inline int calc_hash_index( IVP_Real_Object * o){
+    static inline hk_intp calc_hash_index( IVP_Real_Object * o){
     hk_intp x = (hk_intp)o;
 	return x + 1023 * (x>>8);
     }
 
     // calc hash index of c, con is a reference
-    static inline int calc_hash_index( IVP_Collision *c, IVP_Real_Object * con){
+    static inline hk_intp calc_hash_index( IVP_Collision *c, IVP_Real_Object * con){
 	IVP_Real_Object *objects[2];
 	c->get_objects(objects);
     hk_intp x = hk_intp(objects[0]) ^ hk_intp(objects[1]) ^ hk_intp(con);  // take other object (trick to avoid if)

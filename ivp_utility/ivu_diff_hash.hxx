@@ -52,7 +52,7 @@ public:
 	    // insert all existing elements
 	    for (int i = base_vector->len()-1; i>=0;i--){
 		BASE *b = base_vector->element_at(i);
-		for (int index = CMP::calc_hash_index(b,reference);;	index++){
+		for (hk_intp index = CMP::calc_hash_index(b,reference); ;index++){
 		    index &= buffersize_minus_one;
 		    if (hash_to_vector_index[index] == -1){ // free place found
 			hash_to_vector_index[index]  = i;
@@ -67,7 +67,7 @@ public:
     // accordingly if found
     // reference is the reference element
     BASE *check_element( SEARCH *elem, SEARCH *reference ){
-	for (int index = CMP::calc_hash_index(elem);;index++){
+	for (hk_intp index = CMP::calc_hash_index(elem);;index++){
 	    index &= buffersize_minus_one;
 	    int vector_index = hash_to_vector_index[index];
 	    if (vector_index == -1){
@@ -83,7 +83,7 @@ public:
 		// swap elems in base vector:  n_found_objects : vector_index
 		BASE *nfb = base_vector->element_at(n_found_objects);
 		// search and mark existing position
-		for ( int i = CMP::calc_hash_index(nfb,reference);; i++){
+		for ( hk_intp i = CMP::calc_hash_index(nfb,reference);; i++){
 		    i &= buffersize_minus_one;
 		    if (hash_to_vector_index[i] != n_found_objects){
 			continue;
