@@ -3,7 +3,7 @@
 
 class IVP_Hash_Elem;
 
-extern unsigned int IVP_Hash_crctab[];
+extern const unsigned int IVP_Hash_crctab[];
 
 class IVP_Hash {
     friend class IVP_U_String_Hash;

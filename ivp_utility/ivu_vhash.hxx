@@ -24,7 +24,7 @@ public:
   const void *elem;
 };
 
-extern unsigned int IVP_Hash_crctab[];
+extern const unsigned int IVP_Hash_crctab[];
 
 class IVP_VHash {
 private:
@@ -77,11 +77,10 @@ public:
 
 // basic function for calculating the hash_index
 inline int IVP_VHash::hash_index(const char *key, hk_intp key_size){
-	unsigned int c;		
-	unsigned int index = 0xffffffffL; //-V112
+	unsigned int index = 0xffffffffU; //-V112
 	for (hk_intp i=key_size-1;i>=0;i--){
-	    c = *((const unsigned char *)(key++));
-	    index = IVP_Hash_crctab[((int) index ^ c) & 0xff] ^ (index >> 8);
+	    unsigned int c = *((const unsigned char *)(key++));
+	    index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
 	}
 	return index | IVP_VHASH_TOUCH_BIT;	// set touch bit
 };
@@ -164,12 +163,10 @@ public:
 
 // basic function for calculating the hash_index
 inline int IVP_VHash_Store::hash_index_store(const char *key, int key_size){
-	unsigned int c;		
-	unsigned int index = 0xffffffffL; //-V112
-	int i;
-	for (i=key_size-1;i>=0;i--){
-	    c = *((const unsigned char *)(key++));
-	    index = IVP_Hash_crctab[((int) index ^ c) & 0xff] ^ (index >> 8);
+	unsigned int index = 0xffffffffU; //-V112
+	for (int i=key_size-1;i>=0;i--){
+	    unsigned int c = *((const unsigned char *)(key++));
+	    index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
 	}
 	return index | IVP_VHASH_TOUCH_BIT;	// set touch bit
 };

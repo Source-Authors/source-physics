@@ -3,15 +3,13 @@
 #include <ivp_physics.hxx>
 #include "ivv_cluster_min_hash.hxx"
 
-extern unsigned int IVP_Hash_crctab[];
+extern const unsigned int IVP_Hash_crctab[];
 
 inline int IVV_Cluster_Min_Hash::hash_index(const char *key)const{
-	unsigned int c;		
-	unsigned int index = 0xffffffffL; //-V112
-	int i;
-	for (i=sizeof(void *)-1;i>=0;i--){
-	    c = *((unsigned char *)(key++));
-	    index = IVP_Hash_crctab[((int) index ^ c) & 0xff] ^ (index >> 8);
+	unsigned int index = 0xffffffffU; //-V112
+	for (hk_intp i=sizeof(void *)-1;i>=0;i--){
+	    unsigned int c = *((unsigned char *)(key++));
+	    index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
 	}
 	index = index & (size-1);
 	return index;

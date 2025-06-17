@@ -21,7 +21,7 @@ public:
     void 	*elem;
 };
 
-extern unsigned int IVP_Hash_crctab[];
+extern const unsigned int IVP_Hash_crctab[];
 
 class IVP_U_Min_Hash {
     friend class IVP_U_Min_Hash_Enumerator;

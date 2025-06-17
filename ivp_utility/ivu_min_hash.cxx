@@ -10,19 +10,8 @@
 inline int IVP_U_Min_Hash::hash_index(const int *key)const{
 	unsigned int x = *key * 101;
 	unsigned int y = (x >> 8) + *key * 1001;
-	return y &  (size-1);
-#if 0
-	unsigned int c;		
-	unsigned int index = 0xffffffffL;
-	int i;
-	for (i=sizeof(void *)-1;i>=0;i--){
-	    c = *((unsigned char *)(key++));
-	    index = IVP_Hash_crctab[((int) index ^ c) & 0xff] ^ (index >> 8);
-	}
-	index = index & (size-1);
-	return index;
-#endif
-    };
+	return y & (size-1);
+};
 
 IVP_U_Min_Hash::IVP_U_Min_Hash(int sizei){
     size = sizei;
