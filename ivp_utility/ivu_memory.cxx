@@ -20,23 +20,6 @@
 //IVP_Environment *ivp_global_env=NULL;
 
 void ivp_memory_check(void *a) {
-  if (a) return;
-#if 0
-  //if( !ivp_global_env ) {
-  //        return;
-  //    }
-	    //int fp;
-	    //fp=sceOpen("host0:/ipion_out/ipion.txt",SCE_CREAT);
-		hk_uintp address = (hk_uintp)a;
-		IVP_Time now_time = ivp_global_env->get_current_time();
-		IVP_DOUBLE tt = now_time.get_time();
-		if (tt > 11.98) {
-		    fprintf(stderr, "trying to free %p time %f\n", a, tt);
-		    if (a == (void *)(hk_uintp)0x30ca50){
-		    	fprintf(stderr, "Crashing soon\n");
-		    }
-
-#endif
 }
 
 void ivp_byte_swap4(uint& fourbytes)
