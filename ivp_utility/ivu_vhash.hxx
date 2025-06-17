@@ -172,8 +172,7 @@ inline int IVP_VHash_Store::hash_index_store(const char *key, int key_size){
 };
 
 inline int IVP_VHash_Store::void_pointer_to_index(void *p) {
-    void *help_pointer=p;
-    return hash_index_store( (char *)&help_pointer, sizeof(void *) );
+    return hash_index_store( (const char *)&p, sizeof(void *) );
 };
 
 inline IVP_BOOL IVP_VHash_Store::compare_store_hash(void *pointer0, void *pointer1) {

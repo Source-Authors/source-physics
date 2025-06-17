@@ -15,8 +15,7 @@ IVP_Collision_Callback_Table_Hash::~IVP_Collision_Callback_Table_Hash()
 
 int IVP_Collision_Callback_Table_Hash::object_to_index(IVP_Real_Object *real_object)
 {
-    IVP_Real_Object *real_obj = real_object;
-    return hash_index( (char *)&real_obj, sizeof(real_obj) );
+    return hash_index( (const char *)&real_object, sizeof(real_object) );
 }
 
 IVP_BOOL IVP_Collision_Callback_Table_Hash::compare(const void *elem0, const void *elem1) const

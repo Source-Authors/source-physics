@@ -128,7 +128,7 @@ void IVP_U_Min_Hash::min_removed_at_index(IVP_U_Min_Hash_Elem *elem, int i){
 }
 
 void IVP_U_Min_Hash::add(void *elem, IVP_DOUBLE val){
-    int i = hash_index((int *)&elem);
+    int i = hash_index((const int *)&elem);
     IVP_U_Min_Hash_Elem *el = new IVP_U_Min_Hash_Elem();//(IVP_U_Min_Hash_Elem *)p_malloc(sizeof(IVP_U_Min_Hash_Elem));
 #if defined(SORT_MINDIST_ELEMENTS)
     static int sort_counter = 1;
@@ -153,7 +153,7 @@ void IVP_U_Min_Hash::change_value(void *elem, IVP_DOUBLE val){
 
 /** try to remove element from min_hash */
 void IVP_U_Min_Hash::remove(void *elem){
-    int i = hash_index((int *)&elem);
+    int i = hash_index((const int *)&elem);
     IVP_U_Min_Hash_Elem *el,*last_el;
     last_el = 0;
     for (el = elems[i];el;el=el->next){
@@ -175,7 +175,7 @@ void IVP_U_Min_Hash::remove(void *elem){
 }
 
 int IVP_U_Min_Hash::is_elem(void *elem)const{
-    int i = hash_index((int *)&elem);
+    int i = hash_index((const int *)&elem);
     IVP_U_Min_Hash_Elem *el;
     for (el = elems[i];el;el=el->next){
 	if ( el->elem == elem){

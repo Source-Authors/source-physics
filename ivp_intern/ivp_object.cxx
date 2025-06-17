@@ -958,7 +958,7 @@ IVP_Controller_VHash::~IVP_Controller_VHash()
 
 int IVP_Controller_VHash::controller_to_index(IVP_Controller *controller)
 {
-    return hash_index( (char *)&controller, sizeof(controller) );
+    return hash_index( (const char *)&controller, sizeof(controller) );
 }
 
 IVP_BOOL IVP_Controller_VHash::compare(const void *elem0, const void *elem1) const

@@ -11,7 +11,7 @@ IVP_ov_tree_hash::~IVP_ov_tree_hash() {}
 
 int IVP_ov_tree_hash::node_to_index(IVP_OV_Node *node)
 {
-    return hash_index( (char *)&node->data, sizeof(node->data));
+    return hash_index( (const char *)&node->data, sizeof(node->data));
 }
 
 

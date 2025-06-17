@@ -129,7 +129,7 @@ void IVV_Cluster_Min_Hash::min_removed_at_index(IVV_Cluster_Min_Hash_Elem *elem,
 }
 
 void IVV_Cluster_Min_Hash::add(void *elem, IVP_DOUBLE val){
-    int i = hash_index((char *)&elem);
+    int i = hash_index((const char *)&elem);
     IVV_Cluster_Min_Hash_Elem *el = new IVV_Cluster_Min_Hash_Elem();//(IVV_Cluster_Min_Hash_Elem *)p_malloc(sizeof(IVV_Cluster_Min_Hash_Elem));
 #if defined(SORT_MINDIST_ELEMENTS)
     static int sort_counter = 1;
@@ -154,7 +154,7 @@ void IVV_Cluster_Min_Hash::change_value(void *elem, IVP_DOUBLE val){
 
 /** try to remove element from min_hash */
 void IVV_Cluster_Min_Hash::remove(void *elem){
-    int i = hash_index((char *)&elem);
+    int i = hash_index((const char *)&elem);
     IVV_Cluster_Min_Hash_Elem *el,*last_el;
     last_el = 0;
     for (el = elems[i];el;el=el->next){
@@ -177,7 +177,7 @@ void IVV_Cluster_Min_Hash::remove(void *elem){
 }
 
 int IVV_Cluster_Min_Hash::is_elem(void *elem){
-    int i = hash_index((char *)&elem);
+    int i = hash_index((const char *)&elem);
     IVV_Cluster_Min_Hash_Elem *el;
     for (el = elems[i];el;el=el->next){
 	if ( el->elem == elem){

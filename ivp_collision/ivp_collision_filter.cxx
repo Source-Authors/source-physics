@@ -92,7 +92,7 @@ IVP_BOOL IVP_CFEP_Hash::compare(const void *elem0, const void *elem1) const
 int IVP_CFEP_Hash::pair_to_index(IVP_CFEP_Objectpair *pair)
 {
     // dimhotepus: Fix hashing, use entire pair instead of pointer size.
-    return hash_index( (char *)pair, sizeof(*pair));
+    return hash_index( (const char *)pair, sizeof(*pair));
 };
 
 void IVP_CFEP_Hash::add(IVP_CFEP_Objectpair *pair)
