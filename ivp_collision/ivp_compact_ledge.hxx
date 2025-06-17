@@ -277,30 +277,30 @@ const IVP_Compact_Poly_Point *IVP_Compact_Edge::get_start_point(const IVP_Compac
 
 const IVP_Compact_Edge *IVP_Compact_Edge::get_next() const
 {
-    int idx = (int)(((hk_uintp)this) & 0x0c);
+    hk_intp idx = (hk_intp)(((hk_uintp)this) & 0x0c);
     return (IVP_Compact_Edge *)(((char *)this) + ((int *)(((char *)this->next_table)+idx))[0]);
 }
 
 int IVP_Compact_Edge::get_edge_index()const{
-  int idx = (int((((hk_uintp)this) & 0x0c))>>2) - 1;
+    int idx = (int((((hk_uintp)this) & 0x0c))>>2) - 1;
     return idx;
 }
 
 IVP_Compact_Edge *IVP_Compact_Edge::get_next()
 {
-    int idx = (int)(((hk_uintp)this) & 0x0c);
+    hk_intp idx = (hk_intp)(((hk_uintp)this) & 0x0c);
     return (IVP_Compact_Edge *)(((char *)this) + ((int *)(((char *)this->next_table)+idx))[0]);
 }
 
 const IVP_Compact_Edge *IVP_Compact_Edge::get_prev() const
 {
-    int idx = (int)(((hk_uintp)this) & 0x0c);
+    hk_intp idx = (hk_intp)(((hk_uintp)this) & 0x0c);
     return (IVP_Compact_Edge *)(((char *)this) + ((int *)(((char *)this->prev_table)+idx))[0]);
 }
 
 IVP_Compact_Edge *IVP_Compact_Edge::get_prev() 
 {
-    int idx = (int)(((hk_uintp)this) & 0x0c);
+    hk_intp idx = (hk_intp)(((hk_uintp)this) & 0x0c);
     return (IVP_Compact_Edge *)(((char *)this) + ((int *)(((char *)this->prev_table)+idx))[0]);
 }
 
