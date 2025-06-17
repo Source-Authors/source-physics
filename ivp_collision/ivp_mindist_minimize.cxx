@@ -96,21 +96,25 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(IVP_SYNAPSE_POLYGON_STATUS
     hk_intp x1 = hk_intp(i_e1) | i_s1;
 
     if (x0 < x1) {
-	int h = x0; x0 = x1; x1 = h;
+		// dimhotepus: Use std::swap.
+		std::swap( x0, x1 );
     }
 
     IVP_MM_Loop_Hash_Struct *s = & loop_hash[loop_hash_size];
-    for(int i = loop_hash_size; i>=0; i--){
-	if ( s->a == x0 && s->b == x1){
-	    return IVP_TRUE;
-	}
-	s--;
+	// dimhotepus: Fix out of bounds read from loop_hash.
+    for(int i = loop_hash_size; i>0; i--){
+		s--;
+
+		if ( s->a == x0 && s->b == x1){
+			return IVP_TRUE;
+		}
     }
+
     if ( loop_hash_size >= IVP_LOOP_LIST_SIZE){
-	return IVP_TRUE;
+		return IVP_TRUE;
     }
-    loop_hash[ loop_hash_size ].a = x0;
-    loop_hash[ loop_hash_size ].b = x1;
+
+    loop_hash[ loop_hash_size ] = { x0, x1 };
     loop_hash_size++;
     return IVP_FALSE;
 }

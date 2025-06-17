@@ -12,8 +12,8 @@ class IVP_Cache_Ledge_Point;
 
 #if defined(IVP_LOOP_LIST_SIZE)
     struct IVP_MM_Loop_Hash_Struct {
-	int a;
-	int b;
+	hk_intp a;
+	hk_intp b;
     };
 #endif
 
