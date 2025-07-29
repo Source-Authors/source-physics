@@ -73,9 +73,8 @@ int IVP_GridBuilder_Array::install_grid_point(int grid_point_index){
     grid_point_to_ledge_point_array[grid_point_index] = index;
     compact_poly_point_buffer[ index ] = height_points[grid_point_index];
 	IVP_IF(1) {
-		IVP_Compact_Poly_Point *cpp=&compact_poly_point_buffer[ index ];
-        hk_intp adress=(hk_intp)cpp;
-		IVP_ASSERT( (adress & 15)==0 );
+		[[maybe_unused]] IVP_Compact_Poly_Point *cpp=&compact_poly_point_buffer[ index ];
+		IVP_ASSERT( ((hk_intp)cpp & 15)==0 );
 	}
     return index;
 }
@@ -83,9 +82,8 @@ int IVP_GridBuilder_Array::install_grid_point(int grid_point_index){
 int IVP_GridBuilder_Array::install_point(const IVP_U_Float_Point *point){
     int index = n_compact_poly_points_used++;
 	IVP_IF(1) {
-		IVP_Compact_Poly_Point *cpp=&compact_poly_point_buffer[ index ];
-        hk_intp adress=(hk_intp)cpp;
-		IVP_ASSERT( (adress & 15)==0 );
+		[[maybe_unused]] IVP_Compact_Poly_Point *cpp=&compact_poly_point_buffer[ index ];
+		IVP_ASSERT( ((hk_intp)cpp & 15)==0 );
 	}
     compact_poly_point_buffer[ index ].set(point);
     compact_poly_point_buffer[index].hesse_val = 0.0f;

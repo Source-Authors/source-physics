@@ -970,9 +970,8 @@ void IVP_Buoyancy_Solver::compute_values_for_one_polygon( IVP_Real_Object *objec
     IVP_U_Float_Point s_point;  //projected center point
     {
 	IVP_IF(1){
-	    IVP_DOUBLE leng=surface_os->real_length();
-	    IVP_DOUBLE testval=IVP_Inline_Math::fabsd(leng-1.0f);
-	    IVP_ASSERT( testval < 0.001f);
+	    [[maybe_unused]] const IVP_DOUBLE leng=surface_os->real_length();
+	    IVP_ASSERT( IVP_Inline_Math::fabsd(leng-1.0f) < 0.001f);
 	}
 	s_point.set_multiple(surface_os,-surface_os->hesse_val);  //projects center onto surface_os
     }
