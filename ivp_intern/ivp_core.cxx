@@ -1278,7 +1278,7 @@ void IVP_Core::unmovable_core_debug_friction_hash() {
     for(fr_synapse=obj->get_first_friction_synapse();fr_synapse;fr_synapse=fr_synapse->get_next()) {
       [[maybe_unused]] IVP_Contact_Point *fr_mindist=fr_synapse->get_contact_point();
 
-      IVP_ASSERT( get_friction_info(fr_sys)->l_friction_system == fr_mindist->l_friction_system ); //error after deleting hash entry
+      IVP_ASSERT( get_friction_info(fr_mindist->l_friction_system)->l_friction_system == fr_mindist->l_friction_system ); //error after deleting hash entry
     }
   }
   //ivp_message("debug_friction_hash_ok\n");
