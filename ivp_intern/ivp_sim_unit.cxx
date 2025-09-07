@@ -201,15 +201,18 @@ void IVP_Simulation_Unit::clean_sim_unit() {
 
 void IVP_Simulation_Unit::throw_cores_into_my_sim_unit(IVP_Simulation_Unit *second_unit) {
     IVP_Environment *env=NULL;
-    int i;
-    for ( i=0; i<second_unit->sim_unit_cores.len(); i++){
+    for ( int i=0; i<second_unit->sim_unit_cores.len(); i++){
 	    IVP_Core *my_core = second_unit->sim_unit_cores.element_at(i);
         this->add_sim_unit_core( my_core );
 	    env=my_core->environment;
 	    my_core->sim_unit_of_core=this;
     }
 
-    env->get_sim_units_manager()->rem_sim_unit_from_manager( second_unit );
+    // dimhotepus: Ensure env is set.
+    if (env)
+    {
+      env->get_sim_units_manager()->rem_sim_unit_from_manager(second_unit);
+    }
 }
 
 // second_unit is destroyed
