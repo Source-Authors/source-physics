@@ -907,13 +907,22 @@ void IVP_Real_Object::unlink_contact_points_for_object( IVP_Real_Object *other_o
 
         fr_synapse = fr_synapse->get_next();
 
-        if( fr_mindist->get_synapse(0)->l_obj == other_object ||
-            fr_mindist->get_synapse(1)->l_obj == other_object )
-            fr_sys->delete_friction_distance(fr_mindist);
+        bool is_fr_mindist_deleted = false;
 
-        if( !fr_sys->friction_dist_number )
+        if( fr_mindist->get_synapse(0)->l_obj == other_object ||
+            fr_mindist->get_synapse(1)->l_obj == other_object ) {
+          fr_sys->delete_friction_distance(fr_mindist);
+          is_fr_mindist_deleted = true;
+        }
+
+        if( fr_sys->friction_dist_number == 0 )
         {
             P_DELETE(fr_sys);
+            // dimhotepus: Prevent dangling reference.
+            if ( !is_fr_mindist_deleted )
+            {
+                fr_mindist->l_friction_system = nullptr;
+            }
             return;
         }
     } while ( fr_synapse != NULL );

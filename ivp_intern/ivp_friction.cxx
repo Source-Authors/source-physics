@@ -2128,9 +2128,7 @@ void IVP_Friction_Sys_Static::do_simulation_controller(IVP_Event_Sim *es,IVP_U_V
     if( l_friction_system->friction_dist_number == 0 ) {
       //sim_u->rem_sim_unit_controller( l_friction_system );
       //sim_u->rem_sim_unit_controller( &l_friction_system->static_fs_handle );
-        IVP_Friction_System *temp_sys=l_friction_system;
-	l_friction_system=NULL; 
-	P_DELETE( temp_sys );
+	P_DELETE( l_friction_system );
 	es->sim_unit->union_find_needed_for_sim_unit=IVP_TRUE;
 	return;
     }
@@ -2275,6 +2273,7 @@ void IVP_Friction_Sys_Static::core_is_going_to_be_deleted_event(IVP_Core *del_co
     
     IVP_Friction_System *fs=this->l_friction_system;
     if(fs->friction_dist_number==0) {
-      P_DELETE(fs);
+      // dimhotepus: Prevent dangling reference.
+      P_DELETE(this->l_friction_system);
     }
 }
