@@ -632,28 +632,26 @@ void IVP_Friction_System::fs_recalc_all_contact_points() {
 IVP_BOOL IVP_Friction_System::dist_removed_update_pair_info(IVP_Contact_Point *old_dist)
 {
     //manage info of obj pairs
-    {
-	IVP_Friction_Core_Pair *my_pair_info;
-	IVP_Core *core0,*core1;
-	core0=old_dist->get_synapse(0)->l_obj->physical_core;
-	core1=old_dist->get_synapse(1)->l_obj->physical_core;
-	my_pair_info=this->get_pair_info_for_objs(core0,core1);
-	if(!my_pair_info)
+	IVP_Core *core0=old_dist->get_synapse(0)->l_obj->physical_core;
+	IVP_Core *core1=old_dist->get_synapse(1)->l_obj->physical_core;
+	IVP_Friction_Core_Pair *my_pair_info=this->get_pair_info_for_objs(core0,core1);
+	// dimhotepus: Ensure no nullptr my_pair_info dereference.
+	if (my_pair_info)
 	{
-	    CORE;
+		my_pair_info->del_fr_dist_obj_pairs(old_dist);
+		if(my_pair_info->number_of_pair_dists()==0)
+		{
+		    this->del_fr_pair(my_pair_info);
+		    P_DELETE(my_pair_info);
+		    // start union find
+		    return IVP_TRUE;
+		} 
+		
+		return IVP_FALSE;
 	}
 
-	my_pair_info->del_fr_dist_obj_pairs(old_dist);
-	if(my_pair_info->number_of_pair_dists()==0)
-	{
-	    this->del_fr_pair(my_pair_info);
-	    P_DELETE(my_pair_info);
-	    // start union find
-	    return IVP_TRUE;
-	} else {
-	    return IVP_FALSE;
-	}
-    }
+	CORE;
+	return IVP_FALSE;
 }
 
 void IVP_Friction_System::remove_dist_from_system(IVP_Contact_Point *old_dist)
