@@ -245,27 +245,32 @@ IVP_Contact_Point *IVP_Mindist::try_to_generate_managed_friction(IVP_Friction_Sy
 		affected_fs->test_hole_fr_system_data();
 	)
     
-    IVP_Simulation_Unit *sim0,*sim1;
-    sim0=core0->sim_unit_of_core;
-    sim1=core1->sim_unit_of_core;
+    IVP_Simulation_Unit *sim0=core0->sim_unit_of_core;
+    IVP_Simulation_Unit *sim1=core1->sim_unit_of_core;
 
     if( !(core1->physical_unmoveable | core0->physical_unmoveable) ) {
 	if(sim0!=sim1) {
 	    if(sim1==sim_unit_not_destroy) {
 		sim1->fusion_simulation_unities(sim0);
 		P_DELETE(sim0);
+		// dimhotepus: Prevent dangling reference.
+		core0->sim_unit_of_core = nullptr;
 	    } else {
 		sim0->fusion_simulation_unities(sim1);
 		P_DELETE(sim1);
+		// dimhotepus: Prevent dangling reference.
+		core1->sim_unit_of_core = nullptr;
 	    }
 	}
     }
 #ifdef DEBUG    
     IVP_IF(1) {
-	if(!core0->physical_unmoveable) {
+    // dimhotepus: Ensure unit alive.
+	if(core0->sim_unit_of_core && !core0->physical_unmoveable) {
 	    core0->sim_unit_of_core->sim_unit_debug_consistency();
 	}
-	if(!core1->physical_unmoveable) {
+    // dimhotepus: Ensure unit alive.
+	if(core1->sim_unit_of_core && !core1->physical_unmoveable) {
 	    core1->sim_unit_of_core->sim_unit_debug_consistency();
 	}
     }

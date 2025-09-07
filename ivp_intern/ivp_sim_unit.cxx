@@ -190,10 +190,9 @@ IVP_Core *IVP_Simulation_Unit::sim_unit_union_find_test()
 
 //clear redundant part
 void IVP_Simulation_Unit::clean_sim_unit() {
-    int i;
-    for(i=controller_cores.len()-1;i>=0;i--) {
+    for(int i=controller_cores.len()-1;i>=0;i--) {
         IVP_Sim_Unit_Controller_Core_List *c_info=controller_cores.element_at(i);
-	P_DELETE( c_info );
+        P_DELETE( c_info );
     }
     //sim_unit_controllers.clear();
     controller_cores.clear();
@@ -439,39 +438,41 @@ void IVP_Controller_Manager::remove_controller_from_core(IVP_Controller_Independ
 void IVP_Controller_Manager::announce_controller_to_environment( IVP_Controller_Dependent *cntrl ) {
     IVP_U_Vector<IVP_Core> *controlled_cores=cntrl->get_associated_controlled_cores();
   
-    IVP_Simulation_Unit *reference_unit=NULL;
+    IVP_Simulation_Unit *reference_unit=nullptr;
     IVP_BOOL did_fusion=IVP_FALSE;
     IVP_Movement_Type mtype=IVP_MT_NOT_SIM;
-    
-    int i;
-    for(i=controlled_cores->len()-1;i>=0;i--) {
+
+    for(int i=controlled_cores->len()-1;i>=0;i--) {
         IVP_Core *test_core=controlled_cores->element_at(i);
-	if(!test_core->physical_unmoveable) {	    
-	    
-	    mtype=(IVP_Movement_Type)((int)mtype & (int)test_core->movement_state);
-	    IVP_Simulation_Unit *test_sim_unit=test_core->sim_unit_of_core;
-	    if(reference_unit!=NULL) {
-	        if(test_sim_unit!=reference_unit) {
-		    reference_unit->throw_cores_into_my_sim_unit(test_sim_unit); //
-		    P_DELETE(test_sim_unit);
-		    did_fusion=IVP_TRUE;
-		}
-	    } else {
-	        reference_unit=test_sim_unit;
+
+	    if (!test_core->physical_unmoveable) {
+	        mtype=(IVP_Movement_Type)((int)mtype & (int)test_core->movement_state);
+	        IVP_Simulation_Unit *test_sim_unit=test_core->sim_unit_of_core;
+
+	        if (reference_unit != nullptr) {
+	            if (test_sim_unit != reference_unit) {
+		            reference_unit->throw_cores_into_my_sim_unit(test_sim_unit); //
+		            P_DELETE(test_sim_unit);
+                    // dimhotepus: Ensure no dangling reference access.
+                    test_core->sim_unit_of_core = nullptr;
+		            did_fusion=IVP_TRUE;
+		        }
+	        } else {
+	            reference_unit=test_sim_unit;
+	        }
+
+	        test_core->add_core_controller(cntrl);
 	    }
-	    
-	    test_core->add_core_controller(cntrl);
-	    
-	}
     }
 
-    if(did_fusion==IVP_TRUE) {
+    if (did_fusion == IVP_TRUE) {
         reference_unit->clean_sim_unit();
-	reference_unit->sim_unit_calc_redundants();
+        reference_unit->sim_unit_calc_redundants();
     }
-    
-    if(mtype<IVP_MT_NOT_SIM) {
-        reference_unit->sim_unit_revive_for_simulation(l_environment); //ensure in simulation is not enough (cannot handle mixture of simulated and not simulated objects)
+
+    if (mtype < IVP_MT_NOT_SIM) {
+        //ensure in simulation is not enough (cannot handle mixture of simulated and not simulated objects)
+        reference_unit->sim_unit_revive_for_simulation(l_environment);
     }
 }
 
@@ -482,7 +483,7 @@ void IVP_Core::rem_core_controller( IVP_Controller *rem_cntrl ) {
 
 void IVP_Core::add_core_controller( IVP_Controller *add_cntrl ) {
     controllers_of_core.add(add_cntrl);
-    sim_unit_of_core->add_controller_of_core(this,add_cntrl);
+    this->sim_unit_of_core->add_controller_of_core(this,add_cntrl);
 }
 
 // e.g. a core enters a water pool
