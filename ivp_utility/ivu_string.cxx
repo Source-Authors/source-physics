@@ -206,6 +206,9 @@ char *GBS_remove_escape(char *com)	/* \ is the escape charakter */
 	char	ch;
 
 	s = d = result = p_strdup(com);
+	// dimhotepus: Handle p_strdup failure.
+	if (!s) return nullptr;
+
 	while ( (ch = *(s++)) ){
 		switch (ch) {
 			case '\\':
