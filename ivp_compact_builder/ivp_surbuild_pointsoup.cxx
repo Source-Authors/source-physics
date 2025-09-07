@@ -667,7 +667,7 @@ class ScopedFpuMode {
   explicit ScopedFpuMode(uint16_t new_mode) noexcept
   {
 	// MSVC complains when we write to member directly.
-    uint16_t old_mode;
+    uint16_t old_mode = 0;
 
     __asm FSTCW old_mode;
     new_mode = old_mode | new_mode;
