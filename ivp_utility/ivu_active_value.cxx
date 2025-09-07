@@ -72,9 +72,9 @@ IVP_U_Active_Value_Manager::~IVP_U_Active_Value_Manager()
 
 void IVP_U_Active_Value_Manager::init_active_values_generic()
 {
-    IVP_U_Active_Terminal_Double *mod_double_null = new IVP_U_Active_Terminal_Double("double_null", 0.0f);
-    this->mod_current_time = new IVP_U_Active_Terminal_Double(IVP_ACTIVE_FLOAT_CURRENT_TIME_NAME, 0.0f);    
-    this->insert_active_float(mod_double_null);
+    this->mod_current_time = new IVP_U_Active_Terminal_Double(IVP_ACTIVE_FLOAT_CURRENT_TIME_NAME, 0.0f);
+    // dimhotepus: Inline allocation to prevent leak if previous alloc fails.
+    this->insert_active_float(new IVP_U_Active_Terminal_Double("double_null", 0.0f));
     this->insert_active_float(mod_current_time);
 }
 
