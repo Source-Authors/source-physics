@@ -7,6 +7,8 @@ hk_Vector3 hk_Vector3_Util::random_vec()
 	result.x = hk_Math::rand01();
 	result.y = hk_Math::rand01();
 	result.z = hk_Math::rand01();
+	// dimhotepus: Add missed initializer.
+	result.w = hk_Math::rand01();
 
 	return result;
 }
