@@ -19,7 +19,7 @@
 
 //IVP_Environment *ivp_global_env=NULL;
 
-void ivp_memory_check(void *a) {
+void ivp_memory_check([[maybe_unused]] void *a) {
 }
 
 void ivp_byte_swap4(uint& fourbytes)
