@@ -208,8 +208,7 @@ void IVP_Simulation_Unit::throw_cores_into_my_sim_unit(IVP_Simulation_Unit *seco
     }
 
     // dimhotepus: Ensure env is set.
-    if (env)
-    {
+    if (env) {
       env->get_sim_units_manager()->rem_sim_unit_from_manager(second_unit);
     }
 }
