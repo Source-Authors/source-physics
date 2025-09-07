@@ -45,18 +45,24 @@ void hk_Array_Base::grow_mem( int size, int n_elems )
 	HK_ASSERT( new_memsize <= USHRT_MAX );
 
 	char *new_array = hk_allocate<char>( static_cast<size_t>(new_memsize) * static_cast<size_t>(size), hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
-	if (!new_array) HK_BREAK;
-
-	if ( m_elems )
+	if (new_array)
 	{
-		memcpy( new_array, m_elems, m_memsize * static_cast<size_t>(size) );
-
-		if ( m_elems != reinterpret_cast<char *>(this + 1) )
+		if ( m_elems )
 		{
-			hk_deallocate( m_elems, m_memsize * static_cast<size_t>(size), hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
+			memcpy( new_array, m_elems, m_memsize * static_cast<size_t>(size) );
+
+			if ( m_elems != reinterpret_cast<char *>(this + 1) )
+			{
+				hk_deallocate( m_elems, m_memsize * static_cast<size_t>(size), hk_MEMORY_CLASS::HK_MEMORY_CLASS_ARRAY );
+			}
 		}
+		m_memsize = static_cast<hk_array_store_index>(new_memsize);
+		m_elems = new_array;
 	}
-	m_memsize = static_cast<hk_array_store_index>(new_memsize);
-	m_elems = new_array;
+	else
+	{
+		// dimhotepus: Handle alloc failure.
+		HK_BREAK;
+	}
 }
 
