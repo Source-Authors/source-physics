@@ -1035,9 +1035,12 @@ IVP_Contact_Point::~IVP_Contact_Point(){
 	    }
 	}
     }
+
+	// dimhotepus: Initialize in a single place.
+	const IVP_BOOL is_debug = env->get_debug_manager()->check_fs;
    {
      IVP_Core *core0 = nullptr,*core1 = nullptr;
-     IVP_IFDEBUG( env->get_debug_manager()->check_fs,
+     IVP_IFDEBUG( is_debug,
 	    core0=get_synapse(0)->l_obj->friction_core;
 	    core1=get_synapse(1)->l_obj->friction_core;
 	)
@@ -1045,7 +1048,7 @@ IVP_Contact_Point::~IVP_Contact_Point(){
 	get_synapse(0)->remove_friction_synapse_from_object();
 	get_synapse(1)->remove_friction_synapse_from_object();
 
-	IVP_IFDEBUG( env->get_debug_manager()->check_fs,
+	IVP_IFDEBUG( is_debug,
 	    if(core0->physical_unmoveable) {
 	        core0->unmovable_core_debug_friction_hash();
 	    }
