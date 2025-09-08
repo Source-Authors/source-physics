@@ -233,10 +233,13 @@ void IVP_Contact_Point::p_calc_friction_ss_KK(const IVP_Compact_Edge *K, const I
   Kvec.fast_normize();
   
   norm.calc_cross_product(&Kvec, &Lvec);
+  
+  // dimhotepus: Compile-time.
+  constexpr auto quad_res = P_DOUBLE_RES * P_DOUBLE_RES;
 
   IVP_DOUBLE quad_dist = norm.quad_length();
-    
-  if(quad_dist > (P_DOUBLE_RES * P_DOUBLE_RES)){ // not parallel
+
+  if(quad_dist > quad_res){ // not parallel
     IVP_U_Point K_area;	// area vertical to K and norm
     IVP_U_Point L_area;	// area vertical to L and norm
     K_area.calc_cross_product(&Kvec, &norm);
@@ -303,8 +306,6 @@ void IVP_Contact_Point::p_calc_friction_ss_KK(const IVP_Compact_Edge *K, const I
       info->contact_point_ws.set(&Kp);
       info->surf_normal.set(1.0f,0.0f,0.0f);
       info->span_friction_v[0].set(0.0f,1.0f,0.0f);
-      sk=0.0f;
-      sl=0.0f;
   }
 }
 
