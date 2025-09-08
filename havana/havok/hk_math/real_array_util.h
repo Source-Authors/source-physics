@@ -9,12 +9,9 @@
 // Note that all array arguments are assumed to have suitable
 // alignment for the vector unit. If this is not the case, these
 // routines will cause a crash.
-class hk_Real_Array_Util
-{
-    public:
-
-		static hk_real dot(const hk_real* x, const hk_real* y);
+class hk_Real_Array_Util {
+ public:
+  static hk_real dot(const hk_real* x, const hk_real* y);
 };
 
 #endif /* HK_MATH_REAL_ARRAY_UTIL_H */
-

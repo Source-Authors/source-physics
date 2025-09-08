@@ -14,45 +14,45 @@ class hk_Local_Constraint_System;
 
 // IVP_EXPORT_PUBLIC
 
-class hk_Fixed_Constraint : public hk_Constraint
-{
-	public:
+class hk_Fixed_Constraint : public hk_Constraint {
+ public:
+  hk_Fixed_Constraint(hk_Environment *, const hk_Fixed_BP *, hk_Rigid_Body *a,
+                      hk_Rigid_Body *b);
+  hk_Fixed_Constraint(hk_Local_Constraint_System *, const hk_Fixed_BP *,
+                      hk_Rigid_Body *a, hk_Rigid_Body *b);
 
-		hk_Fixed_Constraint( hk_Environment *,             const hk_Fixed_BP *, hk_Rigid_Body *a ,hk_Rigid_Body *b );	
-		hk_Fixed_Constraint( hk_Local_Constraint_System *, const hk_Fixed_BP *, hk_Rigid_Body *a ,hk_Rigid_Body *b );	
+  void apply_effector_PSI(hk_PSI_Info &, hk_Array<hk_Entity *> *);
 
-		void apply_effector_PSI( hk_PSI_Info&, hk_Array<hk_Entity*>* );
+  int get_vmq_storage_size() override;
 
-		int get_vmq_storage_size() override;
+  inline int setup_and_step_constraint(hk_PSI_Info &pi, void *mem,
+                                       hk_real tau_factor,
+                                       hk_real damp_factor) override;
+  //: uses the mem as a vmq storage, returns the bytes needed to store its
+  //: vmq_storage
 
-		inline int setup_and_step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor ) override;
-			//: uses the mem as a vmq storage, returns the bytes needed to store its vmq_storage
+  void step_constraint(hk_PSI_Info &pi, void *mem, hk_real tau_factor,
+                       hk_real damp_factor) override;
+  //: use the mem as a vmq storage setup before
 
-		void step_constraint( hk_PSI_Info& pi, void *mem, hk_real tau_factor, hk_real damp_factor ) override;
-			//: use the mem as a vmq storage setup before
+  void init_constraint(const void *bp) override;
 
-		void init_constraint( const void* bp ) override;
+  void write_to_blueprint(hk_Fixed_BP *);
 
-		void write_to_blueprint( hk_Fixed_BP * );
+  const char *get_constraint_type() override { return "fixed"; }
 
-		const char* get_constraint_type() override
-		{
-			return "fixed";
-		}
+  inline hk_Transform get_transform([[maybe_unused]] int x) const {
+    // todo(crack): this is probably wrong... fix me
+    HK_ASSERT(0 && "Incomplete implementation");
+    return m_transform_os_ks;
+  }
 
-		inline hk_Transform get_transform( [[maybe_unused]] int x) const
-		{
-			// todo(crack): this is probably wrong... fix me
-			HK_ASSERT(0 && "Incomplete implementation");
-			return m_transform_os_ks;
-		}
-	protected:
+ protected:
+  void init_fixed_constraint(const hk_Fixed_BP *bp);
 
-		void init_fixed_constraint( const hk_Fixed_BP *bp );
-
-		hk_Transform m_transform_os_ks;
-		hk_real m_strength;
-		hk_real m_tau;
+  hk_Transform m_transform_os_ks;
+  hk_real m_strength;
+  hk_real m_tau;
 };
 
 #endif /* HK_FIXED_CONSTRAINT_H */

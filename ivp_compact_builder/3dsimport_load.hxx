@@ -6,63 +6,73 @@
 #ifndef _3DSLOAD_H
 #define _3DSLOAD_H
 
-typedef unsigned char   byte;
-typedef unsigned short  word;
-typedef unsigned long   dword;
-typedef float           float32;
+typedef unsigned char byte;
+typedef unsigned short word;
+typedef unsigned long dword;
+typedef float float32;
 
-typedef struct
-{
-    word p0,p1,p2;
-	word flags;
-	// ...
+typedef struct {
+  word p0, p1, p2;
+  word flags;
+  // ...
 
 } H3dsFace;
 
-typedef struct
-{
-    union { float32 x; dword ix; };
-    union { float32 y; dword iy; };
-    union { float32 z; dword iz; };
-	// ...
+typedef struct {
+  union {
+    float32 x;
+    dword ix;
+  };
+  union {
+    float32 y;
+    dword iy;
+  };
+  union {
+    float32 z;
+    dword iz;
+  };
+  // ...
 
 } H3dsVert;
 
-typedef struct
-{
-    union { float32 u; dword iu; };
-    union { float32 v; dword iv; };
-	// ...
+typedef struct {
+  union {
+    float32 u;
+    dword iu;
+  };
+  union {
+    float32 v;
+    dword iv;
+  };
+  // ...
 
 } H3dsMap;
 
-typedef struct
-{
-	int faces;              // number of faces in facelist
-	int verts;              // number of vertices in vertlist
-	int maps;               // number of mapping coordinates in maplist
-	int matrix;             // 1 if transformation matrix is loaded
-	H3dsFace * facelist;
-	H3dsVert * vertlist;
-	H3dsMap  * maplist;
-	float32 TraMatrix[3*4]; // 3*3 rotation matrix, 3*1 translation matrix
-	char name[16];          // object name, zero terminated
+typedef struct {
+  int faces;   // number of faces in facelist
+  int verts;   // number of vertices in vertlist
+  int maps;    // number of mapping coordinates in maplist
+  int matrix;  // 1 if transformation matrix is loaded
+  H3dsFace* facelist;
+  H3dsVert* vertlist;
+  H3dsMap* maplist;
+  float32 TraMatrix[3 * 4];  // 3*3 rotation matrix, 3*1 translation matrix
+  char name[16];             // object name, zero terminated
 
-	// This vertice don't really belong here in the loader structure.
-	// It is only used in the converter to hold the centre point
-	// for this mesh object.
-	H3dsVert centre;
+  // This vertice don't really belong here in the loader structure.
+  // It is only used in the converter to hold the centre point
+  // for this mesh object.
+  H3dsVert centre;
 
 } H3dsMeshObj;
 
-typedef struct
-{
-	int meshobjs;           // number of meshobjects in meshobjlist
-	H3dsMeshObj * meshobjlist;
+typedef struct {
+  int meshobjs;  // number of meshobjects in meshobjlist
+  H3dsMeshObj* meshobjlist;
 
-    // Same comment as above. This vertice holds the centre point of
-	// all objects in the scene.
-	H3dsVert centre;
+  // Same comment as above. This vertice holds the centre point of
+  // all objects in the scene.
+  H3dsVert centre;
 
 } H3dsScene;
 
@@ -92,8 +102,8 @@ extern "C" {
  *  any crashes in an error situation.
  */
 
-H3dsScene * HRead3dsScene(void * ptr, int what, dword size);
-void HFree3dsScene(H3dsScene * scene);
+H3dsScene* HRead3dsScene(void* ptr, int what, dword size);
+void HFree3dsScene(H3dsScene* scene);
 
 #ifdef __cplusplus
 }

@@ -7,14 +7,18 @@
 
 #ifndef IVP_NO_DEBUGMANAGER
 // dimhotepus: Use func parameter
-#define IVP_IFDEBUG(dci, func)	if (ivp_debugmanager.is_debug_enabled(dci)) { func }
+#define IVP_IFDEBUG(dci, func)                  \
+  if (ivp_debugmanager.is_debug_enabled(dci)) { \
+    func                                        \
+  }
 // dimhotepus: Use func parameter
 #define IVP_DEBUGCODE(func) func
 #else
-#define IVP_IFDEBUG(a, b) if (0) {}
+#define IVP_IFDEBUG(a, b) \
+  if (0) {                \
+  }
 #define IVP_DEBUGCODE(func)
 #endif
-
 
 // NOTE: The values from 0-1023 are reserved for internal
 //       Ipion use. Feel free to define your own debug
@@ -34,32 +38,31 @@ enum IVP_DEBUG_CLASS {
 
   IVP_DEBUG_IPION_ERROR_MSG = 1024,
 
-  IVP_DEBUG_MAX_N_CLASSES = 2048 // DO NOT CHANGE THIS VALUE!
+  IVP_DEBUG_MAX_N_CLASSES = 2048  // DO NOT CHANGE THIS VALUE!
 };
 
 class IVP_BetterDebugmanager {
-    int initialized;
-    int flag_list[IVP_DEBUG_MAX_N_CLASSES];
+  int initialized;
+  int flag_list[IVP_DEBUG_MAX_N_CLASSES];
 
-public:
-    void     enable_debug_output(IVP_DEBUG_CLASS class_id);
-    void     disable_debug_output(IVP_DEBUG_CLASS class_id);
+ public:
+  void enable_debug_output(IVP_DEBUG_CLASS class_id);
+  void disable_debug_output(IVP_DEBUG_CLASS class_id);
 
-    IVP_BOOL is_debug_enabled(IVP_DEBUG_CLASS class_identifier) const;
-    IVP_BOOL is_debug_enabled(IVP_BOOL toggle) const;
-    void     dprint(IVP_DEBUG_CLASS class_id, const char *formatstring, ...);
+  IVP_BOOL is_debug_enabled(IVP_DEBUG_CLASS class_identifier) const;
+  IVP_BOOL is_debug_enabled(IVP_BOOL toggle) const;
+  void dprint(IVP_DEBUG_CLASS class_id, const char *formatstring, ...);
 
-    // feel free to override this method with your customized
-    // output function (e.g. for redirecting all debug outputs
-    // into a file)
-    virtual void output_function(IVP_DEBUG_CLASS class_id, const char *string);
+  // feel free to override this method with your customized
+  // output function (e.g. for redirecting all debug outputs
+  // into a file)
+  virtual void output_function(IVP_DEBUG_CLASS class_id, const char *string);
 
-    IVP_BetterDebugmanager();
-    virtual ~IVP_BetterDebugmanager();
+  IVP_BetterDebugmanager();
+  virtual ~IVP_BetterDebugmanager();
 };
 
 // use global variable only in emergency
 extern IVP_BetterDebugmanager ivp_debugmanager;
-
 
 #endif

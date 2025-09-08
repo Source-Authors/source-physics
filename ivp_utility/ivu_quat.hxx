@@ -1,19 +1,15 @@
 class IVP_U_Matrix3;
 
-
-
-
 #if 0
 #ifndef __gluquat__
 #define __gluquat__
 
-
-#if defined (WIN32)
-#	ifndef WIN32_LEAN_AND_MEAN
-#		define NOMINMAX
-#		define	WIN32_LEAN_AND_MEAN
-#	endif
-#	include <windows.h>
+#if defined(WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
 #endif
 
 #include <GL/gl.h>
@@ -73,26 +69,11 @@ extern void APIENTRY gluQuatExp_EXT(GL_QUAT*, GL_QUAT*);
 extern void APIENTRY gluQuatLog_EXT(GL_QUAT*, GL_QUAT*);
 extern void APIENTRY gluQuatLnDif_EXT(GL_QUAT*, GL_QUAT*, GL_QUAT*);
 
-
-
-
-
-
-
 #ifdef __cplusplus
 }
 
 #endif
 
-
 #endif  // __gluquat__
 
 #endif
-
-
-
-
-
-
-
-
