@@ -1186,10 +1186,6 @@ void IVP_Friction_System::fusion_friction_systems(IVP_Friction_System *second_sy
 {
     IVP_Friction_System *first_sys=this;
     
-    IVP_Simulation_Unit *s1,*s2;
-    s1=first_sys->cores_of_friction_system.element_at(0)->sim_unit_of_core;
-    s2=second_sys->cores_of_friction_system.element_at(0)->sim_unit_of_core;
-  
     IVP_IF(1) {
         IVP_Environment *env=first_sys->l_environment;
 		IVP_IFDEBUG(env->get_debug_manager()->check_fs,
