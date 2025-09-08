@@ -186,7 +186,7 @@ void IVP_Object_Attach::detach_object( IVP_Real_Object *attached_object, IVP_Tem
 IVP_RETURN_TYPE IVP_Object_Attach::reposition_object_Ros( IVP_Real_Object *parent, IVP_Real_Object *attached_object,
 						const IVP_U_Quat *q_Ros_f_Aos,
 						const IVP_U_Point *shift_Ros_f_Aos,
-						IVP_BOOL check_before_moving){
+						[[maybe_unused]] IVP_BOOL check_before_moving){
 
     IVP_U_Matrix m_world_f_Ros;
     if (parent){
