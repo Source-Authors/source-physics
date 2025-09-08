@@ -228,7 +228,8 @@ IVP_Real_Object *IVP_Cluster_Manager::get_next_real_object_in_cluster_tree(IVP_O
 
     for (next=next_object; !next; next=object->next_in_cluster) {
 	IVP_Object *old_father = object;
-	object = object->father_cluster;
+	// dimhotepus: Prevent null dereference.
+	object = object ? object->father_cluster : nullptr;
 	if (!object){
     	    IVP_Cluster *root = get_root_cluster();
 	    if ( root == old_father ) return(NULL); /* necessary to avoid endless loop caused by the last object
