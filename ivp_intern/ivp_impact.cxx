@@ -1035,14 +1035,18 @@ IVP_DOUBLE IVP_Impact_Solver::estimate_push_impulse()
     u0*=div_masses;
     u1*=div_masses;
 
-    IVP_DOUBLE diff_v0=u0-push_v0;
-    //IVP_DOUBLE diff_v1=u1-push_v1; //difference of velocity before/after impact
+    const IVP_DOUBLE diff_v0=u0-push_v0;
+	const IVP_DOUBLE start_impulse_v0=diff_v0*virt_mass[0];
 
     IVP_IF(core[0]->environment->debug_information->debug_impact)
     {
-	ivp_message("start_impulse %.2f\n",diff_v0*virt_mass[0]);	
+        ivp_message("start_impulse v0 %.2f\n",start_impulse_v0);
+
+        const IVP_DOUBLE diff_v1=u1-push_v1; //difference of velocity before/after impact
+
+        ivp_message("start_impulse v1 %.2f\n", diff_v1 * virt_mass[1]);
     }
-    return(diff_v0*virt_mass[0]);    
+    return start_impulse_v0;
 }
 
 // #+# simplify this function a lot
