@@ -79,8 +79,9 @@ void IVP_Freeze_Manager::init_freeze_manager(){
 IVP_Environment::IVP_Environment(IVP_Environment_Manager *manager,IVP_Application_Environment *appl_env,
 				 const char *company_name,unsigned int auth_code)
 {
-  IVP_ASSERT( sizeof(IVP_Compact_Edge) == 4);
-  IVP_ASSERT( sizeof(IVP_Compact_Triangle) == 16);
+    // dimhotepus: static_assert instead of assert in runtime.
+    static_assert( sizeof(IVP_Compact_Edge) == 4);
+    static_assert( sizeof(IVP_Compact_Triangle) == 16);
   
     P_MEM_CLEAR(this);
     get_freeze_manager()->init_freeze_manager();
