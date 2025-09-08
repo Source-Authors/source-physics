@@ -56,7 +56,6 @@ IVP_RETURN_TYPE IVP_Friction_Solver::test_gauss_solution_suggestion(IVP_DOUBLE *
 	    if(was_already_tested[i]==IVP_FALSE){
 		if(dist_change_mat.matrix_check_unequation_line(i) == IVP_FAULT)	    {
 		    //ivp_message("gauss_unequation_failed\n");
-		    gauss_failed=1;
 		    return IVP_FAULT;
 		} 
 	    }
@@ -532,8 +531,6 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs)
 #ifdef DEBUG
 void IVP_Friction_Solver::print_dist_velocity(IVP_Friction_System *fs)
 {
-    //int dist_counter=0;
-    int dist_counter_two=0;
     int total_dist_counter=-1;
     IVP_Contact_Point *my_dist,*next_dist=NULL;
     my_dist=fs->get_first_friction_dist();
@@ -569,7 +566,6 @@ void IVP_Friction_Solver::print_dist_velocity(IVP_Friction_System *fs)
 	    ivp_message("dvelo_ %.4f   ",rel_world_speed.dot_product(&my_dist->get_lt()->surf_normal));
 	}
        
-	dist_counter_two++;
 	my_dist=next_dist;
     }
     IVP_IF(1) {
@@ -598,7 +594,6 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	}
     }
 #endif	
-    int two_count=0;
     while(mindist)
     {
 #if 0	
@@ -669,7 +664,6 @@ void IVP_Friction_System::test_hole_fr_system_data()
 	    }
 	}
 	
-	two_count+=2;
 	mindist=fs->get_next_friction_dist(mindist);
     }
 

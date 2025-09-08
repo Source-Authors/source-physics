@@ -666,7 +666,7 @@ void IVP_Impact_Solver::do_impact(IVP_Core *pushed_cores[2],IVP_BOOL allow_delay
      
     core[0]->environment->get_statistic_manager()->impact_counter++;
         
-    m_world_f_core[0]	=	&core[0]->m_world_f_core_last_psi;
+    m_world_f_core[0] =	&core[0]->m_world_f_core_last_psi;
     m_world_f_core[1] =	&core[1]->m_world_f_core_last_psi;
 
     IVP_DOUBLE mass0,mass1;
