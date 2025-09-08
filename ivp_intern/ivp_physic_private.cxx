@@ -542,9 +542,10 @@ void IVP_Core::debug_out_movement_vars() {
 }
 
 void IVP_Core::debug_vec_movement_state() {
-    IVP_Core *my_core=this;
-    IVP_Core *one_object=this;
     IVP_IF( 0 ){
+	// dimhotepus: Assign only if needed.
+	IVP_Core *my_core = this;
+	IVP_Core *one_object = this;
 	char *out_text;
 	IVP_U_Float_Point ivp_pointer;
 	IVP_U_Point ivp_start;
