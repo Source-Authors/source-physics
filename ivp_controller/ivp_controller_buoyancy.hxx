@@ -108,11 +108,13 @@ public:
     IVP_U_Float_Point rot_speed;
     
     IVP_Buoyancy_Input(){
-	nr_of_elements = INPUT_VECTOR_LENGTH;
-        weight_statistic = 0.0f;
+    nr_of_elements = INPUT_VECTOR_LENGTH;
+    weight_statistic = 0.0f;
 #ifdef IVP_VECTOR_UNIT_FLOAT
-	rel_speed_of_current_os.hesse_val = 0.0;
-	rot_speed.hesse_val = 0.0;
+    // dimhotepus: Add missed initializer.
+    surface_os.hesse_val = 0.0f;
+	rel_speed_of_current_os.hesse_val = 0.0f;
+	rot_speed.hesse_val = 0.0f;
 #endif	
     }
 };
