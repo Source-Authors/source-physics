@@ -476,8 +476,6 @@ void IVP_Controller_Manager::announce_controller_to_environment(
         if (test_sim_unit != reference_unit) {
           reference_unit->throw_cores_into_my_sim_unit(test_sim_unit);  //
           P_DELETE(test_sim_unit);
-          // dimhotepus: Ensure no dangling reference access.
-          test_core->sim_unit_of_core = nullptr;
           did_fusion = IVP_TRUE;
         }
       } else {
