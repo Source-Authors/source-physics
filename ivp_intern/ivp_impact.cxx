@@ -266,13 +266,9 @@ IVP_Contact_Point *IVP_Mindist::try_to_generate_managed_friction(
       if (sim1 == sim_unit_not_destroy) {
         sim1->fusion_simulation_unities(sim0);
         P_DELETE(sim0);
-        // dimhotepus: Prevent dangling reference.
-        core0->sim_unit_of_core = nullptr;
       } else {
         sim0->fusion_simulation_unities(sim1);
         P_DELETE(sim1);
-        // dimhotepus: Prevent dangling reference.
-        core1->sim_unit_of_core = nullptr;
       }
     }
   }
