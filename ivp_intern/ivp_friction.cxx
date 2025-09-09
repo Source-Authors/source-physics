@@ -2244,7 +2244,9 @@ void IVP_Friction_Sys_Static::do_simulation_controller(
   if (l_friction_system->friction_dist_number == 0) {
     // sim_u->rem_sim_unit_controller( l_friction_system );
     // sim_u->rem_sim_unit_controller( &l_friction_system->static_fs_handle );
-    P_DELETE(l_friction_system);
+    IVP_Friction_System *temp_sys = l_friction_system;
+    l_friction_system = nullptr;
+    P_DELETE(temp_sys);
     es->sim_unit->union_find_needed_for_sim_unit = IVP_TRUE;
     return;
   }
