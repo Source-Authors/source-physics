@@ -11,4 +11,3 @@
 #include <hk_base/string/string.h>
 
 #endif /*HK_BASE_BASE_H*/
-

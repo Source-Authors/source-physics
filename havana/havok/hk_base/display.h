@@ -6,8 +6,7 @@
 	extern void HK_DISPLAY_RAY(const hk_Vector3& point, const hk_Vector3& dir, int rgb);
 	extern hk_Array<hk_Vector3> hk_display_points;
 	extern hk_Array<hk_Vector3> hk_display_lines;
-#else	/* !HK_DEBUG */
-#	define HK_DISPLAY_POINT(p,c) /* nothing */
-#	define HK_DISPLAY_RAY(p,d,c) /* nothing */
-#endif	/* HK_DEBUG */
-
+#else                           /* !HK_DEBUG */
+#define HK_DISPLAY_POINT(p, c)  /* nothing */
+#define HK_DISPLAY_RAY(p, d, c) /* nothing */
+#endif                          /* HK_DEBUG */

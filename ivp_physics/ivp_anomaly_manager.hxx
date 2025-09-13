@@ -3,7 +3,7 @@
 #ifndef IVP_ANOMALY_MANAGER_INCLUDED
 #define IVP_ANOMALY_MANAGER_INCLUDED
 
-//IVP_EXPORT_PUBLIC
+// IVP_EXPORT_PUBLIC
 
 class IVP_Mindist;
 
@@ -13,29 +13,37 @@ class IVP_Mindist;
  *			the simulation
  ********************************************************************************/
 class IVP_Anomaly_Limits {
-    IVP_BOOL delete_this_if_env_is_deleted;
-public:
+  IVP_BOOL delete_this_if_env_is_deleted;
 
-    IVP_FLOAT max_velocity;
-    int       max_collisions_per_psi;
-    IVP_FLOAT max_angular_velocity_per_psi;
-    int       max_collision_checks_per_psi;
-    IVP_FLOAT min_friction_mass;
-    IVP_FLOAT max_friction_mass;
-    /********************************************************************************
-     *	Name:	       	IVP_Anomaly_Manager
-     *	Description:	used to identify and solve special situations occuring during
-     *			the simulation
-     ********************************************************************************/
-    inline IVP_FLOAT get_max_velocity() const { return max_velocity; } // [m/s]**2
-    inline IVP_FLOAT get_max_angular_velocity_per_psi() const { return max_angular_velocity_per_psi; } // [radians/psi]**2
-    inline int get_max_collisions_per_psi(){ return max_collisions_per_psi; }  // per core
-    inline int get_max_collision_checks_per_psi() { return max_collision_checks_per_psi; }
+ public:
+  IVP_FLOAT max_velocity;
+  int max_collisions_per_psi;
+  IVP_FLOAT max_angular_velocity_per_psi;
+  int max_collision_checks_per_psi;
+  IVP_FLOAT min_friction_mass;
+  IVP_FLOAT max_friction_mass;
+  /********************************************************************************
+   *	Name:	       	IVP_Anomaly_Manager
+   *	Description:	used to identify and solve special situations occuring
+   *during the simulation
+   ********************************************************************************/
+  inline IVP_FLOAT get_max_velocity() const {
+    return max_velocity;
+  }  // [m/s]**2
+  inline IVP_FLOAT get_max_angular_velocity_per_psi() const {
+    return max_angular_velocity_per_psi;
+  }  // [radians/psi]**2
+  inline int get_max_collisions_per_psi() {
+    return max_collisions_per_psi;
+  }  // per core
+  inline int get_max_collision_checks_per_psi() {
+    return max_collision_checks_per_psi;
+  }
 
-    virtual void environment_will_be_deleted(IVP_Environment *);
+  virtual void environment_will_be_deleted(IVP_Environment *);
 
-    IVP_Anomaly_Limits(IVP_BOOL delete_this_if_env_is_deleted = IVP_TRUE);
-    virtual ~IVP_Anomaly_Limits();
+  IVP_Anomaly_Limits(IVP_BOOL delete_this_if_env_is_deleted = IVP_TRUE);
+  virtual ~IVP_Anomaly_Limits();
 };
 
 /********************************************************************************
@@ -44,30 +52,40 @@ public:
  *			the simulation
  ********************************************************************************/
 class IVP_Anomaly_Manager {
-    IVP_BOOL delete_this_if_env_is_deleted;
-public:
-    /********************************************************************************
-     *	Name:	       	IVP_Anomaly_Manager
-     *	Description:	used to identify and solve special situations occuring during
-     *			the simulation
-     ********************************************************************************/
-    
-    virtual void max_velocity_exceeded(IVP_Anomaly_Limits *, IVP_Core *, IVP_U_Float_Point *velocity_in_out);
-    virtual void max_angular_velocity_exceeded( IVP_Anomaly_Limits *, IVP_Core *, IVP_U_Float_Point *angular_velocity_in_out);
-    virtual void inter_penetration( IVP_Mindist *mindist,IVP_Real_Object *, IVP_Real_Object *, IVP_DOUBLE);
-    virtual IVP_BOOL max_collisions_exceeded_check_freezing(IVP_Anomaly_Limits *, IVP_Core *); // return true if object should be temp. freezed
+  IVP_BOOL delete_this_if_env_is_deleted;
 
-    virtual void environment_will_be_deleted(IVP_Environment *);
+ public:
+  /********************************************************************************
+   *	Name:	       	IVP_Anomaly_Manager
+   *	Description:	used to identify and solve special situations occuring
+   *during the simulation
+   ********************************************************************************/
 
-	// to solve penetration we push objects with 2* force of gravity
-	// there might be situation in that this is not necessary 
-	//  -> derive from IVP_Anomaly_Manager and have different implementation
-    virtual IVP_FLOAT get_push_speed_penetration( IVP_Real_Object *, IVP_Real_Object *);
+  virtual void max_velocity_exceeded(IVP_Anomaly_Limits *, IVP_Core *,
+                                     IVP_U_Float_Point *velocity_in_out);
+  virtual void max_angular_velocity_exceeded(
+      IVP_Anomaly_Limits *, IVP_Core *,
+      IVP_U_Float_Point *angular_velocity_in_out);
+  virtual void inter_penetration(IVP_Mindist *mindist, IVP_Real_Object *,
+                                 IVP_Real_Object *, IVP_DOUBLE);
+  virtual IVP_BOOL max_collisions_exceeded_check_freezing(
+      IVP_Anomaly_Limits *,
+      IVP_Core *);  // return true if object should be temp. freezed
 
-	void solve_inter_penetration_simple( IVP_Real_Object *, IVP_Real_Object *, IVP_DOUBLE); //push mass centers in opposite directions
+  virtual void environment_will_be_deleted(IVP_Environment *);
 
-    IVP_Anomaly_Manager(IVP_BOOL delete_this_if_env_is_deleted = IVP_TRUE);
-    virtual ~IVP_Anomaly_Manager();
+  // to solve penetration we push objects with 2* force of gravity
+  // there might be situation in that this is not necessary
+  //  -> derive from IVP_Anomaly_Manager and have different implementation
+  virtual IVP_FLOAT get_push_speed_penetration(IVP_Real_Object *,
+                                               IVP_Real_Object *);
+
+  void solve_inter_penetration_simple(
+      IVP_Real_Object *, IVP_Real_Object *,
+      IVP_DOUBLE);  // push mass centers in opposite directions
+
+  IVP_Anomaly_Manager(IVP_BOOL delete_this_if_env_is_deleted = IVP_TRUE);
+  virtual ~IVP_Anomaly_Manager();
 };
 
 #endif

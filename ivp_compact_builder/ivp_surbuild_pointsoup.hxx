@@ -46,7 +46,6 @@ class IVP_Template_Line;
 class IVP_Template_Polygon;
 class IVP_Compact_Surface;
 
-
 /********************************************************************************
  *  Class:	    IVP_SurMan_PS_Plane
  *  Description:    an INTERNAL structure
@@ -58,24 +57,24 @@ class IVP_Compact_Surface;
  *******************************************************************************/
 
 class IVP_SurMan_PS_Plane : public IVP_U_Point {
-public:
-    IVP_SurMan_PS_Plane() = default;
-    IVP_U_Vector<IVP_U_Point> points;
-    IVP_DOUBLE get_area_size();
-    IVP_DOUBLE get_qlen_of_all_edges();
+ public:
+  IVP_SurMan_PS_Plane() = default;
+  IVP_U_Vector<IVP_U_Point> points;
+  IVP_DOUBLE get_area_size();
+  IVP_DOUBLE get_qlen_of_all_edges();
 };
-
 
 // a vector of 256 points, automatically increases if overflow
 // if less than 256 elements are inserted, no malloc/free is called
-class IVP_Vector_of_Points_256: public IVP_U_Vector<IVP_U_Point> {
-    IVP_Core *elem_buffer[256];
-public:
-    IVP_Vector_of_Points_256(): IVP_U_Vector<IVP_U_Point>( (void **)&elem_buffer[0],256 ){
-        memset(elem_buffer, 0, sizeof(elem_buffer));
-    }
-};
+class IVP_Vector_of_Points_256 : public IVP_U_Vector<IVP_U_Point> {
+  IVP_Core *elem_buffer[256];
 
+ public:
+  IVP_Vector_of_Points_256()
+      : IVP_U_Vector<IVP_U_Point>((void **)&elem_buffer[0], 256) {
+    memset(elem_buffer, 0, sizeof(elem_buffer));
+  }
+};
 
 /********************************************************************************
  *  Class:	    IVP_SurfaceBuilder_Pointsoup
@@ -87,51 +86,63 @@ public:
  *******************************************************************************/
 
 class IVP_SurfaceBuilder_Pointsoup {
-    friend class IVP_SurfaceBuilder_Ledge_Soup;
-    friend class IVP_SurfaceBuilder_Halfspacesoup;
-    friend class IVP_SurfaceBuilder_Q12;
+  friend class IVP_SurfaceBuilder_Ledge_Soup;
+  friend class IVP_SurfaceBuilder_Halfspacesoup;
+  friend class IVP_SurfaceBuilder_Q12;
 
-protected:
-    static IVP_Compact_Ledge *single_tri_ledge;
-    // internal methods
-    static int get_offset_from_pointlist(IVP_Template_Point *points, int length, IVP_U_Point *point);
-    static int get_offset_from_lineslist(IVP_Template_Line *lines, int length, int pointnr1, int pointnr2, char *reverse);
+ protected:
+  static IVP_Compact_Ledge *single_tri_ledge;
+  // internal methods
+  static int get_offset_from_pointlist(IVP_Template_Point *points, int length,
+                                       IVP_U_Point *point);
+  static int get_offset_from_lineslist(IVP_Template_Line *lines, int length,
+                                       int pointnr1, int pointnr2,
+                                       char *reverse);
 
-    static IVP_Template_Polygon *planes_to_template(IVP_U_Vector<IVP_U_Point> *points, IVP_U_Vector<IVP_SurMan_PS_Plane> *planes);
-    static void                  error_output(IVP_Template_Polygon *templ);
-    static IVP_Compact_Ledge    *convert_pointsoup_to_compact_ledge_internal(IVP_U_Vector<IVP_U_Point> *points);
-    static IVP_Compact_Ledge *try_to_build_convex_ledge_from_qhull_result(IVP_U_Vector<IVP_U_Point> *points, IVP_BOOL *skip_point, char *skip_list, char *use_list);
-public:
-    static void cleanup();
-    
-    static IVP_Compact_Ledge *convert_triangle_to_compace_ledge( IVP_U_Point *p0, IVP_U_Point *p1, IVP_U_Point *p2);
+  static IVP_Template_Polygon *planes_to_template(
+      IVP_U_Vector<IVP_U_Point> *points,
+      IVP_U_Vector<IVP_SurMan_PS_Plane> *planes);
+  static void error_output(IVP_Template_Polygon *templ);
+  static IVP_Compact_Ledge *convert_pointsoup_to_compact_ledge_internal(
+      IVP_U_Vector<IVP_U_Point> *points);
+  static IVP_Compact_Ledge *try_to_build_convex_ledge_from_qhull_result(
+      IVP_U_Vector<IVP_U_Point> *points, IVP_BOOL *skip_point, char *skip_list,
+      char *use_list);
 
-    /******************************************************************************
-     *  Method:		convert_pointsoup_to_compact_ledge
-     *  Description:    This method will build the convex hull for the supplied
-     *			set of points, drop all interior points and create a
-     *			IVP_Compact_Ledge structure
-     *	Input:		<points> set of points
-     *	Output:		Pointer to IVP_Compact_Ledge structure
-     *	Note:		Usually the input data has to be 3-dimensional! You are
-     *			allowed to create a 2-dimensional triangle by supplying
-     *			EXACTLY 3 points, though!
-     *****************************************************************************/
-    static IVP_Compact_Ledge * IVP_CDECL convert_pointsoup_to_compact_ledge(IVP_U_Vector<IVP_U_Point> *points);
+ public:
+  static void cleanup();
 
-    /******************************************************************************
-     *  Method:		convert_pointsoup_to_compact_surface
-     *  Description:    This method will build the convex hull for the supplied
-     *			set of points, drop all interior points and create a
-     *			IVP_Compact_Surface structure
-     *	Input:		<points> set of points
-     *	Output:		Pointer to IVP_Compact_Surface structure
-     *	Note:		Usually the input data has to be 3-dimensional! You are
-     *			allowed to create a 2-dimensional triangle by supplying
-     *			EXACTLY 3 points, though!
-     *****************************************************************************/
-    static IVP_Compact_Surface * IVP_CDECL convert_pointsoup_to_compact_surface(IVP_U_Vector<IVP_U_Point> *points);
+  static IVP_Compact_Ledge *convert_triangle_to_compace_ledge(IVP_U_Point *p0,
+                                                              IVP_U_Point *p1,
+                                                              IVP_U_Point *p2);
 
+  /******************************************************************************
+   *  Method:		convert_pointsoup_to_compact_ledge
+   *  Description:    This method will build the convex hull for the supplied
+   *			set of points, drop all interior points and create a
+   *			IVP_Compact_Ledge structure
+   *	Input:		<points> set of points
+   *	Output:		Pointer to IVP_Compact_Ledge structure
+   *	Note:		Usually the input data has to be 3-dimensional! You are
+   *			allowed to create a 2-dimensional triangle by supplying
+   *			EXACTLY 3 points, though!
+   *****************************************************************************/
+  static IVP_Compact_Ledge *IVP_CDECL
+  convert_pointsoup_to_compact_ledge(IVP_U_Vector<IVP_U_Point> *points);
+
+  /******************************************************************************
+   *  Method:		convert_pointsoup_to_compact_surface
+   *  Description:    This method will build the convex hull for the supplied
+   *			set of points, drop all interior points and create a
+   *			IVP_Compact_Surface structure
+   *	Input:		<points> set of points
+   *	Output:		Pointer to IVP_Compact_Surface structure
+   *	Note:		Usually the input data has to be 3-dimensional! You are
+   *			allowed to create a 2-dimensional triangle by supplying
+   *			EXACTLY 3 points, though!
+   *****************************************************************************/
+  static IVP_Compact_Surface *IVP_CDECL
+  convert_pointsoup_to_compact_surface(IVP_U_Vector<IVP_U_Point> *points);
 };
 
 #endif

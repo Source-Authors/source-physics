@@ -3,35 +3,27 @@
 #include <ivp_physics.hxx>
 #include <ivp_i_collision_vhash.hxx>
 
-
-IVP_Collision_Callback_Table_Hash::~IVP_Collision_Callback_Table_Hash() 
-{
-    for (int i=this->len()-1; i>=0; i--) {
-	IVP_Collision_Callback_Table *table;
-	table = (IVP_Collision_Callback_Table *)this->element_at(i);
-	P_DELETE(table);
-    }
+IVP_Collision_Callback_Table_Hash::~IVP_Collision_Callback_Table_Hash() {
+  for (int i = this->len() - 1; i >= 0; i--) {
+    IVP_Collision_Callback_Table *table;
+    table = (IVP_Collision_Callback_Table *)this->element_at(i);
+    P_DELETE(table);
+  }
 }
 
-int IVP_Collision_Callback_Table_Hash::object_to_index(IVP_Real_Object *real_object)
-{
-    return hash_index( (const char *)&real_object, sizeof(real_object) );
+int IVP_Collision_Callback_Table_Hash::object_to_index(
+    IVP_Real_Object *real_object) {
+  return hash_index((const char *)&real_object, sizeof(real_object));
 }
 
-IVP_BOOL IVP_Collision_Callback_Table_Hash::compare(const void *elem0, const void *elem1) const
-{
-    const IVP_Collision_Callback_Table *table0 = (const IVP_Collision_Callback_Table *)elem0;
-    const IVP_Collision_Callback_Table *table1 = (const IVP_Collision_Callback_Table *)elem1;
+IVP_BOOL IVP_Collision_Callback_Table_Hash::compare(const void *elem0,
+                                                    const void *elem1) const {
+  const IVP_Collision_Callback_Table *table0 =
+      (const IVP_Collision_Callback_Table *)elem0;
+  const IVP_Collision_Callback_Table *table1 =
+      (const IVP_Collision_Callback_Table *)elem1;
 
-    if ( table0->real_object != table1->real_object) return(IVP_FALSE);
-    
-    return(IVP_TRUE);
+  if (table0->real_object != table1->real_object) return (IVP_FALSE);
+
+  return (IVP_TRUE);
 }
-
-
-
-
-
-
-
-

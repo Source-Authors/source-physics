@@ -1,7 +1,7 @@
 /*<html><pre>  -<a                             href="qh-c.htm#user"
   >-------------------------------</a><a name="TOP">-</a>
 
-   user.c 
+   user.c
    user redefinable functions
 
    see README.txt  see COPYING.txt for copyright information.
@@ -18,10 +18,10 @@
 
    This is unsupported software.  You're welcome to make changes,
    but you're on your own if something goes wrong.  Use 'Tc' to
-   check frequently.  Usually qhull will report an error if 
+   check frequently.  Usually qhull will report an error if
    a data structure becomes inconsistent.  If so, it also reports
    the last point added to the hull, e.g., 102.  You can then trace
-   the execution of qhull with "T4P102".  
+   the execution of qhull with "T4P102".
 
    Please report any errors that you fix to qhull@geom.umn.edu
 
@@ -34,12 +34,12 @@
 
    if the other functions here are redefined to not use qh_print...,
    then io.o will not be loaded from qhull.a.  See user_eg.c for an
-   example.  We recommend keeping io.o for the extra debugging 
+   example.  We recommend keeping io.o for the extra debugging
    information it supplies.
 */
 
 #include <ivp_physics.hxx>
-#include "qhull_a.hxx" 
+#include "qhull_a.hxx"
 
 /*-<a                             href="qh-c.htm#user"
   >-------------------------------</a><a name="call_qhull">-</a>
@@ -49,18 +49,18 @@
     remove #if 0, #endif to compile
     define: char qh_version[]= "...";
 
-  returns: 
+  returns:
     exit code (see qh_ERR... in qhull.h)
     all memory freed
 
   notes:
-    This can be called any number of times.  
+    This can be called any number of times.
 
   see:
     qh_call_qhull_once()
-    
+
 */
-char qh_version[] = "ipion 99/07/10";  /* used for error messages */
+char qh_version[] = "ipion 99/07/10"; /* used for error messages */
 
 #if 0
 {
@@ -106,57 +106,57 @@ char qh_version[] = "ipion 99/07/10";  /* used for error messages */
 
     outfile may be null
     qhull_cmd must start with "qhull "
-    projects points to a new point array for Delaunay triangulations ('d' and 'v')
-    transforms points into a new point array for halfspace intersection ('H')
-       
+    projects points to a new point array for Delaunay triangulations ('d' and
+  'v') transforms points into a new point array for halfspace intersection ('H')
 
-  To allow multiple, concurrent calls to qhull() 
+
+  To allow multiple, concurrent calls to qhull()
     - set qh_QHpointer in user.h
-    - use qh_save_qhull and qh_restore_qhull to swap the global data structure between calls.
+    - use qh_save_qhull and qh_restore_qhull to swap the global data structure
+  between calls.
     - use qh_freeqhull(qh_ALL) to free intermediate convex hulls
 
   see:
     user_eg.c for an example
 */
-int qh_new_qhull (int dim, int numpoints, coordT *points, boolT ismalloc, 
-		char *qhull_cmd, FILE *outfile, FILE *errfile) {
+int qh_new_qhull(int dim, int numpoints, coordT *points, boolT ismalloc,
+                 char *qhull_cmd, FILE *outfile, FILE *errfile) {
   int exitcode, hulldim;
   boolT new_ismalloc;
   static boolT firstcall = True;
   coordT *new_points;
 
   if (firstcall) {
-    qh_meminit (errfile);
-    firstcall= False;
+    qh_meminit(errfile);
+    firstcall = False;
   }
-  if (strncmp (qhull_cmd,"qhull ", 6)) {
-    ivp_message( "qh_new_qhull: start qhull_cmd argument with \"qhull \"\n");
+  if (strncmp(qhull_cmd, "qhull ", 6)) {
+    ivp_message("qh_new_qhull: start qhull_cmd argument with \"qhull \"\n");
     exit(1);
   }
-  qh_initqhull_start (NULL, outfile, errfile);
-  trace1(( qh ferr, "qh_new_qhull: build new Qhull for %d %d-d points with %s\n", numpoints, dim, qhull_cmd));
-  exitcode = setjmp (qh errexit);
-  if (!exitcode)
-  {
+  qh_initqhull_start(NULL, outfile, errfile);
+  trace1((qh ferr, "qh_new_qhull: build new Qhull for %d %d-d points with %s\n",
+          numpoints, dim, qhull_cmd));
+  exitcode = setjmp(qh errexit);
+  if (!exitcode) {
     qh NOerrexit = False;
-    qh_initflags (qhull_cmd);
-    if (qh DELAUNAY)
-      qh PROJECTdelaunay= True;
+    qh_initflags(qhull_cmd);
+    if (qh DELAUNAY) qh PROJECTdelaunay = True;
     if (qh HALFspace) {
-      /* points is an array of halfspaces, 
+      /* points is an array of halfspaces,
          the last coordinate of each halfspace is its offset */
-      hulldim= dim-1;
-      qh_setfeasible (hulldim); 
-      new_points= qh_sethalfspace_all (dim, numpoints, points, qh feasible_point);
-      new_ismalloc= True;
-      if (ismalloc)
-	P_FREE (points);
-    }else {
-      hulldim= dim;
-      new_points= points;
-      new_ismalloc= ismalloc;
+      hulldim = dim - 1;
+      qh_setfeasible(hulldim);
+      new_points =
+          qh_sethalfspace_all(dim, numpoints, points, qh feasible_point);
+      new_ismalloc = True;
+      if (ismalloc) P_FREE(points);
+    } else {
+      hulldim = dim;
+      new_points = points;
+      new_ismalloc = ismalloc;
     }
-    qh_init_B (new_points, numpoints, hulldim, new_ismalloc);
+    qh_init_B(new_points, numpoints, hulldim, new_ismalloc);
     qh_qhull();
 #if 0    
     qh_check_output();
@@ -164,7 +164,7 @@ int qh_new_qhull (int dim, int numpoints, coordT *points, boolT ismalloc,
       qh_produce_output(); 
     if (qh VERIFYoutput && !qh STOPpoint && !qh STOPcone)
       qh_check_points();
-#endif    
+#endif
   }
   qh NOerrexit = True;
   return exitcode;
@@ -172,14 +172,14 @@ int qh_new_qhull (int dim, int numpoints, coordT *points, boolT ismalloc,
 
 /*-<a                             href="qh-c.htm#user"
   >-------------------------------</a><a name="errexit">-</a>
-  
+
   qh_errexit( exitcode, facet, ridge )
     report and exit from an error
     report facet and ridge if non-NULL
     reports useful information such as last point processed
     set qh.FORCEoutput to print neighborhood of facet
 
-  see: 
+  see:
     qh_errexit2() in qhull.c for printing 2 facets
 
   design:
@@ -190,122 +190,118 @@ int qh_new_qhull (int dim, int numpoints, coordT *points, boolT ismalloc,
     print summary and statistics (including precision statistics)
     if qh_ERRsingular
       print help text for singular data set
-    exit program via long jump (if defined) or exit()      
+    exit program via long jump (if defined) or exit()
 */
 void qh_errexit [[noreturn]] (int exitcode, facetT *facet, ridgeT *ridge) {
-
-    if (qh ferr)	{
-	if (qh ERREXITcalled) {
-	    ivp_message( "\nqhull error while processing previous error.  Exit program\n");
-	    exit(1);
-	}
-	qh ERREXITcalled= True;
-	if (!qh QHULLfinished)
-	    qh hulltime= qh_CPUclock - qh hulltime;
-	qh_errprint("ERRONEOUS", facet, NULL, ridge, NULL);
-	ivp_message( "\nWhile executing: %s | %s\n", qh rbox_command, qh qhull_command);
-	ivp_message( "Options selected for %s:\n%s\n", qh_version, qh qhull_options);
-	if (qh furthest_id >= 0) {
-	    ivp_message( "Last point added to hull was p%d.", qh furthest_id);
-	    if (zzval_(Ztotmerge))
-		ivp_message( "  Last merge was #%d.", zzval_(Ztotmerge));
-	    if (qh QHULLfinished)
-		ivp_message( "\nQhull has finished constructing the hull.");
-	    else if (qh POSTmerging)
-		ivp_message( "\nQhull has started post-merging.");
-	    ivp_message( "\n");
-	}
-	if (qh FORCEoutput && (qh QHULLfinished || (!facet && !ridge)))
-	    qh_produce_output();
-	else {
-	    if (exitcode != qh_ERRsingular && zzval_(Zsetplane) > qh hull_dim+1) {
-		ivp_message( "\nAt error exit:\n");
-		qh_printsummary (qh ferr);
-		if (qh PRINTstatistics) {
-		    qh_collectstatistics();
-		    qh_printstatistics(qh ferr, "at error exit");
-		    qh_memstatistics (qh ferr);
-		}
-	    }
-	    if (qh PRINTprecision)
-		qh_printstats (qh ferr, qhstat precision, NULL);
-	}
-	if (!exitcode)
-	    exitcode= qh_ERRqhull;
-	else if (exitcode == qh_ERRsingular)
-	    qh_printhelp_singular(qh ferr);
-	else if (exitcode == qh_ERRprec && !qh PREmerge)
-	    qh_printhelp_degenerate (qh ferr);
-	if (qh NOerrexit) {
-	    ivp_message( "qhull error while ending program.  Exit program\n");
-	    exit(1);
-	}
+  if (qh ferr) {
+    if (qh ERREXITcalled) {
+      ivp_message(
+          "\nqhull error while processing previous error.  Exit program\n");
+      exit(1);
     }
-    qh NOerrexit= True;
-    longjmp(qh errexit, exitcode);
+    qh ERREXITcalled = True;
+    if (!qh QHULLfinished) qh hulltime = qh_CPUclock - qh hulltime;
+    qh_errprint("ERRONEOUS", facet, NULL, ridge, NULL);
+    ivp_message("\nWhile executing: %s | %s\n", qh rbox_command,
+                qh qhull_command);
+    ivp_message("Options selected for %s:\n%s\n", qh_version, qh qhull_options);
+    if (qh furthest_id >= 0) {
+      ivp_message("Last point added to hull was p%d.", qh furthest_id);
+      if (zzval_(Ztotmerge))
+        ivp_message("  Last merge was #%d.", zzval_(Ztotmerge));
+      if (qh QHULLfinished)
+        ivp_message("\nQhull has finished constructing the hull.");
+      else if (qh POSTmerging)
+        ivp_message("\nQhull has started post-merging.");
+      ivp_message("\n");
+    }
+    if (qh FORCEoutput && (qh QHULLfinished || (!facet && !ridge)))
+      qh_produce_output();
+    else {
+      if (exitcode != qh_ERRsingular && zzval_(Zsetplane) > qh hull_dim + 1) {
+        ivp_message("\nAt error exit:\n");
+        qh_printsummary(qh ferr);
+        if (qh PRINTstatistics) {
+          qh_collectstatistics();
+          qh_printstatistics(qh ferr, "at error exit");
+          qh_memstatistics(qh ferr);
+        }
+      }
+      if (qh PRINTprecision) qh_printstats(qh ferr, qhstat precision, NULL);
+    }
+    if (!exitcode)
+      exitcode = qh_ERRqhull;
+    else if (exitcode == qh_ERRsingular)
+      qh_printhelp_singular(qh ferr);
+    else if (exitcode == qh_ERRprec && !qh PREmerge)
+      qh_printhelp_degenerate(qh ferr);
+    if (qh NOerrexit) {
+      ivp_message("qhull error while ending program.  Exit program\n");
+      exit(1);
+    }
+  }
+  qh NOerrexit = True;
+  longjmp(qh errexit, exitcode);
 } /* errexit */
-
 
 /*-<a                             href="qh-c.htm#user"
   >-------------------------------</a><a name="errprint">-</a>
-  
+
   qh_errprint( fp, string, atfacet, otherfacet, atridge, atvertex )
     prints out the information of facets and ridges to fp
     also prints neighbors and geomview output
-    
+
   notes:
     except for string, any parameter may be NULL
 */
-void qh_errprint(const char *string, facetT *atfacet, facetT *otherfacet, ridgeT *atridge, vertexT *atvertex) {
+void qh_errprint(const char *string, facetT *atfacet, facetT *otherfacet,
+                 ridgeT *atridge, vertexT *atvertex) {
   int i;
 
-	if (!qh ferr)
-	return;
+  if (!qh ferr) return;
 
   if (atfacet) {
-	if (qh ferr) {
-	    ivp_message( "%s FACET:\n", string);
-		qh_printfacet(qh ferr, atfacet);
-	}
+    if (qh ferr) {
+      ivp_message("%s FACET:\n", string);
+      qh_printfacet(qh ferr, atfacet);
+    }
   }
   if (otherfacet) {
-	if (qh ferr) {
-	    ivp_message( "%s OTHER FACET:\n", string);
-	    qh_printfacet(qh ferr, otherfacet);
-	}
+    if (qh ferr) {
+      ivp_message("%s OTHER FACET:\n", string);
+      qh_printfacet(qh ferr, otherfacet);
+    }
   }
   if (atridge) {
-    ivp_message( "%s RIDGE:\n", string);
+    ivp_message("%s RIDGE:\n", string);
     qh_printridge(qh ferr, atridge);
     if (atridge->top && atridge->top != atfacet && atridge->top != otherfacet)
       qh_printfacet(qh ferr, atridge->top);
-    if (atridge->bottom
-	&& atridge->bottom != atfacet && atridge->bottom != otherfacet)
+    if (atridge->bottom && atridge->bottom != atfacet &&
+        atridge->bottom != otherfacet)
       qh_printfacet(qh ferr, atridge->bottom);
-    if (!atfacet)
-      atfacet= atridge->top;
-    if (!otherfacet)
-      otherfacet= otherfacet_(atridge, atfacet);
+    if (!atfacet) atfacet = atridge->top;
+    if (!otherfacet) otherfacet = otherfacet_(atridge, atfacet);
   }
   if (atvertex) {
-    ivp_message( "%s VERTEX:\n", string);
-    qh_printvertex (qh ferr, atvertex);
+    ivp_message("%s VERTEX:\n", string);
+    qh_printvertex(qh ferr, atvertex);
   }
-  if (qh fout && qh FORCEoutput && atfacet && !qh QHULLfinished && !qh IStracing) {
-    ivp_message( "ERRONEOUS and NEIGHBORING FACETS to output\n");
-    for (i= 0; i < qh_PRINTEND; i++)  /* use fout for geomview output */
-      qh_printneighborhood (qh fout, qh PRINTout[i], atfacet, otherfacet,
-			    !qh_ALL);
+  if (qh fout && qh FORCEoutput && atfacet && !qh QHULLfinished &&
+      !qh IStracing) {
+    ivp_message("ERRONEOUS and NEIGHBORING FACETS to output\n");
+    for (i = 0; i < qh_PRINTEND; i++) /* use fout for geomview output */
+      qh_printneighborhood(qh fout, qh PRINTout[i], atfacet, otherfacet,
+                           !qh_ALL);
   }
 } /* errprint */
 
-
 /*-<a                             href="qh-c.htm#user"
   >-------------------------------</a><a name="printfacetlist">-</a>
-  
+
   qh_printfacetlist( fp, facetlist, facets, printall )
     print all fields for a facet list and/or set of facets to fp
-    if !printall, 
+    if !printall,
       only prints good facets
 
   notes:
@@ -314,26 +310,21 @@ void qh_errprint(const char *string, facetT *atfacet, facetT *otherfacet, ridgeT
 void qh_printfacetlist(facetT *facetlist, setT *facets, boolT printall) {
   facetT *facet, **facetp;
 
-  qh_printbegin (qh ferr, qh_PRINTfacets, facetlist, facets, printall);
+  qh_printbegin(qh ferr, qh_PRINTfacets, facetlist, facets, printall);
   FORALLfacet_(facetlist)
-    qh_printafacet(qh ferr, qh_PRINTfacets, facet, printall);
+      qh_printafacet(qh ferr, qh_PRINTfacets, facet, printall);
   FOREACHfacet_(facets)
-    qh_printafacet(qh ferr, qh_PRINTfacets, facet, printall);
-  qh_printend (qh ferr, qh_PRINTfacets, facetlist, facets, printall);
+      qh_printafacet(qh ferr, qh_PRINTfacets, facet, printall);
+  qh_printend(qh ferr, qh_PRINTfacets, facetlist, facets, printall);
 } /* printfacetlist */
-
 
 /*-<a                             href="qh-c.htm#global"
   >-------------------------------</a><a name="user_memsizes">-</a>
-  
+
   qh_user_memsizes()
     allocate up to 10 additional, quick allocation sizes
 
   notes:
     increase maximum number of allocations in qh_initqhull_mem()
 */
-void qh_user_memsizes (void) {
-
-  /* qh_memsize (size); */
-} /* user_memsizes */
-
+void qh_user_memsizes(void) { /* qh_memsize (size); */ } /* user_memsizes */

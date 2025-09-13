@@ -10,28 +10,24 @@
 #define HK_FIXED_BP_H
 
 // IVP_EXPORT_PUBLIC
-class hk_Fixed_BP  //: public hk_Effector_BP 
+class hk_Fixed_BP  //: public hk_Effector_BP
 {
-	public:
+ public:
+  inline hk_Fixed_BP() {
+    m_strength = 1.0f;
+    m_tau = 1.0f;
+    m_transform_os_ks.set_identity_transform();
+    m_bodies[0] = UINT_MAX;
+    m_bodies[1] = UINT_MAX;
+  }
 
-		inline hk_Fixed_BP()
-		{
-			m_strength	= 1.0f;
-			m_tau		= 1.0f;
-			m_transform_os_ks.set_identity_transform();
-			m_bodies[0] = UINT_MAX;
-			m_bodies[1] = UINT_MAX;
-		}
-	
-	public: // hack for now //private: 
+ public:  // hack for now //private:
+  hk_Transform m_transform_os_ks;
+  hk_real m_strength;
+  hk_real m_tau;
 
-		hk_Transform m_transform_os_ks;
-		hk_real		m_strength;
-		hk_real     m_tau;
-
-	protected:
-
-		hk_id		m_bodies[2];
+ protected:
+  hk_id m_bodies[2];
 };
 
 #endif /* HK_PHYSICS_LOCAL_LIMITED_BALL_SOCKET_BP_H */
