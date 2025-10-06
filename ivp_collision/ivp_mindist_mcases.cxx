@@ -572,14 +572,14 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_Leave_KK(
     m_cache_L->tmp.synapse->update_synapse(L, IVP_ST_EDGE);
 
     // End KL	// sk and sl are already set by master
-    if (reverse_side_check[0] + reverse_side_check[1] == IVP_TRUE + IVP_TRUE) {
+    if ((int)reverse_side_check[0] + (int)reverse_side_check[1] == (int)IVP_TRUE + (int)IVP_TRUE) {
       m_cache_K->tmp.synapse->update_synapse(K, IVP_ST_BACKSIDE);
       m_cache_L->tmp.synapse->update_synapse(L, IVP_ST_TRIANGLE);
       IVP_DOUBLE sl = kkr->checks_L[0] / (kkr->checks_L[0] + kkr->checks_L[1]);
       this->pos_opposite_BacksideOs.set_interpolate(&L_Kos[0], &L_Kos[1], sl);
       return IVP_MRC_BACKSIDE;
     }
-    if (reverse_side_check[2] + reverse_side_check[3] == IVP_TRUE + IVP_TRUE) {
+    if ((int)reverse_side_check[2] + (int)reverse_side_check[3] == (int)IVP_TRUE + (int)IVP_TRUE) {
       m_cache_K->tmp.synapse->update_synapse(K, IVP_ST_TRIANGLE);
       IVP_DOUBLE sk = kkr->checks_K[0] / (kkr->checks_K[0] + kkr->checks_K[1]);
       this->pos_opposite_BacksideOs.set_interpolate(&kkin.K_Los[0],
