@@ -260,15 +260,13 @@ char *p_make_string_fast(const char *templat, ...) {
 
   char buffer[MAX_MAKE_STRING_LEN];
   va_list parg;
-  memset(buffer, 0,
-         std::min(1000, MAX_MAKE_STRING_LEN));  // nur bei sparc-debugging
-  va_start(parg, templat);                      //-V2019
+  va_start(parg, templat);  //-V2019
   vsnprintf(buffer, std::size(buffer), templat, parg);
   va_end(parg);
   return p_strdup(buffer);
 }
 
-char *p_make_string(const char *templat, ...) {
+char *p_make_string(const char *templat, ...) { //-V524
   // returns an allocated string with format like ivp_message
   // NULL-Strings and empty strings allowed
   // LINUX: check for overflow
@@ -277,9 +275,7 @@ char *p_make_string(const char *templat, ...) {
 
   char buffer[MAX_MAKE_STRING_LEN];
   va_list parg;
-  memset(buffer, 0,
-         std::min(1000, MAX_MAKE_STRING_LEN));  // only for sparc-debugging
-  va_start(parg, templat);                      //-V2019
+  va_start(parg, templat);  //-V2019
   vsnprintf(buffer, std::size(buffer), templat, parg);
   va_end(parg);
   return p_strdup(buffer);
@@ -289,12 +285,11 @@ char *p_make_string(const char *templat, ...) {
 char *p_error_buffer = 0;
 
 IVP_ERROR_STRING p_export_error(const char *templat, ...) {
+  if (!templat) return NULL;
+
   // for general error management... z.B. p_error_message()
   char buffer[MAX_ERROR_BUFFER_LEN];
   va_list parg;
-  memset(buffer, 0,
-         std::min(1000, MAX_ERROR_BUFFER_LEN));  // only for sparc-debugging
-  snprintf(buffer, std::size(buffer), "ERROR: ");
 
   va_start(parg, templat);  //-V2019
   vsnprintf(buffer, std::size(buffer), templat, parg);
