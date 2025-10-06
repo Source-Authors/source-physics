@@ -194,7 +194,7 @@ void IVP_U_Quat::set_quaternion(const IVP_U_Matrix3 *mat) {
     // diagonal is negative
     IVP_DOUBLE q[4];
     int i, j, k;
-    int nxt[3] = {1, 2, 0};
+    constexpr int nxt[3] = {1, 2, 0};
 
     i = 0;
 
@@ -247,7 +247,7 @@ void IVP_U_Quat::set_quaternion(const IVP_DOUBLE m[4][4]) {
     IVP_DOUBLE q[4];
     int i, j, k;
 
-    int nxt[3] = {1, 2, 0};
+    constexpr int nxt[3] = {1, 2, 0};
 
     // diagonal is negative
 
