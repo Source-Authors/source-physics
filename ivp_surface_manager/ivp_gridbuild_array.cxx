@@ -25,7 +25,7 @@ IVP_GridBuilder_Array::IVP_GridBuilder_Array(
     IVP_FLOAT *height_field_) {
   P_MEM_CLEAR(this);
   mm = mm_;
-  this->height_field = height_field_;
+  height_field = height_field_;
   n_rows = gp->row_info.n_points;
   n_cols = gp->column_info.n_points;
 
