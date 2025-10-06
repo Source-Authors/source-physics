@@ -22,7 +22,7 @@ void hk_Quaternion::set(const hk_Rotation& r) {
     this->z = (r(1, 0) - r(0, 1)) * t;
     this->w = 0.5f * s;
   } else {
-    const int next[] = {1, 2, 0};
+    constexpr int next[] = {1, 2, 0};
     hk_real q[4];
     int i = 0;
 
