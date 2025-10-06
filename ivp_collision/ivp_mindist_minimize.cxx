@@ -479,6 +479,11 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_FF(
   return ret_val;
 }
 
+constexpr inline int SYN_COMBINE(IVP_SYNAPSE_POLYGON_STATUS a,
+                                 IVP_SYNAPSE_POLYGON_STATUS b) {
+  return a * IVP_ST_MAX_LEGAL + b;
+}
+
 IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_default_poly_poly(
     IVP_Mindist_Minimize_Solver *mms) {
   IVP_Synapse_Real *syn0, *syn1;
@@ -506,7 +511,6 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::minimize_default_poly_poly(
                 syn0->get_status(), syn1->get_status());
   }
 
-#define SYN_COMBINE(a, b) (a * IVP_ST_MAX_LEGAL + b)
   switch (SYN_COMBINE(syn0->get_status(), syn1->get_status())) {
     case SYN_COMBINE(IVP_ST_POINT, IVP_ST_POINT): {
       ret_val = mms->p_minimize_PP(e0, e1, &m_cache_0, &m_cache_1);
