@@ -285,6 +285,9 @@ IVP_Car_System_Real_Wheels::IVP_Car_System_Real_Wheels(
 
   fast_turn_factor = templ->fast_turn_factor;
 
+  memset(car_stabilizer, 0, sizeof(car_stabilizer));
+  memset(wheel_radius, 0, sizeof(wheel_radius));
+
   environment = env;
 
   /////////////////////////////////////////////////////////////
