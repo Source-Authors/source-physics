@@ -63,12 +63,8 @@ class hk_Array : protected hk_Array_Base {
   inline iterator next(iterator);
   inline iterator start();
 
-  HK_PUBLIC :
-
-      T*
-      get_elems() {
-    return reinterpret_cast<T*>(m_elems);
-  }
+ public:
+  T* get_elems() { return reinterpret_cast<T*>(m_elems); }
 
  protected:
   inline hk_Array(T* elems, hk_array_store_index initial_size);

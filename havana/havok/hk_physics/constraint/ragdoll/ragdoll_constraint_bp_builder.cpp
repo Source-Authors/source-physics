@@ -23,7 +23,7 @@ hk_Ragdoll_Constraint_BP_Builder::initialize_from_limited_ball_socket_bp(
           bp->m_angular_limits[i].m_max - bp->m_angular_limits[i].m_min;
       limit_mid[i] = 0.5f * (bp->m_angular_limits[i].m_max +
                              bp->m_angular_limits[i].m_min);
-      if (limit_diff[i] > HK_REAL_EPS) {
+      if (limit_diff[i] > HK_REAL_EPS) { //-V1051
         number_of_freedom++;
       }
     }

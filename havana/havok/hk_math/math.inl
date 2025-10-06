@@ -20,10 +20,10 @@ inline hk_real hk_Math::sqrt_inv(hk_real r) {
   return 1.0f / static_cast<hk_real>(::sqrtf(r));
 }
 
-inline hk_real hk_Math::fast_sqrt(hk_real r) {
+inline hk_real hk_Math::fast_sqrt(hk_real r) { //-V524
   return static_cast<hk_real>(::sqrtf(r));
 }  //-V524
-inline hk_real hk_Math::fast_sqrt_inv(hk_real r) {
+inline hk_real hk_Math::fast_sqrt_inv(hk_real r) { //-V524
   return 1.0f / static_cast<hk_real>(::sqrtf(r));
 }  //-V524
 
