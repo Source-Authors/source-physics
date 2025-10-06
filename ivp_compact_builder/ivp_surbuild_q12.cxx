@@ -632,13 +632,19 @@ void IVP_SurfaceBuilder_Q12::unload_q12bsp() {
 
 IVP_SurfaceBuilder_Q12::IVP_SurfaceBuilder_Q12() {
   this->header = NULL;
+  n_models = 0;
   this->dmodels = NULL;
+  n_planes = 0;
   this->dplanes = NULL;
+  n_nodes = 0;
   this->dnodes = NULL;
+  n_clipnodes = 0;
   this->dclipnodes = NULL;
   this->shrink_value = 0.0f;
   this->scale = 1.0f;
   this->pointmerge_threshold = std::numeric_limits<float>::quiet_NaN();
+  n_solid_nodes = 0;
+  n_converted_nodes = 0;
   this->bsptree_loaded_from_disk = IVP_FALSE;
   this->halfspaces = new IVP_Halfspacesoup();
 
