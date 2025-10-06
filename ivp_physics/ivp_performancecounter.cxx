@@ -60,10 +60,17 @@ IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple() {
 #include <Windows.h>
 
 IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple() {
-  P_MEM_CLEAR_M4(this);
+  ref_counter64 = 0;
+  memset(&counter_freq, 0, sizeof(counter_freq));
 
-  QueryPerformanceFrequency(reinterpret_cast<::LARGE_INTEGER *>(
-      &counter_freq));  // address of current frequency
+  counting = IVP_PE_PSI_START;
+  count_PSIs = 0;
+
+  memset(counter, 0, sizeof(counter));
+  time_of_last_reset = 0;
+
+  // address of current frequency
+  QueryPerformanceFrequency(reinterpret_cast<::LARGE_INTEGER *>(&counter_freq));
 }
 
 void IVP_PerformanceCounter_Simple::pcount(IVP_PERFORMANCE_ELEMENT el) {
