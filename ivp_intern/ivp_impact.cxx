@@ -227,9 +227,7 @@ IVP_Contact_Point *IVP_Mindist::try_to_generate_managed_friction(
   // friction_dist->l_friction_system=affected_fs;
 #ifdef DEBUG
   IVP_IF(0) {
-    IVP_Friction_System *fs0, *fs1;
-    fs0 = NULL;
-    fs1 = NULL;
+    IVP_Friction_System *fs0 = nullptr, *fs1 = nullptr;
     if (!core0->physical_unmoveable) {
       IVP_Friction_Info_For_Core *info_friction =
           core0->moveable_core_has_friction_info();
@@ -1243,26 +1241,6 @@ void IVP_Impact_Solver_Long_Term::do_impact_of_two_objects(
     }
   }
 }
-
-#if 0
-    if(0) { //merge example!!
-        IVP_Core *core_to_merge=mindist->get_synapse(0)->get_object()->physical_core;
-	IVP_Core *other_core0=mindist->get_synapse(1)->get_object()->physical_core;
-
-	if(core_to_merge->physical_unmoveable){
-	    IVP_Core *h = core_to_merge; core_to_merge = other_core0; other_core0 = h;
-	}
-	IVP_ASSERT(core_to_merge->physical_unmoveable == IVP_FALSE);
-
-	IVP_Core *other_core1;
-	other_core1=IVP_Impact_Solver_Long_Term::find_second_critical_impact_core(core_to_merge,other_core0);
-	
-	if(other_core1!=NULL){
-	    IVP_Core *best_other_core = IVP_Impact_Solver_Long_Term::get_best_merge_core(core_to_merge,other_core0,other_core1);
-	    core_to_merge->create_collision_merged_core_with(best_other_core);
-	}
-    }
-#endif
 
 void IVP_Contact_Point::get_material_info(IVP_Material *(&mtl)[2]) {
   for (int k = 0; k < 2; k++) {
