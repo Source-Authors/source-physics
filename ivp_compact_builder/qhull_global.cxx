@@ -372,8 +372,10 @@ void qh_init_qhull_command(int argc, char *argv[]) {
   if (argc) {
     if ((s = strrchr(argv[0], '\\'))) /* Borland gives full path */
       strcpy(qh qhull_command, s + 1);
-    else
-      strcpy(qh qhull_command, argv[0]);
+    else {
+      strncpy(qh qhull_command, argv[0], sizeof(qh qhull_command) - 1);
+      qh qhull_command[sizeof(qh qhull_command) - 1] = '\0';
+    }
     if ((s = strstr(qh qhull_command, ".EXE")) ||
         (s = strstr(qh qhull_command, ".exe")))
       *s = '\0';
