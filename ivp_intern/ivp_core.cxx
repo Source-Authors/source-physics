@@ -1026,7 +1026,10 @@ IVP_Movement_Type IVP_Core::calc_movement_state(IVP_Time psi_time) {
 // create a new collision core
 void IVP_Core::create_collision_merged_core_with(IVP_Core *other_core) {
   IVP_ASSERT(other_core != this);
-  return;
+  
+  // dimhotepus: Reenable merge core functionality.
+  // return;
+
   IVP_Core_Collision *ccore = new IVP_Core_Collision(this, other_core);
 
   // update coordinates of all real objects
