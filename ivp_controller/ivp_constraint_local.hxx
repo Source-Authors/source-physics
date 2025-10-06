@@ -75,14 +75,12 @@ class IVP_Constraint_Local : public IVP_Constraint {
   fixed[IVP_TR_INDEX_MAX];  // fixed axles, maybe bitfield
   IVP_FLOAT borderleft_Rfs[IVP_TR_INDEX_MAX];
   IVP_FLOAT borderright_Rfs[IVP_TR_INDEX_MAX];
-  IVP_FLOAT limited_axis_stiffness;  // a stiffness factor ( 0..1 ) for all
-                                     // limited axis (default 0.3f)
+  // a stiffness factor ( 0..1 ) for all limited axis (default 0.3f)
+  IVP_FLOAT limited_axis_stiffness;
   IVP_Constraint_Local_MaxImpulse *maxforce;
-  // IVP_CONSTRAINT_FORCE_EXCEED maxforce_type, maxtorque_type;
 
-  IVP_Constraint_Local_Anchor
-      m_Rfs_f_Rcs;  // matrizes, that descibe the relative rotation and
-                    // translation systems
+  // matrizes, that descibe the relative rotation and translation systems
+  IVP_Constraint_Local_Anchor m_Rfs_f_Rcs;
   IVP_Constraint_Local_Anchor m_Afs_f_Acs;
 
  private:  // useful variables for calculation

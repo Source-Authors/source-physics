@@ -59,13 +59,11 @@
  ********************************************************************************/
 class IVP_MI_Vector_Base {
  public:
-  int nr_of_elements;  // describes the number of elements in the array of
-                       // floats 'element'
-  IVP_FLOAT
-      weight_statistic;  // a weight value that can be used by a sort
-                         // algorithm (e.g.
-                         // 'IVP_Multidimensional_Interpolator::sort_vectors(...)'
-                         // )
+  // describes the number of elements in the array of floats 'element'
+  int nr_of_elements;
+  // a weight value that can be used by a sort algorithm (e.g.
+  // 'IVP_Multidimensional_Interpolator::sort_vectors(...)' )
+  IVP_FLOAT weight_statistic;
   IVP_Time time_stamp;
 };
 
@@ -75,10 +73,10 @@ class IVP_MI_Vector_Base {
  *              properties used by the Multidimensional Interpolator
  ********************************************************************/
 class IVP_MI_Vector : public IVP_MI_Vector_Base {
- private:
-  IVP_MI_Vector();  // deactivate this contructor
  public:
   IVP_FLOAT element[1];  // array of elements
+
+  IVP_MI_Vector() = delete;  // deactivate this contructor
 
   /***********************************************************************************
    * Name:        malloc_mi_vector(...)
