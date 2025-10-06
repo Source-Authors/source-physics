@@ -686,7 +686,6 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
   P_Sur_2D_Line *td_bc_line = NULL;
 
   // for all lines
-  int wrong_flag = 0;
   int loop_counter = 0;
   while ((td_base_line = this->lines.first)) {
 #ifdef SUR_DEBUG
@@ -907,9 +906,6 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
     delete this->point_array[i];
   }
 
-  if (wrong_flag) {
-    return "something went wrong in calc_triangle_representation! break...\n";
-  }
   return IVP_NO_ERROR;
 }
 
