@@ -780,7 +780,7 @@ void qh_normalize2(coordT *normal, int dim, boolT toporient, realT *minnorm,
       norm += (*colp) * (*colp);
     norm = sqrt(norm);
   }
-  if (minnorm) {
+  if (minnorm && ismin) {
     if (norm < *minnorm)
       *ismin = True;
     else
