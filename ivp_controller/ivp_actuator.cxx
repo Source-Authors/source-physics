@@ -576,21 +576,20 @@ void IVP_Actuator_Rot_Mot::do_simulation_controller(
   IVP_DOUBLE rot_force = power / (domega * rot_inertia_i);
 
   // clip force
-  while (max_torque != 0.0f) {
+  if (max_torque != 0.0f) {
     if (rot_force > max_torque) {
       IVP_IF(0) {
         ivp_message("RM Force clipped to %g, was %g\n", max_torque, rot_force);
       }
       rot_force = max_torque;
-      break;
     }
+
     if (rot_force < -max_torque) {
       IVP_IF(0) {
         ivp_message("RM Force clipped to %g, was %g\n", -max_torque, rot_force);
       }
       rot_force = -max_torque;
     }
-    break;
   }
   IVP_DOUBLE rot_imp = rot_force * es->delta_time;
   core->async_rot_push_core_multiple_cs(axis, rot_imp);
