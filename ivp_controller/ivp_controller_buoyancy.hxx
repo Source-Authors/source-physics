@@ -338,7 +338,8 @@ class IVP_Attacher_To_Cores_Buoyancy
  protected:
   friend class IVP_Controller_Buoyancy;
   IVP_Template_Buoyancy template_buoyancy;
-  IVP_U_Set_Active<IVP_Core> *set_of_cores;
+  // dimhotepus: Comment already present in base class field.
+  // IVP_U_Set_Active<IVP_Core> *set_of_cores;
   class IVP_Liquid_Surface_Descriptor *liquid_surface_descriptor;
 
  public:
