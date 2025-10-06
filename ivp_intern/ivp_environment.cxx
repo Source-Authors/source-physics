@@ -730,12 +730,10 @@ void IVP_Environment::merge_objects(
 }
 // needed for sun to initialize templates classes
 void ivp_dummy_func() {
-  IVP_U_Set_Active<IVP_Core> ivp_class_dummy1(16);
-  IVP_U_Set_Active<IVP_Real_Object> ivp_class_dummy2(16);
-  IVP_U_Set_Active<IVP_Mindist_Base> ivp_class_dummy3(16);
-  [[maybe_unused]] IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>
-      *ivp_class_dummy8 =
-          new IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>(NULL);
+  [[maybe_unused]] IVP_U_Set_Active<IVP_Core> ivp_class_dummy1(16);
+  [[maybe_unused]] IVP_U_Set_Active<IVP_Real_Object> ivp_class_dummy2(16);
+  [[maybe_unused]] IVP_U_Set_Active<IVP_Mindist_Base> ivp_class_dummy3(16);
+  [[maybe_unused]] IVP_Attacher_To_Cores<IVP_Controller_Buoyancy> *ivp_class_dummy4(nullptr);
 }
 
 void IVP_Time_Event_D::simulate_time_event(IVP_Environment *env) {
