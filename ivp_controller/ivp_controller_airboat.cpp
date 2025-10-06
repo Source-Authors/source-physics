@@ -104,8 +104,6 @@ bool IVP_Controller_Raycast_Airboat::PostRaycasts(
         &pTempPontoons[iPoint];
     IVP_Raycast_Airboat_Impact *pImpact = &pImpacts[iPoint];
     IVP_Ray_Solver_Template *pRaySolver = &pRaySolverTemplates[iPoint];
-    if (!pPontoonPoint || !pTempPontoonPoint || !pImpact || !pRaySolver)
-      continue;
 
     // Copy the ray length back, it may have changed.
     pPontoonPoint->raycast_length = pRaySolver->ray_length;
@@ -722,10 +720,8 @@ void IVP_Controller_Raycast_Airboat::InitRaycastCarWheels(
 
     do_steering_wheel(IVP_POS_WHEEL(iWheel), 0.0f);
 
-    pRaycastWheel->wheel_is_fixed = IVP_FALSE;
     pRaycastWheel->max_rotation_speed =
         pCarSystemTemplate->wheel_max_rotation_speed[iWheel >> 1];
-
     pRaycastWheel->wheel_is_fixed = IVP_TRUE;
   }
 }
