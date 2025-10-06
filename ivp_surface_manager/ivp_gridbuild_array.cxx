@@ -355,7 +355,7 @@ IVP_GridBuilder_Array::convert_convex_stripe_to_compact_ledge_fast(
     for (int j = n_points + 1; j >= 0; j--) {
       c_point_to_point_index[j] -= min;
     }
-    IVP_ASSERT(max - min + 1 < n_cols * 4 + 1);
+    IVP_ASSERT(max - min < n_cols * 4);
     this->c_points = &compact_poly_point_buffer[min];
     c_ledge->set_offset_ledge_points(
         (uchar *)c_points -
