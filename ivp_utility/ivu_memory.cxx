@@ -220,6 +220,8 @@ char *IVP_U_Memory::neuer_sp_block(size_t groesse) {
 
   auto *memelem = static_cast<p_Memory_Elem *>(
       p_malloc(sizeof(p_Memory_Elem) + ng + IVU_MEM_ALIGN));
+  if (!memelem) return nullptr;
+
   memelem->next = last_elem;
   last_elem = memelem;
   char *tmp = static_cast<char *>(align_to_next_adress(&memelem->data[0]));
