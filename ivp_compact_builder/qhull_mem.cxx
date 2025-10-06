@@ -66,7 +66,7 @@ qhmemT qhmem = {}; /* remove "= {0}" if this causes a compiler error */
 extern "C" {
 #endif
 static int qh_intcompare(const void *i, const void *j) {
-  return (*((int *)i) - *((int *)j));
+  return (*((const int *)i) - *((const int *)j));
 } /* intcompare */
 #ifdef SUN
 }
