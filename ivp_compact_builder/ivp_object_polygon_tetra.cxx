@@ -127,7 +127,9 @@ IVP_Tri_Edge *IVP_Tri_Edge::other_side() {
 
 void IVP_Tri_Edge::print(const char *text) {
   if (!text) text = "";
-  const char *name = start_point->get_real_object2()->get_name();
+  // dimhotepus: Check for nullptr.
+  const auto *real = start_point->get_real_object2();
+  const char *name = real->get_name();
   if (!name) name = "noname";
   ivp_message("%s '%s'	start_%zi: %i	", text, name,
               0xff & (((hk_intp)this->start_point->l_tetras) >> 8),
@@ -2237,7 +2239,7 @@ char *p_mergesort(void **array, IVP_INT32 start, IVP_INT32 end,
   IVP_INT32 dest;
   void **buffer;
   void *ibuf[256];
-  char *error;
+  char *error = nullptr;
 
   size = end - start;
   if (size <= 1) {
