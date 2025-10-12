@@ -317,11 +317,25 @@ extern void ivp_memory_check(void *a);
     }                                        \
   } while (false)
 
-#define P_MEM_CLEAR(a) memset((char *)(a), 0, sizeof(*a))
-#define P_MEM_CLEAR_M4(a) \
-  memset((char *)(a) + sizeof(void *), 0, sizeof(*a) - sizeof(void *))
-#define P_MEM_CLEAR_ARRAY(clss, elems) \
-  memset((char *)(clss), 0, sizeof(*clss) * (elems))
+// dimhotepus: Macro -> template function.
+template <typename T>
+inline void P_MEM_CLEAR(T *a) {
+  memset(a, 0, sizeof(T));
+}
+
+// dimhotepus: Macro -> template function.
+// dimhotepus: Deprecate as hacky.
+template <typename T>
+[[deprecated("Horrible hack, do not use")]] inline void P_MEM_CLEAR_M4(T *a) {
+  memset((unsigned char *)a + sizeof(void *), 0, sizeof(T) - sizeof(void *));
+}
+
+// dimhotepus: Macro -> template function.
+template <typename T, size_t size>
+inline void P_MEM_CLEAR_ARRAY(T (&clss)[size], size_t elems) {
+  HK_ASSERT(size >= elems);
+  memset(clss, 0, sizeof(T) * min(size, elems));
+}
 
 // used for division checking
 constexpr inline float P_FLOAT_EPS{1e-10f};
