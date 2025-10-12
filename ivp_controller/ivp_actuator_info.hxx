@@ -42,7 +42,7 @@ class IVP_Extra_Info {
   IVP_U_Active_Float *mod_pf_forward;
   IVP_U_Active_Float *mod_pf_sideward;
 
-  IVP_Extra_Info();  // memclear(this)
+  IVP_Extra_Info();
 };
 
 // INTERN_END

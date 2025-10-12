@@ -11,7 +11,6 @@
 #include <ivp_controller_golem.hxx>
 
 IVP_Template_Controller_Motion::IVP_Template_Controller_Motion() {
-  P_MEM_CLEAR(this);
   max_translation_force.set(1e6f, 1e6f, 1e6f);
   max_torque = 1e6f;
   force_factor = 0.8f;

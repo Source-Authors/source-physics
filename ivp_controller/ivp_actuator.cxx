@@ -15,29 +15,66 @@
 #include <ivp_radar.hxx>
 #include <ivp_radar_appl.hxx>
 
-IVP_Template_Rot_Mot::IVP_Template_Rot_Mot() { P_MEM_CLEAR(this); }
+IVP_Template_Rot_Mot::IVP_Template_Rot_Mot() {
+  max_rotation_speed = power = max_torque = 0;
+  active_float_max_rotation_speed = active_float_power =
+      active_float_max_torque = nullptr;
+  active_float_rotation_speed_out = nullptr;
+}
 
-IVP_Template_Torque::IVP_Template_Torque() { P_MEM_CLEAR(this); }
+IVP_Template_Torque::IVP_Template_Torque() {
+  torque = 0;
+  active_float_torque = nullptr;
 
-IVP_Template_Stabilizer::IVP_Template_Stabilizer() { P_MEM_CLEAR(this); }
-IVP_Template_Check_Dist::IVP_Template_Check_Dist() { P_MEM_CLEAR(this); }
+  max_rotation_speed = 0;
+  active_float_max_rotation_speed = nullptr;
+  active_float_rotation_speed_out = nullptr;
+}
+
+IVP_Template_Stabilizer::IVP_Template_Stabilizer() {
+  stabi_constant = 0;
+  active_float_stabi_constant = nullptr;
+}
+IVP_Template_Check_Dist::IVP_Template_Check_Dist() {
+  client_data = nullptr;
+  memset(objects, 0, sizeof(objects));
+  range = 0;
+  mod_is_outside = nullptr;
+ }
 
 //////////////////////////
 IVP_Template_Force::IVP_Template_Force() {
-  P_MEM_CLEAR(this);
+  force = 0;
+  active_float_force = nullptr;
+
   push_first_object = IVP_TRUE;
   push_second_object = IVP_FALSE;
 }
 
-IVP_Template_Two_Point::IVP_Template_Two_Point() { P_MEM_CLEAR(this); }
+IVP_Template_Two_Point::IVP_Template_Two_Point() {
+  client_data = nullptr;
+  memset(anchors, 0, sizeof(anchors));
+}
 
-IVP_Template_Four_Point::IVP_Template_Four_Point() { P_MEM_CLEAR(this); }
+IVP_Template_Four_Point::IVP_Template_Four_Point() {
+  client_data = nullptr;
+  memset(anchors, 0, sizeof(anchors));
+}
 
 //////////////////////////
 
 IVP_Extra_Info::IVP_Extra_Info() {
-  P_MEM_CLEAR(this);
-  return;
+  client_data = nullptr;
+
+  is_float_cam = IVP_FALSE;
+  active_float_bomb = nullptr;
+  range = 0;
+
+  mod_fc_height = mod_fc_target_height = mod_fc_dist = mod_fc_speed = active_float_force = nullptr;
+
+  is_physic_cam = is_puck_force = 0;
+
+  mod_pf_forward = mod_pf_sideward = nullptr;
 }
 
 //////////////////////////
@@ -46,7 +83,6 @@ void IVP_Template_Anchor::set_anchor_position_ws(IVP_Real_Object *obj,
                                                  const IVP_U_Point *coords_ws) {
   this->object = obj;
   this->coords_world = *coords_ws;
-  return;
 }
 
 void IVP_Template_Anchor::set_anchor_position_ws(IVP_Real_Object *obj,
@@ -57,7 +93,6 @@ void IVP_Template_Anchor::set_anchor_position_ws(IVP_Real_Object *obj,
   this->coords_world.k[0] = x;
   this->coords_world.k[1] = y;
   this->coords_world.k[2] = z;
-  return;
 }
 
 void IVP_Template_Anchor::set_anchor_position_os(
@@ -66,8 +101,6 @@ void IVP_Template_Anchor::set_anchor_position_os(
 
   IVP_Cache_Object *cache = obj->get_cache_object_no_lock();
   cache->transform_position_to_world_coords(coords_os, &this->coords_world);
-
-  return;
 }
 
 void IVP_Template_Anchor::set_anchor_position_os(IVP_Real_Object *obj,

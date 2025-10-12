@@ -74,8 +74,6 @@ IVP_Constraint_Car_Object::~IVP_Constraint_Car_Object() {
 IVP_Constraint_Solver_Car::IVP_Constraint_Solver_Car(
     IVP_COORDINATE_INDEX right, IVP_COORDINATE_INDEX up,
     IVP_COORDINATE_INDEX forward, IVP_BOOL is_left_hand) {
-  // P_MEM_CLEAR(this); NO !!!
-
   memset(constraint_is_disabled, 0, sizeof(constraint_is_disabled));
   memset(c_local_ballsocket, 0, sizeof(c_local_ballsocket));
   this->body_object = NULL;
@@ -465,8 +463,6 @@ void IVP_Constraint_Solver_Car::core_is_going_to_be_deleted_event(IVP_Core *) {
 //-----------------------------------------------------------------------------
 IVP_Constraint_Solver_Car_Builder::IVP_Constraint_Solver_Car_Builder(
     IVP_Constraint_Solver_Car *i_car_solver) {
-  P_MEM_CLEAR(this);
-
   this->car_solver = i_car_solver;
   this->n_appends = this->car_solver->get_num_of_appending_terminals();
 

@@ -13,15 +13,23 @@
 //////////////////////////
 
 IVP_Template_Spring::IVP_Template_Spring() {
-  P_MEM_CLEAR(this);
-  this->break_max_len = P_FLOAT_MAX;
+  spring_len = 0;
+  spring_values_are_relative = spring_force_only_on_stretch = IVP_FALSE;
+
+  spring_constant = spring_damp = rel_pos_damp = 0;
+
+  max_len_exceed_type = IVP_SFE_NONE;
+  break_max_len = P_FLOAT_MAX;
+
+  active_float_spring_len = active_float_spring_constant =
+      active_float_spring_damp = active_float_spring_rel_pos_damp = nullptr;
 }
 
 /////////////////////////////
 
 IVP_Template_Suspension::IVP_Template_Suspension() {
-  P_MEM_CLEAR(this);
-  this->break_max_len = 10e8f;
+  break_max_len = 10e8f;
+  spring_dampening_compression = max_body_force = 0;
 }
 
 /////////////////// SPRING /////////////////

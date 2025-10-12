@@ -14,14 +14,17 @@
 //////////////////////////
 
 IVP_Template_Stiff_Spring::IVP_Template_Stiff_Spring() {
-  P_MEM_CLEAR(this);
-  this->break_max_len = P_FLOAT_MAX;
+  spring_len = spring_constant = spring_damp = 0;
+
+  max_len_exceed_type = IVP_SFE_NONE;
+
+  break_max_len = P_FLOAT_MAX;
 }
 
 IVP_Template_Stiff_Spring_Active::IVP_Template_Stiff_Spring_Active() {
-  active_float_spring_len = NULL;
-  active_float_spring_constant = NULL;
-  active_float_spring_damp = NULL;
+  active_float_spring_len = nullptr;
+  active_float_spring_constant = nullptr;
+  active_float_spring_damp = nullptr;
 }
 
 /////////////////// SPRING /////////////////
