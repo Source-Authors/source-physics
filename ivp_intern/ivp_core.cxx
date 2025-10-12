@@ -1026,7 +1026,7 @@ IVP_Movement_Type IVP_Core::calc_movement_state(IVP_Time psi_time) {
 // create a new collision core
 void IVP_Core::create_collision_merged_core_with(IVP_Core *other_core) {
   IVP_ASSERT(other_core != this);
-  
+
   // dimhotepus: Reenable merge core functionality.
   // return;
 
@@ -1086,55 +1086,8 @@ void IVP_Core_Collision::split_collision_merged_core_next_PSI() {
   if (this->merged_core_which_replace_this_core != NULL)
     return;  // already touched
 
-  return;  //@@@@@
-           // set original friction core speeds and position
-#if 0
-    {
-	for(int c = objects.len()-1;c>=0;c--){
-		IVP_Real_Object *obj=this->objects.element_at(c);
-		IVP_USE(obj);
-	}
-    }
-    //this is old unused code
-    
-    IVP_Core_Sim_Manager *sim_man = environment->get_core_sim_manager();
-    sim_man->remove_sim_core(this);
-    CORE
-    IVP_Core *old_core = NULL;
-    for (obj_search = this->first_object; obj_search; obj_search = next_obj){
-	next_obj = obj_search->next_in_core;
-	if (obj_search->friction_core == old_core) continue;		// search new core
-	old_core = obj_search->friction_core;
-
-	//// loop over all original cores
-	IVP_U_Matrix m_CORE_f_core;
-	old_core->set_matrizes_and_speed(this, &m_CORE_f_core);		// copy values from this
-	old_core->merged_core_which_replace_this_core = NULL;
-	
-	IVP_Real_Object *obj;
-	// search end of list
-	for ( obj = obj_search; obj->next_in_core && obj->next_in_core->friction_core == old_core; obj = obj->next_in_core);
-
-	// split linked lists
-	if (obj->next_in_core) obj->next_in_core->prev_in_core = NULL;
-	obj->next_in_core = NULL;
-
-	// reset core coordinates of objects
-	{
-	    for (obj = old_core->first_object; obj; obj=obj->next_in_core){
-		
-		IVP_U_Matrix m_object_f_CORE;
-		obj->m_object_f_core.mmult4( &m_CORE_f_core, &m_object_f_CORE);
-		m_object_f_CORE.orthonormize();
-		obj->set_new_m_object_f_core(&m_object_f_CORE);
-		obj->physical_core = old_core;
-	    }
-	}
-
-	//
-	sim_man->add_sim_core(old_core);
-    }
-#endif
+  //@@@@@ set original friction core speeds and position
+  return;
 }
 
 void IVP_Core::set_matrizes_and_speed(IVP_Core_Merged *template_core,
