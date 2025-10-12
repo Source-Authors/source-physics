@@ -117,16 +117,19 @@ void IVP_Compact_Ledge_Solver::get_all_ledges(
 void IVP_Compact_Ledge_Solver::get_all_ledges(
     const IVP_Compact_Mopp *mopp,
     IVP_U_BigVector<IVP_Compact_Ledge> *all_ledges_out) {
-  char *ledge = (char *)mopp + mopp->offset_ledges + mopp->size_convex_hull;
-
-  char *point0 = (char *)(((IVP_Compact_Ledge *)ledge)->get_point_array());
+  // dimhotepus: Cast once.
+  IVP_Compact_Ledge *ledge =
+      (IVP_Compact_Ledge *)((char *)mopp + mopp->offset_ledges +
+                            mopp->size_convex_hull);
+  // dimhotepus: char* -> void*.
+  void *point0 = ledge->get_point_array();
 
   do {
     IVP_ASSERT(((hk_uintp)(ledge) & 0xf) == 0);
 
-    all_ledges_out->add((IVP_Compact_Ledge *)ledge);
+    all_ledges_out->add(ledge);
 
-    ledge += ((IVP_Compact_Ledge *)ledge)->get_size();
+    ledge += ledge->get_size();
 
     //		ledge = (IVP_Compact_Ledge*)((char*)ledge + 48); // @@CB big
     // hack !! only supports triangles !!
