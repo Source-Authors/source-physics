@@ -87,6 +87,11 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(
   IVP_ASSERT(i_s0 < 4);
   IVP_ASSERT(i_s1 < 4);
 
+  // dimhotepus: Early return on loop instead of out-of-bounds.
+  if (loop_hash_size >= IVP_LOOP_LIST_SIZE) {
+    return IVP_TRUE;
+  }
+
   hk_intp x0 = hk_intp(i_e0) | i_s0;
   hk_intp x1 = hk_intp(i_e1) | i_s1;
 
@@ -103,10 +108,6 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(
     if (s->a == x0 && s->b == x1) {
       return IVP_TRUE;
     }
-  }
-
-  if (loop_hash_size >= IVP_LOOP_LIST_SIZE) {
-    return IVP_TRUE;
   }
 
   loop_hash[loop_hash_size] = {x0, x1};
