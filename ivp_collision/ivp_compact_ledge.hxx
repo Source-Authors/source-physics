@@ -58,7 +58,7 @@ class IVP_Compact_Edge {
   // safety and interface methods (mainly internal usage)
   inline void set_start_point_index(int val) {
     IVP_ASSERT(val >= 0 && val < (1 << 16));
-    start_point_index = val;
+    start_point_index = static_cast<unsigned short>(val);
   }
   inline void set_opposite_index(int val) {
     IVP_ASSERT(val >= -(1 << 14) + 1 && val < (1 << 14) - 1);

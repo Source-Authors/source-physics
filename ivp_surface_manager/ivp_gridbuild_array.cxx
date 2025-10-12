@@ -101,9 +101,10 @@ int IVP_GridBuilder_Array::install_point(const IVP_U_Float_Point *point) {
 void IVP_GridBuilder_Array::add_triangle(int s_p0_off, int s_p1_off,
                                          int s_p2_off, int opp0, int opp1,
                                          int opp2) {
-  int p0_off = c_point_to_point_index[s_p0_off];
-  int p1_off = c_point_to_point_index[s_p1_off];
-  int p2_off = c_point_to_point_index[s_p2_off];
+  // dimhotepus: int -> ushort.
+  const ushort p0_off = c_point_to_point_index[s_p0_off];
+  const ushort p1_off = c_point_to_point_index[s_p1_off];
+  const ushort p2_off = c_point_to_point_index[s_p2_off];
 
   IVP_Compact_Triangle *tri =
       &((IVP_Compact_Triangle *)this->c_ledge)[this->triangle_count + 1];
