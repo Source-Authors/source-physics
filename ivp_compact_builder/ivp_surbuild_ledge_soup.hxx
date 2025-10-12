@@ -116,17 +116,9 @@ class IVP_SurfaceBuilder_Ledge_Soup {
   IVP_Compact_Surface *allocate_compact_surface();
   IVP_RETURN_TYPE create_compact_ledgetree();
 
-  IVP_Compact_Ledge *insert_ledge(
-      IVP_Template_Ledge_Polygon_Soup
-          *ledge_templ);  // add triangle, old style, will be deleted in the
-                          // future
-#if defined(LINUX) || defined(SUN) || \
-    (defined(__MWERKS__) && defined(__POWERPC__)) || defined(GEKKO)
-  static void convert_ledges_to_templates(
-      IVP_U_BigVector<IVP_Compact_Ledge>
-          &ledges,  // old function, needed for ivp_graphlib
-      IVP_U_Vector<IVP_Template_Polygon> *templates_out);
-#endif
+  // add triangle, old style, will be deleted in the
+  // future
+  IVP_Compact_Ledge *insert_ledge(IVP_Template_Ledge_Polygon_Soup *ledge_templ);
   void add_ledge_tree_to_convex_hull(class IVP_Compact_Recursive &,
                                      class IVV_Sphere *node);
   void build_root_convex_hull();
