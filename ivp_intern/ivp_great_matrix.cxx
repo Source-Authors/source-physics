@@ -1630,7 +1630,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
         }
       }
       IVP_RETURN_TYPE ret_val2 = sub_solver_mat.solve_great_matrix_many_zero();
-      IVP_RETURN_TYPE ret_val3 = IVP_FAULT;  // inv_mat.invert(&debug_mat);
+      IVP_RETURN_TYPE ret_val3 = inv_mat.invert(&debug_mat);
       if (ret_val2 == IVP_OK) {
         for (i = 0; i < r_actives; i++) {
           IVP_DOUBLE diff =

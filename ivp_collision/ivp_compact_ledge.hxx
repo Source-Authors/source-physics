@@ -69,7 +69,8 @@ class IVP_Compact_Edge {
 
   // real public
  public:
-  [[nodiscard]] inline int get_start_point_index() const {
+  // dimhotepus: int -> unsigned short.
+  [[nodiscard]] inline unsigned short get_start_point_index() const {
     return start_point_index;
   }
   [[nodiscard]] inline int get_opposite_index() const { return opposite_index; }

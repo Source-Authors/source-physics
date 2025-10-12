@@ -211,9 +211,10 @@ void IVP_Compact_Ledge::byte_swap_all(
     triangles[j].byte_swap();
 #endif
 
-    const int i0 = triangles[j].get_edge(0)->get_start_point_index();
-    const int i1 = triangles[j].get_edge(1)->get_start_point_index();
-    const int i2 = triangles[j].get_edge(2)->get_start_point_index();
+    // dimhotepus: int -> unsigned short.
+    const unsigned short i0{triangles[j].get_edge(0)->get_start_point_index()};
+    const unsigned short i1{triangles[j].get_edge(1)->get_start_point_index()};
+    const unsigned short i2{triangles[j].get_edge(2)->get_start_point_index()};
 
     ProcessPoint(points[i0], pre_swapped_points);
     ProcessPoint(points[i1], pre_swapped_points);

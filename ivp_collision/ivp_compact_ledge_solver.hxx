@@ -275,7 +275,8 @@ extern IVP_Compact_Ledge_Solver IVP_CLS;
 const IVP_Compact_Poly_Point *IVP_Compact_Ledge_Solver::give_object_coords(
     const IVP_Compact_Edge *edge, const IVP_Compact_Ledge *ledge) {
   IVP_ASSERT(ledge == edge->get_compact_ledge());
-  int point_index = edge->get_start_point_index();
+  // dimhotepus: int -> unsigned short.
+  const unsigned short point_index{edge->get_start_point_index()};
   const IVP_Compact_Poly_Point *res = &ledge->get_point_array()[point_index];
 
   return res;
@@ -284,7 +285,8 @@ const IVP_Compact_Poly_Point *IVP_Compact_Ledge_Solver::give_object_coords(
 const IVP_Compact_Poly_Point *IVP_Compact_Ledge_Solver::give_object_coords(
     const IVP_Compact_Edge *edge, IVP_Cache_Ledge_Point *clp) {
   IVP_ASSERT(clp->compact_ledge == edge->get_compact_ledge());
-  int point_index = edge->get_start_point_index();
+  // dimhotepus: int -> unsigned short.
+  const unsigned short point_index{edge->get_start_point_index()};
   const IVP_Compact_Poly_Point *res = &clp->compact_poly_points[point_index];
 
   IVP_ASSERT((hk_intp(res) & 15) == 0);

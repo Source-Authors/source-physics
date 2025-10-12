@@ -1410,7 +1410,8 @@ int IVP_SurfaceBuilder_Ledge_Soup::recompile_point_indizes_of_compact_ledge(
   for (int t = dl->get_n_triangles() - 1; t >= 0; t--) {
     IVP_Compact_Edge *edge = tri->get_first_edge();
     for (int e = 0; e < 3; e++) {
-      int pi = edge->get_start_point_index();
+      // dimhotepus: int -> unsigned short.
+      const unsigned short pi{edge->get_start_point_index()};
       IVP_Compact_Poly_Point *p_in = &source_ledge_points[pi];
       IVP_Compact_Poly_Point *p_out =
           (IVP_Compact_Poly_Point *)point_hash->find_point(p_in);
