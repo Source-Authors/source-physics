@@ -35,7 +35,15 @@ void IVP_PerformanceCounter_Simple::reset_and_print_performance_counters(
       counter[IVP_PE_PSI_CRITICAL_MINDISTS][0] * factor,
       counter[IVP_PE_AT_INIT][0] * factor);
 
-  P_MEM_CLEAR_M4(this);
+#ifdef WIN32
+  ref_counter64 = counter_freq = 0;
+#endif
+
+  counting = IVP_PE_PSI_START;
+  count_PSIs = 0;
+
+  memset(counter, 0, sizeof(counter));
+
   time_of_last_reset = current_time;
 }
 
@@ -48,7 +56,10 @@ IVP_PerformanceCounter_Simple::~IVP_PerformanceCounter_Simple() {}
 
 #if !defined(WIN32)
 IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple() {
-  P_MEM_CLEAR_M4(this);
+  counting = IVP_PE_PSI_START;
+  count_PSIs = 0;
+
+  memset(counter, 0, sizeof(counter));
 }
 #endif
 
