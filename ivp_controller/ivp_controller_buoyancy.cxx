@@ -274,7 +274,8 @@ void ivp_debug_show_real_values(
       &bs.sum_impulse_x_movevector);
 
   ivp_message("Buoyancy-Solver's results:\n");
-  ((IVP_MI_Vector *)&solution_values_out)->print();
+  // dimhotepus: Fix UB in print.
+  solution_values_out.print();
 }
 
 /*************************************************************************************
