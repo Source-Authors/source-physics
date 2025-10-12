@@ -355,9 +355,9 @@ class IVP_Friction_Core_Pair {
 
   IVP_U_Vector<IVP_Contact_Point> fr_dists;
 
-  IVP_DOUBLE destroy_mutual_energy(
-      IVP_DOUBLE d_e);  // returns amount of energy that was actually reduced,
-                        // rest is accumulated in integrated_anti_energy
+  // returns amount of energy that was actually reduced,
+  // rest is accumulated in integrated_anti_energy
+  IVP_DOUBLE destroy_mutual_energy(IVP_DOUBLE d_e);
 
   IVP_U_Float_Point span_vector_sum;  // only for debug
  public:

@@ -157,13 +157,12 @@ class IVP_U_Active_Value {
   const char *get_name() const { return name; }
 };
 
-class IVP_U_Active_Float : public IVP_U_Active_Value  //
-{
+class IVP_U_Active_Float : public IVP_U_Active_Value {
   friend class IVP_U_Active_Value_Manager;
 
  private:
-  IVP_U_Vector<IVP_U_Active_Float_Listener>
-      derived_mods;  // compiled dependant active_floats
+  // compiled dependant active_floats
+  IVP_U_Vector<IVP_U_Active_Float_Listener> derived_mods;
 
   // dep could be removed when update_derived() doesn't find the entry in
   // name_hash
@@ -195,8 +194,8 @@ class IVP_U_Active_Int : public IVP_U_Active_Value {
   friend class IVP_U_Active_Value_Manager;
 
  private:
-  IVP_U_Vector<IVP_U_Active_Int_Listener>
-      derived_mods;  // compiled dependant active_ints
+  // compiled dependant active_ints
+  IVP_U_Vector<IVP_U_Active_Int_Listener> derived_mods;
 
   // dep could be removed when update_derived() doesn't find the entry in
   // name_hash
