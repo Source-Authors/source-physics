@@ -294,14 +294,7 @@ IVP_Environment_Manager::IVP_Environment_Manager() {
   //    static_environment_manager=this;
 }
 
-IVP_Environment_Manager::~IVP_Environment_Manager() {
-  /*
-      for (int i = environments.len()-1; i>=0; i--){
-          IVP_Environment *env = environments.element_at(i);
-          //delete(env);
-      }
-  */
-}
+IVP_Environment_Manager::~IVP_Environment_Manager() = default;
 
 IVP_Actuator_Rot_Mot *IVP_Environment::create_rotmot(
     IVP_Template_Rot_Mot *templ) {
