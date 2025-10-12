@@ -119,13 +119,14 @@ class IVP_BetterStatisticsmanager_Callback_Interface {
 
 class IVP_BetterStatisticsmanager {
  private:
-  // global data
-  IVP_BOOL enabled;
-  IVP_U_Vector<IVP_BetterStatisticsmanager_Callback_Interface>
-      output_callbacks;  // list of user-definable callbacks
-  IVP_U_Vector<IVP_BetterStatisticsmanager_Data_Entity>
-      data_entities;  // list of all statistical data
+  // dimhotepus: Reorder to reduce class size.
   IVP_DOUBLE simulation_time;
+  // global data
+  // list of user-definable callbacks
+  IVP_U_Vector<IVP_BetterStatisticsmanager_Callback_Interface> output_callbacks;
+  // list of all statistical data
+  IVP_U_Vector<IVP_BetterStatisticsmanager_Data_Entity> data_entities;
+  IVP_BOOL enabled;
 
   // temporary data
 
