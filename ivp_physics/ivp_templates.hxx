@@ -38,7 +38,8 @@ class IVP_Material;
  *	Description:	An object
  ********************************************************************************/
 class IVP_Template_Object {
-  char *name;
+  // dimhotepus: char* -> const char*
+  const char *name;
 
  public:
   void set_name(const char *name);

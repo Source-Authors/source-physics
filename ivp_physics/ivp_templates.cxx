@@ -6,9 +6,7 @@
 #include <ivp_cache_object.hxx>
 
 IVP_Template_Object::IVP_Template_Object() {
-  P_MEM_CLEAR(this);
-  this->name = NULL;
-  return;
+  this->name = nullptr;
 }
 
 IVP_Template_Object::~IVP_Template_Object() {
