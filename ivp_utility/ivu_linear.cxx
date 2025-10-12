@@ -774,7 +774,7 @@ IVP_RETURN_TYPE IVP_U_Matrix::real_invert(const IVP_U_Matrix *m,
 
 void IVP_U_Matrix::rotate(IVP_COORDINATE_INDEX axis, IVP_FLOAT angle,
                           IVP_U_Matrix *m_out) {
-  static int pm[5] = {1, 2, 0, 1, 2};
+  constexpr int pm[5] = {1, 2, 0, 1, 2};
   const int *p = &pm[axis];
 
   IVP_DOUBLE SA = IVP_Inline_Math::sind(angle);
@@ -791,7 +791,7 @@ void IVP_U_Matrix::rotate(IVP_COORDINATE_INDEX axis, IVP_FLOAT angle,
 
 void IVP_U_Matrix::rotate_invers(IVP_COORDINATE_INDEX axis, IVP_FLOAT angle,
                                  IVP_U_Matrix *m_out) {
-  static const int pm[5] = {1, 2, 0, 1, 2};
+  constexpr int pm[5] = {1, 2, 0, 1, 2};
   const int *p = &pm[axis];
 
   IVP_DOUBLE SA = IVP_Inline_Math::sind(angle);
@@ -807,7 +807,7 @@ void IVP_U_Matrix::rotate_invers(IVP_COORDINATE_INDEX axis, IVP_FLOAT angle,
 }
 
 void IVP_U_Matrix3::init_rotated3(IVP_COORDINATE_INDEX axis, IVP_FLOAT angle) {
-  static int pm[5] = {1, 2, 0, 1, 2};
+  constexpr int pm[5] = {1, 2, 0, 1, 2};
   const int *p = &pm[axis];
 
   IVP_DOUBLE SA = IVP_Inline_Math::sind(angle);
@@ -848,7 +848,7 @@ void IVP_U_Matrix3::init_normized3_col(const IVP_U_Point *vp,
   IVP_U_Point v1;
   v1.inline_calc_cross_product(&v2, &v0);
 
-  unsigned int p[5] = {0, 1, 2, 0, 1};
+  constexpr unsigned int p[5] = {0, 1, 2, 0, 1};
   unsigned int i0 = coordinate;
   unsigned int i1 = i0 + 1;
   unsigned int i2 = i1 + 1;
@@ -872,7 +872,7 @@ void IVP_U_Matrix3::init_normized3_row(const IVP_U_Point *vp,
   IVP_U_Point v1;
   v1.inline_calc_cross_product(&v2, &v0);
 
-  unsigned int p[5] = {0, 1, 2, 0, 1};
+  constexpr unsigned int p[5] = {0, 1, 2, 0, 1};
   unsigned int i0 = coordinate;
   unsigned int i1 = i0 + 1;
   unsigned int i2 = i1 + 1;
@@ -894,7 +894,7 @@ void IVP_U_Matrix3::init_normized3_col(const IVP_U_Point *vb,
   IVP_U_Point v1;
   v1.inline_calc_cross_product(&v2, &v0);
 
-  unsigned int p[5] = {0, 1, 2, 0, 1};
+  constexpr unsigned int p[5] = {0, 1, 2, 0, 1};
   unsigned int i0 = index_b;
   unsigned int i1 = i0 + 1;
   unsigned int i2 = i1 + 1;
@@ -916,7 +916,7 @@ void IVP_U_Matrix3::init_normized3_row(const IVP_U_Point *vb,
   IVP_U_Point v1;
   v1.inline_calc_cross_product(&v2, &v0);
 
-  unsigned int p[5] = {0, 1, 2, 0, 1};
+  constexpr unsigned int p[5] = {0, 1, 2, 0, 1};
   unsigned int i0 = index_b;
   unsigned int i1 = i0 + 1;
   unsigned int i2 = i1 + 1;
