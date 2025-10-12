@@ -18,7 +18,14 @@
 #include <ivp_compact_ledge.hxx>
 #include <ivp_compact_ledge_solver.hxx>
 
-IVP_Template_Compact_Grid::IVP_Template_Compact_Grid() { P_MEM_CLEAR(this); }
+IVP_Template_Compact_Grid::IVP_Template_Compact_Grid() {
+  P_MEM_CLEAR(&row_info);
+  P_MEM_CLEAR(&column_info);
+
+  height_maps_to = IVP_INDEX_X;
+  height_invert_axis = IVP_FALSE;
+  grid_field_size = 0;
+}
 
 IVP_GridBuilder_Array::IVP_GridBuilder_Array(
     IVP_U_Memory *mm_, const IVP_Template_Compact_Grid *gp,
