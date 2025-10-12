@@ -41,11 +41,11 @@ class IVP_SurfaceBuilder_Ledge_Soup {
   IVP_DOUBLE smallest_radius;
   int size_of_tree_in_bytes;  // benchmarking
   struct IVV_Sphere_Cluster *spheres_cluster;
-  IVP_U_Vector<IVP_Compact_Ledge>
-      c_ledge_vec;  // including inner recursive compact ledges
+  // including inner recursive compact ledges
+  IVP_U_Vector<IVP_Compact_Ledge> c_ledge_vec;
 
-  IVP_U_Vector<IVV_Sphere>
-      rec_spheres;  // only spheres with inner recursive ledges
+  // only spheres with inner recursive ledges
+  IVP_U_Vector<IVV_Sphere> rec_spheres;
   IVP_U_Vector<IVV_Sphere> terminal_spheres;
 
   IVP_U_Float_Point extents_min;
@@ -54,8 +54,8 @@ class IVP_SurfaceBuilder_Ledge_Soup {
   int number_of_unclustered_spheres;
   IVV_Cluster_Min_Hash *interval_minhash;
   IVP_U_Vector<IVV_Sphere> overlapping_spheres;
-  IVP_U_Vector<IVV_Sphere> built_spheres;  // temporary; contains newly built
-                                           // minimal spheres during each pass
+  // temporary; contains newly built minimal spheres during each pass
+  IVP_U_Vector<IVV_Sphere> built_spheres;
 
   class IVP_Template_Surbuild_LedgeSoup *parameters;
 

@@ -128,19 +128,20 @@ class IVP_Template_Surface {
   char *revert_line; /* an array of flags, indicating whether a line referred to
                       * by the line index array should be reversed */
 
-  void calc_surface_normal_template(
-      int point_index0, int point_index1,
-      int point_index2);  // points have to be counter clockwise
+  // points have to be counter clockwise
+  void calc_surface_normal_template(int point_index0, int point_index1,
+                                    int point_index2);
 
   /** methods **/
+
   // dimhotepus: int line_index -> ushort.
   void set_line(int sur_l_i, ushort line_index, char revert) {
     lines[sur_l_i] = line_index;
     revert_line[sur_l_i] = revert;
   }
   void init_surface(int line_count);  // malloc line_count lines
-  void
-  close_surface();  // free all values: 'lines' array and 'revert_line' array
+  // free all values: 'lines' array and 'revert_line' array
+  void close_surface();
   IVP_Template_Surface();
   ~IVP_Template_Surface();  // note: calls close_surface
   int get_surface_index();
