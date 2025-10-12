@@ -141,13 +141,13 @@ class IVP_Controller_Independent : public IVP_Controller {
   IVP_U_Vector<IVP_Core> *get_associated_controlled_cores() override {
     return &empty_list;
   };
-  virtual const char *get_controller_name() override {
+  const char *get_controller_name() override {
     return "sys:unknown-independent";
   };
 };
 
 class IVP_Controller_Dependent : public IVP_Controller {
-  virtual const char *get_controller_name() override {
+  const char *get_controller_name() override {
     return "sys:unknown-dependent";
   };
 };
@@ -169,7 +169,7 @@ class IVP_Standard_Gravity_Controller : public IVP_Controller_Independent {
   }
   virtual ~IVP_Standard_Gravity_Controller() {}
   void core_is_going_to_be_deleted_event(IVP_Core *) override {}
-  virtual const char *get_controller_name() override {
+  const char *get_controller_name() override {
     return "ivp:standard_gravity_controller";
   }
 };
