@@ -13,15 +13,15 @@
 
 #ifdef WIN32
 #define IVP_PIII /* set for P3 specific code */
-// #define IVP_WILLAMETTE	/* set for Willamette specific code */
-// #define IVP_WMT_ALIGN		/* set to compile with MS but Willamette
-// compatible */ #define IVP_PSXII			/* playstation II */
+// #define IVP_WILLAMETTE /* set for Willamette specific code */
+// #define IVP_WMT_ALIGN /* set to compile with MS but Willamette compatible */
+// #define IVP_PSXII	 /* playstation II */
 #endif
 // #define IVP_NO_DOUBLE    /* set if processor has no double floating point
 // unit, or lib should use float only */
 #define IVP_VECTOR_UNIT_FLOAT  /* set if extra data is inserted to support \
                                   vector units */
-#define IVP_VECTOR_UNIT_DOUBLE /* set if extra data should be insersted to \
+#define IVP_VECTOR_UNIT_DOUBLE /* set if extra data should be inserted to \
                                   utilize double vector units */
 
 #if defined(PSXII)
@@ -323,9 +323,10 @@ extern void ivp_memory_check(void *a);
 #define P_MEM_CLEAR_ARRAY(clss, elems) \
   memset((char *)(clss), 0, sizeof(*clss) * (elems))
 
-constexpr inline float P_FLOAT_EPS{1e-10f};  // used for division checking
-constexpr inline float P_FLOAT_RES{
-    1e-6f};  // float resolution for numbers < 1.0
+// used for division checking
+constexpr inline float P_FLOAT_EPS{1e-10f};
+// float resolution for numbers < 1.0
+constexpr inline float P_FLOAT_RES{1e-6f};
 constexpr inline float P_FLOAT_MAX{1e16f};
 
 #ifdef IVP_NO_DOUBLE
