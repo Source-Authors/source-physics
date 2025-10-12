@@ -52,15 +52,16 @@ class IVP_Template_Compact_Grid {
   IVP_Template_Grid_Axle_Descript row_info;     // see above...
   IVP_Template_Grid_Axle_Descript column_info;  // see above...
 
-  IVP_COORDINATE_INDEX
-  height_maps_to;               // the IVP coordinate index of the height axis
-  IVP_BOOL height_invert_axis;  // set to true if the height values translate
-                                // into negative IVP axis direction
+  // the IVP coordinate index of the height axis
+  IVP_COORDINATE_INDEX height_maps_to;
+  // set to true if the height values translate into negative IVP axis direction
+  IVP_BOOL height_invert_axis;
 
-  IVP_FLOAT grid_field_size;  // size between two grid points (unit: m)
-  IVP_U_Float_Point
-      position_origin_os;  // position of the grid's starting point (i.e. the
-                           // array's first element) in object space
+  // size between two grid points (unit: m)
+  IVP_FLOAT grid_field_size;
+  // position of the grid's starting point (i.e. the array's first element) in
+  // object space
+  IVP_U_Float_Point position_origin_os;
 
   IVP_Template_Compact_Grid();
 };
@@ -85,26 +86,26 @@ class IVP_GridBuilder_Array {
   IVP_U_Memory *mm;
 
   // intermediately used for complete grid
-  int *grid_point_to_ledge_point_array;  // -1 means point not in use, >=0 point
-                                         // is allocated and in
-  IVP_Compact_Poly_Point
-      *compact_poly_point_buffer;  // array of compact poly points
+  // -1 means point not in use, >=0 point is allocated and in
+  int *grid_point_to_ledge_point_array;
+
+  // array of compact poly points
+  IVP_Compact_Poly_Point *compact_poly_point_buffer;
   int n_compact_poly_points_used;
 
   // intermediately used for fast conversion of one compact ledge
   inline IVP_Compact_Poly_Point *get_point_at_strip_pos(int pos);
 
   IVP_Compact_Ledge *c_ledge;
-  IVP_Compact_Poly_Point
-      *c_points;  // pointer into the compact_poly_point_buffer
-  ushort c_point_to_point_index[IVP_GRID_MAX_ROWS * 2 +
-                                2];  // converts a point in the compact ledge to
-                                     // a point used for c_points
+  // pointer into the compact_poly_point_buffer
+  IVP_Compact_Poly_Point *c_points;
+
+  // converts a point in the compact ledge to a point used for c_points
+  ushort c_point_to_point_index[IVP_GRID_MAX_ROWS * 2 + 2];
   int triangle_count;
 
-  inline int install_grid_point(
-      int grid_point_index);  // returns the index into the
-                              // compact_poly_point_buffer
+  // returns the index into the compact_poly_point_buffer
+  inline int install_grid_point(int grid_point_index);
   inline int install_point(const IVP_U_Float_Point *point);
   inline void insert_opposite_index(const IVP_Compact_Edge *edge, int index);
 
