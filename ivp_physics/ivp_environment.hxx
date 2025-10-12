@@ -177,8 +177,8 @@ class IVP_Environment {  // the environment
 
   IVP_PerformanceCounter *performancecounter;
   class IVP_Universe_Manager *universe_manager;
-  class IVP_Real_Object
-      *static_object;  // used for anchors which are not fixed to objects
+  // used for anchors which are not fixed to objects
+  class IVP_Real_Object *static_object;
 
   IVP_Statistic_Manager statistic_manager;
   IVP_Freeze_Manager freeze_manager;
@@ -187,14 +187,14 @@ class IVP_Environment {  // the environment
 
   IVP_Cache_Object_Manager *cache_object_manager;
 
-  IVP_U_Active_Value_Manager
-      *l_active_value_manager;  // backlink to local environment manager
+  // backlink to local environment manager
+  IVP_U_Active_Value_Manager *l_active_value_manager;
   IVP_Material_Manager *l_material_manager;
-  IVP_U_Memory
-      *short_term_mem;  // temporary memory (use only between
-                        // start_memory_transaction and end_memory_transaction)
-  IVP_U_Memory *sim_unit_mem;  // memory is cleaned when sim_unit or
-                               // impact_system is finished
+  // temporary memory (use only between start_memory_transaction and
+  // end_memory_transaction)
+  IVP_U_Memory *short_term_mem;
+  // memory is cleaned when sim_unit or impact_system is finished
+  IVP_U_Memory *sim_unit_mem;
 
   IVP_DOUBLE time_since_last_blocking;
 
@@ -251,9 +251,8 @@ class IVP_Environment {  // the environment
   // INTERN_END
 
 #ifdef DEBUG
-  void invalid_time_code() {
-    current_time_code++;
-  }  // invalid current time code
+  // invalid current time code
+  void invalid_time_code() { current_time_code++; }
 #endif
   void fire_event_pre_collision(IVP_Event_Collision *);
   void fire_event_post_collision(IVP_Event_Collision *);
@@ -536,16 +535,15 @@ class IVP_Application_Environment {
   IVP_Collision_Filter *collision_filter;  // a filter that checks which objects
                                            // should be watched for collisions
   IVP_Universe_Manager *universe_manager;  // see IVP_Universe_Manager
-  IVP_PerformanceCounter *performancecounter;  //
+  IVP_PerformanceCounter *performancecounter;
   IVP_Anomaly_Manager *anomaly_manager;
   IVP_Anomaly_Limits *anomaly_limits;
 
-  IVP_Collision_Delegator_Root
-      *default_collision_delegator_root;  // an optional user defined default
-                                          // root collision delegator
+  // an optional user defined default root collision delegator
+  IVP_Collision_Delegator_Root *default_collision_delegator_root;
 
-  IVP_U_Active_Value_Manager
-      *env_active_float_manager;     // a hash of active_values
+  // a hash of active_values
+  IVP_U_Active_Value_Manager *env_active_float_manager;
   IVP_Range_Manager *range_manager;  // optional custom range_manager
 
   IVP_Application_Environment();

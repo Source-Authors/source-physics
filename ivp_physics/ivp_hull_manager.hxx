@@ -10,13 +10,15 @@ class IVP_Listener_Hull;
 #include <ivp_listener_hull.hxx>
 #endif
 
-#define IVP_MAX_TIME_WITHOUT_RESET 10.0f /* seconds */
-#define IVP_HULL_MANAGER_GRADIENT_FACTOR \
-  1.00001f /* high enough that till MAX_TIME no bits are lost */
+/* seconds */
+#define IVP_MAX_TIME_WITHOUT_RESET 10.0f
+/* high enough that till MAX_TIME no bits are lost */
+#define IVP_HULL_MANAGER_GRADIENT_FACTOR 1.00001f
 
 class IVP_Hull_Manager : public IVP_Hull_Manager_Base {
-  void
-  reset_times();  // reset all values to zero, needed to avoid float overflow
+  // reset all values to zero, needed to avoid float overflow
+  void reset_times();
+
  public:
   IVP_FLOAT get_current_hull_time() const { return hull_value_last_vpsi; };
   IVP_FLOAT get_current_center_hull_time() const {
@@ -44,15 +46,12 @@ class IVP_Hull_Manager : public IVP_Hull_Manager_Base {
   inline void prefetch0_hull();      // prefetches gradient information
   inline void prefetch0_gradient();  // prefetches the sorted minlist header
   inline void prefetch1_hull();      // prefetches some sorted minlist data
-  inline IVP_FLOAT insert_synapse(
-      IVP_Listener_Hull *syn, IVP_Time t_now,
-      IVP_DOUBLE delta_valid_hull_time);  // assert delta_valid_hull_time
-                                          // ensures no events till next PSI
-  inline IVP_FLOAT insert_lazy_synapse(
-      IVP_Listener_Hull *syn, IVP_Time t_now,
-      IVP_DOUBLE
-          delta_valid_hull_time);  // same, but adds some extra time to avoid
-                                   // assert on delta_valid_hull_time
+  // assert delta_valid_hull_time ensures no events till next PSI
+  inline IVP_FLOAT insert_synapse(IVP_Listener_Hull *syn, IVP_Time t_now,
+                                  IVP_DOUBLE delta_valid_hull_time);
+  // same, but adds some extra time to avoid assert on delta_valid_hull_time
+  inline IVP_FLOAT insert_lazy_synapse(IVP_Listener_Hull *syn, IVP_Time t_now,
+                                       IVP_DOUBLE delta_valid_hull_time);
   inline void update_synapse(IVP_Listener_Hull *syn, IVP_Time t_now,
                              IVP_DOUBLE delta_valid_hull_time);
   inline void update_lazy_synapse(IVP_Listener_Hull *syn, IVP_Time t_now,
