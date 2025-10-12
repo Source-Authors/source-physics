@@ -1200,7 +1200,7 @@ IVP_MRC_TYPE IVP_Mindist_Minimize_Solver::p_minimize_Leave_PK(
       IVP_Unscaled_KK_Result kkr;
       IVP_RETURN_TYPE check = IVP_CLS.calc_unscaled_KK_vals(kkin, &kkr);
       if (check == IVP_FAULT || kkr.checks_L[0] < 0.0f) {
-        IVP_IF(0) { ivp_message("PK_KK epsilon problem\n"); }
+        IVP_IF(0) { ivp_message("PK_KK %f epsilon problem\n", P_RES_EPS); }
         break;
       }
     }
