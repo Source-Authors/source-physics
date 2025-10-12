@@ -291,7 +291,6 @@ void IVP_Environment::set_gravity(IVP_U_Point *gravity_) {
 IVP_Environment_Manager::IVP_Environment_Manager() {
   environments.elems = NULL;
   ivp_willamette_optimization = 0;
-  //    static_environment_manager=this;
 }
 
 IVP_Environment_Manager::~IVP_Environment_Manager() = default;
@@ -373,10 +372,6 @@ IVP_Environment *IVP_Environment_Manager::create_environment(
 
 IVP_Environment_Manager IVP_Environment_Manager::static_environment_manager;
 IVP_Environment_Manager *IVP_Environment_Manager::get_environment_manager() {
-  //    if (static_environment_manager == NULL){
-  //	static_environment_manager = new IVP_Environment_Manager();
-  //    }
-
   return (&static_environment_manager);
 }
 
