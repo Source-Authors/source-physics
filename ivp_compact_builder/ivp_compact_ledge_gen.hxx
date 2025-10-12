@@ -25,12 +25,13 @@ class IVP_Compact_Ledge_Generator {
   IVP_Compact_Ledge *compact_ledge;            // for validate
   IVP_U_Vector<IVP_Triangle> *orig_triangles;  // for validate
  public:
-  int prepare_compact_ledge(
-      IVP_U_Vector<IVP_Triangle>
-          *tri_vec);  // builds up intermediates and returns calculated size
-  void generate_compact_ledge(uchar *mem_to_fill);  // fills intermeds into mem
+  // builds up intermediates and returns calculated size
+  int prepare_compact_ledge(IVP_U_Vector<IVP_Triangle> *tri_vec);
+  // fills intermeds into mem
+  void generate_compact_ledge(uchar *mem_to_fill);
 #ifdef DEBUG
-  IVP_RETURN_TYPE validate();  // for debug purposes
+  // for debug purposes
+  IVP_RETURN_TYPE validate();
 #endif
   IVP_Compact_Ledge_Generator();
   ~IVP_Compact_Ledge_Generator();

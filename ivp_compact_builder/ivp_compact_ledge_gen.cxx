@@ -21,7 +21,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 
 IVP_Compact_Ledge_Generator::IVP_Compact_Ledge_Generator() {
-  P_MEM_CLEAR(this);
+  point_hash = nullptr;
+  point_cnt = edge_cnt = n_triangles = 0;
+  edge_hash = nullptr;
+  compact_ledge = nullptr;
+  orig_triangles = nullptr;
 }
 
 int IVP_Compact_Ledge_Generator::prepare_compact_ledge(
