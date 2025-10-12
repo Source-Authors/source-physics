@@ -150,7 +150,7 @@ IVP_Time_Event *IVP_Time_Manager::get_next_event(IVP_Time ttime) {
   return NULL;
 }
 
-int IVP_Time_Manager::get_event_count() { return this->min_hash->counter; }
+int IVP_Time_Manager::get_event_count() const { return this->min_hash->counter; }
 
 void IVP_Event_Manager::simulate_time_events(IVP_Time_Manager *,
                                              IVP_Environment *, IVP_Time) {};

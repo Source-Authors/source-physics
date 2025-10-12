@@ -83,7 +83,7 @@ class IVP_Time_Manager {
   void remove_event(IVP_Time_Event *event);
   void update_event(IVP_Time_Event *event, IVP_Time time);
 
-  int get_event_count();  // num of events currently managed by IVP_Time_Manager
+  int get_event_count() const;  // num of events currently managed by IVP_Time_Manager
   void event_loop(IVP_Environment *env, IVP_Time time);
 
   void simulate_variable_time_step(IVP_Environment *, IVP_FLOAT delta_time);
