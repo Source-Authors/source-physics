@@ -47,10 +47,11 @@ class IVP_Compact_Edge {
   static int prev_table[];
 
   // contents
-  unsigned int start_point_index : 16;  // point index
-  signed int opposite_index : 15;  // rel to this // maybe extra array, 3 bits
-                                   // more than tri_index/pierce_index
-  unsigned int is_virtual : 1;
+  // dimhotepus: unsigned int:16 -> unsigned short.
+  unsigned short start_point_index;  // point index
+  int opposite_index : 15;           // rel to this // maybe extra array, 3 bits
+                                     // more than tri_index/pierce_index
+  unsigned is_virtual : 1;
 
  public:
   // safety and interface methods (mainly internal usage)
@@ -66,9 +67,11 @@ class IVP_Compact_Edge {
 
   // real public
  public:
-  inline int get_start_point_index() const { return start_point_index; }
-  inline int get_opposite_index() const { return opposite_index; }
-  inline int get_is_virtual() const { return is_virtual; }
+  [[nodiscard]] inline int get_start_point_index() const {
+    return start_point_index;
+  }
+  [[nodiscard]] inline int get_opposite_index() const { return opposite_index; }
+  [[nodiscard]] inline bool get_is_virtual() const { return is_virtual; }
 
   // read content
   // inline const IVP_Compact_Poly_Point *get_start_point() const; // SLOW!
@@ -121,10 +124,10 @@ class IVP_Compact_Triangle  //
   }
   inline void set_is_virtual(unsigned int val) { is_virtual = val; }
 
-  inline int get_tri_index() const { return tri_index; }
-  inline int get_pierce_index() const { return pierce_index; }
-  inline int get_material_index() const { return material_index; }
-  inline int get_is_virtual() const { return is_virtual; }
+  [[nodiscard]] inline int get_tri_index() const { return tri_index; }
+  [[nodiscard]] inline int get_pierce_index() const { return pierce_index; }
+  [[nodiscard]] inline int get_material_index() const { return material_index; }
+  [[nodiscard]] inline bool get_is_virtual() const { return is_virtual; }
 
   inline const IVP_Compact_Edge *get_first_edge() const {
     return &c_three_edges[0];
