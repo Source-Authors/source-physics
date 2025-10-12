@@ -133,7 +133,8 @@ class IVP_Template_Surface {
       int point_index2);  // points have to be counter clockwise
 
   /** methods **/
-  void set_line(int sur_l_i, int line_index, char revert) {
+  // dimhotepus: int line_index -> ushort.
+  void set_line(int sur_l_i, ushort line_index, char revert) {
     lines[sur_l_i] = line_index;
     revert_line[sur_l_i] = revert;
   }
