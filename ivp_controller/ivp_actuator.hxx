@@ -112,16 +112,16 @@ class IVP_Template_Four_Point {
 class IVP_Template_Check_Dist {
  public:
   void *client_data;
-  IVP_Real_Object
-      *objects[2];  // objects the end points of the check distance is connected
+  // objects the end points of the check distance is connected
+  IVP_Real_Object *objects[2];
   IVP_U_Point position_world_space[2];  // world position of the end points
                                         // (unit: meters)
 
   IVP_FLOAT range;  // distance to check (unit: meters)
 
   // output section
-  IVP_U_Active_Terminal_Int
-      *mod_is_outside;  // optional active_int to write the result to
+  // optional active_int to write the result to
+  IVP_U_Active_Terminal_Int *mod_is_outside;
 
   IVP_Template_Check_Dist();
 };
@@ -137,10 +137,11 @@ class IVP_Template_Force : public IVP_Template_Two_Point {
   IVP_FLOAT force;                         // the force (unit: Newton)
   IVP_U_Active_Float *active_float_force;  // optional override of force
 
-  IVP_BOOL
-  push_first_object;  // default IVP_TRUE, apply force on first object ?
-  IVP_BOOL push_second_object;  // default IVP_FALSE, apply neg. force on second
-                                // object
+  // default IVP_TRUE, apply force on first object ?
+  IVP_BOOL push_first_object;
+  // default IVP_FALSE, apply neg. force on second object
+  IVP_BOOL push_second_object;
+
   IVP_Template_Force();
 };
 

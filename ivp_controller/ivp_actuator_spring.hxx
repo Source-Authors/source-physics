@@ -36,10 +36,10 @@ class IVP_Template_Spring : public IVP_Template_Two_Point {
                                           // values should only be applied when
                                           // the length exceeds spring_len
 
-  IVP_FLOAT
-  spring_constant;        /* in Newton/meter of (if spring_values_are_relative)
-                           * Newton/(meter*virtual_mass)    (used to create mass
-                           * independent spring-mass systems) */
+  /* in Newton/meter of (if spring_values_are_relative)
+   * Newton/(meter*virtual_mass)    (used to create mass
+   * independent spring-mass systems) */
+  IVP_FLOAT spring_constant;
   IVP_FLOAT spring_damp;  // the spring damp constant
   IVP_FLOAT rel_pos_damp; /* a damp factor which includes dampening of spring
                            * rotation. This factor is very usefull to decrease
@@ -48,8 +48,8 @@ class IVP_Template_Spring : public IVP_Template_Two_Point {
   IVP_SPRING_FORCE_EXCEED max_len_exceed_type;
   IVP_FLOAT break_max_len;  // causes a fire_event_spring_broken
 
-  IVP_U_Active_Float
-      *active_float_spring_len;  // optional override of spring len
+  // optional override of spring len
+  IVP_U_Active_Float *active_float_spring_len;
   IVP_U_Active_Float *active_float_spring_constant;      // dito
   IVP_U_Active_Float *active_float_spring_damp;          // dito
   IVP_U_Active_Float *active_float_spring_rel_pos_damp;  // dito
@@ -65,8 +65,8 @@ class IVP_Template_Spring : public IVP_Template_Two_Point {
 
 class IVP_Template_Suspension : public IVP_Template_Spring {
  public:
-  IVP_FLOAT
-  spring_dampening_compression;  // damp factor when spring is compressing
+  // damp factor when spring is compressing
+  IVP_FLOAT spring_dampening_compression;
   IVP_FLOAT max_body_force;  // maximum force that is exerted on body from the
                              // spring Value must be positive.
   IVP_Template_Suspension();
