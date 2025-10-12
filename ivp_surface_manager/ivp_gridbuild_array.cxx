@@ -30,29 +30,37 @@ IVP_Template_Compact_Grid::IVP_Template_Compact_Grid() {
 IVP_GridBuilder_Array::IVP_GridBuilder_Array(
     IVP_U_Memory *mm_, const IVP_Template_Compact_Grid *gp,
     IVP_FLOAT *height_field_) {
-  P_MEM_CLEAR(this);
-  mm = mm_;
-  height_field = height_field_;
   n_rows = gp->row_info.n_points;
   n_cols = gp->column_info.n_points;
-
-  n_compact_poly_points_used = 0;
-  height_points = (IVP_Compact_Poly_Point *)mm->get_mem(
+  height_field = height_field_;
+  height_points = (IVP_Compact_Poly_Point *)mm_->get_mem(
       sizeof(IVP_Compact_Poly_Point) * n_rows * n_cols);
-  unsigned int buffer_size =
-      sizeof(IVP_Compact_Poly_Point) * n_rows * n_cols * 3;
-  compact_poly_point_buffer = (IVP_Compact_Poly_Point *)mm->get_mem(
-      buffer_size);  // two extra points per square worst case
-  ledge_reference_field = (IVP_Compact_Grid_Element *)mm->get_memc(
+  is_left_handed = IVP_FALSE;
+
+  ledge_reference_field = (IVP_Compact_Grid_Element *)mm_->get_memc(
       sizeof(IVP_Compact_Grid_Element) * n_rows *
       n_cols);  // last row and col not used
+  mm = mm_;
 
   grid_point_to_ledge_point_array =
-      (int *)mm->get_mem(sizeof(int) * n_rows * n_cols);
+      (int *)mm_->get_mem(sizeof(int) * n_rows * n_cols);
 
   for (int j = n_rows * n_cols - 1; j >= 0; j--) {
     grid_point_to_ledge_point_array[j] = -1;
   }
+
+  const unsigned int buffer_size =
+      sizeof(IVP_Compact_Poly_Point) * n_rows * n_cols * 3;
+  // two extra points per square worst case
+  compact_poly_point_buffer =
+      (IVP_Compact_Poly_Point *)mm_->get_mem(buffer_size);
+  n_compact_poly_points_used = 0;
+
+  c_ledge = nullptr;
+  c_points = nullptr;
+
+  memset(c_point_to_point_index, 0, sizeof(c_point_to_point_index));
+  triangle_count = 0;
 
   IVP_U_Float_Point *dest = &this->height_points[0];
   IVP_FLOAT *source = &this->height_field[0];
