@@ -210,7 +210,8 @@ class IVP_Compact_Ledge {
                                           ledgetree_node_offset);
   }
 
-  inline int get_n_triangles() const { return n_triangles; }
+  // dimhotepus: int -> short.
+  [[nodiscard]] inline short get_n_triangles() const { return n_triangles; }
 
 #if defined(LINUX) || defined(SUN) || \
     (defined(__MWERKS__) && defined(__POWERPC__)) || defined(GEKKO)
