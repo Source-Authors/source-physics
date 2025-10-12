@@ -974,7 +974,7 @@ void IVP_Buoyancy_Solver::compute_values_for_one_ball(
     const IVP_Real_Object *object, const IVP_U_Float_Hesse *surface_os,
     const IVP_U_Float_Point *rel_speed_of_current_os) {
   // fetch some ball related values
-  IVP_Ball *ball = (IVP_Ball *)object;
+  const IVP_Ball *ball = (const IVP_Ball *)object;
 
   IVP_U_Float_Point geom_center_os;
   geom_center_os.set_to_zero();
