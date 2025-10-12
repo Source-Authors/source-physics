@@ -96,7 +96,8 @@ void IVP_OV_Element::remove_oo_collision(IVP_Collision *connector) {
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 IVP_OV_Node::IVP_OV_Node() {
-  this->parent = 0;
+  memset(&data, 0, sizeof(data));
+  parent = nullptr;
   return;
 }
 
