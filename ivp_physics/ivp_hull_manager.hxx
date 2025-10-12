@@ -95,8 +95,7 @@ IVP_FLOAT IVP_Hull_Manager::insert_synapse(IVP_Listener_Hull *syn,
                                            IVP_DOUBLE delta_valid_hull_time) {
   IVP_FLOAT dt = t_now - last_vpsi_time;
   IVP_FLOAT val = hull_value_last_vpsi + gradient * dt;
-  syn->minlist_index =
-      sorted_synapses.add((void *)syn, val + delta_valid_hull_time);
+  syn->minlist_index = sorted_synapses.add(syn, val + delta_valid_hull_time);
 
   // sorted_synapses.check();
   return (hull_value_last_vpsi - hull_center_value_last_vpsi) +
@@ -107,8 +106,7 @@ IVP_FLOAT IVP_Hull_Manager::insert_lazy_synapse(
     IVP_Listener_Hull *syn, IVP_Time /*t_now*/,
     IVP_DOUBLE delta_valid_hull_time) {
   IVP_FLOAT val = hull_value_next_psi;
-  syn->minlist_index =
-      sorted_synapses.add((void *)syn, val + delta_valid_hull_time);
+  syn->minlist_index = sorted_synapses.add(syn, val + delta_valid_hull_time);
   return hull_center_value_last_vpsi;
 }
 
@@ -137,8 +135,7 @@ void IVP_Hull_Manager::update_synapse(IVP_Listener_Hull *syn, IVP_Time t_now,
   sorted_synapses.remove_minlist_elem(syn->minlist_index);
   IVP_FLOAT dt = t_now - this->last_vpsi_time;
   IVP_FLOAT val = hull_value_last_vpsi + gradient * dt;
-  syn->minlist_index =
-      sorted_synapses.add((void *)syn, val + delta_valid_hull_time);
+  syn->minlist_index = sorted_synapses.add(syn, val + delta_valid_hull_time);
 }
 
 void IVP_Hull_Manager::update_lazy_synapse(IVP_Listener_Hull *syn,
@@ -146,6 +143,5 @@ void IVP_Hull_Manager::update_lazy_synapse(IVP_Listener_Hull *syn,
                                            IVP_DOUBLE delta_valid_hull_time) {
   sorted_synapses.remove_minlist_elem(syn->minlist_index);
   IVP_FLOAT val = hull_value_next_psi;
-  syn->minlist_index =
-      sorted_synapses.add((void *)syn, val + delta_valid_hull_time);
+  syn->minlist_index = sorted_synapses.add(syn, val + delta_valid_hull_time);
 }
