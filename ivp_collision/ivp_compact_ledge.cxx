@@ -30,7 +30,7 @@ int IVP_Compact_Edge::prev_table[] = {0, 2 * int(sizeof(IVP_Compact_Edge)),
 IVP_Compact_Edge::IVP_Compact_Edge() {
   start_point_index = 0;
   opposite_index = 0;
-  is_virtual = 0;
+  is_virtual = false;
 }
 
 void IVP_Compact_Edge::byte_swap() {
@@ -60,7 +60,7 @@ void IVP_Compact_Edge::byte_swap() {
 
   start_point_index = (bitfields & 0x0FFFF);
   opposite_index = (bitfields & 0x7FFF0000) >> 16;
-  is_virtual = (bitfields & 0x80000000) >> 31;
+  is_virtual = !!((bitfields & 0x80000000) >> 31);
 
   // dimhotepus: Commented as no side effects.
   /*uint sp = start_point_index;
@@ -103,7 +103,7 @@ void IVP_Compact_Triangle::byte_swap() {
   tri_index = bitfields & 0x0FFF;
   pierce_index = (bitfields & 0x0FFF000) >> 12;
   material_index = (bitfields & 0x7F000000) >> 24;
-  is_virtual = (bitfields & 0x80000000) >> 31;
+  is_virtual = !!((bitfields & 0x80000000) >> 31);
 
   // dimhotepus: Commented as no side effects.
   /*uint ti = tri_index;

@@ -168,14 +168,14 @@ void IVP_Compact_Recursive::set_rekursive_convex_hull() {
       // find triangle in hash
       triangle_key.set_tri(pi[0], pi[1], pi[2]);
       if (!triangle_hash.find((const char *)&triangle_key)) {
-        tri->set_is_virtual(1);
+        tri->set_is_virtual(true);
       }
 
       // find edges in hash
       for (int j = 0; j < 3; j++) {
         edge_key.set_edge(pi[j], pi[(j + 1) % 3]);
         if (!edge_hash.find((char *)&edge_key)) {
-          tri->get_edge(j)->set_is_virtual(1);
+          tri->get_edge(j)->set_is_virtual(true);
           // edges_not_found ++;
         } else {
           // edges_found ++;

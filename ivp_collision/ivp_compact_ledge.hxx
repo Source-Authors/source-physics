@@ -51,7 +51,8 @@ class IVP_Compact_Edge {
   unsigned short start_point_index;  // point index
   int opposite_index : 15;           // rel to this // maybe extra array, 3 bits
                                      // more than tri_index/pierce_index
-  unsigned is_virtual : 1;
+  // dimhotepus: unsigned:1 -> bool.
+  bool is_virtual : 1;
 
  public:
   // safety and interface methods (mainly internal usage)
@@ -63,7 +64,8 @@ class IVP_Compact_Edge {
     IVP_ASSERT(val >= -(1 << 14) + 1 && val < (1 << 14) - 1);
     opposite_index = val;
   }
-  inline void set_is_virtual(unsigned int val) { is_virtual = val; }
+  // dimhotepus: unsigned -> bool.
+  inline void set_is_virtual(bool val) { is_virtual = val; }
 
   // real public
  public:
@@ -103,7 +105,8 @@ class IVP_Compact_Triangle  //
   unsigned int tri_index : 12;  // used for upward navigation
   unsigned int pierce_index : 12;
   unsigned int material_index : 7;
-  unsigned int is_virtual : 1;
+  // dimhotepus: unsigned:1 -> bool.
+  bool is_virtual : 1;
 
  public:
   // three edges
@@ -122,7 +125,8 @@ class IVP_Compact_Triangle  //
     IVP_ASSERT(val >= 0 && val < (1 << 7));
     material_index = val;
   }
-  inline void set_is_virtual(unsigned int val) { is_virtual = val; }
+  // dimhotepus: unsigned -> bool.
+  inline void set_is_virtual(bool val) { is_virtual = val; }
 
   [[nodiscard]] inline int get_tri_index() const { return tri_index; }
   [[nodiscard]] inline int get_pierce_index() const { return pierce_index; }
