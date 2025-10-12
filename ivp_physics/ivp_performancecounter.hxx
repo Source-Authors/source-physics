@@ -56,8 +56,7 @@ struct IVP_PerformanceCounter {
 class IVP_PerformanceCounter_Simple : public IVP_PerformanceCounter {
  public:
 #ifdef WIN32
-  long long ref_counter64;
-  long long counter_freq;
+  long long ref_counter64, counter_freq;
 #endif
 
   IVP_PERFORMANCE_ELEMENT counting;
