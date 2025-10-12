@@ -61,8 +61,8 @@ void IVP_Cache_Object_Manager::check() {
 IVP_Cache_Object_Manager::IVP_Cache_Object_Manager(
     int number_of_cache_elements) {
   this->n_cache_objects = number_of_cache_elements;
-  unsigned int size = sizeof(IVP_Cache_Object);
-  size = (size + 0xf) & ~0xf;  // align 16
+  // dimhotepus: Align 16 at compile time.
+  constexpr unsigned int size = (sizeof(IVP_Cache_Object) + 0xf) & ~0xf;  // align16
   this->cache_objects_buffer = (char *)p_calloc(size, number_of_cache_elements);
   this->reuse_loop_index = 0;
 }
