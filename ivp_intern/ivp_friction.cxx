@@ -1974,24 +1974,6 @@ void IVP_Friction_Core_Pair::debug_read_vector_after_ease() {
   IVP_U_Float_Point test_vec;
   test_vec.set_to_zero();
   get_average_friction_vector(&test_vec);
-#if 0    
-    IVP_Contact_Point *fr_dist;
-    for(fr_dist=this->get_first_fr_dist_obj_pairs(); fr_dist; fr_dist=this->get_next_fr_dist_obj_pairs()) {
-	IVP_U_Float_Point temp_v;
-	temp_v.set_to_zero();
-    IVP_Impact_Solver_Long_Term *info0 = &dist0.long_term_impact_info;
-	temp_v.add_multiple(&fr_dist->span_friction_v[0],fr_dist->span_friction_s[0]);
-	temp_v.add_multiple(&fr_dist->span_friction_v[1],fr_dist->span_friction_s[1]);
-	IVP_DOUBLE sign;
-	if( fr_dist->synapse[0]->l_obj->physical_core == objs[0] ) {
-	    sign = 1.0f;
-	} else {
-	    sign =-1.0f;
-	}
-
-	test_vec.add_multiple(&temp_v,sign);
-    }
-#endif
   IVP_U_Float_Point diff;
   diff.subtract(&test_vec, &span_vector_sum);
   if (diff.real_length() > 0.01f) {
@@ -2055,14 +2037,6 @@ IVP_Friction_Core_Pair *IVP_Friction_System::find_pair_of_cores(
   }
   return NULL;
 }
-
-#if 0
-IVP_Mindist_Collision_Watcher::IVP_Mindist_Collision_Watcher()
-{
-    some_pushes_after_turnaround=0;
-    time_diff=0.0f;
-}
-#endif
 
 // be sure the core point of contact is valid
 // this function is called at generation of mindist. It should be called more
