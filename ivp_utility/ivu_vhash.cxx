@@ -128,13 +128,13 @@ void IVP_VHash::add_elem(const void *elem, int hash_index) {
 
     const void *h_e = e->elem;
     int h_i = e->hash_index;
-    e->elem = (void *)elem;
+    e->elem = elem;
     e->hash_index = hash_index;
     elem = h_e;
     hash_index = h_i;
     index = e_index;
   }
-  elems[pos].elem = (void *)elem;
+  elems[pos].elem = elem;
   elems[pos].hash_index = hash_index;
   IVP_IF(0) { check(); }
 }
@@ -149,7 +149,7 @@ void *IVP_VHash::remove_elem(const void *elem, unsigned int hash_index) {
     e = &elems[pos];
     if (e->elem == 0) CORE;  // return 0;
     if ((e->hash_index | IVP_VHASH_TOUCH_BIT) != hash_index) continue;
-    if (compare((void *)e->elem, (void *)elem) == IVP_TRUE) {
+    if (compare(e->elem, elem) == IVP_TRUE) {
       break;
     }
   }
@@ -239,7 +239,7 @@ void *IVP_VHash::find_elem(const void *elem, unsigned int hash_index) const {
     IVP_VHash_Elem *e = &elems[pos];
     if (!e->elem) break;
     if ((e->hash_index | IVP_VHASH_TOUCH_BIT) != hash_index) continue;
-    if (compare((void *)e->elem, (void *)elem) == IVP_FALSE) {
+    if (compare(e->elem, elem) == IVP_FALSE) {
       continue;
     }
     // now elem is found, return it
@@ -252,7 +252,7 @@ void *IVP_VHash::find_elem(const void *elem, unsigned int hash_index) const {
       IVP_VHash_Elem *e = &elems[pos];
       if (!e->elem) break;
       if ((e->hash_index | IVP_VHASH_TOUCH_BIT) == hash_index) CORE;
-      if (compare((void *)e->elem, (void *)elem) == IVP_FALSE) continue;
+      if (compare(e->elem, elem) == IVP_FALSE) continue;
       CORE;
     }
   }
@@ -266,7 +266,7 @@ void *IVP_VHash::touch_element(const void *elem, unsigned int hash_index) {
     IVP_VHash_Elem *e = &elems[pos];
     if (!e->elem) break;
     if ((e->hash_index | IVP_VHASH_TOUCH_BIT) != hash_index) continue;
-    if (compare((void *)e->elem, (void *)elem) == IVP_FALSE) continue;
+    if (compare(e->elem, elem) == IVP_FALSE) continue;
     // now elem is found, return it
     e->hash_index |= IVP_VHASH_TOUCH_BIT;
     return (void *)e->elem;
@@ -278,8 +278,8 @@ void IVP_VHash::print() const {
   int i;
   ivp_message("%i:", len());
   for (i = 0; i <= size_mm; i++) {
-    ivp_message(" %i:%X:%X  ", elems[i].hash_index & size_mm,
-                (int)(hk_intp)elems[i].elem, elems[i].hash_index);
+    ivp_message(" %i:%zX:%X  ", elems[i].hash_index & size_mm,
+                (hk_intp)elems[i].elem, elems[i].hash_index);
   }
   ivp_message("\n");
 }
@@ -578,9 +578,9 @@ void IVP_VHash_Store::print() {
   int i;
   ivp_message("%i:", size);
   for (i = 0; i < size; i++) {
-    ivp_message(" %i:%X:%X:%X  ", elems_store[i].hash_index & size_mm,
-                (int)(hk_intp)elems_store[i].key_elem,
-                (int)(hk_intp)elems_store[i].elem, elems_store[i].hash_index);
+    ivp_message(" %i:%zX:%zX:%X  ", elems_store[i].hash_index & size_mm,
+                (hk_intp)elems_store[i].key_elem,
+                (hk_intp)elems_store[i].elem, elems_store[i].hash_index);
   }
   ivp_message("\n");
 }

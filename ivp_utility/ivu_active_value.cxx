@@ -178,7 +178,7 @@ IVP_U_Active_Float *IVP_U_Active_Value_Manager::get_active_float_by_name(
     const char *i_name) {
   if (!i_name) return 0;
   // check module hash first
-  search_active_value->name = (char *)i_name;  // bad hack, thats ok
+  search_active_value->name = i_name;  // bad hack, thats ok
 
   IVP_U_Active_Float *mod =
       (IVP_U_Active_Float *)floats_name_hash->find_active_value(
@@ -205,7 +205,7 @@ IVP_U_Active_Int *IVP_U_Active_Value_Manager::get_active_int_by_name(
     const char *i_name) {
   if (!i_name) return 0;
   // check module hash first
-  search_active_value->name = (char *)i_name;  // bad hack, thats ok
+  search_active_value->name = i_name;  // bad hack, thats ok
 
   IVP_U_Active_Int *mod = (IVP_U_Active_Int *)ints_name_hash->find_active_value(
       search_active_value);
@@ -229,7 +229,7 @@ IVP_U_Active_Int *IVP_U_Active_Value_Manager::get_active_int_by_name(
 IVP_U_Active_Float *IVP_U_Active_Value_Manager::install_active_float(
     const char *i_name, IVP_DOUBLE value) {
   // check module hash first
-  search_active_value->name = (char *)i_name;  // bad hack, thats ok
+  search_active_value->name = i_name;  // bad hack, thats ok
   IVP_U_Active_Float *mod =
       (IVP_U_Active_Float *)floats_name_hash->find_active_value(
           search_active_value);
@@ -246,7 +246,7 @@ IVP_U_Active_Float *IVP_U_Active_Value_Manager::install_active_float(
 IVP_U_Active_Terminal_Double *IVP_U_Active_Value_Manager::create_active_float(
     const char *i_name, IVP_DOUBLE value) {
   // check module hash first
-  search_active_value->name = (char *)i_name;  // bad hack, thats ok
+  search_active_value->name = i_name;  // bad hack, thats ok
   IVP_U_Active_Float *mod =
       (IVP_U_Active_Float *)floats_name_hash->find_active_value(
           search_active_value);
@@ -263,7 +263,7 @@ IVP_U_Active_Terminal_Double *IVP_U_Active_Value_Manager::create_active_float(
 IVP_U_Active_Terminal_Int *IVP_U_Active_Value_Manager::create_active_int(
     const char *i_name, int value) {
   // check module hash first
-  search_active_value->name = (char *)i_name;  // bad hack, thats ok
+  search_active_value->name = i_name;  // bad hack, thats ok
   IVP_U_Active_Int *mod = (IVP_U_Active_Int *)ints_name_hash->find_active_value(
       search_active_value);
   search_active_value->name = NULL;
@@ -277,7 +277,7 @@ IVP_U_Active_Terminal_Int *IVP_U_Active_Value_Manager::create_active_int(
 IVP_U_Active_Int *IVP_U_Active_Value_Manager::install_active_int(
     const char *i_name, int value) {
   // check module hash first
-  search_active_value->name = (char *)i_name;  // bad hack, thats ok
+  search_active_value->name = i_name;  // bad hack, thats ok
   IVP_U_Active_Int *mod = (IVP_U_Active_Int *)ints_name_hash->find_active_value(
       search_active_value);
   search_active_value->name = NULL;

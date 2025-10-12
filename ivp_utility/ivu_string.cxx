@@ -236,7 +236,7 @@ char *p_strdup(const char *s) {
   if (s) {
     size_t len = strlen(s) + 1;
     char *s2 = (char *)p_malloc(len);
-    memcpy(s2, (char *)s, len);
+    memcpy(s2, s, len);
     return s2;
   }
 
@@ -254,7 +254,7 @@ char *p_make_string_fast(const char *templat, ...) {
 
   char buffer[MAX_MAKE_STRING_LEN];
   va_list parg;
-  va_start(parg, templat);  //-V2019
+  va_start(parg, templat);  //-V2019 //-V2018
   vsnprintf(buffer, std::size(buffer), templat, parg);
   va_end(parg);
   return p_strdup(buffer);
@@ -269,7 +269,7 @@ char *p_make_string(const char *templat, ...) {  //-V524
 
   char buffer[MAX_MAKE_STRING_LEN];
   va_list parg;
-  va_start(parg, templat);  //-V2019
+  va_start(parg, templat);  //-V2019 //-V2018
   vsnprintf(buffer, std::size(buffer), templat, parg);
   va_end(parg);
   return p_strdup(buffer);
@@ -286,7 +286,7 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...) {
   char buffer[MAX_ERROR_BUFFER_LEN];
   va_list parg;
 
-  va_start(parg, templat);  //-V2019
+  va_start(parg, templat);  //-V2019 //-V2018
   vsnprintf(buffer, std::size(buffer), templat, parg);
   va_end(parg);
 
@@ -300,7 +300,7 @@ void ivp_message(const char *fmt, ...) {
   char buffer_tmp[MAX_ERROR_BUFFER_LEN];
   va_list args;
 
-  va_start(args, fmt);  //-V2019
+  va_start(args, fmt);  //-V2019 //-V2018
   vsnprintf(buffer_tmp, std::size(buffer_tmp), fmt, args);
   va_end(args);
 
@@ -369,7 +369,7 @@ int p_strcmp(const char *s1, const char *s2) {
 }
 
 char *p_str_tok(char *a, const char *deli) {
-  char *temp = strtok(a, (char *)deli);
+  char *temp = strtok(a, deli);
   // Windows will always append a '0d'; maybe correct this with deli
   if (!temp) return nullptr;
   int i = 0;

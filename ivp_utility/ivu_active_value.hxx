@@ -140,7 +140,8 @@ class IVP_U_Active_Float_Delayed {
 class IVP_U_Active_Value {
  private:
   friend class IVP_U_Active_Value_Manager;
-  char *name;
+  // dimhotepus: char* -> const char*
+  const char *name;
 
  protected:
   int reference_count;

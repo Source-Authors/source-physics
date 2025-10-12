@@ -15,7 +15,7 @@ class IVP_Hash_Elem {
 int IVP_Hash::hash_index(const char *key) const {
   unsigned int index = 0xffffffffU;
   for (int i = key_size - 1; i >= 0; i--) {
-    unsigned c = *((unsigned char *)(key++));
+    const unsigned c = *((const unsigned char *)(key++));
     index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
   }
   index = index % size;
@@ -198,7 +198,7 @@ int IVP_U_String_Hash::hash_index(const char *key) const {
   unsigned int index = 0xffffffffU;
   const hk_intp key_size = strlen(key);
   for (hk_intp i = key_size - 1; i >= 0; i--) {
-    unsigned int c = *((unsigned char *)(key++));
+    const unsigned int c = *((const unsigned char *)(key++));
     index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
   }
   index = index % size;
