@@ -17,11 +17,8 @@
 #endif
 #endif
 #ifdef WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <Windows.h>
+extern "C"
+    __declspec(dllimport) void __stdcall OutputDebugStringA(const char *);
 #endif
 
 void P_String::uppercase(char *str) {
