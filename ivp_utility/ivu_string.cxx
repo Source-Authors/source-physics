@@ -47,66 +47,66 @@ const char *P_String::find_string(const char *str, const char *key,
     case 1:
       for (p1 = str, p2 = key; *p1;) {
         if (!(b = *p2)) {
-          return (char *)str;
+          return str;
+        }
+
+        if (toupper(*p1) == toupper(b)) {
+          p1++;
+          p2++;
         } else {
-          if (toupper(*p1) == toupper(b)) {
-            p1++;
-            p2++;
-          } else {
-            p2 = key;
-            p1 = (++str);
-          }
+          p2 = key;
+          p1 = (++str);
         }
       }
-      if (!*p2) return (char *)str;
+      if (!*p2) return str;
       break;
     case 0:
       for (p1 = str, p2 = key; *p1;) {
         if (!(b = *p2)) {
-          return (char *)str;
+          return str;
+        }
+
+        if (b == *p1) {
+          p1++;
+          p2++;
         } else {
-          if (b == *p1) {
-            p1++;
-            p2++;
-          } else {
-            p2 = key;
-            p1 = (++str);
-          }
+          p2 = key;
+          p1 = (++str);
         }
       }
-      if (!*p2) return (char *)str;
+      if (!*p2) return str;
       break;
     case 2:
       for (p1 = str, p2 = key; *p1;) {
         if (!(b = *p2)) {
-          return (char *)str;
+          return str;
+        }
+
+        if (b == *p1 || (b == '?')) {
+          p1++;
+          p2++;
         } else {
-          if (b == *p1 || (b == '?')) {
-            p1++;
-            p2++;
-          } else {
-            p2 = key;
-            p1 = (++str);
-          }
+          p2 = key;
+          p1 = (++str);
         }
       }
-      if (!*p2) return (char *)str;
+      if (!*p2) return str;
       break;
     default:
       for (p1 = str, p2 = key; *p1;) {
         if (!(b = *p2)) {
-          return (char *)str;
+          return str;
+        }
+
+        if (toupper(*p1) == toupper(b) || (b == '?')) {
+          p1++;
+          p2++;
         } else {
-          if (toupper(*p1) == toupper(b) || (b == '?')) {
-            p1++;
-            p2++;
-          } else {
-            p2 = key;
-            p1 = (++str);
-          }
+          p2 = key;
+          p1 = (++str);
         }
       }
-      if (!*p2) return (char *)str;
+      if (!*p2) return str;
       break;
   }
   return 0;
