@@ -182,7 +182,8 @@ class IVP_Object_Polygon_Tetra {
   IVP_Tetra_Intrude *tetra_intrude;
 
   int n_tetra_points;
-  int n_tetra_points_malloced;
+  // dimhotepus: Comment unused.
+  // int n_tetra_points_malloced;
   IVP_Tetra_Point *tetra_points;  // array of tetra points, temp
 
   /**** intermediate data during simulation ****/

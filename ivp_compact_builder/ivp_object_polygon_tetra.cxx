@@ -2110,7 +2110,8 @@ void IVP_Object_Polygon_Tetra::convexify() {
   }
 
   this->tetra_intrude = new IVP_Tetra_Intrude(t4_points, this->n_points);
-  tetra_intrude->n_tetra_points_malloced = n_tetra_points_malloced;
+  // dimhotepus: Comment unused.
+  // tetra_intrude->n_tetra_points_malloced = n_tetra_points_malloced;
 
   IVP_Triangle *tri;
   for (tri = triangles.first; tri; tri = tri->next) {

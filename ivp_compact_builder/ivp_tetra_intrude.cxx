@@ -154,7 +154,8 @@ IVP_Tetra_Intrude::IVP_Tetra_Intrude(IVP_Tetra_Point *i_tetra_points,
     }
   }
 
-  n_tetra_points_malloced = 0;
+  // dimhotepus: Comment unused.
+  // n_tetra_points_malloced = 0;
 }
 
 IVP_Tetra_Intrude::~IVP_Tetra_Intrude() {

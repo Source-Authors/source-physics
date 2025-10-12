@@ -95,7 +95,8 @@ class IVP_Tetra_Intrude {
   ~IVP_Tetra_Intrude();
 
   int n_tetra_points;
-  int n_tetra_points_malloced;
+  // dimhotepus: Comment unused.
+  // int n_tetra_points_malloced;
   IVP_Tetra_Point *tetra_points;  // array of tetra points
   void init_tetra_edge(IVP_Tetra_Edge *edge, IVP_Tetra_Point *p0,
                        IVP_Tetra_Point *p1, IVP_Tri_Edge *e);
