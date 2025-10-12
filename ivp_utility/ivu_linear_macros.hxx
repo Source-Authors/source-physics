@@ -64,7 +64,9 @@ inline void IVP_U_Float_Point::add_multiple(const IVP_U_Float_Point *v2,
 
 inline void IVP_U_Float_Point::set_multiple(const IVP_U_Quat *q_source,
                                             IVP_DOUBLE f) {
-  this->set_multiple((const IVP_U_Float_Point *)q_source, f);
+  // dimhotepus: Fix UB on cast IVP_U_Quat -> IVP_U_Float_Point.
+  const IVP_U_Float_Point p{q_source->x, q_source->y, q_source->z};
+  this->set_multiple(&p, f);
 }
 
 //////////////////////////////////////////////////////////////////////
