@@ -48,6 +48,25 @@ IVP_Constraint_Local_Anchor::~IVP_Constraint_Local_Anchor() = default;
 
 IVP_Constraint_Local::IVP_Constraint_Local() {
   is_enabled = IVP_FALSE;
+
+  force_factor = 0;
+  damp_factor_div_force = 0;
+
+  for (auto &t : fixed) {
+    t = IVP_CONSTRAINT_AXIS_DUMMY;
+  }
+
+  memset(borderleft_Rfs, 0, sizeof(borderleft_Rfs));
+  memset(borderright_Rfs, 0, sizeof(borderright_Rfs));
+
+  limited_axis_stiffness = 0;
+  maxforce = nullptr;
+
+  fixedtrans_dim = fixedrot_dim = 0;
+  limitedtrans_dim = limitedrot_dim = 0;
+  matrix_size = 0;
+  norm = IVP_NORM_MINIMUM;
+
   this->activate();
 }
 
