@@ -135,7 +135,7 @@ IVP_RETURN_TYPE IVP_U_Float_Point::fast_normize() {
   return IVP_OK;
 }
 
-IVP_RETURN_TYPE IVP_U_Float_Point::normize() {
+IVP_RETURN_TYPE IVP_U_Float_Point::normize() { //-V524
   IVP_DOUBLE length = this->quad_length();
   if (length < P_DOUBLE_EPS) return IVP_FAULT;
   IVP_DOUBLE f = IVP_Fast_Math::isqrt(length, 2);

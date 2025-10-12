@@ -111,7 +111,7 @@ void IVP_Constraint::change_rotation_axes_Ros(const IVP_U_Matrix3 *rot_axes) {
       "You are changing the rotation axes of a constraint which does not "
       "exist.\n");
 }
-void IVP_Constraint::change_target_rotation_axes_Ros(
+void IVP_Constraint::change_target_rotation_axes_Ros( //-V524
     const IVP_U_Matrix3 *rot_axes) {
   IVP_USE(rot_axes);
   ivp_message(
