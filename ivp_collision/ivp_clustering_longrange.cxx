@@ -162,14 +162,8 @@ IVP_BOOL IVP_OV_Tree_Manager::box_contains_box(
 
   return (IVP_TRUE);
 }
-#if !defined(SUN) && !defined(LINUX) && \
-    !(defined(__MWERKS__) && __POWERPC__) && !defined(GEKKO)
 inline int ivp_int_floor(IVP_DOUBLE x) { return (int)floorf(x); }
 inline int ivp_int_ceil(IVP_DOUBLE x) { return (int)ceilf(x); }
-#else
-inline int ivp_int_floor(IVP_DOUBLE x) { return (int)floor(x); }
-inline int ivp_int_ceil(IVP_DOUBLE x) { return (int)ceil(x); }
-#endif
 
 IVP_DOUBLE IVP_OV_Tree_Manager::calc_optimal_box(const IVP_OV_Element *element,
                                                  IVP_DOUBLE min_radius,
