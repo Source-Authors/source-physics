@@ -410,11 +410,10 @@ IVP_SurfaceBuilder_Pointsoup::try_to_build_convex_ledge_from_qhull_result(
     // -----------------------------------------
     compact_ledge =
         IVP_SurfaceBuilder_Polygon_Convex::convert_template_to_ledge(templ);
-    IVP_IF(1){IVP_IFDEBUG(IVP_DM_SURBUILD_POINTSOUP, {
-      if (!compact_ledge) {
-        error_output(templ);
-      }
-    })} P_DELETE(templ);
+    IVP_IFDEBUG(IVP_DM_SURBUILD_POINTSOUP, {
+      if (!compact_ledge) error_output(templ);
+    })
+    P_DELETE(templ);
   }
 
   // --------------------
