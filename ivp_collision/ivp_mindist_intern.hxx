@@ -457,8 +457,8 @@ class IVP_Mindist_Manager {
   IVP_BOOL scanning_universe;  // set to true during queries to the
                                // IVP_Universe_Manager
  public:
-  IVP_Environment
-      *environment;  // backlink, to be set, for objects and phys properties
+  // backlink, to be set, for objects and phys properties
+  IVP_Environment *environment;
 
   IVP_Mindist *exact_mindists;
   IVP_U_Vector<IVP_Mindist> wheel_look_ahead_mindists;

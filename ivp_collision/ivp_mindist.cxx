@@ -221,25 +221,27 @@ const IVP_Compact_Ledge *IVP_Synapse::get_ledge() const {
 
 #if defined(DEBUG) || 1
 void IVP_Synapse_Real::print() {
-  char *stat_text = NULL;
+  const char *stat_text = nullptr;
   int n_points = 0;
   ivp_message("(syn) ");
   switch (this->status) {
     case IVP_ST_POINT:
-      stat_text = (char *)"Point";
+      stat_text = "Point";
       n_points = 1;
       break;
     case IVP_ST_EDGE:
-      stat_text = (char *)"Edge";
+      stat_text = "Edge";
       n_points = 2;
       break;
     case IVP_ST_TRIANGLE:
-      stat_text = (char *)"Triangle";
+      stat_text = "Triangle";
       n_points = 3;
       break;
     default:
       CORE;
   }
+  // dimhotepus: Correctly print type.
+  ivp_message("%s.\n", stat_text);
 }
 #endif
 
