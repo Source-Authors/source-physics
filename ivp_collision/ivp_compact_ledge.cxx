@@ -70,7 +70,11 @@ void IVP_Compact_Edge::byte_swap() {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-IVP_Compact_Triangle::IVP_Compact_Triangle() { P_MEM_CLEAR(this); }
+IVP_Compact_Triangle::IVP_Compact_Triangle() {
+  // dimhotepus: Clear manually instead of UB memset.
+  tri_index = pierce_index = material_index = 0;
+  is_virtual = 0;
+}
 
 void IVP_Compact_Triangle::byte_swap() {
   /*
@@ -118,7 +122,18 @@ void IVP_Compact_Triangle::byte_swap() {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void IVP_Compact_Ledge::c_ledge_init() { P_MEM_CLEAR(this); }
+void IVP_Compact_Ledge::c_ledge_init() {
+  // dimhotepus: Clear manually instead of UB memset.
+  c_point_offset = 0;
+  ledgetree_node_offset = 0;
+  client_data = 0;
+  has_chilren_flag = 0;
+  is_compact_flag = IVP_FALSE;
+  dummy = 0;
+  size_div_16 = 0;
+  n_triangles = 0;
+  for_future_use = 0;
+}
 
 void IVP_Compact_Ledge::byte_swap() {
   /*

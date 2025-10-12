@@ -154,7 +154,6 @@ class IVP_Compact_Triangle  //
 class IVP_Compact_Ledge {
   // ATTENTION: some functions depend on EXACTLY THIS SIZE AND SHAPE of the
   // structure e.g. end of class must be 16 aligned for triangle address trick.
-  // and assert(sizeof(IVP_Compact_Ledge) == 16 == sizeof(IVP_Compact_Triangle))
   friend class IVP_Compact_Ledge_Generator;
   friend class IVP_SurfaceBuilder_Ledge_Soup;
   friend class IVP_SurfaceBuilder_Mopp;
@@ -168,8 +167,8 @@ class IVP_Compact_Ledge {
     int client_data;  // if indicates a non terminal ledge
   };
   unsigned int has_chilren_flag : 2;
-  IVP_BOOL is_compact_flag : 2;  // if false than compact ledge uses points
-                                 // outside this piece of memory
+  // if false than compact ledge uses points outside this piece of memory
+  IVP_BOOL is_compact_flag : 2;
   unsigned int dummy : 4;
   unsigned int size_div_16 : 24;
   short n_triangles;
@@ -187,7 +186,7 @@ class IVP_Compact_Ledge {
   inline void set_is_compact(IVP_BOOL x) { is_compact_flag = x; }
 
  public:
-  void c_ledge_init();  // memclear(this)
+  void c_ledge_init();
 
   inline const IVP_Compact_Poly_Point *get_point_array() const {
     return (IVP_Compact_Poly_Point *)(((char *)this) + c_point_offset);
@@ -224,26 +223,31 @@ class IVP_Compact_Ledge {
 #endif
 
   inline int get_size() const { return size_div_16 * 16; }
-  inline IVP_BOOL is_compact() {
-    return (IVP_BOOL)is_compact_flag;
-  }  // returns true if vertex info is included in compact ledge
+  // returns true if vertex info is included in compact ledge
+  inline IVP_BOOL is_compact() { return (IVP_BOOL)is_compact_flag; }
+  // see IVP_Surface_Manager_Polygon for user acces
   inline int get_client_data() const {
     IVP_ASSERT(is_terminal());
     return client_data;
-  }  // see IVP_Surface_Manager_Polygon for user acces
+  }
   inline void set_client_data(unsigned int x) {
     IVP_ASSERT(is_terminal());
     if (is_terminal()) client_data = x;
   }
 
-  void byte_swap();  // just byte swap this data BUT WILL NOT do the point
-                     // array, as may be external data or shared and so may be
-                     // byte swapped > 1 times
+  // just byte swap this data BUT WILL NOT do the point array, as may be
+  // external data or shared and so may be byte swapped > 1 times
+  void byte_swap();
+  // byte_swap, and recurse too all related child data including the point and
+  // triangle data
   void byte_swap_all(
-      IVP_U_BigVector<IVP_Compact_Poly_Point>
-          *pre_swapped_points);  // byte_swap, and recurse too all related child
-                                 // data including the point and triangle data
+      IVP_U_BigVector<IVP_Compact_Poly_Point> *pre_swapped_points);
 };
+
+// ATTENTION: some functions depend on EXACTLY THIS SIZE AND SHAPE of the
+// structure e.g. end of class must be 16 aligned for triangle address trick.
+static_assert(sizeof(IVP_Compact_Ledge) == 16);
+static_assert(sizeof(IVP_Compact_Triangle) == 16);
 
 /********************************************************************************
  *	Names:	       	IVP_Compact_Ledgetree_Node
