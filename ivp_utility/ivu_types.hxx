@@ -166,7 +166,7 @@ class IVP_Time {
     return result;
   }
 
-  IVP_Time() = default;
+  IVP_Time() : IVP_Time{0} {}
   IVP_Time(double time) { seconds = time; }
 };
 
@@ -212,7 +212,7 @@ class IVP_Time {
     }
     return result;
   }
-  IVP_Time() {}
+  IVP_Time() : IVP_Time{0} {}
   IVP_Time(float time) {
     seconds = float(int(time));
     sub_seconds = time - int(time);

@@ -147,7 +147,7 @@ class IVP_U_Float_Point {
   IVP_RETURN_TYPE fast_normize();  // normize vector (0.1f% error)
   void print(const char *comment = 0) const;
 
-  IVP_U_Float_Point() = default;
+  IVP_U_Float_Point() : IVP_U_Float_Point{0, 0, 0} {}
   IVP_U_Float_Point(IVP_DOUBLE x, IVP_DOUBLE y, IVP_DOUBLE z) {
     k[0] = (IVP_FLOAT)x;
     k[1] = (IVP_FLOAT)y;
@@ -177,11 +177,11 @@ class IVP_U_Float_Point {
  *	Name:	      	IVP_U_Point
  *	Description:	A double triple used for various purposes.
  *	Note:		Some functions change 'this', other functions change
- *			parameters (check the const attribute).
- *			The inline implementation can be found in
- *ivu_linear_macros.hxx and ivu_matrix_macros.hxx Performance Notes: All
- *functions are optimized (on an assembler basis) to run best on Pentium and
- *Pentium II CPU.
+ *	parameters (check the const attribute). The inline implementation can be
+ *  found in ivu_linear_macros.hxx and ivu_matrix_macros.hxx
+ *
+ *  Performance Notes: All functions are optimized (on an assembler basis) to
+ *  run best on Pentium and Pentium II CPU.
  ********************************************************************************/
 
 #if defined(IVP_NO_DOUBLE)
@@ -341,7 +341,7 @@ class IVP_U_Point {
 
   void print(const char *comment = 0);
 
-  IVP_U_Point() = default;
+  IVP_U_Point() : IVP_U_Point{0, 0, 0} {}
   inline IVP_U_Point(const IVP_U_Float_Point &p);
   IVP_U_Point(IVP_DOUBLE x, IVP_DOUBLE y, IVP_DOUBLE z) {
     k[0] = x;
@@ -442,8 +442,7 @@ class IVP_Inline_Math {
 /********************************************************************************
  *	Name:	       	IVP_U_Hesse
  *	Description:	A convenient way to define a plane,
- *			and e.g. for calculating the distance from a point to
- *that plane.
+ *	and e.g. for calculating the distance from a point to that plane.
  ********************************************************************************/
 class IVP_U_Hesse : public IVP_U_Point {
  public:
@@ -502,7 +501,7 @@ class IVP_U_Float_Hesse : public IVP_U_Float_Point {
   inline IVP_DOUBLE get_dist(const IVP_U_Float_Point *p)
       const;  // get the distance between a point and the plane
 
-  IVP_U_Float_Hesse() = default;
+  IVP_U_Float_Hesse() : IVP_U_Float_Hesse{0, 0, 0, 0} {}
   IVP_U_Float_Hesse(IVP_DOUBLE xi, IVP_DOUBLE yi, IVP_DOUBLE zi,
                     IVP_DOUBLE val) {
     k[0] = (IVP_FLOAT)xi;
@@ -818,7 +817,7 @@ class IVP_U_Quat {
       const IVP_U_Float_Quat *reference) const;
 
   // not initialized quat
-  IVP_U_Quat() = default;
+  IVP_U_Quat() : x{0}, y{0}, z{0}, w{0} {}
   // init by a rotation
   IVP_U_Quat(const IVP_U_Point &p) { this->set_fast_multiple(&p, 1.0f); }
   IVP_U_Quat(const IVP_U_Matrix3 *m) { this->set_quaternion(m); }
