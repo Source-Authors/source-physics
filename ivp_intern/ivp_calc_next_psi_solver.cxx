@@ -242,9 +242,11 @@ void IVP_Calc_Next_PSI_Solver::calc_psi_rotation_axis(
     }
     core->abs_omega = 2.0f * abs_angle * core->i_delta_time;
 
-    IVP_U_Point rot_axis_ws;
-    core->m_world_f_core_last_psi.inline_vmult3((IVP_U_Point *)q_core_f_core,
-                                                &rot_axis_ws);
+    IVP_U_Point rot_axis_ws, core_f_core_ws;
+    // dimhotepus: Fix UB on cast IVP_U_Quat -> IVP_U_Point.
+    core_f_core_ws.set(q_core_f_core->x, q_core_f_core->y, q_core_f_core->z);
+
+    core->m_world_f_core_last_psi.inline_vmult3(&core_f_core_ws, &rot_axis_ws);
     core->rotation_axis_world_space.set_multiple(&rot_axis_ws, ilen);
   } else {
     core->abs_omega = 0.0f;
