@@ -480,10 +480,12 @@ void IVP_Real_Object::set_extra_radius(IVP_DOUBLE new_radius) {
     this->recalc_core_radius();
   } else {
     this->extra_radius = new_radius;
-    this->get_core()->upper_limit_radius = 0.0f;
-    this->get_core()->max_surface_deviation = 0.0f;
-    for (int i = this->get_core()->objects.len() - 1; i >= 0; i--) {
-      IVP_Real_Object *o = this->get_core()->objects.element_at(i);
+    // dimhotepus: Cache core for performance.
+    auto *core = this->get_core();
+    core->upper_limit_radius = 0.0f;
+    core->max_surface_deviation = 0.0f;
+    for (int i = core->objects.len() - 1; i >= 0; i--) {
+      IVP_Real_Object *o = core->objects.element_at(i);
       o->recalc_core_radius();
     }
   }
