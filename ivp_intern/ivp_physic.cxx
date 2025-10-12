@@ -39,14 +39,39 @@ void IVP_Statistic_Manager::clear_statistic() {
   impact_unmov = 0;
 }
 
-IVP_Statistic_Manager::IVP_Statistic_Manager() { P_MEM_CLEAR(this); }
+IVP_Statistic_Manager::IVP_Statistic_Manager() {
+  l_environment = nullptr;
+  sum_energy_destr = 0;
+
+  max_rescue_speed = max_speed_gain = 0;
+
+  impact_sys_num = impact_counter = impact_sum_sys = 0;
+  impact_hard_rescue_counter = impact_rescue_after_counter = impact_delayed_counter = 0;
+
+  impact_coll_checks = impact_unmov = 0;
+
+  sum_of_mindists = mindists_generated = mindists_deleted = 0;
+  range_intra_exceeded = range_world_exceeded = 0;
+
+  processed_fmindists = 0;
+  global_fmd_counter = 0;
+}
 
 IVP_Application_Environment::IVP_Application_Environment() {
-  P_MEM_CLEAR(this);
   n_cache_object = 256;
 
-#if defined(PSXII) && 0
-  scratchpad_addr = (char *)0x70000000;
-  scratchpad_size = 0x4000;
-#endif
+  scratchpad_addr = nullptr;
+  scratchpad_size = 0;
+
+  material_manager = nullptr;
+  collision_filter = nullptr;
+  universe_manager = nullptr;
+  performancecounter = nullptr;
+  anomaly_manager = nullptr;
+  anomaly_limits = nullptr;
+
+  default_collision_delegator_root = nullptr;
+
+  env_active_float_manager = nullptr;
+  range_manager = nullptr;
 }

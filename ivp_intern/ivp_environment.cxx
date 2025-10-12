@@ -415,16 +415,18 @@ void IVP_Environment::set_current_time(IVP_Time time) {
   current_time = time;
 }
 
-IVP_Draw_Vector_Debug::IVP_Draw_Vector_Debug() { P_MEM_CLEAR(this); }
+IVP_Draw_Vector_Debug::IVP_Draw_Vector_Debug() {
+  next = nullptr;
+  color = 0;
+  debug_text = nullptr;
+}
 
 IVP_Draw_Vector_Debug::~IVP_Draw_Vector_Debug() { P_FREE(debug_text); }
 
 void IVP_Debug_Manager::clear_debug_manager() {
 #if !defined(PSXII)
-  if (out_deb_file) {
-    if (out_deb_file != stdout) {
-      fclose(out_deb_file);
-    }
+  if (out_deb_file && out_deb_file != stdout) {
+    fclose(out_deb_file);
   }
 #endif
 }
@@ -721,7 +723,8 @@ void ivp_dummy_func() {
   [[maybe_unused]] IVP_U_Set_Active<IVP_Core> ivp_class_dummy1(16);
   [[maybe_unused]] IVP_U_Set_Active<IVP_Real_Object> ivp_class_dummy2(16);
   [[maybe_unused]] IVP_U_Set_Active<IVP_Mindist_Base> ivp_class_dummy3(16);
-  [[maybe_unused]] IVP_Attacher_To_Cores<IVP_Controller_Buoyancy> *ivp_class_dummy4(nullptr);
+  [[maybe_unused]] IVP_Attacher_To_Cores<IVP_Controller_Buoyancy>
+      *ivp_class_dummy4(nullptr);
 }
 
 void IVP_Time_Event_D::simulate_time_event(IVP_Environment *env) {

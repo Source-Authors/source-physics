@@ -19,10 +19,10 @@ class IVP_Cluster_Manager {
   IVP_Object_Callback_Table_Hash *obj_callback_hash;
   IVP_Collision_Callback_Table_Hash *collision_callback_hash;
 
-  IVP_Real_Object
-      *an_object_to_be_checked;  //_by_send_unused_objects_to_universe_manager;
-  IVP_Real_Object *get_next_real_object_in_cluster_tree(
-      IVP_Object *object);  // returns an_object_to_be_checked++
+  //_by_send_unused_objects_to_universe_manager;
+  IVP_Real_Object *an_object_to_be_checked;
+  // returns an_object_to_be_checked++
+  IVP_Real_Object *get_next_real_object_in_cluster_tree(IVP_Object *object);
 
   int number_of_real_objects;
 
@@ -59,7 +59,6 @@ class IVP_Cluster_Manager {
                                  IVP_Listener_Collision *listener);
 
   void add_object(IVP_Real_Object *real_object);
-  void remove_object(
-      IVP_Real_Object *real_object);  // tells the Cluster Manager that an
-                                      // object is going to be deleted
+  // tells the Cluster Manager that an object is going to be deleted
+  void remove_object(IVP_Real_Object *real_object);
 };

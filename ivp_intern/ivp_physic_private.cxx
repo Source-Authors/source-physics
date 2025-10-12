@@ -43,11 +43,12 @@ void IVP_Listener_Collision::event_friction_deleted(IVP_Event_Friction *) {
 IVP_Cluster *IVP_Cluster_Manager::get_root_cluster() { return root_cluster; }
 
 IVP_Cluster_Manager::IVP_Cluster_Manager(IVP_Environment *env) {
-  P_MEM_CLEAR(this);
-  environment = env;
   root_cluster = new IVP_Cluster(env);
-  this->obj_callback_hash = new IVP_Object_Callback_Table_Hash(16);
-  this->collision_callback_hash = new IVP_Collision_Callback_Table_Hash(16);
+  environment = env;
+  obj_callback_hash = new IVP_Object_Callback_Table_Hash(16);
+  collision_callback_hash = new IVP_Collision_Callback_Table_Hash(16);
+  an_object_to_be_checked = nullptr;
+  number_of_real_objects = 0;
 }
 
 void IVP_Cluster_Manager::fire_event_object_deleted(

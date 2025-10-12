@@ -12,9 +12,13 @@
 #include <ivu_min_hash.hxx>
 
 IVP_Template_Phantom::IVP_Template_Phantom() {
-  P_MEM_CLEAR(this);
+  manage_intruding_objects = manage_intruding_cores =
+      dont_check_for_unmoveables = IVP_FALSE;
+
   exit_policy_extra_radius = 0.5f;
   exit_policy_extra_time = 0.5f;
+
+  manage_sleeping_cores = IVP_FALSE;
 }
 
 void IVP_Controller_Phantom::add_listener_phantom(

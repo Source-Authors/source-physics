@@ -93,11 +93,12 @@ void IVP_Event_Manager::simulate_variable_time_step(
 IVP_Event_Manager::~IVP_Event_Manager() {}
 
 IVP_Time_Manager::IVP_Time_Manager() {
-  P_MEM_CLEAR(this);
   event_manager = new IVP_Event_Manager_Standard();
   event_manager->mode = 0;
-  this->min_hash = new IVP_U_Min_List(16);
-  this->psi_event = new IVP_Time_Event_PSI();
+  min_hash = new IVP_U_Min_List(16);
+  psi_event = new IVP_Time_Event_PSI();
+
+  last_time = 0;
 
   this->insert_event(psi_event, 0.0f);
 }
