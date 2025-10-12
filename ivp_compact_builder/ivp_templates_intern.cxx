@@ -30,7 +30,13 @@ IVP_Template_Polygon::~IVP_Template_Polygon() {
   P_DELETE_ARRAY(this->surfaces);
 }
 
-IVP_Template_Surface::IVP_Template_Surface() { P_MEM_CLEAR(this); }
+IVP_Template_Surface::IVP_Template_Surface() {
+  templ_poly = nullptr;
+
+  n_lines = 0;
+  lines = nullptr;
+  revert_line = nullptr;
+}
 
 void IVP_Template_Surface::close_surface() {
   P_FREE(this->lines);
