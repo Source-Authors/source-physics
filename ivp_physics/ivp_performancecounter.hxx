@@ -56,13 +56,16 @@ struct IVP_PerformanceCounter {
 class IVP_PerformanceCounter_Simple : public IVP_PerformanceCounter {
  public:
 #ifdef WIN32
-  long long ref_counter64, counter_freq;
+  const double inv_counter_freq;
+  long long ref_counter64;
 #endif
 
+  // dimhotepus: int -> unsigned.
+  unsigned int count_PSIs;
   IVP_PERFORMANCE_ELEMENT counting;
-  int count_PSIs;
 
-  int counter[IVP_PE_MAX][2];  // counting seconds
+  // dimhotepus: int -> double.
+  IVP_DOUBLE counter[IVP_PE_MAX];  // counting seconds
   IVP_Time time_of_last_reset;
 
   void reset_and_print_performance_counters(IVP_Time current_time) override;
