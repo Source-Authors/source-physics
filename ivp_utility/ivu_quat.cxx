@@ -192,21 +192,20 @@ void IVP_U_Quat::set_quaternion(const IVP_U_Matrix3 *mat) {
     quat->z = (m.get_elem(1, 0) - m.get_elem(0, 1)) * s;
   } else {
     // diagonal is negative
-    IVP_DOUBLE q[4];
-    int i, j, k;
     constexpr int nxt[3] = {1, 2, 0};
 
-    i = 0;
+    int i = 0;
 
     if (m.get_elem(1, 1) > m.get_elem(0, 0)) i = 1;
     if (m.get_elem(2, 2) > m.get_elem(i, i)) i = 2;
 
-    j = nxt[i];
-    k = nxt[j];
+    int j = nxt[i];
+    int k = nxt[j];
 
     IVP_DOUBLE s = IVP_Inline_Math::sqrtd(
         m.get_elem(i, i) - (m.get_elem(j, j) + m.get_elem(k, k)) + 1.0f);
 
+    IVP_DOUBLE q[4];
     q[i] = s * 0.5f;
 
     if (s != 0.0f) s = 0.5f / s;  // knappe Abfrage?
@@ -226,14 +225,12 @@ void IVP_U_Quat::set_quaternion(const IVP_U_Matrix3 *mat) {
 //  Comments: remember matrix (in OGL) is represented in COLUMN major form
 void IVP_U_Quat::set_quaternion(const IVP_DOUBLE m[4][4]) {
   IVP_U_Quat *quat = this;
-  IVP_DOUBLE tr, s;
-
-  tr = m[0][0] + m[1][1] + m[2][2];
+  IVP_DOUBLE tr = m[0][0] + m[1][1] + m[2][2];
 
   // check the diagonal
 
   if (tr > 0.0f) {
-    s = IVP_Inline_Math::sqrtd(tr + 1.0f);
+    IVP_DOUBLE s = IVP_Inline_Math::sqrtd(tr + 1.0f);
 
     quat->w = s * .5f;
 
@@ -242,25 +239,22 @@ void IVP_U_Quat::set_quaternion(const IVP_DOUBLE m[4][4]) {
     quat->x = (m[1][2] - m[2][1]) * s;
     quat->y = (m[2][0] - m[0][2]) * s;
     quat->z = (m[0][1] - m[1][0]) * s;
-
   } else {
-    IVP_DOUBLE q[4];
-    int i, j, k;
-
     constexpr int nxt[3] = {1, 2, 0};
 
     // diagonal is negative
-
-    i = 0;
+    int i = 0;
 
     if (m[1][1] > m[0][0]) i = 1;
     if (m[2][2] > m[i][i]) i = 2;
 
-    j = nxt[i];
-    k = nxt[j];
+    const int j = nxt[i];
+    const int k = nxt[j];
 
-    s = IVP_Inline_Math::sqrtd((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
+    IVP_DOUBLE s =
+        IVP_Inline_Math::sqrtd((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
 
+    IVP_DOUBLE q[4];
     q[i] = s * 0.5f;
 
     if (s != 0.0f) s = 0.5f / s;
