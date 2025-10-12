@@ -1898,9 +1898,7 @@ IVP_DOUBLE IVP_Friction_Core_Pair::destroy_mutual_energy(IVP_DOUBLE d_e) {
   return d_e;
 }
 
-IVP_Friction_Core_Pair::~IVP_Friction_Core_Pair() {
-  // ivp_message("deleteing_core_pair %lx\n",0x0000ffff&(long)this);
-}
+IVP_Friction_Core_Pair::~IVP_Friction_Core_Pair() = default;
 
 IVP_Friction_Core_Pair::IVP_Friction_Core_Pair() {
   next_ease_nr_psi = 1;

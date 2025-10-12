@@ -370,10 +370,9 @@ class IVP_Friction_Core_Pair {
   ~IVP_Friction_Core_Pair();
 
   void remove_energy_gained_by_real_friction();
-  int check_all_fr_mindists_to_be_valid(
-      IVP_Friction_System
-          *fs);  // returns number of still valid mindists; warning, maybe this
-                 // function deletes whole structure 'this'
+  // returns number of still valid mindists; warning, maybe this
+  // function deletes whole structure 'this'
+  int check_all_fr_mindists_to_be_valid(IVP_Friction_System *fs);
   void get_average_friction_vector(IVP_U_Float_Point *average_friction);
   void set_friction_vectors(IVP_U_Float_Point *average_friction);
   inline void pair_calc_friction_forces(const IVP_Event_Sim *);
