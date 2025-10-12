@@ -772,16 +772,14 @@ class IVP_U_Quat {
  public:
   IVP_DOUBLE x, y, z, w;
 
-  void set(IVP_DOUBLE rot_x, IVP_DOUBLE rot_y,
-           IVP_DOUBLE rot_z);  // set rotation, Note: rot_ < IVP_PI_2
-  void set_fast_multiple(
-      const IVP_U_Point *angles,
-      IVP_DOUBLE
-          factor);  // sets x = sin( angles.k[0] * factor * 0.5f), y = ..   , w=
-                    // 1 - sqrt(xx+yy+zz), lets the engine crash for angles > PI
-  void set_fast_multiple_with_clip(
-      const IVP_U_Float_Point *angles,
-      IVP_DOUBLE factor);  // same as set_fast_multiple, but do not crash
+  // set rotation, Note: rot_ < IVP_PI_2
+  void set(IVP_DOUBLE rot_x, IVP_DOUBLE rot_y, IVP_DOUBLE rot_z);
+  // sets x = sin( angles.k[0] * factor * 0.5f), y = ..   , w=
+  // 1 - sqrt(xx+yy+zz), lets the engine crash for angles > PI
+  void set_fast_multiple(const IVP_U_Point *angles, IVP_DOUBLE factor);
+  // same as set_fast_multiple, but do not crash
+  void set_fast_multiple_with_clip(const IVP_U_Float_Point *angles,
+                                   IVP_DOUBLE factor);
   void set_very_fast_multiple(const IVP_U_Float_Point *angles,
                               IVP_DOUBLE factor);
   inline void init();
@@ -796,8 +794,8 @@ class IVP_U_Quat {
   void normize_quat();
   void fast_normize_quat();  // works only on quads with |quad| = 1.0f +- 0.1f;
                              // very fast if quat is already nearly normized
-  inline void normize_correct_step(
-      int steps);  // increase precission of normized quad
+  // increase precission of normized quad
+  inline void normize_correct_step(int steps);
   void invert_quat();
   void get_angles(IVP_U_Float_Point *angles_out);
   void set_from_rotation_vectors(IVP_DOUBLE x1, IVP_DOUBLE y1, IVP_DOUBLE z1,
@@ -806,22 +804,23 @@ class IVP_U_Quat {
   inline void inline_set_mult_quat(const IVP_U_Quat *q1,
                                    const IVP_U_Float_Quat *q2);
   void set_mult_quat(const IVP_U_Quat *q1, const IVP_U_Quat *q2);
-  inline IVP_DOUBLE acos_quat(
-      const IVP_U_Quat *q1) const;  // acosinus between two quats
-  void set_div_unit_quat(const IVP_U_Quat *q1,
-                         const IVP_U_Quat *q2);  // res = q1/q2; set div, if
-                                                 // both quats are unit quats
-  void set_invert_mult(const IVP_U_Quat *q1,
-                       const IVP_U_Quat *q2);       // res = 1.0f/q1 * q2
-  void set_invert_unit_quat(const IVP_U_Quat *q1);  // invert unit quaternion
+  // acosinus between two quats
+  inline IVP_DOUBLE acos_quat(const IVP_U_Quat *q1) const;
+  // res = q1/q2; set div, if both quats are unit quats
+  void set_div_unit_quat(const IVP_U_Quat *q1, const IVP_U_Quat *q2);
+  // res = 1.0f/q1 * q2
+  void set_invert_mult(const IVP_U_Quat *q1, const IVP_U_Quat *q2);
+  // invert unit quaternion
+  void set_invert_unit_quat(const IVP_U_Quat *q1);
 
-  inline IVP_DOUBLE inline_estimate_q_diff_to(const IVP_U_Float_Quat *reference)
-      const;  // roughly estimate the quad alpha
+  // roughly estimate the quad alpha
+  inline IVP_DOUBLE inline_estimate_q_diff_to(
+      const IVP_U_Float_Quat *reference) const;
 
-  IVP_U_Quat() = default;  // not initialized quat
-  IVP_U_Quat(const IVP_U_Point &p) {
-    this->set_fast_multiple(&p, 1.0f);
-  }  // init by a rotation
+  // not initialized quat
+  IVP_U_Quat() = default;
+  // init by a rotation
+  IVP_U_Quat(const IVP_U_Point &p) { this->set_fast_multiple(&p, 1.0f); }
   IVP_U_Quat(const IVP_U_Matrix3 *m) { this->set_quaternion(m); }
   // INTERN_START
   // log_difference ?nicht kapiert
