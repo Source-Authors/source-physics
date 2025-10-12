@@ -56,21 +56,8 @@ struct IVP_PerformanceCounter {
 class IVP_PerformanceCounter_Simple : public IVP_PerformanceCounter {
  public:
 #ifdef WIN32
-  __int64 ref_counter64;
-
-  typedef union _LARGE_INTEGER {
-    struct {
-      unsigned long LowPart;
-      long HighPart;
-    } DUMMYSTRUCTNAME;
-    struct {
-      unsigned long LowPart;
-      long HighPart;
-    } u;
-    long long QuadPart;
-  } LARGE_INTEGER;
-
-  LARGE_INTEGER counter_freq;
+  long long ref_counter64;
+  long long counter_freq;
 #endif
 
   IVP_PERFORMANCE_ELEMENT counting;

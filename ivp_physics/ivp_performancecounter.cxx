@@ -61,7 +61,6 @@ IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple() {
 
 IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple() {
   ref_counter64 = 0;
-  memset(&counter_freq, 0, sizeof(counter_freq));
 
   counting = IVP_PE_PSI_START;
   count_PSIs = 0;
@@ -70,22 +69,26 @@ IVP_PerformanceCounter_Simple::IVP_PerformanceCounter_Simple() {
   time_of_last_reset = 0;
 
   // address of current frequency
-  QueryPerformanceFrequency(reinterpret_cast<::LARGE_INTEGER *>(&counter_freq));
+  LARGE_INTEGER frequency;
+  // Since XP+ always succeeds.
+  (void)QueryPerformanceFrequency(&frequency);
+
+  counter_freq = frequency.QuadPart;
 }
 
 void IVP_PerformanceCounter_Simple::pcount(IVP_PERFORMANCE_ELEMENT el) {
-  ::LARGE_INTEGER Profile_Counter;
-
   if (el == IVP_PE_PSI_UNIVERSE) {
     count_PSIs++;
   }
 
-  QueryPerformanceCounter(&Profile_Counter);
+  LARGE_INTEGER profile_counter;
+  // Since XP+ always succeeds.
+  (void)QueryPerformanceCounter(&profile_counter);
 
-  long long diff0 = Profile_Counter.QuadPart - ref_counter64;
-  ref_counter64 = Profile_Counter.QuadPart;
+  const long long diff0 = profile_counter.QuadPart - ref_counter64;
+  ref_counter64 = profile_counter.QuadPart;
 
-  counter[counting][0] += 1e6 * double(diff0) / double(counter_freq.QuadPart);
+  counter[counting][0] += 1e6 * double(diff0) / double(counter_freq);
   counting = el;
 }
 
