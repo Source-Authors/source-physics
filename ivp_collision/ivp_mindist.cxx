@@ -1616,8 +1616,10 @@ void IVP_Mindist_Manager::mindist_left_phantom(IVP_Mindist *mdist) {
 }
 
 IVP_Mindist_Manager::IVP_Mindist_Manager(IVP_Environment *i_env) {
-  P_MEM_CLEAR(this);
-  this->environment = i_env;
+  scanning_universe = IVP_FALSE;
+  environment = i_env;
+  exact_mindists = nullptr;
+  invalid_mindists = nullptr;
 }
 
 IVP_Mindist_Manager::~IVP_Mindist_Manager() {
