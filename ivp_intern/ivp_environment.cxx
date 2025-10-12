@@ -755,8 +755,10 @@ void IVP_Time_Event_D::simulate_time_event(IVP_Environment *env) {
 void IVP_Time_Event_N::simulate_time_event(IVP_Environment *env) {
   // env->get_time_manager()->event_function=time_man_sim_until;
   P_DELETE(env->get_time_manager()->event_manager);
-  env->get_time_manager()->event_manager = new IVP_Event_Manager_Standard();
-  env->get_time_manager()->event_manager->mode = 0;
+  // dimhotepus: Setup manager before assignment, not after the one.
+  auto *manager = new IVP_Event_Manager_Standard();
+  manager->mode = 0;
+  env->get_time_manager()->event_manager = manager;
   P_DELETE_THIS(this);
 }
 
