@@ -266,7 +266,7 @@ char *p_make_string_fast(const char *templat, ...) {
   return p_strdup(buffer);
 }
 
-char *p_make_string(const char *templat, ...) { //-V524
+char *p_make_string(const char *templat, ...) {  //-V524
   // returns an allocated string with format like ivp_message
   // NULL-Strings and empty strings allowed
   // LINUX: check for overflow
@@ -281,8 +281,9 @@ char *p_make_string(const char *templat, ...) { //-V524
   return p_strdup(buffer);
 }
 
-#define MAX_ERROR_BUFFER_LEN 10000
-char *p_error_buffer = 0;
+// dimhotepus: Reduce error buffer size 10000 -> 2048 as it is enough.
+#define MAX_ERROR_BUFFER_LEN 2048
+char *p_error_buffer = nullptr;
 
 IVP_ERROR_STRING p_export_error(const char *templat, ...) {
   if (!templat) return NULL;
@@ -302,8 +303,7 @@ IVP_ERROR_STRING p_export_error(const char *templat, ...) {
 
 void ivp_message(const char *fmt, ...) {
   // for general error management... z.B. p_error_message()
-  char buffer_tmp[MAX_ERROR_BUFFER_LEN] = {'E', 'R', 'R', 'O',
-                                           'R', ':', ' ', '\0'};
+  char buffer_tmp[MAX_ERROR_BUFFER_LEN];
   va_list args;
 
   va_start(args, fmt);  //-V2019
