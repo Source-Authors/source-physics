@@ -28,7 +28,7 @@
 
 IVP_BOOL ivp_check_debug_mindist(IVP_Mindist *md) {
   if (!IVP_DEBUG_OBJECT0) return IVP_FALSE;
-  if (!IVP_DEBUG_OBJECT1) return IVP_FALSE;
+  if (!IVP_DEBUG_OBJECT1) return IVP_FALSE; //-V649
   const char *search0 = IVP_DEBUG_OBJECT0;
   const char *search1 = IVP_DEBUG_OBJECT1;
 
