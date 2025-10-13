@@ -645,6 +645,7 @@ IVP_SurfaceBuilder_Q12::IVP_SurfaceBuilder_Q12() {
   this->pointmerge_threshold = std::numeric_limits<float>::quiet_NaN();
   n_solid_nodes = 0;
   n_converted_nodes = 0;
+  ledges = nullptr;
   this->bsptree_loaded_from_disk = IVP_FALSE;
   this->halfspaces = new IVP_Halfspacesoup();
 
