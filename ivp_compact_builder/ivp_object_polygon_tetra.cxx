@@ -1551,8 +1551,7 @@ int IVP_Object_Polygon_Tetra::link_triangle_couple(IVP_Triangle *triangle,
   // into object. perfect links with neighbours.
 
   // neighbor_0 will be opposited with triangle->edge etc.
-  ivp_u_bool flag;
-  flag = p_link_edge(&triangle->three_edges[0], neighbor_0);
+  IVP_BOOL flag = p_link_edge(&triangle->three_edges[0], neighbor_0);
   IVP_ASSERT(!flag);
   flag = p_link_edge(triangle->three_edges[0].next, neighbor_1);  //-V1048
   IVP_ASSERT(!flag);
