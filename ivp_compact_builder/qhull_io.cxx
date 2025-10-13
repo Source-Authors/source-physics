@@ -1637,7 +1637,7 @@ void qh_printend4geom(FILE *fp, facetT *facet, int *nump, boolT printall) {
   if (!printall && qh_skipfacet(facet)) return;
   if (qh PRINTnoplanes || (facet->visible && qh NEWfacets)) return;
   if (!facet->normal) return;
-  if (fp) {
+  {
     for (i = 0; i < 3; i++) {
       color[i] = (facet->normal[i] + 1.0) / 2.0;
       maximize_(color[i], -1.0);
@@ -1648,10 +1648,9 @@ void qh_printend4geom(FILE *fp, facetT *facet, int *nump, boolT printall) {
   if (facet->simplicial) {
     FOREACHneighbor_(facet) {
       if (neighbor->visitid != qh visit_id) {
-        if (fp)
-          fprintf(fp, "3 %d %d %d %8.4g %8.4g %8.4g 1 # f%d f%d\n", 3 * num,
-                  3 * num + 1, 3 * num + 2, color[0], color[1], color[2],
-                  facet->id, neighbor->id);
+        fprintf(fp, "3 %d %d %d %8.4g %8.4g %8.4g 1 # f%d f%d\n", 3 * num,
+                3 * num + 1, 3 * num + 2, color[0], color[1], color[2],
+                facet->id, neighbor->id);
         num++;
       }
     }
@@ -1659,10 +1658,9 @@ void qh_printend4geom(FILE *fp, facetT *facet, int *nump, boolT printall) {
     FOREACHridge_(facet->ridges) {
       neighbor = otherfacet_(ridge, facet);
       if (neighbor->visitid != qh visit_id) {
-        if (fp)
-          fprintf(fp, "3 %d %d %d %8.4g %8.4g %8.4g 1 #r%d f%d f%d\n", 3 * num,
-                  3 * num + 1, 3 * num + 2, color[0], color[1], color[2],
-                  ridge->id, facet->id, neighbor->id);
+        fprintf(fp, "3 %d %d %d %8.4g %8.4g %8.4g 1 #r%d f%d f%d\n", 3 * num,
+                3 * num + 1, 3 * num + 2, color[0], color[1], color[2],
+                ridge->id, facet->id, neighbor->id);
         num++;
       }
     }
@@ -3451,7 +3449,7 @@ void qh_printvoronoi(FILE *fp, int format, facetT *facetlist, setT *facets,
     if (format == qh_PRINTgeom) {
       if (vertex) {
         fprintf(fp, "%d", numneighbors);
-        if (vertex) {
+        {
           FOREACHneighbor_(vertex) {
             if (neighbor->visitid && neighbor->visitid < numfacets)
               fprintf(fp, " %d", neighbor->visitid);
