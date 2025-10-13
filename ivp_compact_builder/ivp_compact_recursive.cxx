@@ -41,10 +41,10 @@ void IVP_Compact_Recursive::build_convex_hull() {
     for (int t = ledge->get_n_triangles() - 1; t >= 0; t--) {
       for (int e = 0; e < 3; e++) {
         const IVP_Compact_Edge *edge = tri->get_edge(e);
-        const IVP_U_Float_Point *p =
+        IVP_U_Float_Point *p =
             &point_array[edge->get_start_point_index()];
         if (point_hash.find((const char *)p)) continue;
-        point_hash.add((const char *)p, (void *)p);
+        point_hash.add((const char *)p, p);
         points.add(new IVP_U_Point(p));
       }
       tri = tri->get_next_tri();

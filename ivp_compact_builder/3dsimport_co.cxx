@@ -457,7 +457,7 @@ IVP_Concave_Polyhedron *IVP_SurfaceBuilder_3ds::convert_3ds_to_concave(
 #ifndef GEKKO
   //****
 
-  char *infn = 0, *outfn = 0;  // , * name=DEFNAME;
+  const char *infn = 0, *outfn = 0;  // , * name=DEFNAME;
   FILE *inf, *outf;
   int n;
   H3dsScene *scene;
@@ -531,7 +531,7 @@ IVP_Concave_Polyhedron *IVP_SurfaceBuilder_3ds::convert_3ds_to_concave(
 		}
 	}
 #else
-  infn = (char *)filename;
+  infn = filename;
   outf = NULL;
 #endif
 
