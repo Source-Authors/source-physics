@@ -215,7 +215,8 @@ static void ReadObjBlocks(dword p) {
   int n = 0;
   do {
     dread(&name[n++], 1);
-  } while (name[n - 1] != '\0' && n < int(sizeof(name)));
+    // dimhotepus: Check n in range before access.
+  } while (n < int(sizeof(name) && name[n - 1] != '\0'));
   name[n - 1] = '\0';
 
   while ((pc = dgetpos()) < p) {
