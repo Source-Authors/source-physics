@@ -281,7 +281,9 @@ class IVP_Object_Polygon_Tetra {
 };
 
 inline IVP_Real_Object *IVP_Poly_Point::get_real_object2() const {
-  return NULL;
-}  // l_tetras->real_object
+  // dimhotepus: Return real object instead of nullptr.
+  return l_tetras->real_object;
+}
+
 // inline IVP_Polygon *IVP_Poly_Point::get_polygon() const { return (IVP_Polygon
 // *)l_tetras->real_object; };
