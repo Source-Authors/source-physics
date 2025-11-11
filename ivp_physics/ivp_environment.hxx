@@ -286,7 +286,6 @@ class IVP_Environment {  // the environment
 
   ////////// debugging
   IVP_Debug_Manager *debug_information;
-  IVP_BOOL delete_debug_information;
 
   IVP_Draw_Vector_Debug *draw_vectors;
   void add_draw_vector(const IVP_U_Point *start_ws,

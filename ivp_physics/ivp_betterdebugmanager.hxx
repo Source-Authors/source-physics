@@ -5,6 +5,11 @@
 #ifndef _IVP_BETTERDEBUGMANAGER_INCLUDED
 #define _IVP_BETTERDEBUGMANAGER_INCLUDED
 
+// dimhotepus: Disable debug manager in Release as it is not initialized.
+#if defined(NDEBUG) && !defined(IVP_NO_DEBUGMANAGER)
+#define IVP_NO_DEBUGMANAGER
+#endif
+
 #ifndef IVP_NO_DEBUGMANAGER
 // dimhotepus: Use func parameter
 #define IVP_IFDEBUG(dci, func)                  \

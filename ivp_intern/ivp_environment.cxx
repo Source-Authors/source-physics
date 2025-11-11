@@ -168,9 +168,10 @@ IVP_Environment::IVP_Environment(IVP_Environment_Manager *manager,
 
   next_movement_check = IVP_MOVEMENT_CHECK_COUNT;
 
-  IVP_IF(1) {
-    this->debug_information = new IVP_Debug_Manager();
-    this->delete_debug_information = IVP_TRUE;
+  IVP_IF(1) { this->debug_information = new IVP_Debug_Manager(); }
+  else {
+    // dimhotepus: Initialize in other case.
+    this->debug_information = nullptr;
   }
 
   integrated_energy_damp =
@@ -235,9 +236,7 @@ IVP_Environment::~IVP_Environment() {
   P_DELETE(ov_tree_manager);
   P_DELETE(this->better_statisticsmanager);
 
-  IVP_IF(delete_debug_information == IVP_TRUE) {
-    P_DELETE(this->debug_information);
-  }
+  P_DELETE(this->debug_information);
 
   performancecounter->environment_is_going_to_be_deleted(this);
 
