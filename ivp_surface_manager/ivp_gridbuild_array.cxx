@@ -887,7 +887,7 @@ IVP_Compact_Grid *IVP_GridBuilder_Array::compile_ledges_into_compact_grid(
   // reserve space for the grid elements
   cg->offset_grid_elements =
       ((char *)(&cg->offset_compact_ledge_array[0])) - ((char *)cg) +
-      sizeof(int) * ledges->len();  // skip the ledge offsets
+      static_cast<int>(sizeof(int)) * ledges->len();  // skip the ledge offsets
 
   // TL: align offset to next 16 Byte Alignment (I didn't write the GridBuilder,
   // so I have no idea wether the memory will be enough, lets hope ... - the
