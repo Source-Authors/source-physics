@@ -17,9 +17,10 @@ void hk_Array_Base::grow_mem(int size) {
   HK_ASSERT(size > 0);
   HK_ASSERT(m_memsize != USHRT_MAX);
 
+  const hk_uint32 double_memsize{static_cast<hk_uint32>(m_memsize) + m_memsize};
   // dimhotepus: Sometimes m_memsize * 2 doesn't fit unsigned short.
   hk_array_store_index new_memsize = static_cast<hk_array_store_index>(
-      std::min(USHRT_MAX, m_memsize + m_memsize));
+      double_memsize > USHRT_MAX ? USHRT_MAX : double_memsize);
   if (!new_memsize) {
     new_memsize = 2;
   }
