@@ -14,9 +14,9 @@
 
 class IVP_U_Vector_Base {
  public:
-  unsigned short memsize;
-  unsigned short n_elems;
-  void **elems;
+  unsigned short memsize{0};
+  unsigned short n_elems{0};
+  void **elems{nullptr};
   void increment_mem();
 };
 

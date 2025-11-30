@@ -14,9 +14,9 @@
 
 class IVP_U_BigVector_Base {
  public:
-  int memsize;
-  int n_elems;
-  void **elems;
+  int memsize{0};
+  int n_elems{0};
+  void **elems{nullptr};
   void increment_mem();
 };
 
