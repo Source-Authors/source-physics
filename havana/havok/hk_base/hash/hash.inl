@@ -2,6 +2,7 @@
 template <class KV>
 void hk_Hash<KV>::rehash(int new_size) {
   HK_ASSERT(new_size >= 1);
+  HK_ASSERT(IsPowerOfTwo(new_size));
 
   hk_Hash_Element *old_elems = m_elems;
   int old_size = m_size_mm + 1;
@@ -90,6 +91,7 @@ hk_Hash<KV>::hk_Hash(int size, hk_Memory *mem)
 //: HK_ASSERT(size = 2,4,8,16,32 ... 2**x)
 {
   HK_ASSERT(size >= 1);
+  HK_ASSERT(IsPowerOfTwo(size));
 
   m_size_mm = size - 1;
   m_nelems = 0;

@@ -4,7 +4,7 @@
 //: hash class, requires KV (== KEY VALUE pair) class to implement:
 //: hk_uint32 KV::get_hash_index(): should return a number between and 1 and
 //: 0xffffffff hk_bool KV::equals( KV & ) should return true if two KV are equal
-//: else HK_FALSE
+//: else false
 template <class KV>
 class hk_Hash {
  public:
@@ -23,8 +23,7 @@ class hk_Hash {
  protected:
   inline void rehash(int new_size);
 
-  class hk_Hash_Element {
-   public:
+  struct hk_Hash_Element {
     KV m_kv;
     hk_uint32 m_hash_index;
   };
