@@ -208,8 +208,8 @@ void *IVP_VHash::remove_elem(const void *elem, unsigned int hash_index) {
 void IVP_VHash::check() {
   int pos;
   int last_index = 0;
-  int ideal_pos_of_last_element =
-      size_mm;  // find index position of rightest element
+  // find index position of rightest element
+  int ideal_pos_of_last_element = size_mm;
   if (elems[size_mm].elem) {
     ideal_pos_of_last_element = elems[size_mm].hash_index & size_mm;
   }
@@ -575,12 +575,11 @@ void *IVP_VHash_Store::touch_element(void *key_elem, unsigned int hash_index) {
 }
 
 void IVP_VHash_Store::print() {
-  int i;
   ivp_message("%i:", size);
-  for (i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     ivp_message(" %i:%zX:%zX:%X  ", elems_store[i].hash_index & size_mm,
-                (hk_intp)elems_store[i].key_elem,
-                (hk_intp)elems_store[i].elem, elems_store[i].hash_index);
+                (hk_intp)elems_store[i].key_elem, (hk_intp)elems_store[i].elem,
+                elems_store[i].hash_index);
   }
   ivp_message("\n");
 }

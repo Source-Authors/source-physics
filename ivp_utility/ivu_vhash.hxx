@@ -8,13 +8,13 @@
 #define IVP_VHASH_TOUCH_BIT 0x80000000
 
 /********************************************************************************
- *	File:	       	ivu_vhash.hxx
- *	Description:	special, superfast hashclass base,
- *                      key is calculated from the elems
- *                      hash is automatically expanded but does not
- *automatically shrink#
+ *	File:        ivu_vhash.hxx
+ *	Description: special, superfast hashclass base,
+ *               key is calculated from the elems
+ *               hash is automatically expanded but does not
+ *               automatically shrink.
  *
- *      Note:           highest bit of hash_index is used as a flag
+ * Note:         highest bit of hash_index is used as a flag.
  ********************************************************************************/
 
 class IVP_VHash_Elem {
@@ -31,23 +31,23 @@ class IVP_VHash {
   void rehash(int new_size);
 
  protected:
-  int size_mm;  // size -1, used for masking index
+  int size_mm;  // size - 1, used for masking index
   unsigned int nelems : 24;
   IVP_BOOL dont_free : 8;  // indicating external memory
 
   IVP_VHash_Elem *elems;
 
-  IVP_VHash(int size);                                // assert(size = 2**x)
+  explicit IVP_VHash(int size);                       // assert(size = 2**x)
   IVP_VHash(IVP_VHash_Elem *static_elems, int size);  // assert(size = 2**x)
-  virtual IVP_BOOL compare(
-      const void *elem0, const void *elem1) const = 0;  // return TRUE if equal
+
+  // return TRUE if equal
+  virtual IVP_BOOL compare(const void *elem0, const void *elem1) const = 0;
+
  public:
-  static inline int hash_index(
-      const char *data,
-      hk_intp size);  // useable index calculation, result is [0,0xfffffff]
-  static inline int fast_hash_index(
-      hk_intp key);  // useable index calculation when size == 4 , result is
-                     // [0,0xfffffff]
+  // useable index calculation, result is [0,0xfffffff]
+  static inline int hash_index(const char *data, hk_intp size);
+  // useable index calculation when size == 4 , result is [0,0xfffffff]
+  static inline int fast_hash_index(hk_intp key);
 
   // touches element
   void add_elem(const void *elem, int hash_index);
@@ -60,8 +60,8 @@ class IVP_VHash {
   /* try to find an element equals to elem, *********/
   void *find_elem(const void *elem, unsigned int hash_index) const;
 
-  void *touch_element(const void *elem,
-                      unsigned int hash_index);  // finds and touches
+  // Finds and touches.
+  void *touch_element(const void *elem, unsigned int hash_index);
 
   void garbage_collection(int estimated_hash_size);
 
@@ -122,16 +122,15 @@ class IVP_VHash_Store {
 
  protected:
   int size;
-  int size_mm;  // size -1, used for masking index
+  int size_mm;  // size - 1, used for masking index
   int nelems;
   IVP_VHash_Store_Elem *elems_store;
   void *dont_free;  // indicating external memory
 
-  static inline IVP_BOOL compare_store_hash(
-      void *pointer0, void *pointer1);  // return TRUE if equal
-  static inline int hash_index_store(
-      const char *data,
-      int size);  // useable index calculation, result is [0,0xfffffff]
+  // return TRUE if equal
+  static inline IVP_BOOL compare_store_hash(void *pointer0, void *pointer1);
+  // useable index calculation, result is [0,0xfffffff]
+  static inline int hash_index_store(const char *data, int size);
   static inline int void_pointer_to_index(void *p);
 
  public:
@@ -141,19 +140,17 @@ class IVP_VHash_Store {
 
   void change_elem(void *key_elem, void *store_elem);
 
-  /* try to find and remove an element equals to key_elem, returns the element
-   * or null elements left of elem are untouched
-   */
+  // Try to find and remove an element equals to key_elem, returns the element
+  // or null elements left of elem are untouched.
   void *remove_elem(void *key_elem);
   void *remove_elem(void *key_elem, unsigned int hash_index);
 
-  /* try to find an element equals to elem,
-   *********/
+  // Try to find an element equals to elem.
   void *find_elem(void *key_elem);
   void *find_elem(void *key_elem, unsigned int hash_index);
 
-  void *touch_element(void *key_elem,
-                      unsigned int hash_index);  // finds and touches
+  // Finds and touches.
+  void *touch_element(void *key_elem, unsigned int hash_index);
 
   int len() { return size; }
   int n_elems() { return nelems; }

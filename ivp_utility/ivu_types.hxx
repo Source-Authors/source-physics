@@ -355,19 +355,18 @@ constexpr inline float P_FLOAT_MAX{1e16f};
 constexpr inline double IVP_PI{3.14159265358979323846};   /* pi */
 constexpr inline double IVP_PI_2{1.57079632679489661923}; /* pi/2 */
 constexpr inline double P_DOUBLE_MAX{1e20};
-constexpr inline double P_DOUBLE_RES{
-    1E-12};  // double resolution for numbers < 1.0
+// double resolution for numbers < 1.0
+constexpr inline double P_DOUBLE_RES{1E-12};
 constexpr inline double IVP_3D_SOLVER_NULLSTELLE_EPS{1e-8};
 constexpr inline double P_DOUBLE_EPS{1e-10};  // used for division checking
 constexpr inline double P_MAX_WORLD_DOUBLE{10000};  // max world koords
 #endif
 
 constexpr inline float P_MAX_OBJECT_SIZE{1000.0f};
-constexpr inline float P_MIN_EDGE_LEN{
-    0.01f};  // 10 mm min edge len of polygon objects
-constexpr inline float P_RES_EPS{
-    /*P_MAX_WORLD_DOUBLE*/ 10000.0f *
-    P_FLOAT_RES};  // effective IVP_DOUBLE resolution for world coords
+// 10 mm min edge len of polygon objects
+constexpr inline float P_MIN_EDGE_LEN{0.01f};
+// effective IVP_DOUBLE resolution for world coords
+constexpr inline float P_RES_EPS{/*P_MAX_WORLD_DOUBLE*/ 10000.0f * P_FLOAT_RES};
 
 void ivp_srand(int seed);
 IVP_FLOAT ivp_rand();  // returns [0 .. 1]
