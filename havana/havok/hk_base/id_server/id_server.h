@@ -21,7 +21,7 @@ class hk_ID_Server {
   static hk_ID_Server m_instance;
   // A pointer to the single instance of the ID server
 
-  static hk_id m_next_id;
+  hk_id m_next_id;
   // The next valid unique ID
 };
 
