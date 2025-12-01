@@ -85,7 +85,7 @@ class IVP_VHash {
 
 // basic function for calculating the hash_index
 inline int IVP_VHash::hash_index(const char *key, hk_intp key_size) {
-  unsigned int index = 0xffffffffU;  //-V112
+  unsigned int index{0xffffffffU};  //-V112
   for (hk_intp i = key_size - 1; i >= 0; i--) {
     unsigned int c = *((const unsigned char *)(key++));
     index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
@@ -172,7 +172,7 @@ class IVP_VHash_Store {
 
 // basic function for calculating the hash_index
 inline int IVP_VHash_Store::hash_index_store(const char *key, int key_size) {
-  unsigned int index = 0xffffffffU;  //-V112
+  unsigned int index{0xffffffffU};  //-V112
   for (int i = key_size - 1; i >= 0; i--) {
     unsigned int c = *((const unsigned char *)(key++));
     index = IVP_Hash_crctab[(index ^ c) & 0xff] ^ (index >> 8);
