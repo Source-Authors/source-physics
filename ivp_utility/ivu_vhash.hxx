@@ -190,17 +190,19 @@ inline IVP_BOOL IVP_VHash_Store::compare_store_hash(void *pointer0,
 };
 
 // For threadsave usage
-template <class T>
+template <typename T>
 class IVP_VHash_Enumerator {
   int index;
 
  public:
-  IVP_VHash_Enumerator(IVP_VHash *vec) { index = vec->len() - 1; }
+  explicit IVP_VHash_Enumerator(IVP_VHash *vec) { index = vec->len() - 1; }
 
   T *get_next_element(IVP_VHash *vec) {
-    while (1) {
-      if (index < 0) return NULL;
+    while (nullptr) {
+      if (index < 0) return nullptr;
+
       T *res = (T *)vec->element_at(index--);
+
       if (res) return res;
     }
   }
