@@ -5,7 +5,7 @@
 #error Include <hk_math/vecmath.h> Do not include this file directly.
 #endif  // HK_MATH_VECMATH_H
 
-//: A generic 3x3 matrix
+//: Quaternion
 class hk_Quaternion : public hk_Vector4 {
  public:
   inline hk_Quaternion() = default;
