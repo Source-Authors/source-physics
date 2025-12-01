@@ -68,7 +68,7 @@ class IVP_VHash {
   void activate(int preferred_size);  // allocate memory
 
   int len() const { return size_mm + 1; }  // size of hash array
-  int n_elems() { return nelems; }         // elems in hash
+  int n_elems() const { return nelems; }   // elems in hash
   void *element_at(int i) const { return (void *)elems[i].elem; }
   IVP_BOOL is_element_touched(int i) const {
     return (IVP_BOOL)(elems[i].hash_index >= IVP_VHASH_TOUCH_BIT);
@@ -150,10 +150,10 @@ class IVP_VHash_Store {
   // Finds and touches.
   void *touch_element(void *key_elem, unsigned int hash_index);
 
-  int len() { return size; }
-  int n_elems() { return nelems; }
+  int len() const { return size; }
+  int n_elems() const { return nelems; }
   void *element_at(int i) { return elems_store[i].elem; }
-  IVP_BOOL is_element_touched(int i) {
+  IVP_BOOL is_element_touched(int i) const {
     return (IVP_BOOL)(elems_store[i].hash_index >= IVP_VHASH_TOUCH_BIT);
   }
   void untouch_all();
