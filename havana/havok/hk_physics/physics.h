@@ -207,17 +207,10 @@ class hk_Link_EF : public IVP_Controller_Dependent {
 
   hk_Link_EF(hk_Environment *env) { m_environment = env; }
 
-  virtual void anchor_will_be_deleted_event(
-      [[maybe_unused]] IVP_Anchor
-          *del_anchor) {  // when an object is deleted it sends events to its
-                          // connected actuators
-    delete this;
-  }
+  // when an object is deleted it sends events to its connected actuators
+  virtual void anchor_will_be_deleted_event(IVP_Anchor *) { delete this; }
 
-  void core_is_going_to_be_deleted_event(
-      [[maybe_unused]] IVP_Core *my_core) override {
-    delete this;
-  }
+  void core_is_going_to_be_deleted_event(IVP_Core *) override { delete this; }
 
   virtual ~hk_Link_EF() {}
 

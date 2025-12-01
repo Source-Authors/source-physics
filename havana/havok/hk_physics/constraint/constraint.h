@@ -25,20 +25,18 @@ class hk_Constraint : public hk_Rigid_Body_Binary_EF {
 
   virtual int get_vmq_storage_size() = 0;
 
+  //: uses the mem as a vmq storage, returns the bytes needed to store its
+  //: vmq_storage
   virtual int setup_and_step_constraint(hk_PSI_Info &pi, void *mem,
                                         hk_real tau_factor,
                                         hk_real damp_factor) = 0;
-  //: uses the mem as a vmq storage, returns the bytes needed to store its
-  //: vmq_storage
 
+  //: use the mem as a vmq storage setup before
   virtual void step_constraint(hk_PSI_Info &pi, void *mem, hk_real tau_factor,
                                hk_real damp_factor) = 0;
-  //: use the mem as a vmq storage setup before
 
-  inline hk_Local_Constraint_System *
-  get_constraint_system()  // returns the constraint system, if the constraint
-                           // is used in a system mode
-  {
+  // returns the constraint system, if the constraint is used in a system mode
+  inline hk_Local_Constraint_System *get_constraint_system() {
     return m_constraint_system;
   }
 
