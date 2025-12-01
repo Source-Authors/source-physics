@@ -11,14 +11,12 @@ template <class T>
 class hk_Pre_Allocated_Array : public hk_Array<T> {
  protected:
   inline hk_Pre_Allocated_Array(T* elems, int initial_size)
-      : hk_Array<T>(elems, initial_size) {
-    ;
-  }
+      : hk_Array<T>(elems, initial_size) {}
 
  public:
   inline ~hk_Pre_Allocated_Array() {
     if (this->get_elems() == reinterpret_cast<T*>(this + 1)) {
-      this->m_elems = 0;
+      this->m_elems = nullptr;
     }
   }
   HK_NEW_DELETE_FUNCTION_CLASS(
