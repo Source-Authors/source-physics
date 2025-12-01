@@ -17,10 +17,9 @@
  * Note:         highest bit of hash_index is used as a flag.
  ********************************************************************************/
 
-class IVP_VHash_Elem {
- public:
-  unsigned int
-      hash_index;  // unmasked index : highest bit is used to touch elements
+struct IVP_VHash_Elem {
+  // unmasked index : highest bit is used to touch elements
+  unsigned int hash_index;
   const void *elem;
 };
 
@@ -101,10 +100,9 @@ inline int IVP_VHash::fast_hash_index(hk_intp key) {
   return index | IVP_VHASH_TOUCH_BIT;  // set touch bit
 }
 
-class IVP_VHash_Store_Elem {
- public:
-  unsigned int
-      hash_index;  // unmasked index : highest bit is used to touch elements
+struct IVP_VHash_Store_Elem {
+  // unmasked index : highest bit is used to touch elements
+  unsigned int hash_index;
   void *key_elem;
   void *elem;
 };
