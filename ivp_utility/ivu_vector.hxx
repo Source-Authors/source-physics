@@ -164,14 +164,16 @@ class IVP_U_Vector_Enumerator {
   int index;
 
  public:
-  inline IVP_U_Vector_Enumerator(IVP_U_Vector<T> *vec) {
+  // dimhotepus: Add explicit.
+  explicit inline IVP_U_Vector_Enumerator(IVP_U_Vector<T> *vec) {
     index = 0;  // vec->n_elems-1;
   }
 
   T *get_next_element(IVP_U_Vector<T> *vec) {
-    if (index >= vec->n_elems) return NULL;
+    if (index >= vec->n_elems) return nullptr;
     // if (index < 0) return NULL;
-    return vec->element_at(index--);
+    // dimhotepus: Fix enumeration [0..length).
+    return vec->element_at(index++);
   }
 };
 
