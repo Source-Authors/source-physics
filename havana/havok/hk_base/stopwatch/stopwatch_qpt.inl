@@ -42,7 +42,8 @@ inline hk_uint64 hk_query_cpu_timer_value(hk_uint32 &cpu_id) {
 inline hk_uint64 hk_measure_cpu_timer_overhead() {
   hk_uint32 coreIdStart, coreIdEnd;
   hk_uint64 overheads[64];
-  for (size_t i{0}; i < std::size(overheads);) {
+  size_t i{0};
+  for (; i < std::size(overheads);) {
     hk_uint64 start = hk_query_cpu_timer_value(coreIdStart);
     hk_uint64 end = hk_query_cpu_timer_value(coreIdEnd);
     // Usually tsc synced over cores (constant_tsc), but due to UEFI / CPU
