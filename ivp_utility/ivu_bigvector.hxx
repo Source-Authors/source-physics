@@ -6,14 +6,13 @@
 #define _IVP_BIGVECTOR_INCLUDED
 
 /********************************************************************************
- *	File:	       	ivu_physics.hxx
- *	Description:	A vector is an array of pointers
- *                      the length of this array is dynamically increased when
- *                      elements are inserted
+ *	File:          ivu_physics.hxx
+ *	Description:   A vector is an array of pointers
+ *                 the length of this array is dynamically increased when
+ *                 elements are inserted
  ********************************************************************************/
 
-class IVP_U_BigVector_Base {
- public:
+struct IVP_U_BigVector_Base {
   int memsize{0};
   int n_elems{0};
   void **elems{nullptr};
@@ -44,7 +43,7 @@ class IVP_U_BigVector : public IVP_U_BigVector_Base {
     if (size) {  // will be optimized by most compilers
       elems = (void **)p_malloc(size * sizeof(void *));
     } else {
-      elems = NULL;
+      elems = nullptr;
     }
   }
 

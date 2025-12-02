@@ -6,14 +6,13 @@
 #define IVP_VECTOR_INCLUDED
 
 /********************************************************************************
- *	Class:	       	IVP_U_Vector_Base
- *	Description:	A vector is an array of pointers
- *                      the length of this array is dynamically increased when
- *                      elements are inserted
+ *	Class:         IVP_U_Vector_Base
+ *	Description:   A vector is an array of pointers
+ *                 the length of this array is dynamically increased when
+ *                 elements are inserted
  ********************************************************************************/
 
-class IVP_U_Vector_Base {
- public:
+struct IVP_U_Vector_Base {
   unsigned short memsize{0};
   unsigned short n_elems{0};
   void **elems{nullptr};
@@ -47,7 +46,7 @@ class IVP_U_Vector : public IVP_U_Vector_Base {
     if (size) {  // will be optimized by most compilers
       elems = (void **)p_malloc(size * sizeof(void *));
     } else {
-      elems = (void **)NULL;
+      elems = nullptr;
     }
   }
 
