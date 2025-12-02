@@ -3,7 +3,7 @@
 #include <ivp_physics.hxx>
 
 #if !defined(SUN) && !defined(SUN4)
-#include <string.h>
+#include <cstring>
 #endif
 #include <ivu_types.hxx>
 
