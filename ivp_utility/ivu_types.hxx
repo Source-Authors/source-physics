@@ -290,7 +290,7 @@ extern void ivp_memory_check(void *a);
 #define P_DELETE(a)                    \
   do { /*ivp_memory_check((void*)a);*/ \
     delete (a);                        \
-    a = NULL;                          \
+    a = nullptr;                       \
   } while (false)
 #define P_DELETE_THIS(a)               \
   do { /*ivp_memory_check((void*)a);*/ \
@@ -306,14 +306,14 @@ extern void ivp_memory_check(void *a);
   do {                                       \
     if (a) { /*ivp_memory_check((void*)a);*/ \
       ivp_free_aligned((void *)a);           \
-      a = NULL;                              \
+      a = nullptr;                           \
     }                                        \
   } while (false)
 #define P_FREE(a)                            \
   do {                                       \
     if (a) { /*ivp_memory_check((void*)a);*/ \
       p_free((char *)a);                     \
-      a = NULL;                              \
+      a = nullptr;                           \
     }                                        \
   } while (false)
 
