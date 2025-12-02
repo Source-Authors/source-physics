@@ -23,18 +23,4 @@ void ivp_srand(int seed) {
   IVP_RAND_SEED = seed;
 }
 
-int ivp_srand_read(void) { return IVP_RAND_SEED; }
-
-extern void *p_malloc(size_t size);
-
-#if 0 
-FILE *p_glob_fp;
-void p_init_glob_fp()
-{
-#ifdef WIN32
-	p_glob_fp=fopen(ERRORFILEPATH,"a");
-#else
-	p_glob_fp=stdout;
-#endif
-}
-#endif
+int ivp_srand_read() { return IVP_RAND_SEED; }
