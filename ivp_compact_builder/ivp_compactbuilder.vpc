@@ -43,7 +43,7 @@ $Configuration	"Release"
 
 	$Compiler [$WINDOWS]
 	{
-		$InlineFunctionExpansion			"Only __inline (/Ob1)"
+		$InlineFunctionExpansion			"Any Suitable (/Ob2)"
 		$Create/UsePrecompiledHeader		"Use Precompiled Header (/Yu)"
 		$Create/UsePCHThroughFile			"ivp_physics.hxx"
 		$PrecompiledHeaderFile				"$(IntDir)/ivp_compactbuilder_lib.pch"

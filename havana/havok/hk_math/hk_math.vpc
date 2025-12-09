@@ -49,7 +49,7 @@ $Configuration	"Release"
 
 	$Compiler [$WINDOWS]
 	{
-		$InlineFunctionExpansion			"Only __inline (/Ob1)"
+		$InlineFunctionExpansion			"Any Suitable (/Ob2)"
 		$PrecompiledHeaderFile				"$(IntDir)/hk_math.pch"
 	}
 }
