@@ -25,7 +25,6 @@ $Configuration	"Debug"
 	{
 		$Optimization						"Disabled (/Od)"
 		$BasicRuntimeChecks					"Both (/RTC1, equiv. to /RTCsu)"
-		$RuntimeLibrary						"Multi-threaded Debug (/MTd)"
 		$PrecompiledHeaderFile				"$(IntDir)/ivp_physics_lib.pch"
 	}
 }
