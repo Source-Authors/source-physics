@@ -198,7 +198,7 @@ class IVP_VHash_Enumerator {
   explicit IVP_VHash_Enumerator(IVP_VHash *vec) { index = vec->len() - 1; }
 
   T *get_next_element(IVP_VHash *vec) {
-    while (nullptr) {
+    while (1) {
       if (index < 0) return nullptr;
 
       T *res = (T *)vec->element_at(index--);
