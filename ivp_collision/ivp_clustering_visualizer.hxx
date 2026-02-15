@@ -11,16 +11,14 @@ class IVP_Compact_Ledgetree_Node;
 /********************************************************************************
  * Filename:	ivp_clustering_visualizer.hxx
  * Description:	This file provides you with assisting classes to visualize
- *		the object-internal clustering of concave objects in the
- *		Ipion Virtual Physics Engine as well as the time-spheres
- *		around physical objects.
- * Note:	These are abstract classes, i.e. they do not perform any
- *		significant output at all. You can install an arbitrary
- *		number of callbacks (subclassed from
- *		'IVP_Clustering_XXXrange_Visualizer_Callback_Interface',
- *		that can handle whatever visualisation you might need.
- * Classes:	IVP_Clustering_Visualizer_Shortrange
- *		IVP_Clustering_Visualizer_Longrange
+ * the object-internal clustering of concave objects in the Ipion Virtual
+ * Physics Engine as well as the time-spheres around physical objects.
+ * Note: These are abstract classes, i.e. they do not perform any significant
+ * output at all. You can install an arbitrary number of callbacks (subclassed
+ * from 'IVP_Clustering_XXXrange_Visualizer_Callback_Interface', that can handle
+ * whatever visualization you might need.
+ * Classes:
+ * IVP_Clustering_Visualizer_Shortrange IVP_Clustering_Visualizer_Longrange
  ********************************************************************************/
 
 #ifndef IVP_CLUSTERING_VISUALIZER_INCLUDED
@@ -177,8 +175,8 @@ class IVP_Clustering_Visualizer_Shortrange_Callback {
 
 enum IVP_CLUSTERING_SHORTRANGE_VISUALIZER_BOXMODE {
   TERMINALS_ONLY = 1,  // report only the bounding boxes of terminals
-  ABORTED_BOXES =
-      2,  // report all boxes that have been aborted during traversal
+  // report all boxes that have been aborted during traversal
+  ABORTED_BOXES = 2,
   TRAVERSED_BOXES = 3  // report all visited boxes
 };
 
@@ -190,19 +188,17 @@ class IVP_Clustering_Visualizer_Shortrange {
   IVP_Clustering_Visualizer_Object_Hash *reject_filter_intruder;
   IVP_Clustering_Visualizer_Object_Hash *accept_filter_private_property;
   IVP_Clustering_Visualizer_Object_Hash *reject_filter_private_property;
-  IVP_U_Vector<IVP_Clustering_Visualizer_Shortrange_Callback>
-      output_callbacks;  // list of user-definable callbacks
+  // list of user-definable callbacks
+  IVP_U_Vector<IVP_Clustering_Visualizer_Shortrange_Callback> output_callbacks;
 
   // temporary data
   IVP_Real_Object *private_property;
   IVP_Real_Object *intruder;
   IVP_DOUBLE intruder_radius;
   IVP_U_Matrix intruder_matrix;
-  IVP_U_Point
-      intruder_position_in_private_property_cs;  // position of intruder-object
-                                                 // in private property's
-                                                 // object's core
-                                                 // coordinate-system
+  // position of intruder-object in private property's object's core
+  // coordinate-system
+  IVP_U_Point intruder_position_in_private_property_cs;
 
   IVP_U_Vector<IVP_Clustering_Visualizer_Shortrange_Objectdata>
       pipelined_objects;

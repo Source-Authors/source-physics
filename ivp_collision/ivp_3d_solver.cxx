@@ -11,7 +11,6 @@
 #endif
 
 #include <ivp_cache_object.hxx>
-// #include <ivp_cache_ledge_point.hxx>
 #include "ivp_3d_solver.hxx"
 
 int IVP_U_Matrix_Cache::hits = 0;

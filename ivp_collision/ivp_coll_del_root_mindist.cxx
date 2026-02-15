@@ -13,8 +13,8 @@ void IVP_Collision_Delegator_Root_Mindist::
   IVP_OV_Element *ov = o->get_ov_element();
   for (int i = ov->collision_fvector.len() - 1; i >= 0; i--) {
     IVP_Collision *coll = ov->collision_fvector.element_at(i);
-    coll->delegator_is_going_to_be_deleted_event(
-        this);  // deletes oo_collision removes itself from this hash
+    // deletes oo_collision removes itself from this hash
+    coll->delegator_is_going_to_be_deleted_event(this);
   }
 }
 
@@ -49,8 +49,8 @@ IVP_Collision_Delegator_Root_Mindist::delegate_collisions_for_object(
 
     IVP_Environment *env = obj0->get_environment();
 
-    IVP_Mindist
-        *md;  // #+# check for bounding boxes using get_all_ledges_within_radius
+    // #+# check for bounding boxes using get_all_ledges_within_radius
+    IVP_Mindist *md;
     if (!l0->is_terminal() || !l1->is_terminal()) {
       md = new IVP_Mindist_Recursive(env, this);
     } else {

@@ -21,8 +21,8 @@ class IVP_Cache_Ledge_Point {
   friend class IVP_Compact_Ledge_Solver;
 
   // temporary section
-  const IVP_Compact_Poly_Point
-      *compact_poly_points;  // backlink to float[3] array
+  // backlink to float[3] array
+  const IVP_Compact_Poly_Point *compact_poly_points;
   const IVP_Compact_Ledge *compact_ledge;
 
  public:

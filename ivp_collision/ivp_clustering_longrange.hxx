@@ -25,8 +25,8 @@ class IVP_OV_Element : public IVP_Listener_Hull {
   IVP_U_Float_Point center;        // xyz // #+# check alignment
   IVP_FLOAT radius;
   IVP_Real_Object *real_object;
-  IVP_U_FVector<IVP_Collision>
-      collision_fvector;  // all oo connectors used by this object
+  // all oo connectors used by this object
+  IVP_U_FVector<IVP_Collision> collision_fvector;
 
   void add_oo_collision(IVP_Collision *connector);
   void remove_oo_collision(IVP_Collision *connector);
@@ -64,9 +64,8 @@ class IVP_OV_Node {
 class IVP_ov_tree_hash;
 
 /********************************************************************************
- *	Name:	    	IVP_OV_Tree_Manager
- *	Description:	Tree-like datastructure, used to store spheres (around
- *objects)
+ *	Name:	     IVP_OV_Tree_Manager
+ *	Description: Tree-like structure, used to store spheres (around objects)
  ********************************************************************************/
 class IVP_OV_Tree_Manager {
   friend class IVP_Ray_Solver;
@@ -103,14 +102,12 @@ class IVP_OV_Tree_Manager {
                                   const IVP_OV_Node *masternode,
                                   const IVP_OV_Node *new_node);
 
-  void get_luf_coordinates_ws(
-      const IVP_OV_Node *node, IVP_U_Float_Point *p,
-      IVP_FLOAT *cubesize);  // fills vars with left-upper-front corner's
-                             // coordinates and cube's size
-  void get_center_coordinates_ws(
-      const IVP_OV_Node *node, IVP_U_Float_Point *p,
-      IVP_FLOAT
-          *cubesize);  // fills vars with center's coordinates and cube's size
+  // fills vars with left-upper-front corner's coordinates and cube's size
+  void get_luf_coordinates_ws(const IVP_OV_Node *node, IVP_U_Float_Point *p,
+                              IVP_FLOAT *cubesize);
+  // fills vars with center's coordinates and cube's size
+  void get_center_coordinates_ws(const IVP_OV_Node *node, IVP_U_Float_Point *p,
+                                 IVP_FLOAT *cubesize);
 
   IVP_OV_Node *cleanup_node(IVP_OV_Node *node);
 
@@ -118,11 +115,10 @@ class IVP_OV_Tree_Manager {
   IVP_OV_Tree_Manager();
   ~IVP_OV_Tree_Manager();
 
-  IVP_DOUBLE insert_ov_element(
-      IVP_OV_Element *element, IVP_DOUBLE min_radius, IVP_DOUBLE max_radius,
-      IVP_U_Vector<IVP_OV_Element>
-          *colliding_balls);  // pass NULL if you are not interested in
-                              // collisions
+  // pass NULL if you are not interested in collisions
+  IVP_DOUBLE insert_ov_element(IVP_OV_Element *element, IVP_DOUBLE min_radius,
+                               IVP_DOUBLE max_radius,
+                               IVP_U_Vector<IVP_OV_Element> *colliding_balls);
 
   void remove_ov_element(IVP_OV_Element *element);
 };
