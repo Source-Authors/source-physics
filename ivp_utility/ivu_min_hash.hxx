@@ -9,10 +9,11 @@
 #define SORT_MINDIST_ELEMENTS
 // #endif
 
-class IVP_U_Min_Hash_Elem;
+// dimhotepus: class -> struct
+struct IVP_U_Min_Hash_Elem;
 
-class IVP_U_Min_Hash_Elem {
- public:
+// dimhotepus: class -> struct
+struct IVP_U_Min_Hash_Elem {
   IVP_U_Min_Hash_Elem *next;
   IVP_DOUBLE value;
 #if defined(SORT_MINDIST_ELEMENTS)
