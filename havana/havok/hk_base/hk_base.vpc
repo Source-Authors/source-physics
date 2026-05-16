@@ -92,13 +92,6 @@ $Project "hk_base"
 		$File	"string\string.h"
 	}
 
-	$Folder	"id_server"
-	{
-		$File	"id_server\id_server.cpp"
-		$File	"id_server\id_server.h"
-		$File	"id_server\id_server.inl"
-	}
-
 	$File	"stdafx.h"
 
 	$File	"base.h"
