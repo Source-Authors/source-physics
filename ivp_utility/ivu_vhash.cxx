@@ -10,12 +10,19 @@
 
 #include <ivu_set.hxx>
 
+/**
+ * @brief Check value is power of two.
+ * @tparam T
+ * @param value Value.
+ * @return true if value is power of two.
+ */
+template <typename T>
+static constexpr inline bool IsPowerOfTwo(T value) noexcept {
+  return (value & (value - static_cast<T>(1))) == T{};
+}
+
 IVP_VHash::IVP_VHash(int size_i) {
-  IVP_IF(1) {
-    int x = size_i;
-    while (!(x & 1)) x = x >> 1;
-    IVP_ASSERT(x == 1);  // size must be 2**x
-  }
+  IVP_ASSERT(IsPowerOfTwo(size_i));  // size must be 2**x
 
   size_mm = size_i - 1;
   nelems = 0;
@@ -25,11 +32,8 @@ IVP_VHash::IVP_VHash(int size_i) {
 
 void IVP_VHash::activate(int size_i) {
   IVP_ASSERT(elems == NULL);
-  IVP_IF(1) {
-    int x = size_i;
-    while (!(x & 1)) x = x >> 1;
-    IVP_ASSERT(x == 1);  // size must be 2**x
-  }
+  IVP_ASSERT(IsPowerOfTwo(size_i));  // size must be 2**x
+
   size_mm = size_i - 1;
   nelems = 0;
   dont_free = IVP_FALSE;
@@ -54,13 +58,7 @@ void IVP_VHash::garbage_collection(int preferred_size) {
 }
 
 IVP_VHash::IVP_VHash(IVP_VHash_Elem *static_elems, int size_i) {
-  IVP_IF(1) {
-    int x = size_i;
-    if (x) {
-      while (!(x & 1)) x = x >> 1;
-      IVP_ASSERT(x == 1);  // size must be 2**x
-    }
-  }
+  IVP_ASSERT(IsPowerOfTwo(size_i));  // size must be 2**x
 
   size_mm = size_i - 1;
   nelems = 0;
@@ -75,8 +73,7 @@ IVP_VHash::~IVP_VHash() {
 }
 
 void IVP_VHash::untouch_all() {
-  int i;
-  for (i = size_mm; i >= 0; i--) {
+  for (int i = size_mm; i >= 0; i--) {
     elems[i].hash_index &= (IVP_VHASH_TOUCH_BIT - 1);
   }
 }
@@ -291,11 +288,7 @@ void IVP_VHash::print() const {
  *******************************************************************************************************************/
 
 IVP_VHash_Store::IVP_VHash_Store(int size_i) {
-  IVP_IF(1) {
-    int x = size_i;
-    while (!(x & 1)) x = x >> 1;
-    IVP_ASSERT(x == 1);  // size must be 2**x
-  }
+  IVP_ASSERT(IsPowerOfTwo(size_i));  // size must be 2**x
 
   size = size_i;
   size_mm = size_i - 1;
@@ -307,11 +300,7 @@ IVP_VHash_Store::IVP_VHash_Store(int size_i) {
 
 IVP_VHash_Store::IVP_VHash_Store(IVP_VHash_Store_Elem *static_elems,
                                  int size_i) {
-  IVP_IF(1) {
-    int x = size_i;
-    while (!(x & 1)) x = x >> 1;
-    IVP_ASSERT(x == 1);  // size must be 2**x
-  }
+  IVP_ASSERT(IsPowerOfTwo(size_i));  // size must be 2**x
 
   size = size_i;
   size_mm = size_i - 1;
