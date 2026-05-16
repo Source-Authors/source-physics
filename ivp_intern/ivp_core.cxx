@@ -825,8 +825,8 @@ void IVP_Core::undo_synchronize_rot_z() {
   IVP_IFDEBUG(
       IVP_TRUE, IVP_Debug_Manager *dm = environment->get_debug_manager();
       if (dm->file_out_impacts) {
-        fprintf(dm->out_deb_file, "undoing_synchro %x at %f\n",
-                0x0000ffff & (IVP_INT32)(hk_intp)this,
+        fprintf(dm->out_deb_file, "undoing_synchro %p at %f\n",
+                this,
                 environment->get_current_time().get_time());
       })
   rot_speed.set(&tmp_null.old_sync_info->old_sync_rot_speed);
