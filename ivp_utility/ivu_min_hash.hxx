@@ -25,14 +25,18 @@ extern const unsigned int IVP_Hash_crctab[];
 
 class IVP_U_Min_Hash {
   friend class IVP_U_Min_Hash_Enumerator;
-  inline int hash_index(const int *key) const;
+  hk_intp hash_index(const hk_intp *key) const {
+    hk_uintp x = *key * 101;
+    hk_uintp y = (x >> 8) + *key * 1001;
+    return y & (size - 1);
+  }
   // dimhotepus: Reordered members to reduce size on x86-64.
   IVP_U_Min_Hash_Elem **stadel;
   IVP_U_Min_Hash_Elem **min_per_array_pos;
   IVP_U_Min_Hash_Elem **elems;
   unsigned int size;
-  void min_added_at_index(IVP_U_Min_Hash_Elem *elem, int i);
-  void min_removed_at_index(IVP_U_Min_Hash_Elem *elem, int i);
+  void min_added_at_index(IVP_U_Min_Hash_Elem *elem, hk_intp i);
+  void min_removed_at_index(IVP_U_Min_Hash_Elem *elem, hk_intp i);
 
  public:
   int counter;
