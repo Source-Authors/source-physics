@@ -800,6 +800,6 @@ IVP_Raycast_Airboat_Wheel *IVP_Controller_Raycast_Airboat::get_wheel(
   return &m_aAirboatWheels[i];
 }
 
-IVP_Controller_Raycast_Airboat_Vector_of_Cores_1::
+IVP_Controller_Raycast_Airboat_Vector_of_Cores_1:: //-V730
     IVP_Controller_Raycast_Airboat_Vector_of_Cores_1()
     : IVP_U_Vector<IVP_Core>(&elem_buffer[0], 1) {}

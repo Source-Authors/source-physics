@@ -272,7 +272,7 @@ void IVP_Controller_Golem::do_simulation_controller(
   IVP_DOUBLE qdist = delta_position.quad_length();
   integrated_delta_position = integrated_delta_position * 0.9f + qdist;
 
-  if (qdist > max_delta_position * max_delta_position) {
+  if (qdist > max_delta_position * max_delta_position) { //-V1051
     resolve_for_problem(es, IVP_GP_FAR_DISTANCE);
     return;
   }

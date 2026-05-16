@@ -9,7 +9,7 @@ class IVP_Vector_of_Contact_Info_512
   IVP_Impact_Solver_Long_Term *elem_buffer[512];
 
  public:
-  IVP_Vector_of_Contact_Info_512()
+  IVP_Vector_of_Contact_Info_512() //-V730
       : IVP_U_Vector<IVP_Impact_Solver_Long_Term>((void **)&elem_buffer[0],
                                                   512) {}
 };

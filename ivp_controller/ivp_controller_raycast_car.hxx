@@ -83,7 +83,7 @@ class IVP_Controller_Raycast_Car_Vector_of_Cores_1
   void *elem_buffer[1];
 
  public:
-  IVP_Controller_Raycast_Car_Vector_of_Cores_1()
+  IVP_Controller_Raycast_Car_Vector_of_Cores_1() //-V730
       : IVP_U_Vector<IVP_Core>(&elem_buffer[0], 1) {}
 };
 

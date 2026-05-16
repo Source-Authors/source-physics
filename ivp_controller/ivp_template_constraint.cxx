@@ -16,7 +16,7 @@ IVP_Template_Constraint::IVP_Template_Constraint() {
   m_Ros_f_Rfs = NULL;
   m_Ros_f_Rrs = NULL;
   m_Aos_f_Afs = NULL;
-  mm_Ros_f_Rfs.init();
+  mm_Ros_f_Rfs.init(); //-V525
   mm_Ros_f_Rrs.init3();
   mm_Aos_f_Afs.init();
   axis_type[0] = axis_type[1] = axis_type[2] = IVP_CONSTRAINT_AXIS_FIXED;

@@ -6,7 +6,7 @@ class IVP_Vector_of_Hull_Managers_1
   void *elem_buffer[1];
 
  public:
-  IVP_Vector_of_Hull_Managers_1()
+  IVP_Vector_of_Hull_Managers_1() //-V730
       : IVP_U_Vector<IVP_Hull_Manager_Base>(&elem_buffer[0], 1) {}
 };
 

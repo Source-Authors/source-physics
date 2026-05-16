@@ -360,7 +360,7 @@ class IVP_Vector_of_Collisions_128 : public IVP_U_Vector<class IVP_Collision> {
   void *elem_buffer[128];
 
  public:
-  IVP_Vector_of_Collisions_128()
+  IVP_Vector_of_Collisions_128() //-V730
       : IVP_U_Vector<class IVP_Collision>(&elem_buffer[0], 128) {}
 };
 
@@ -688,7 +688,7 @@ class IVP_Vector_of_OV_Elements_128
   void *elem_buffer[128];
 
  public:
-  IVP_Vector_of_OV_Elements_128()
+  IVP_Vector_of_OV_Elements_128() //-V730
       : IVP_U_Vector<class IVP_OV_Element>(&elem_buffer[0], 128) {}
 };
 
@@ -697,7 +697,7 @@ class IVP_Vector_of_Objects_128 : public IVP_U_Vector<class IVP_Real_Object> {
   IVP_Real_Object *elem_buffer[128];
 
  public:
-  IVP_Vector_of_Objects_128()
+  IVP_Vector_of_Objects_128() //-V730
       : IVP_U_Vector<IVP_Real_Object>((void **)&elem_buffer[0], 128) {}
 };
 

@@ -291,7 +291,7 @@ bool IVP_Contact_Point::friction_force_local_constraint_2d_wheel(
   IVP_DOUBLE dot_old1_new1 = info->span_friction_v[1].dot_product(&span_v_1);
 
   IVP_DOUBLE span_s_0 =
-      span_friction_s[0] * dot_old0_new0 + span_friction_s[1] * dot_old1_new0;
+      span_friction_s[0] * dot_old0_new0 + span_friction_s[1] * dot_old1_new0; //-V537
   IVP_DOUBLE span_s_1 =
       span_friction_s[0] * dot_old0_new1 + span_friction_s[1] * dot_old1_new1;
 

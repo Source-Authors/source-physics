@@ -1983,7 +1983,7 @@ class IVP_Vector_of_Hull_Managers_256
   void *elem_buffer[256];
 
  public:
-  IVP_Vector_of_Hull_Managers_256()
+  IVP_Vector_of_Hull_Managers_256() //-V730
       : IVP_U_Vector<IVP_Hull_Manager_Base>(&elem_buffer[0], 256) {}
 };
 

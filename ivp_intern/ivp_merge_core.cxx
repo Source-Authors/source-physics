@@ -159,7 +159,7 @@ void IVP_Merge_Core::set_speed() {
       IVP_U_Float_Point quad_center;
       quad_center.set_pairwise_mult(&m_center_in_mcore, &m_center_in_mcore);
       sum_rot_inertia.k[0] +=
-          IVP_Inline_Math::sqrtd(quad_center.k[1] + quad_center.k[2]) *
+          IVP_Inline_Math::sqrtd(quad_center.k[1] + quad_center.k[2]) * //-V525
           core->get_mass();
       sum_rot_inertia.k[1] +=
           IVP_Inline_Math::sqrtd(quad_center.k[0] + quad_center.k[2]) *
