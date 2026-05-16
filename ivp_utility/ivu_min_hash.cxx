@@ -180,15 +180,14 @@ void IVP_U_Min_Hash::remove(void *elem) {
   }
 }
 
-int IVP_U_Min_Hash::is_elem(void *elem) const {
-  int i = hash_index((const int *)&elem);
-  IVP_U_Min_Hash_Elem *el;
-  for (el = elems[i]; el; el = el->next) {
+bool IVP_U_Min_Hash::is_elem(void *elem) const {
+  hk_intp i = hash_index((const hk_intp *)&elem);
+  for (auto *el = elems[i]; el; el = el->next) {
     if (el->elem == elem) {
-      return 1;
+      return true;
     }
   }
-  return 0;
+  return false;
 }
 
 void IVP_U_Min_Hash::remove_min() {

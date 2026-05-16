@@ -50,7 +50,7 @@ class IVP_U_Min_Hash {
       return stadel[1]->elem;
   }
   IVP_DOUBLE find_min_value() const { return stadel[1]->value; }
-  int is_elem(void *elem) const;
+  bool is_elem(void *elem) const;
   void remove(void *elem);
   void remove_min();
 };
