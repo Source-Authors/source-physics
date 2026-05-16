@@ -345,7 +345,6 @@ void IVP_Constraint_Solver_Car::do_simulation_controller(
       int app_nr;
       for (app_nr = 0; app_nr < wheel_objects.len(); app_nr++) {
         P_DELETE(this->c_local_ballsocket[app_nr]);
-        this->c_local_ballsocket[app_nr] = NULL;
       }
       this->local_translation_in_use = IVP_FALSE;
       IVP_IF(1) { ivp_message("plan B deactivated.\n"); }
