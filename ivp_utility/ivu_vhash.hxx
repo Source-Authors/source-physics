@@ -157,8 +157,8 @@ class IVP_VHash_Store {
     return (IVP_BOOL)(elems_store[i].hash_index >= IVP_VHASH_TOUCH_BIT);
   }
   void untouch_all();
-  void print();
-  void check();  // check internal consistency
+  void print() const;
+  void check() const;  // check internal consistency
 
   IVP_VHash_Store(int size);  // assert(size = 2**x)
   IVP_VHash_Store(IVP_VHash_Store_Elem *static_elems,

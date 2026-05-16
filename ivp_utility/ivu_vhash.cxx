@@ -474,7 +474,7 @@ void *IVP_VHash_Store::remove_elem(void *key_elem, unsigned int hash_index) {
   return elem;
 }
 
-void IVP_VHash_Store::check() {
+void IVP_VHash_Store::check() const {
   int pos;
   int last_index = 0;
   int ideal_pos_of_last_element =
@@ -574,7 +574,7 @@ void *IVP_VHash_Store::touch_element(void *key_elem, unsigned int hash_index) {
   return 0;  // not found
 }
 
-void IVP_VHash_Store::print() {
+void IVP_VHash_Store::print() const {
   ivp_message("%i:", size);
   for (int i = 0; i < size; i++) {
     ivp_message(" %i:%zX:%zX:%X  ", elems_store[i].hash_index & size_mm,
