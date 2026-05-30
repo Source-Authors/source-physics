@@ -888,8 +888,9 @@ void qh_initflags(char *command) {
                 if ((r = qh_strtod(s, &s)) == 0.0) {
                   t = s; /* need true dimension for memory allocation */
                   while (*t && !isspace(*t)) {
-                    if (toupper(*t++) == 'B' && k == qh_strtol(t, &t) &&
-                        *t++ == ':' && qh_strtod(t, &t) == 0.0) {
+                    if (toupper(static_cast<unsigned char>(*t++)) == 'B' &&
+                        k == qh_strtol(t, &t) && *t++ == ':' &&
+                        qh_strtod(t, &t) == 0.0) {
                       qh PROJECTinput++;
                       trace2(
                           (qh ferr, "qh_initflags: project dimension %d\n", k));
