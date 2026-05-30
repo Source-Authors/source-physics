@@ -47,7 +47,7 @@ const char *P_String::find_string(const char *str, const char *key,
           return str;
         }
 
-        if (toupper(*p1) == toupper(b)) {
+        if (toupper(static_cast<unsigned char>(*p1)) == toupper(static_cast<unsigned char>(b))) {
           p1++;
           p2++;
         } else {
@@ -95,7 +95,7 @@ const char *P_String::find_string(const char *str, const char *key,
           return str;
         }
 
-        if (toupper(*p1) == toupper(b) || (b == '?')) {
+        if (toupper(static_cast<unsigned char>(*p1)) == toupper(static_cast<unsigned char>(b)) || (b == '?')) {
           p1++;
           p2++;
         } else {
@@ -154,7 +154,7 @@ int P_String::string_cmp(const char *str, const char *search,
       if (!b) return a;
       if (b != '?') {
         if (upper_case) {
-          if (toupper(a) != toupper(b)) return 1;
+          if (toupper(static_cast<unsigned char>(a)) != toupper(static_cast<unsigned char>(b))) return 1;
         } else {
           if (a != b) return 1;
         }
