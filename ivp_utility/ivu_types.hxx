@@ -159,7 +159,7 @@ class IVP_Time {
   double operator-(const IVP_Time &b) const {
     return this->seconds - b.seconds;
   }
-  void operator-=(const IVP_Time b) { this->seconds -= b.seconds; }
+  void operator-=(const IVP_Time &b) { this->seconds -= b.seconds; }
   IVP_Time operator+(double val) const {
     IVP_Time result;
     result.seconds = this->seconds + val;
@@ -190,7 +190,7 @@ class IVP_Time {
   float operator-(const IVP_Time &b) const {
     return (this->seconds - b.seconds) + this->sub_seconds - b.sub_seconds;
   }
-  void operator-=(const IVP_Time b) {
+  void operator-=(const IVP_Time &b) {
     this->seconds -= b.seconds;
     this->sub_seconds -= b.sub_seconds;
     while (sub_seconds > 1.0f) {
