@@ -218,8 +218,8 @@ void hk_Local_Constraint_System::apply_effector_PSI(hk_PSI_Info& pi,
 
   m_errorThisTick = 0;
 
-  hk_real taus[] = {1.0f, 1.0f, 0.8f, 0.6f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.0f};
-  hk_real damps[] = {1.0f, 1.0f, 0.8f, 0.8f, 0.8f,
+  constexpr hk_real taus[] = {1.0f, 1.0f, 0.8f, 0.6f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.0f};
+  constexpr hk_real damps[] = {1.0f, 1.0f, 0.8f, 0.8f, 0.8f,
                      0.8f, 0.8f, 0.8f, 0.8f, 0.0f};
 
   // first do the setup
