@@ -79,10 +79,10 @@ class hk_Fixed_Dense_Matrix : public hk_Dense_Matrix {
   inline int get_lda() const { return HK_NEXT_MULTIPLE_OF(4, N); }  //-V112
 
   inline hk_real& operator()(int r, int c) {
-    return m_elt_buffer[r + c * HK_NEXT_MULTIPLE_OF(4, N)];
+    return m_elt_buffer[r + c * HK_NEXT_MULTIPLE_OF(4, N)]; //-V112
   }  //-V112
   inline const hk_real& operator()(int r, int c) const {
-    return m_elt_buffer[r + c * HK_NEXT_MULTIPLE_OF(4, N)];
+    return m_elt_buffer[r + c * HK_NEXT_MULTIPLE_OF(4, N)]; //-V112
   }  //-V112
 
   hk_real* get_elems() { return &m_elt_buffer[0]; }
@@ -110,7 +110,7 @@ class hk_Dense_Matrix_3x3 : public hk_Dense_Matrix {
                                         hk_Dense_Matrix_3x3)
 
   inline hk_Dense_Matrix_3x3()
-      : hk_Dense_Matrix(nullptr, 3, 3, 4),
+      : hk_Dense_Matrix(nullptr, 3, 3, 4), //-V112
         m_elt_buffer{}  //-V112
   {
     // dimhotepus: Fix UB during access of uninitialized m_elt_buffer.
