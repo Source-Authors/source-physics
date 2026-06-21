@@ -26,10 +26,7 @@
 
 #ifndef HK_ASSERT
 #ifdef HK_DEBUG
-#define HK_ASSERT(a)                                \
-  do {                                              \
-    if (!(a)) hk_assert(a, #a, __LINE__, __FILE__); \
-  } while (false)
+#define HK_ASSERT(a) hk_assert(!!(a), #a, __LINE__, __FILE__)
 #define HK_IF_DEBUG(a) if (a)
 #else
 #define HK_ASSERT(a)
@@ -39,10 +36,7 @@
 
 #if defined(HK_DEBUG)
 #define HK_IF_CHECK(a) if (a)
-#define HK_CHECK(a)                                \
-  do {                                             \
-    if (!(a)) hk_check(a, #a, __LINE__, __FILE__); \
-  } while (false)
+#define HK_CHECK(a) hk_check(!!(a), #a, __LINE__, __FILE__)
 #else
 #define HK_IF_CHECK(a) if (0)
 #define HK_CHECK(a)
