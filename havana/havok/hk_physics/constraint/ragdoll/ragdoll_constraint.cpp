@@ -273,7 +273,7 @@ int hk_Ragdoll_Constraint::setup_and_step_constraint(hk_PSI_Info &pi, void *mem,
 
     hk_Vector3 delta_dist_3;
     delta_dist_3.set_mul(tau_factor * m_tau * pi.get_inv_delta_time(), dir);
-    delta_dist_3.add_mul(-0.0f * m_strength * strength_factor,
+    delta_dist_3.add_mul(-1.0f * m_strength * strength_factor,
                          *(const hk_Vector3 *)approaching_velocity);
 
     hk_Fixed_Dense_Matrix<3> &mass_matrix =
