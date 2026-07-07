@@ -26,10 +26,8 @@ inline IVP_DOUBLE ivp_frs_min(IVP_DOUBLE a, IVP_DOUBLE b) {
 IVP_RETURN_TYPE IVP_Friction_Solver::test_gauss_solution_suggestion(
     IVP_DOUBLE *push_results, int *active_is_at_pos, int total_actives,
     IVP_U_Memory *mem_friction) {
-  ivp_u_bool *was_already_tested = (int *)mem_friction->get_mem(
-      dist_change_mat.columns * sizeof(ivp_u_bool));
-  memset((char *)was_already_tested, 0,
-         sizeof(int) * dist_change_mat.columns);  // init with false = 0
+  ivp_u_bool *was_already_tested = mem_friction->get_memc<ivp_u_bool>(
+      dist_change_mat.columns);
 
   int gauss_failed = 0;
   {
@@ -162,13 +160,12 @@ void IVP_Friction_Solver::solve_linear_equation_and_push(
   actives_matrix.calc_aligned_row_len();
 
   this->normize_constraint_equ();
-  actives_matrix.desired_vector = (IVP_DOUBLE *)mem_friction->get_mem(
-      actives_matrix.aligned_row_len * sizeof(IVP_DOUBLE));
-  actives_matrix.result_vector = (IVP_DOUBLE *)mem_friction->get_mem(
-      actives_matrix.aligned_row_len * sizeof(IVP_DOUBLE));
-  actives_matrix.matrix_values = (IVP_DOUBLE *)mem_friction->get_mem(
-      (total_actives * actives_matrix.aligned_row_len + IVP_VECFPU_SIZE - 1) *
-      sizeof(IVP_DOUBLE));
+  actives_matrix.desired_vector = mem_friction->get_mem<IVP_DOUBLE>(
+      actives_matrix.aligned_row_len);
+  actives_matrix.result_vector = mem_friction->get_mem<IVP_DOUBLE>(
+      actives_matrix.aligned_row_len);
+  actives_matrix.matrix_values = mem_friction->get_mem<IVP_DOUBLE>(
+      (total_actives * actives_matrix.aligned_row_len + IVP_VECFPU_SIZE - 1));
   actives_matrix.align_matrix_values();
 
   memset((char *)dist_change_mat.result_vector, 0,
@@ -1211,7 +1208,7 @@ void IVP_Friction_System::do_friction_system(const IVP_Event_Sim *es_in) {
 
   fr_solver.setup_coords_mindists(this);
   int *original_pos_of_active =
-      (int *)my_mem->get_mem(friction_dist_number * sizeof(int));
+      my_mem->get_mem<int>(friction_dist_number);
 
   while (IVP_TRUE) {
     int num_actives = fr_solver.calc_solver_PSI(this, original_pos_of_active);

@@ -870,14 +870,13 @@ void IVP_Friction_Solver::ease_friction_pair(IVP_Friction_Core_Pair *my_pair,
   // return;
 
   int total_n = my_pair->number_of_pair_dists();
-  IVP_Contact_Point **all_my_dists = (IVP_Contact_Point **)my_mem->get_mem(
-      total_n * sizeof(IVP_Contact_Point *));
+  IVP_Contact_Point **all_my_dists = my_mem->get_mem<IVP_Contact_Point *>(total_n);
 
   IVP_DOUBLE easing_factor = 1.0f / ((IVP_DOUBLE)total_n + P_DOUBLE_EPS);
 
 #if defined(IVP_NO_ALLOCA)
   IVP_U_Float_Point *ease_diff_force_vec_stack =
-      (IVP_U_Float_Point *)my_mem->get_mem(total_n * sizeof(IVP_U_Float_Point));
+      my_mem->get_mem<IVP_U_Float_Point>(total_n);
 #else
   IVP_U_Float_Point *ease_diff_force_vec_stack =
       (IVP_U_Float_Point *)alloca(total_n * sizeof(IVP_U_Float_Point));
@@ -1162,14 +1161,13 @@ IVP_Friction_Solver::IVP_Friction_Solver(IVP_Friction_System *fri_sys,
       fri_sys->friction_dist_number - fri_sys->complex_not_necessary_number;
   dist_change_mat.calc_aligned_row_len();
 
-  dist_change_mat.matrix_values = (IVP_DOUBLE *)my_mem->get_mem(
+  dist_change_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
       (size_t)(dist_change_mat.aligned_row_len * dist_change_mat.columns +
-               IVP_VECFPU_SIZE - 1) *
-      sizeof(IVP_DOUBLE));
-  dist_change_mat.desired_vector = (IVP_DOUBLE *)my_mem->get_mem(
-      (size_t)dist_change_mat.aligned_row_len * sizeof(IVP_DOUBLE));
-  dist_change_mat.result_vector = (IVP_DOUBLE *)my_mem->get_mem(
-      (size_t)dist_change_mat.aligned_row_len * sizeof(IVP_DOUBLE));
+               IVP_VECFPU_SIZE - 1));
+  dist_change_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(
+      (size_t)dist_change_mat.aligned_row_len);
+  dist_change_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(
+      (size_t)dist_change_mat.aligned_row_len);
   dist_change_mat.align_matrix_values();
 }
 

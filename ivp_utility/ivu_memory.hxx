@@ -42,7 +42,15 @@ class IVP_U_Memory {
   ~IVP_U_Memory();
   void init_mem();
   void *get_mem(size_t size);
+  template<typename T>
+  T* get_mem(size_t size) {
+    return static_cast<T *>( get_mem(sizeof(T) * size) );
+  }
   void *get_memc(size_t size);
+  template<typename T>
+  T* get_memc(size_t size) {
+    return static_cast<T *>( get_memc(sizeof(T) * size) );
+  }
   void free_mem();
 #if !defined(MEMTEST)
   char *neuer_sp_block(size_t groesse);

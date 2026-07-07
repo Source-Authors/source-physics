@@ -882,44 +882,38 @@ IVP_BOOL IVP_Linear_Constraint_Solver::numerical_stability_ok() {
 }
 
 void IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory *my_mem) {
-  actives_inactives_ignored =
-      (int *)my_mem->get_mem(sizeof(int) * aligned_size);
-  variable_is_found_at = (int *)my_mem->get_mem(sizeof(int) * aligned_size);
+  actives_inactives_ignored = my_mem->get_mem<int>(aligned_size);
+  variable_is_found_at = my_mem->get_mem<int>(aligned_size);
 
-  accel = (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
-  delta_accel =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
-  delta_f = (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
-  reset_x = (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
-  reset_accel =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+  accel = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  delta_accel = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  delta_f = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  reset_x = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  reset_accel = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  lu_sub_solver.L_matrix = (IVP_DOUBLE *)my_mem->get_mem(
-      sizeof(IVP_DOUBLE) * aligned_size * n_variables);
-  lu_sub_solver.U_matrix = (IVP_DOUBLE *)my_mem->get_mem(
-      sizeof(IVP_DOUBLE) * aligned_size * n_variables);
+  lu_sub_solver.L_matrix = my_mem->get_mem<IVP_DOUBLE>(
+      aligned_size * n_variables);
+  lu_sub_solver.U_matrix = my_mem->get_mem<IVP_DOUBLE>(
+      aligned_size * n_variables);
   lu_sub_solver.input_vec =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   lu_sub_solver.out_vec =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   lu_sub_solver.temp_vec =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   lu_sub_solver.mult_vec =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  sub_solver_mat.matrix_values = (IVP_DOUBLE *)my_mem->get_mem(
-      sizeof(IVP_DOUBLE) * aligned_size * n_variables);
-  sub_solver_mat.desired_vector =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
-  sub_solver_mat.result_vector =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+  sub_solver_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  sub_solver_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  sub_solver_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  inv_mat.matrix_values = (IVP_DOUBLE *)my_mem->get_mem(
-      sizeof(IVP_DOUBLE) * aligned_size * n_variables);
+  inv_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
+      aligned_size * n_variables);
   inv_mat.desired_vector =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   inv_mat.result_vector =
-      (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
   IVP_IF(1) {  // fill LU for fast align access
     for (int j = 0; j < n_variables; j++) {
@@ -972,12 +966,12 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
   inv_mat.MATRIX_EPS = SOLVER_EPS;
 
   IVP_IF(1) {
-    debug_mat.matrix_values = (IVP_DOUBLE *)my_mem->get_mem(
-        sizeof(IVP_DOUBLE) * aligned_size * var_num);
+    debug_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
+        aligned_size * var_num);
     debug_mat.desired_vector =
-        (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+        my_mem->get_mem<IVP_DOUBLE>(aligned_size);
     debug_mat.result_vector =
-        (IVP_DOUBLE *)my_mem->get_mem(sizeof(IVP_DOUBLE) * aligned_size);
+        my_mem->get_mem<IVP_DOUBLE>(aligned_size);
     debug_mat.MATRIX_EPS = SOLVER_EPS;
   }
 

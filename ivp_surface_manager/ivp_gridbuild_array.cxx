@@ -33,27 +33,23 @@ IVP_GridBuilder_Array::IVP_GridBuilder_Array(
   n_rows = gp->row_info.n_points;
   n_cols = gp->column_info.n_points;
   height_field = height_field_;
-  height_points = (IVP_Compact_Poly_Point *)mm_->get_mem(
-      sizeof(IVP_Compact_Poly_Point) * n_rows * n_cols);
+  height_points = mm_->get_mem<IVP_Compact_Poly_Point>(n_rows * n_cols);
   is_left_handed = IVP_FALSE;
-
-  ledge_reference_field = (IVP_Compact_Grid_Element *)mm_->get_memc(
-      sizeof(IVP_Compact_Grid_Element) * n_rows *
-      n_cols);  // last row and col not used
+  // last row and col not used
+  ledge_reference_field = mm_->get_memc<IVP_Compact_Grid_Element>(
+      n_rows * n_cols);
   mm = mm_;
 
   grid_point_to_ledge_point_array =
-      (int *)mm_->get_mem(sizeof(int) * n_rows * n_cols);
+    mm_->get_mem<int>(n_rows * n_cols);
 
   for (int j = n_rows * n_cols - 1; j >= 0; j--) {
     grid_point_to_ledge_point_array[j] = -1;
   }
 
-  const unsigned int buffer_size =
-      sizeof(IVP_Compact_Poly_Point) * n_rows * n_cols * 3;
   // two extra points per square worst case
   compact_poly_point_buffer =
-      (IVP_Compact_Poly_Point *)mm_->get_mem(buffer_size);
+    mm_->get_mem<IVP_Compact_Poly_Point>(n_rows * n_cols * 3);
   n_compact_poly_points_used = 0;
 
   c_ledge = nullptr;
