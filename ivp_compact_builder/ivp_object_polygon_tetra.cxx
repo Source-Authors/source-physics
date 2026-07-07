@@ -684,9 +684,6 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
 #endif
   having_islands = 1;  // forced
 
-  P_Sur_2D_Line *td_ca_line = NULL;
-  P_Sur_2D_Line *td_bc_line = NULL;
-
   // for all lines
   int loop_counter = 0;
   while ((td_base_line = this->lines.first)) {
@@ -763,10 +760,8 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
 #ifdef SUR_DEBUG
       ivp_message("    check sides of triangle:\n");
 #endif
-      delete td_ca_line;
-      td_ca_line = new P_Sur_2D_Line(point_c, point_a);
-      delete td_bc_line;
-      td_bc_line = new P_Sur_2D_Line(point_b, point_c);
+      P_Sur_2D_Line* td_ca_line = new P_Sur_2D_Line(point_c, point_a);
+      P_Sur_2D_Line* td_bc_line = new P_Sur_2D_Line(point_b, point_c);
 
       // for all lines: check crossing
       P_Sur_2D_Line *td_cross_line;
@@ -793,6 +788,11 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
           ivp_message("Couldn't find a matching point to baseline!\n");
           CORE;
         }
+
+        // clean up
+        P_DELETE(td_ca_line);
+        P_DELETE(td_bc_line);
+
 #ifdef SUR_DEBUG
         ivp_message(
             "    ...giving up point %d because of crossing. next one!\n",
@@ -822,12 +822,21 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
           ivp_message("Couldn't find a matching point to baseline!\n");
           CORE;
         }
+
+        // clean up
+        P_DELETE(td_ca_line);
+        P_DELETE(td_bc_line);
+
 #ifdef SUR_DEBUG
         ivp_message(
             "    ...giving up point because of point(s) inside. next one!\n");
 #endif
         continue;
       }
+
+      // clean up
+      P_DELETE(td_ca_line);
+      P_DELETE(td_bc_line);
 
       // take triangle
       P_Sur_2D_Triangle *triang = new P_Sur_2D_Triangle(
@@ -896,10 +905,6 @@ IVP_ERROR_STRING P_Sur_2D::calc_triangle_representation() {
       break;
     }  // end for all points
   }  // end for all base_lines
-
-  // clean up
-  P_DELETE(td_ca_line);
-  P_DELETE(td_bc_line);
 
   // lines and points are no longer needed
   int i;
