@@ -2235,24 +2235,23 @@ void IVP_Object_Polygon_Tetra::convexify() {
 #endif
 }
 
-char *p_mergesort(void **array, IVP_INT32 start, IVP_INT32 end,
-                  IVP_INT32 (*compare)(void *, void *, char *cd),
-                  char *client_data) {
+void p_mergesort(void **array, IVP_INT32 start, IVP_INT32 end,
+                 IVP_INT32 (*compare)(void *, void *, char *cd),
+                 char *client_data) {
   IVP_INT32 size;
   IVP_INT32 mid;
   IVP_INT32 i, j;
   IVP_INT32 dest;
   void **buffer;
   void *ibuf[256];
-  char *error = nullptr;
 
   size = end - start;
   if (size <= 1) {
-    return 0;
+    return;
   }
   mid = (start + end) / 2;
-  error = p_mergesort(array, start, mid, compare, client_data);
-  error = p_mergesort(array, mid, end, compare, client_data);
+  p_mergesort(array, start, mid, compare, client_data);
+  p_mergesort(array, mid, end, compare, client_data);
   if (size < 256) {
     buffer = ibuf;
   } else {
@@ -2268,9 +2267,8 @@ char *p_mergesort(void **array, IVP_INT32 start, IVP_INT32 end,
   }
   while (i < mid) buffer[dest++] = array[i++];
   while (j < end) buffer[dest++] = array[j++];
-  memcpy((char *)(array + start), (char *)buffer, (int)size * sizeof(void *));
+  memcpy((char *)(array + start), (char *)buffer, (size_t)size * sizeof(void *));
   if (size >= 256) P_FREE(buffer);
-  return error;
 }
 
 ///////////////////////////////////////////
