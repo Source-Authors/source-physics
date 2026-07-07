@@ -102,7 +102,7 @@ int IVP_Compact_Ledge_Generator::prepare_compact_ledge(
           IVP_ASSERT(edge_hash->find((char *)&edge) == (void *)-1);
           edge_hash->add(
               (char *)&edge,
-              (void *)(hk_intp)(i * 4 + j + 1));  // for opposites //-V112
+              (void*)((hk_intp)i * 4 + j + 1));  // for opposites //-V112
           edge_cnt++;
         }
       }
