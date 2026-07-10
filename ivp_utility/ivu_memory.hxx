@@ -76,14 +76,14 @@ void IVP_U_Memory::start_memory_transaction() {
     }
 #endif
   }
-  transaction_in_use++;
+  ++transaction_in_use;
 }
 
 void IVP_U_Memory::end_memory_transaction() {
-  // IVP_IF(1) {
-  transaction_in_use--;
-  //}
-  // IVP_ASSERT(transaction_in_use==0);
+  // dimhotepus: Check we have transaction.
+  IVP_ASSERT(transaction_in_use > 0);
+  --transaction_in_use;
+
   free_mem_transaction();
   IVP_IF(1) {
 #ifdef SUN
@@ -119,12 +119,12 @@ inline void *IVP_U_Memory::get_mem(size_t groesse) {
   if (p >= speicherende) {
     return this->neuer_sp_block(groesse);
   } else {
-    speicherbeginn = p;
+  speicherbeginn = p;
     IVP_IF(((hk_intp)op > 0x780000) && ((hk_intp)op < 0x792f48)) {
       op++;
       op--;
     }
-    return op;
+  return op;
   }
 #endif
 }
