@@ -271,11 +271,6 @@ IVP_MRC_TYPE IVP_Mindist::recalc_mindist() {
         } else {
           IVP_IF(1) { mms.termination_len = P_DOUBLE_MAX; }
           P_Finish_Counter = 10;  // debug purposes
-          IVP_IF(1) {
-            ivp_message(
-                "recalc_mindist: Endless loop problem. No collision or "
-                "termination.\n");
-          }
           continue;  // helps debugging
                      //		CORE;
           return res;
