@@ -50,17 +50,19 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add(void *elem,
     // If this assertion triggers, it's going to overflow...
     IVP_ASSERT(malloced_size != IVP_U_MINLIST_MAX_ALLOCATION);
 
-    // Clamp allocation to 65535
-    int nNewMallocSize = malloced_size * 2 + 1;
+    // Clamp allocation to IVP_U_MINLIST_MAX_ALLOCATION
+    // dimhotepus: int -> unisigned int. 
+    unsigned int nNewMallocSize = malloced_size * 2 + 1;
     if (nNewMallocSize > IVP_U_MINLIST_MAX_ALLOCATION)
       nNewMallocSize = IVP_U_MINLIST_MAX_ALLOCATION;
 
 #ifdef _DEBUG
-    static int g_ErrorCount = 0;
-    if (g_ErrorCount < 3) {
-      if (nNewMallocSize > 2000) {
+    // dimhotepus: int -> unisigned int. 
+    static unsigned int g_ErrorCount = 0;
+    if (g_ErrorCount < 3u) {
+      if (nNewMallocSize > 2000u) {
         ivp_message(
-            "Warning! Large min_list array size (%d)! Could indicate long "
+            "Warning! Large min_list array size (%u)! Could indicate long "
             "sweeps\n",
             nNewMallocSize);
         ++g_ErrorCount;
@@ -121,12 +123,14 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add(void *elem,
   IVP_ASSERT(first_element != IVP_U_MINLIST_UNUSED);
   // find place to insert element, we know at least one exists
 
-  int lastj = first_element;
+  // dimhotepus: int -> unisigned int.
+  unsigned int lastj = first_element;
 
 #ifdef IVP_U_MINLIST_USELONG
   // lastj is the last element after we want to insert
-  int lo = first_long;
-  int max_cmp_len = 3;
+  // dimhotepus: int -> unisigned int. 
+  unsigned int lo = first_long;
+  unsigned int max_cmp_len = 3;
   while (lo != IVP_U_MINLIST_UNUSED) {
     // do _long jumps if possible
     IVP_U_Min_List_Element *flong = &elems[lo];
@@ -138,12 +142,14 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add(void *elem,
     lo = flong->long_next;
   }
 
-  int firstj_after = lastj;
-  int count_cmp = 0;
+  // dimhotepus: int -> unisigned int. 
+  unsigned int firstj_after = lastj;
+  unsigned int count_cmp = 0;
 #endif
 
   IVP_U_Min_List_Element *f = &elems[lastj];
-  int j;
+  // dimhotepus: int -> unisigned int. 
+  unsigned int j;
   for (j = f->next; j != IVP_U_MINLIST_UNUSED; j = f->next) {
     f = &elems[j];
 
@@ -170,14 +176,17 @@ end:
 #ifdef IVP_U_MINLIST_USELONG
   // insert long jmp
   if (count_cmp > max_cmp_len) {
-    int new_long_pos = firstj_after;
+    // dimhotepus: int -> unsigned int.
+    unsigned int new_long_pos = firstj_after;
 
     // search new position for longjump
-    for (int k = 2; k < max_cmp_len; k++) {
+    // dimhotepus: int -> unsigned int.
+    for (unsigned int k = 2; k < max_cmp_len; k++) {
       new_long_pos = elems[new_long_pos].next;
     }
 
-    int next_of_first = elems[firstj_after].long_next;
+    // dimhotepus: int -> unsigned int.
+    unsigned int next_of_first = elems[firstj_after].long_next;
     IVP_U_Min_List_Element *nl = &elems[new_long_pos];
     IVP_ASSERT(nl->long_next == IVP_U_MINLIST_LONG_UNUSED);
 
