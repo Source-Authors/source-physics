@@ -24,7 +24,10 @@ void ivp_memory_check([[maybe_unused]] void *a) {}
 void ivp_byte_swap4(uint &fourbytes) {
 #ifdef _WIN32
   fourbytes = _byteswap_ulong(fourbytes);
-#else
+  // dimhotepus: Fast builtin byte swaps. 
+#elif defined(__clang__) || defined(__GCC__)
+  fourbytes = __builtin_bswap32(fourbytes);
+#else  
   struct FOURBYTES {
     union {
       unsigned char b[4];
@@ -46,6 +49,9 @@ void ivp_byte_swap4(uint &fourbytes) {
 void ivp_byte_swap2(ushort &twobytes) {
 #ifdef _WIN32
   twobytes = _byteswap_ushort(twobytes);
+  // dimhotepus: Fast builtin byte swaps.
+#elif defined(__clang__) || defined(__GCC__)
+  twobytes = __builtin_bswap16(twobytes);
 #else
   struct TWOBYTES {
     union {
