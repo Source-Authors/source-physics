@@ -88,8 +88,10 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(
   IVP_ASSERT(i_s0 < 4);
   IVP_ASSERT(i_s1 < 4);
 
+  // dimhotepus: Precache for performance.
+  const int loop_hash_len{loop_hash_size};
   // dimhotepus: Early return on loop instead of out-of-bounds.
-  if (loop_hash_size >= IVP_LOOP_LIST_SIZE) {
+  if (loop_hash_len > std::size(loop_hash)) {
     return IVP_TRUE;
   }
 
@@ -101,9 +103,9 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(
     std::swap(x0, x1);
   }
 
-  IVP_MM_Loop_Hash_Struct *s = &loop_hash[loop_hash_size];
+  IVP_MM_Loop_Hash_Struct *s = &loop_hash[loop_hash_len];
   // dimhotepus: Fix out of bounds read from loop_hash.
-  for (int i = loop_hash_size; i > 0; i--) {
+  for (int i = loop_hash_len; i > 0; i--) {
     s--;
 
     if (s->a == x0 && s->b == x1) {
@@ -111,7 +113,12 @@ IVP_BOOL IVP_Mindist_Minimize_Solver::check_loop_hash(
     }
   }
 
-  loop_hash[loop_hash_size] = {x0, x1};
+  // dimhotepus: Fix out of bounds write from loop_hash.
+  if (loop_hash_len >= std::size(loop_hash)) {
+    return IVP_TRUE;
+  }
+
+  loop_hash[loop_hash_len] = {x0, x1};
   loop_hash_size++;
   return IVP_FALSE;
 }
