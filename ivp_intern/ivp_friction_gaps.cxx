@@ -487,8 +487,8 @@ int IVP_Friction_Solver::do_resulting_pushes(IVP_Friction_System *fs) {
       if (impulse_now == 0.0f) {
         // inactive
         my_dist->has_negative_pull_since = 0;
-        impulse_now =
-            my_dist->now_friction_pressure * 0.0f * this->es->delta_time;
+        // dimhotepus: Set to 0 directly.
+        impulse_now = 0.0;
         goto cont_for_next;
       } else {
         // negative push
