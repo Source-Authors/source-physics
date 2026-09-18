@@ -260,6 +260,19 @@ void IVP_Contact_Point::static_friction_single(const IVP_Event_Sim *es,
 bool IVP_Contact_Point::friction_force_local_constraint_2d_wheel(
     IVP_Core *core_a, IVP_Impact_Solver_Long_Term *info,
     const IVP_Event_Sim *es, IVP_FLOAT &flEnergy) {
+  // Apply material-based damping to vehicle wheels.
+  IVP_Material* materials[2];
+  get_material_info(materials);
+
+  const IVP_DOUBLE damping = materials[1]->get_damping();
+
+  if (damping != 0.0) {
+    IVP_U_Float_Point rotation_damping;
+    rotation_damping.set_to_zero();
+
+    core_a->damp_object(es->delta_time, &rotation_damping, damping);
+  }
+
   IVP_Constraint_Car_Object *wheel = core_a->car_wheel;
   IVP_Constraint_Solver_Car *solver = wheel->solver_car;
 
