@@ -56,7 +56,7 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add(void *elem,
     if (nNewMallocSize > IVP_U_MINLIST_MAX_ALLOCATION)
       nNewMallocSize = IVP_U_MINLIST_MAX_ALLOCATION;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
     // dimhotepus: int -> unisigned int. 
     static unsigned int g_ErrorCount = 0;
     if (g_ErrorCount < 3u) {
@@ -113,7 +113,7 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add(void *elem,
 
     e->prev = IVP_U_MINLIST_UNUSED;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 //		check();
 #endif
 
@@ -209,7 +209,7 @@ end:
   }
 #endif
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 //	check();
 #endif
 
@@ -261,7 +261,7 @@ void IVP_U_Min_List::remove_minlist_elem(IVP_U_MINLIST_INDEX index) {
   e->next = free_list;
   free_list = index;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 //	check();
 #endif
 }
