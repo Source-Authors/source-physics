@@ -20,7 +20,7 @@
 #endif
 
 // some of these are wrong
-#if defined(_DEBUG) && !defined(HK_DEBUG)
+#if !defined(NDEBUG) && !defined(HK_DEBUG)
 #define HK_DEBUG
 #endif
 
