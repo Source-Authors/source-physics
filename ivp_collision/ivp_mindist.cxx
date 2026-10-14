@@ -130,7 +130,7 @@ IVP_Time_Event::~IVP_Time_Event() {}
  *	Description:	deletes mindist
  ********************************************************************************/
 IVP_Mindist::~IVP_Mindist() {
-#if defined(DEBUG)
+#if !defined(NDEBUG)
   if (g_pCurrentMindist == this) {
     IVP_Collision_Filter *coll_filter =
         get_synapse(0)->l_obj->get_environment()->get_collision_filter();
@@ -219,7 +219,7 @@ const IVP_Compact_Ledge *IVP_Synapse::get_ledge() const {
   return edge->get_compact_ledge();
 }
 
-#if defined(DEBUG) || 1
+#if !defined(NDEBUG) || 1
 void IVP_Synapse_Real::print() {
   const char *stat_text = nullptr;
   int n_points = 0;

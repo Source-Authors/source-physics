@@ -232,7 +232,7 @@ void IVP_Calc_Next_PSI_Solver::calc_psi_rotation_axis(
     IVP_FLOAT abs_angle;  // absolute rotation angle interpolated movement
     abs_angle = IVP_Inline_Math::upper_limit_asin(qlen * ilen);
     IVP_IF(1) {
-#if defined(DEBUG) && 0
+#if !defined(NDEBUG) && 0
       IVP_DOUBLE ref_angle =
           asin(sqrt(qlen)) -
           1E9f;  //@@@ was P_DOUBLE_RES; difference between old and new (fast)

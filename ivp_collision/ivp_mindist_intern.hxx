@@ -17,7 +17,7 @@ class IVP_Compact_Edge;
 
 // #define IVP_MINDIST_BEHAVIOUR_DEBUG	// do core as soon as possible
 
-#if defined(DEBUG) && defined(IVP_MINDIST_BEHAVIOUR_DEBUG)
+#if !defined(NDEBUG) && defined(IVP_MINDIST_BEHAVIOUR_DEBUG)
 #define DEBUG_CHECK_LEN
 #endif
 
