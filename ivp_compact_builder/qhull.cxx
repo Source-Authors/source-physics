@@ -293,7 +293,7 @@ void qh_build_withrestart(void) {
     }
     if (!qh RERUN && qh JOGGLEmax < REALmax / 2) {
       if (qh build_cnt > qh_JOGGLEmaxretry) {
-        fprintf(qh ferr,
+        ivp_message(
                 "\n\
 qhull precision error: %d attempts to construct a convex hull\n\
         with joggled input.  Increase joggle above 'QJ%2.2g'\n\
@@ -628,7 +628,7 @@ void qh_findhorizon(pointT *point, facetT *facet, int *goodvisible,
   }
   if (!numhorizon) {
     qh_precision("empty horizon");
-    fprintf(qh ferr,
+    ivp_message(
             "qhull precision error (qh_findhorizon): empty horizon\n\
 Point p%d was above all facets.\n",
             qh_pointid(point));

@@ -29,7 +29,7 @@ coordT *qh_copypoints(coordT *points, int numpoints, int dimension) {
 
   size = numpoints * dimension * sizeof(coordT);
   if (!(newpoints = (coordT *)malloc(size))) {
-    fprintf(qh ferr, "qhull error: insufficient memory to copy %d points\n",
+    ivp_message( "qhull error: insufficient memory to copy %d points\n",
             numpoints);
     qh_errexit(qh_ERRmem, NULL, NULL);
   }
@@ -906,7 +906,7 @@ void qh_joggleinput(void) {
     qh input_malloc = qh POINTSmalloc;
     size = qh num_points * qh hull_dim * sizeof(coordT);
     if (!(qh first_point = (coordT *)malloc(size))) {
-      fprintf(qh ferr, "qhull error: insufficient memory to joggle %d points\n",
+      ivp_message( "qhull error: insufficient memory to joggle %d points\n",
               qh num_points);
       qh_errexit(qh_ERRmem, NULL, NULL);
     }
@@ -1475,14 +1475,14 @@ void qh_projectinput(void) {
     if (qh ATinfinity) newnum++;
   }
   if (newdim != qh hull_dim) {
-    fprintf(qh ferr,
+    ivp_message(
             "qhull internal error (qh_projectinput): dimension after "
             "projection %d != hull_dim %d\n",
             newdim, qh hull_dim);
     qh_errexit(qh_ERRqhull, NULL, NULL);
   }
   if (!(newpoints = (coordT *)p_malloc(newnum * newdim * sizeof(coordT)))) {
-    fprintf(qh ferr, "qhull error: insufficient memory to project %d points\n",
+    ivp_message( "qhull error: insufficient memory to project %d points\n",
             qh num_points);
     qh_errexit(qh_ERRmem, NULL, NULL);
   }
@@ -1979,7 +1979,7 @@ boolT qh_sethalfspace(int dim, coordT *coords, coordT **nextp, coordT *normal,
 LABELerroroutside:
   feasiblep = feasible;
   normp = normal;
-  fprintf(qh ferr,
+  ivp_message(
           "qhull input error: feasible point is not clearly inside "
           "halfspace\nfeasible point: ");
   for (k = dim; k--;) ivp_message(qh_REAL_1, r = *(feasiblep++));

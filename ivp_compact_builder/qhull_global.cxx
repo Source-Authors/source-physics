@@ -482,7 +482,7 @@ void qh_initflags(char *command) {
         break;
       case 'A':
         if (!isdigit(*s) && *s != '.' && *s != '-')
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: no maximum cosine angle given for option "
                   "'An'.  Ignored.\n");
         else {
@@ -500,7 +500,7 @@ void qh_initflags(char *command) {
         break;
       case 'C':
         if (!isdigit(*s) && *s != '.' && *s != '-')
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: no centrum radius given for option 'Cn'.  "
                   "Ignored.\n");
         else {
@@ -518,11 +518,11 @@ void qh_initflags(char *command) {
         break;
       case 'E':
         if (*s == '-')
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: negative maximum roundoff given for option "
                   "'An'.  Ignored.\n");
         else if (!isdigit(*s))
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: no maximum roundoff given for option 'En'.  "
                   "Ignored.\n");
         else {
@@ -549,7 +549,7 @@ void qh_initflags(char *command) {
         }
         if (start < t) {
           if (!(qh feasible_string = (char *)p_calloc(t - start + 1, 1))) {
-            fprintf(qh ferr, "qhull error: insufficient memory for 'Hn,n,n'\n");
+            ivp_message( "qhull error: insufficient memory for 'Hn,n,n'\n");
             qh_errexit(qh_ERRmem, NULL, NULL);
           }
           strncpy(qh feasible_string, start, t - start);
@@ -560,7 +560,7 @@ void qh_initflags(char *command) {
         break;
       case 'R':
         if (!isdigit(*s))
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: missing random perturbation for option 'Rn'. "
                   " Ignored\n");
         else {
@@ -571,7 +571,7 @@ void qh_initflags(char *command) {
         break;
       case 'V':
         if (!isdigit(*s) && *s != '-')
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: missing visible distance for option 'Vn'.  "
                   "Ignored\n");
         else {
@@ -581,7 +581,7 @@ void qh_initflags(char *command) {
         break;
       case 'U':
         if (!isdigit(*s) && *s != '-')
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: missing coplanar distance for option 'Un'.  "
                   "Ignored\n");
         else {
@@ -591,11 +591,11 @@ void qh_initflags(char *command) {
         break;
       case 'W':
         if (*s == '-')
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: negative outside width for option 'Wn'.  "
                   "Ignored.\n");
         else if (!isdigit(*s))
-          fprintf(qh ferr,
+          ivp_message(
                   "qhull warning: missing outside width for option 'Wn'.  "
                   "Ignored\n");
         else {
@@ -1374,7 +1374,7 @@ void qh_initqhull_globals(coordT *points, int numpoints, int dim,
   }
   if (qh JOGGLEmax < REALmax / 2 && qh PRINTprecision)
     if constexpr (REALepsilon > 2e-8)
-      fprintf(qh ferr,
+      ivp_message(
               "qhull warning: real epsilon, %2.2g, is probably too large for "
               "joggle ('QJn')\nRecompile with double precision reals (see "
               "user.h).\n",
@@ -1427,7 +1427,7 @@ void qh_initqhull_globals(coordT *points, int numpoints, int dim,
   else if (qh VORONOI)
     qh CENTERtype = qh_ASvoronoi;
   if (qh TESTvneighbors && !qh MERGING) {
-    fprintf(qh ferr,
+    ivp_message(
             "qhull input error: test vertex neighbors ('Qv') needs a merge "
             "option\n");
     qh_errexit(qh_ERRinput, NULL, NULL);
@@ -1440,7 +1440,7 @@ void qh_initqhull_globals(coordT *points, int numpoints, int dim,
     }
   }
   if (qh hull_dim <= 1) {
-    fprintf(qh ferr, "qhull error: dimension %d must be > 1\n", qh hull_dim);
+    ivp_message( "qhull error: dimension %d must be > 1\n", qh hull_dim);
     qh_errexit(qh_ERRinput, NULL, NULL);
   }
   for (k = 2, factorial = 1.0; k < qh hull_dim; k++) factorial *= k;
@@ -1515,14 +1515,14 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
   qh RANDOMa = 2.0 * qh RANDOMfactor / qh_RANDOMmax;
   qh RANDOMb = 1.0 - qh RANDOMfactor;
   if (qh_HASHfactor < 1.1) {
-    fprintf(qh ferr,
+    ivp_message(
             "qhull internal error (qh_initqhull_globals): qh_HASHfactor %d "
             "must be at least 1.1.  Qhull uses linear hash probing\n",
             qh_HASHfactor);
     qh_errexit(qh_ERRqhull, NULL, NULL);
   }
   if (numpoints + extra < pointsneeded) {
-    fprintf(qh ferr,
+    ivp_message(
             "qhull input error: not enough points (%d) to construct initial "
             "simplex (need %d)\n",
             numpoints, pointsneeded);
@@ -1531,7 +1531,7 @@ qhull configuration warning (qh_RANDOMmax in user.h):\n\
   if (qh PRINTtransparent) {
     if (qh hull_dim != 4 || !qh DELAUNAY || qh VORONOI ||
         qh DROPdim >= 0) {  //-V112
-      fprintf(qh ferr,
+      ivp_message(
               "qhull input error: transparent Delaunay ('Gt') needs 3-d "
               "Delaunay ('d') w/o 'GDn'\n");
       qh_errexit(qh_ERRinput, NULL, NULL);
@@ -1767,7 +1767,7 @@ void qh_initthresholds(char *command) {
       while (*s && !isspace(key = *s++)) {
         if (key == 'd' || key == 'D') {
           if (!isdigit(*s)) {
-            fprintf(qh ferr,
+            ivp_message(
                     "qhull warning: no dimension given for Print option '%c' "
                     "at: %s.  Ignored\n",
                     key, s - 1);
@@ -1775,7 +1775,7 @@ void qh_initthresholds(char *command) {
           }
           index = qh_strtol(s, &s);
           if (index >= qh hull_dim) {
-            fprintf(qh ferr,
+            ivp_message(
                     "qhull warning: dimension %d for Print option '%c' is >= "
                     "%d.  Ignored\n",
                     index, key, qh hull_dim);
@@ -1785,7 +1785,7 @@ void qh_initthresholds(char *command) {
             s++;
             value = qh_strtod(s, &s);
             if (fabs((double)value) > 1.0) {
-              fprintf(qh ferr,
+              ivp_message(
                       "qhull warning: value %2.4g for Print option %c is > +1 "
                       "or < -1.  Ignored\n",
                       value, key);
@@ -1812,7 +1812,7 @@ void qh_initthresholds(char *command) {
           s++;
         else if (key == 'b' || key == 'B') {
           if (!isdigit(*s)) {
-            fprintf(qh ferr,
+            ivp_message(
                     "qhull warning: no dimension given for Qhull option %c.  "
                     "Ignored\n",
                     key);
@@ -1820,7 +1820,7 @@ void qh_initthresholds(char *command) {
           }
           index = qh_strtol(s, &s);
           if (index >= maxdim) {
-            fprintf(qh ferr,
+            ivp_message(
                     "qhull warning: dimension %d for Qhull option %c is >= %d. "
                     " Ignored\n",
                     index, key, maxdim);

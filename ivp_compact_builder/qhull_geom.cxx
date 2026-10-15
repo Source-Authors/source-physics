@@ -257,11 +257,11 @@ facetT *qh_findbest(pointT *point, facetT *startfacet, boolT bestoutside,
     ivp_message(
         "qh_findbest: point p%d starting at f%d bestoutside? %d newfacets %d\n",
         qh TRACEpoint, startfacet->id, bestoutside, newfacets);
-    fprintf(qh ferr,
+    ivp_message(
             "  ischeckmax %d ispartition %d isfindfacet %d testhorizon %d\n",
             ischeckmax, ispartition, isfindfacet, testhorizon);
     ivp_message("  Last point added to hull was p%d.", qh furthest_id);
-    fprintf(qh ferr, "  Last merge was #%d.\n", zzval_(Ztotmerge));
+    ivp_message( "  Last merge was #%d.\n", zzval_(Ztotmerge));
   }
   if (isoutside) *isoutside = True;
 
@@ -362,7 +362,7 @@ facetT *qh_findbest(pointT *point, facetT *startfacet, boolT bestoutside,
           "qh_findbest: point p%d starting at f%d bestoutside? %d newfacets "
           "%d\n",
           qh TRACEpoint, startfacet->id, bestoutside, newfacets);
-      fprintf(qh ferr,
+      ivp_message(
               "\n\
 qh_findbest: all neighbors of facet %d are flipped or upper Delaunay.\n\
 Please report this error to qhull_bug@geom.umn.edu with the input and all of the output.\n",
@@ -440,11 +440,11 @@ facetT *qh_findbestnew(pointT *point, facetT *startfacet, realT *dist,
 
   if (!startfacet) {
     if (qh MERGING)
-      fprintf(qh ferr,
+      ivp_message(
               "qhull precision error (qh_findbestnew): merging has formed and "
               "deleted an independent cycle of facets.  Can not continue.\n");
     else
-      fprintf(qh ferr,
+      ivp_message(
               "qhull internal error (qh_findbestnew): no new facets for point "
               "p%d\n",
               qh furthest_id);
@@ -459,11 +459,11 @@ facetT *qh_findbestnew(pointT *point, facetT *startfacet, realT *dist,
   if (qh TRACElevel && qh TRACEpoint >= 0 &&
       qh TRACEpoint == qh_pointid(point)) {
     qh IStracing = qh TRACElevel;
-    fprintf(qh ferr,
+    ivp_message(
             "qh_findbestnew: point p%d facet f%d. Stop if dist > %2.2g\n",
             qh TRACEpoint, startfacet->id, distoutside);
-    fprintf(qh ferr, "  Last point added to hull was p%d.", qh furthest_id);
-    fprintf(qh ferr, "  Last merge was #%d.\n", zzval_(Ztotmerge));
+    ivp_message( "  Last point added to hull was p%d.", qh furthest_id);
+    ivp_message( "  Last merge was #%d.\n", zzval_(Ztotmerge));
   }
   if (isoutside) *isoutside = True;
   *numpart = 0;
@@ -892,7 +892,7 @@ void qh_setfacetplane(facetT *facet) {
     ivp_message("qh_setfacetplane: facet f%d created.\n", facet->id);
     ivp_message("  Last point added to hull was p%d.", qh furthest_id);
     if (zzval_(Ztotmerge))
-      fprintf(qh ferr, "  Last merge was #%d.", zzval_(Ztotmerge));
+      ivp_message( "  Last merge was #%d.", zzval_(Ztotmerge));
     ivp_message("\n\nCurrent summary is:\n");
     qh_printsummary(qh ferr);
   }
