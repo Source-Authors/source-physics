@@ -841,20 +841,20 @@ IVP_Vec_PCore::IVP_Vec_PCore(const IVP_Core *pc, const IVP_U_Float_Point *p) {
 }
 
 void IVP_Core::calc_calc() {
-  IVP_ASSERT(get_rot_inertia()->real_length() > P_DOUBLE_EPS);
-  IVP_U_Float_Hesse *iri = (IVP_U_Float_Hesse *)get_inv_rot_inertia();
+  IVP_U_Float_Point& ri = rot_inertia;
 
-  // clamp to valid values so we don't end up with nans along the way
+  // dimhotepus: clamp to valid values so we don't end up with nans along the way
   // weird decompile code...
-  IVP_U_Float_Point &ri = rot_inertia;
   for (int i = 0; i < 3; i++) {
-    if (std::isfinite(ri.k[i]) && ri.k[i] <= 1e18f) {
-      if (ri.k[i] < -1e18f) ri.k[i] = -1e18f;
+    if (std::isfinite(ri.k[i]) && ri.k[i] <= P_FLOAT_MAX) {
+      if (ri.k[i] < -P_FLOAT_MAX) ri.k[i] = -P_FLOAT_MAX;
     } else {
-      ri.k[i] = 1e18f;
+      ri.k[i] = P_FLOAT_MAX;
     }
   }
+  IVP_ASSERT(ri.real_length() > P_DOUBLE_EPS);
 
+  IVP_U_Float_Hesse *iri = (IVP_U_Float_Hesse *)get_inv_rot_inertia();
   iri->set(1.0f / ri.k[0], 1.0f / ri.k[1], 1.0f / ri.k[2]);
   iri->hesse_val = 1.0f / get_mass();
 

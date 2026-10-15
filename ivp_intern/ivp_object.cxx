@@ -880,6 +880,16 @@ void IVP_Real_Object::init_object_core(IVP_Environment *i_environment,
     rot_inertia.set(&templ->rot_inertia);
   }
 
+  // dimhotepus: clamp to valid values so we don't end up with nans along the
+  // way weird decompile code...
+  for (int i = 0; i < 3; i++) {
+    if (std::isfinite(rot_inertia.k[i]) && rot_inertia.k[i] <= P_FLOAT_MAX) {
+      if (rot_inertia.k[i] < -P_FLOAT_MAX) rot_inertia.k[i] = -P_FLOAT_MAX;
+    } else {
+      rot_inertia.k[i] = P_FLOAT_MAX;
+    }
+  }
+
   if (templ->auto_check_rot_inertia != 0.0f) {
     IVP_FLOAT min_inertia_value =
         rot_inertia.real_length() * templ->auto_check_rot_inertia;
