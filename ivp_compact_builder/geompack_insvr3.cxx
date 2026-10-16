@@ -50,7 +50,7 @@ void IVP_Geompack::insvr3_(int a) {
 
   /* Function Body */
   this->n_original_vertices++;
-  // dimhteopus: Comment no side effects.
+  // dimhotepus: Comment no side effects.
   /*b = faceverticeslist[a * 6 + 3];
   la = faceverticeslist[a * 6 + 1];
   lb = faceverticeslist[b * 6 + 1];*/
