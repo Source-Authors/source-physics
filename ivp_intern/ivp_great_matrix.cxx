@@ -1023,8 +1023,8 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
 
     for (int j = 0; j < n_variables; j++) {
       if (full_solver_mat.result_vector[j] + eps < full_b[j]) {
-        ivp_message("linear_constraint_failed #%d %f > %f\n", j,
-                    full_solver_mat.result_vector[j], full_b[j]);
+        ivp_message("linear_constraint_failed #%d %f < %f (eps %.4f)\n", j,
+                    full_solver_mat.result_vector[j], full_b[j], eps);
       }
     }
     for (int j = 0; j < r_actives; j++) {
