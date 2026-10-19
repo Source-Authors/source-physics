@@ -1033,7 +1033,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
           full_solver_mat.result_vector[index_full] - full_b[index_full]);
       if (diff > eps) {
         ivp_message("linear_constraint_failed #%d %f == %f (diff %f > %.4f)\n",
-                    j, full_solver_mat.result_vector[index_full],
+                    index_full, full_solver_mat.result_vector[index_full],
                     full_b[index_full], diff, eps);
       }
     }
