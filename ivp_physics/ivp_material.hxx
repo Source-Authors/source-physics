@@ -48,6 +48,7 @@ class IVP_Material {
   get_second_friction_factor() = 0;  // second friction factor when two friction
                                      // values is enabled
   virtual IVP_DOUBLE get_elasticity() = 0;
+  virtual IVP_DOUBLE get_damping() { return 0.0; }
   // INTERN_START
   virtual IVP_DOUBLE get_adhesion() = 0;  // for future releases
   // INTERN_END
