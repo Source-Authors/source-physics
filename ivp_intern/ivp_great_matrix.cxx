@@ -32,20 +32,6 @@ inline void IVP_VecFPU::fpu_add_multiple_row(IVP_DOUBLE *target_adress,
     source_adress = (IVP_DOUBLE *)result_adress;
   }
 
-#if defined(IVP_USE_PS2_VU0)
-
-  asm __volatile__(
-      "
-      mfc1 $8,
-      % 3 qmtc2 $8, vf5 #vf5.x factor 1
-      : lqc2 vf4, 0x0(% 1) #vf4 * source vmulx.xyzw vf6, vf4,
-        vf5 #vf6 * source * factor lqc2 vf4, 0x0(% 0) addi % 0,
-        0x10 vadd.xyzw vf6, vf4, vf6 #vf6 = *dest + factor * *source addi % 2,
-        -4 addi % 1, 0x10 sqc2 vf6, -0x10(% 0) bgtz % 2, 1b nop "
-      : /* no output */
-      : "r"(target_adress), "r"(source_adress), "r"(size), "f"(factor)
-      : "$8", "memory");
-#else
   IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
                             ->ivp_willamette_optimization) {
 #if defined(IVP_WILLAMETTE)
@@ -95,7 +81,6 @@ inline void IVP_VecFPU::fpu_add_multiple_row(IVP_DOUBLE *target_adress,
       source_adress += IVP_VECFPU_SIZE;
     }
   }
-#endif
 }
 
 inline IVP_DOUBLE IVP_VecFPU::fpu_large_dot_product(IVP_DOUBLE *base_a,

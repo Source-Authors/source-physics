@@ -5,9 +5,7 @@
 #ifndef _IVP_U_LINEAR_MACROS_INCLUDED
 #define _IVP_U_LINEAR_MACROS_INCLUDED
 
-#if defined(IVP_USE_PS2_VU0)
-#include "ivu_linear_ps2.hxx"
-#elif defined(IVP_PIII)
+#if defined(IVP_PIII)
 #include "ivu_linear_piii.hxx"
 #else
 #include "ivu_linear_software.hxx"

@@ -24,10 +24,6 @@
 #define IVP_VECTOR_UNIT_DOUBLE /* set if extra data should be inserted to \
                                   utilize double vector units */
 
-#if defined(PSXII)
-#define IVP_USE_PS2_VU0
-#endif
-
 #ifdef IVP_WILLAMETTE
 #define IVP_IF_WILLAMETTE_OPT(cond) if (cond)
 #else
