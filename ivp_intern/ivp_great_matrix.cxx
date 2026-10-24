@@ -16,6 +16,8 @@
 #include <utility>
 #include <vector>
 #include <limits>
+#include <cmath>
+#include <cstdint>
 
 #define IVP_UNILATERAL_SOLVER_MAX_STEP 250
 #define IVP_STATIC_FRICTION_TEST_EPS 0.00001f  // is a percentage value
@@ -196,14 +198,14 @@ inline IVP_DOUBLE dot(const IVP_DOUBLE *a, const IVP_DOUBLE *b, int n) {
   __m128d acc1 = _mm_setzero_pd();
   int i = 0;
   for (; i + 4 <= n; i += 4) {
-    acc0 =
-        _mm_add_pd(acc0, _mm_mul_pd(_mm_loadu_pd(a + i), _mm_loadu_pd(b + i)));
+    acc0 = _mm_add_pd(acc0,
+                      _mm_mul_pd(_mm_loadu_pd(a + i), _mm_loadu_pd(b + i)));
     acc1 = _mm_add_pd(
         acc1, _mm_mul_pd(_mm_loadu_pd(a + i + 2), _mm_loadu_pd(b + i + 2)));
   }
   if (i + 2 <= n) {
-    acc0 =
-        _mm_add_pd(acc0, _mm_mul_pd(_mm_loadu_pd(a + i), _mm_loadu_pd(b + i)));
+    acc0 = _mm_add_pd(acc0,
+                      _mm_mul_pd(_mm_loadu_pd(a + i), _mm_loadu_pd(b + i)));
     i += 2;
   }
   acc0 = _mm_add_pd(acc0, acc1);
@@ -289,8 +291,8 @@ inline IVP_DOUBLE max_abs(const IVP_DOUBLE *p, int n) {
   for (; i + 4 <= n; i += 4) {
     const __m128d v0 = _mm_andnot_pd(sign, _mm_loadu_pd(p + i));
     const __m128d v1 = _mm_andnot_pd(sign, _mm_loadu_pd(p + i + 2));
-    vnan = _mm_or_pd(
-        vnan, _mm_or_pd(_mm_cmpunord_pd(v0, v0), _mm_cmpunord_pd(v1, v1)));
+    vnan = _mm_or_pd(vnan, _mm_or_pd(_mm_cmpunord_pd(v0, v0),
+                                     _mm_cmpunord_pd(v1, v1)));
     m0 = _mm_max_pd(m0, v0);
     m1 = _mm_max_pd(m1, v1);
   }
@@ -335,8 +337,8 @@ inline IVP_DOUBLE axpy_max_abs(IVP_DOUBLE *dst, const IVP_DOUBLE *src,
   __m128d vm = _mm_setzero_pd();
   __m128d vnan = _mm_setzero_pd();
   for (; i + 2 <= n; i += 2) {
-    const __m128d r = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(src + i), vf),
-                                 _mm_loadu_pd(dst + i));
+    const __m128d r =
+        _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(src + i), vf), _mm_loadu_pd(dst + i));
     _mm_storeu_pd(dst + i, r);
     const __m128d a = _mm_andnot_pd(sign, r);
     vnan = _mm_or_pd(vnan, _mm_cmpunord_pd(a, a));
@@ -355,6 +357,65 @@ inline IVP_DOUBLE axpy_max_abs(IVP_DOUBLE *dst, const IVP_DOUBLE *src,
   return has_nan ? std::numeric_limits<IVP_DOUBLE>::quiet_NaN() : m;
 }
 
+// dst[i] = src[i] * f
+inline void scale_copy(IVP_DOUBLE *dst, const IVP_DOUBLE *src, IVP_DOUBLE f,
+                       int n) {
+  int i = 0;
+#if defined(IVP_VECFPU_BACKEND_DXMATH)
+  using namespace DirectX;
+  const XMVECTOR vf = XMVectorReplicate(f);
+  for (; i + 4 <= n; i += 4) {
+    store4(dst + i, XMVectorMultiply(load4(src + i), vf));
+  }
+#elif defined(IVP_VECFPU_BACKEND_SSE2)
+  const __m128d vf = _mm_set1_pd(f);
+  for (; i + 2 <= n; i += 2) {
+    _mm_storeu_pd(dst + i, _mm_mul_pd(_mm_loadu_pd(src + i), vf));
+  }
+#endif
+  for (; i < n; i++) {
+    dst[i] = src[i] * f;
+  }
+}
+
+// exponent e with v = m * 2^e, m in [0.5, 1)  (== std::frexp), for v > 0
+inline int exponent_of(IVP_DOUBLE v) {
+  if (sizeof(IVP_DOUBLE) == 8) {
+    uint64_t bits;
+    std::memcpy(&bits, &v, 8);
+    const int e = int((bits >> 52) & 0x7ff);
+    if (e != 0 && e != 0x7ff) return e - 1022;
+  } else {
+    uint32_t bits;
+    std::memcpy(&bits, &v, 4);
+    const int e = int((bits >> 23) & 0xff);
+    if (e != 0 && e != 0xff) return e - 126;
+  }
+  int e;  // denormal (or inf/nan, filtered by the caller)
+  std::frexp(v, &e);
+  return e;
+}
+
+// exactly 2^k (== std::ldexp(1, k))
+inline IVP_DOUBLE pow2(int k) {
+  if (sizeof(IVP_DOUBLE) == 8) {
+    if (k >= -1022 && k <= 1023) {
+      const uint64_t bits = uint64_t(k + 1023) << 52;
+      double d;
+      std::memcpy(&d, &bits, 8);
+      return IVP_DOUBLE(d);
+    }
+  } else {
+    if (k >= -126 && k <= 127) {
+      const uint32_t bits = uint32_t(k + 127) << 23;
+      float f;
+      std::memcpy(&f, &bits, 4);
+      return IVP_DOUBLE(f);
+    }
+  }
+  return std::ldexp(IVP_DOUBLE(1.0f), k);
+}
+
 // NaN-sticky maximum
 inline IVP_DOUBLE nan_max(IVP_DOUBLE a, IVP_DOUBLE b) {
   if (a != a) return a;
@@ -364,9 +425,17 @@ inline IVP_DOUBLE nan_max(IVP_DOUBLE a, IVP_DOUBLE b) {
 
 }  // namespace
 
-// dimhotepus: The 'adress_aligned' argument is ignored: every kernel processes
-// exactly [0, size) with unaligned loads. The old code instead rounded the
-// start address down / the size up to the vector block, i.e. it read and wrote
+// dimhotepus: MATRIX_EPS, but never finer than the floating point type can resolve
+// (1e-6 is only ~8 ulp for float, so singularity tests would be noise)
+static constexpr inline IVP_DOUBLE ivp_lu_eps(IVP_DOUBLE matrix_eps) {
+  constexpr IVP_DOUBLE floor_eps =
+      IVP_DOUBLE(64.0f) * std::numeric_limits<IVP_DOUBLE>::epsilon();
+  return (matrix_eps > floor_eps) ? matrix_eps : floor_eps;
+}
+
+// dimhotepus: The 'adress_aligned' argument is ignored: every kernel processes exactly
+// [0, size) with unaligned loads. The old code instead rounded the start
+// address down / the size up to the vector block, i.e. it read and wrote
 // elements outside the requested range (and with the PLATFORM_64BITS
 // MEMSHIFT=2 setting it miscounted doubles and overran by one block).
 
@@ -399,8 +468,7 @@ inline void IVP_VecFPU::fpu_copy_rows(IVP_DOUBLE *target_adress,
                                       const IVP_DOUBLE *source_adress, int size,
                                       IVP_BOOL) {
   if (size > 0) {
-    std::memcpy(target_adress, source_adress,
-                size_t(size) * sizeof(IVP_DOUBLE));
+    std::memcpy(target_adress, source_adress, size_t(size) * sizeof(IVP_DOUBLE));
   }
 }
 
@@ -415,8 +483,8 @@ inline void IVP_VecFPU::fpu_set_row_to_zero(IVP_DOUBLE *target_adress, int size,
 IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::matrix_check_unequation_line(
     int linenum) {
   const IVP_DOUBLE *dline = &matrix_values[aligned_row_len * linenum];
-  IVP_DOUBLE left_side = IVP_VecFPU::fpu_large_dot_product(dline, result_vector,
-                                                           columns, IVP_TRUE);
+  IVP_DOUBLE left_side =
+      IVP_VecFPU::fpu_large_dot_product(dline, result_vector, columns, IVP_TRUE);
   IVP_DOUBLE eps = IVP_Inline_Math::fabsd(desired_vector[linenum] *
                                           IVP_STATIC_FRICTION_TEST_EPS);
   if (left_side + eps >= desired_vector[linenum]) {
@@ -513,7 +581,8 @@ void IVP_Great_Matrix_Many_Zero::align_matrix_values() {
 
 void IVP_Great_Matrix_Many_Zero::copy_matrix(IVP_DOUBLE *values,
                                              IVP_DOUBLE *desired) {
-  IVP_VecFPU::fpu_copy_rows(values, matrix_values, columns * columns, IVP_TRUE);
+  IVP_VecFPU::fpu_copy_rows(values, matrix_values, columns * columns,
+                            IVP_TRUE);
   IVP_VecFPU::fpu_copy_rows(desired, desired_vector, columns, IVP_TRUE);
 }
 
@@ -878,14 +947,18 @@ void IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory *my_mem) {
   reset_x = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   reset_accel = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  lu_sub_solver.L_matrix =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
-  lu_sub_solver.U_matrix =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
-  lu_sub_solver.input_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  lu_sub_solver.out_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  lu_sub_solver.temp_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  lu_sub_solver.mult_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.L_matrix = my_mem->get_mem<IVP_DOUBLE>(
+      aligned_size * n_variables);
+  lu_sub_solver.U_matrix = my_mem->get_mem<IVP_DOUBLE>(
+      aligned_size * n_variables);
+  lu_sub_solver.input_vec =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.out_vec =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.temp_vec =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.mult_vec =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   lu_sub_solver.A_matrix =
       my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
   lu_sub_solver.row_scale = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
@@ -894,15 +967,16 @@ void IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory *my_mem) {
   // own scratch: must not alias lu_sub_solver.temp_vec
   temp = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  sub_solver_mat.matrix_values =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  sub_solver_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
   sub_solver_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   sub_solver_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  inv_mat.matrix_values =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
-  inv_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  inv_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  inv_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
+      aligned_size * n_variables);
+  inv_mat.desired_vector =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  inv_mat.result_vector =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
   IVP_IF(1) {  // fill LU for fast align access
     const int total = aligned_size * n_variables;
@@ -925,13 +999,75 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
 
   alloc_memory(my_mem);
 
+  // ---- scale normalization ------------------------------------------------
+  // All tolerances below (SOLVER_EPS, TEST_EPS, MAX_STEP_LEN, the Gauss and LU
+  // pivot tolerances, the plausibility asserts) are absolute numbers, but they
+  // are compared against quantities in three different units: x, A*x-b and A.
+  // The LCP  w = A x - b >= 0, x >= 0, x.w = 0  is invariant under
+  //   A' = A / 2^ka,  b' = b / 2^kb,  x = x' * 2^(kb-ka)
+  // so the problem is solved in normalized form with max|A'| and max|b'| in
+  // [0.5, 1). Powers of two make the scaling exact: the solver gives
+  // bit-identical results for A and b scaled by any power of two, and all
+  // constants act relative to the problem's own magnitudes.
+  // Scale of A: max |A_ii|. Any estimate that scales exactly with A keeps the
+  // invariance; for the positive semi-definite matrices this solver gets
+  // (J M^-1 J^T) it is even exact, as |A_ij| <= sqrt(A_ii A_jj). O(n) instead
+  // of O(n^2); falls back to a full scan if the diagonal is zero.
+  IVP_DOUBLE a_max = 0.0f;
+  for (int r = 0; r < var_num; r++) {
+    a_max = nan_max(
+        a_max, IVP_Inline_Math::fabsd(A_in[r * aligned_size + r]));
+  }
+  if (a_max == 0.0f) {
+    for (int r = 0; r < var_num; r++) {
+      a_max = nan_max(
+          a_max, max_abs(&A_in[r * aligned_size], var_num));
+    }
+  }
+  const IVP_DOUBLE b_max = max_abs(b_in, var_num);
+  int a_exp = 0, b_exp = 0;
+  if (a_max > 0.0f && a_max <= std::numeric_limits<IVP_DOUBLE>::max()) {
+    a_exp = exponent_of(a_max);
+  }
+  if (b_max > 0.0f && b_max <= std::numeric_limits<IVP_DOUBLE>::max()) {
+    b_exp = exponent_of(b_max);
+  } else {
+    b_exp = a_exp;  // b == 0 (or invalid): keep x unscaled
+  }
+  x_unscale_exp = b_exp - a_exp;
+  if (a_exp != 0) {
+    const IVP_DOUBLE f = pow2(-a_exp);
+    IVP_DOUBLE *A_norm = my_mem->get_mem<IVP_DOUBLE>(aligned_size * var_num);
+    if (aligned_size == var_num) {  // no row padding: one contiguous block
+      scale_copy(A_norm, A_in, f, var_num * var_num);
+    } else {
+      for (int r = 0; r < var_num; r++) {
+        IVP_DOUBLE *dst = &A_norm[r * aligned_size];
+        scale_copy(dst, &A_in[r * aligned_size], f, var_num);
+        for (int c = var_num; c < aligned_size; c++) dst[c] = 0.0f;
+      }
+    }
+    A_in = A_norm;
+  }
+  if (b_exp != 0) {
+    IVP_DOUBLE *b_norm = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+    scale_copy(b_norm, b_in,
+                                  pow2(-b_exp),
+                                  aligned_size);
+    b_in = b_norm;
+  }
+  // ---------------------------------------------------------------------------
+
   r_actives = 0;
   ignored_pos = 0;
   SOLVER_EPS = 1E-7f;  // do not make this one bigger
   GAUSS_EPS = SOLVER_EPS;
   TEST_EPS = SOLVER_EPS * 1000.0;
   sub_solver_status = 0;
-  MAX_STEP_LEN = 10000;
+  // in normalized units |x'| ~ |A^-1| * |A|, so a step this long means a
+  // condition number beyond what the LU sub solver accepts
+  // (1e6 for double, ~1.3e5 for float)
+  MAX_STEP_LEN = IVP_DOUBLE(1.0f) / ivp_lu_eps(SOLVER_EPS * 10);
 
   lu_sub_solver.aligned_row_len = aligned_size;
   lu_sub_solver.n_sub = 0;
@@ -950,10 +1086,12 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
   inv_mat.MATRIX_EPS = SOLVER_EPS;
 
   IVP_IF(1) {
-    debug_mat.matrix_values =
-        my_mem->get_mem<IVP_DOUBLE>(aligned_size * var_num);
-    debug_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-    debug_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+    debug_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
+        aligned_size * var_num);
+    debug_mat.desired_vector =
+        my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+    debug_mat.result_vector =
+        my_mem->get_mem<IVP_DOUBLE>(aligned_size);
     debug_mat.MATRIX_EPS = SOLVER_EPS;
   }
 
@@ -1035,6 +1173,16 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
     debug_mat.desired_vector = NULL;
     debug_mat.matrix_values = NULL;
   }
+
+  // back from normalized to caller units (exact)
+  if (x_unscale_exp != 0) {
+    IVP_VecFPU::fpu_multiply_row(result_vec_out,
+                                 pow2(x_unscale_exp),
+                                 n_variables, IVP_TRUE);
+  }
+  full_A = NULL;
+  full_b = NULL;
+  full_x = NULL;
 
   return ret_val;
 }
@@ -1154,6 +1302,10 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
   // ivp_message("\n\n\n\n\ndoing_lcs_ %d\n",n_variables);
 
   IVP_DOUBLE solver_eps = SOLVER_EPS;
+  // magnitude that cancels when the limiting variable hits zero; the
+  // plausibility asserts below are relative to it (cancellation error scales
+  // with it, so an absolute bound fails for large, well-solved values)
+  IVP_DOUBLE cancel_scale = 1.0f;
 
   while (1) {
     if (did_real_step) {
@@ -1255,6 +1407,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
       // my processed variable has no acceleration and so could be an inactive
       // var except the force x is greater 0.0f than we must move it to actives
       limiting_var = ignored_pos;
+      cancel_scale = 1.0f;
       if (IVP_Inline_Math::fabsd(full_x[ignored_full_index]) < solver_eps) {
         goto move_ignored_to_inactive;
       } else {
@@ -1388,6 +1541,20 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
         nr_zero_steps = 0;
       }
       did_real_step = 1;
+#ifndef NDEBUG
+      IVP_IF(1) {  // only feeds the debug asserts below
+        const int lim_full = actives_inactives_ignored[limiting_var];
+        const IVP_DOUBLE before =
+            (limiting_var < r_actives) ? full_x[lim_full] : accel[lim_full];
+        const IVP_DOUBLE change =
+            smallest_step * ((limiting_var < r_actives) ? delta_f[lim_full]
+                                                        : delta_accel[lim_full]);
+        cancel_scale = IVP_Inline_Math::fabsd(before);
+        if (IVP_Inline_Math::fabsd(change) > cancel_scale)
+          cancel_scale = IVP_Inline_Math::fabsd(change);
+        if (cancel_scale < 1.0f) cancel_scale = 1.0f;
+      }
+#endif
       update_step_vars(smallest_step);
 
       if (limiting_var < r_actives) {
@@ -1399,7 +1566,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
         }
 
         int indx = actives_inactives_ignored[limiting_var];
-        IVP_ASSERT((IVP_Inline_Math::fabsd(full_x[indx]) < 0.001f) ||
+        IVP_ASSERT((IVP_Inline_Math::fabsd(full_x[indx]) < 0.001f * cancel_scale) ||
                    (IVP_Inline_Math::fabsd(smallest_step) < solver_eps));
         full_x[indx] = 0.0f;
         r_actives--;
@@ -1418,7 +1585,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
                         actives_inactives_ignored[limiting_var], limiting_var);
           }
           int indx = actives_inactives_ignored[limiting_var];
-          IVP_ASSERT(IVP_Inline_Math::fabsd(accel[indx]) < 0.001f);
+          IVP_ASSERT(IVP_Inline_Math::fabsd(accel[indx]) < 0.001f * cancel_scale);
           accel[indx] = 0.0f;
           // exchange_activ_inactiv(limiting_var);
           exchange_lcs_variables(r_actives, limiting_var);
@@ -1433,7 +1600,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
                         actives_inactives_ignored[ignored_pos], ignored_pos);
           }
           int indx = actives_inactives_ignored[limiting_var];
-          IVP_ASSERT(IVP_Inline_Math::fabsd(accel[indx]) < 0.001f);
+          IVP_ASSERT(IVP_Inline_Math::fabsd(accel[indx]) < 0.001f * cancel_scale);
           accel[indx] = 0.0f;
           if (full_x[indx] < 0.0f) {  // really necessary ?
             full_x[indx] = 0.0f;
@@ -2143,10 +2310,10 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::lu_solve(int *index_vec) {
   // backsubstitution
 
   for (i = n_columns - 1; i >= 0; i--) {
-    sum = desired_vector[i] - IVP_VecFPU::fpu_large_dot_product(
-                                  &matrix_values[i * n_columns + i + 1],
-                                  &desired_vector[i + 1], n_columns - i - 1,
-                                  IVP_FALSE);
+    sum = desired_vector[i] -
+          IVP_VecFPU::fpu_large_dot_product(&matrix_values[i * n_columns + i + 1],
+                                            &desired_vector[i + 1],
+                                            n_columns - i - 1, IVP_FALSE);
     desired_vector[i] = (sum / matrix_values[i * n_columns + i]);
     result_vector[i] =
         desired_vector[i];  // in place of desired_vector is possible!
@@ -2213,14 +2380,6 @@ IVP_BOOL IVP_Incr_L_U_Matrix::is_valid() const {
   return (decomposition_valid && n_valid == n_sub) ? IVP_TRUE : IVP_FALSE;
 }
 
-// MATRIX_EPS, but never finer than the floating point type can resolve
-// (1e-6 is only ~8 ulp for float, so singularity tests would be noise)
-static constexpr inline IVP_DOUBLE ivp_lu_eps(IVP_DOUBLE matrix_eps) {
-  constexpr IVP_DOUBLE floor_eps =
-      IVP_DOUBLE(64.0f) * std::numeric_limits<IVP_DOUBLE>::epsilon();
-  return (matrix_eps > floor_eps) ? matrix_eps : floor_eps;
-}
-
 IVP_DOUBLE IVP_Incr_L_U_Matrix::scale_or_one() const {
   return (a_scale > 0.0f) ? a_scale : IVP_DOUBLE(1.0f);
 }
@@ -2254,9 +2413,11 @@ void IVP_Incr_L_U_Matrix::scan_factors(IVP_DOUBLE *l_max,
                                        IVP_DOUBLE *u_max) const {
   IVP_DOUBLE lm = 0.0f, um = 0.0f;
   for (int i = 0; i < n_sub; i++) {
-    lm = nan_max(lm, max_abs(&L_matrix[i * aligned_row_len], n_sub));
+    lm = nan_max(
+        lm, max_abs(&L_matrix[i * aligned_row_len], n_sub));
     um = nan_max(
-        um, max_abs(&U_matrix[i * aligned_row_len + i + 1], n_sub - i - 1));
+        um, max_abs(&U_matrix[i * aligned_row_len + i + 1],
+                                       n_sub - i - 1));
   }
   *l_max = lm;
   *u_max = um;
@@ -2311,7 +2472,8 @@ void IVP_Incr_L_U_Matrix::a_matrix_swap_vars(int var0, int var1) {
 void IVP_Incr_L_U_Matrix::a_matrix_recompute_scale() {
   IVP_DOUBLE m = 0.0f;
   for (int i = 0; i < a_matrix_n; i++) {
-    const IVP_DOUBLE v = max_abs(&A_matrix[i * aligned_row_len], a_matrix_n);
+    const IVP_DOUBLE v =
+        max_abs(&A_matrix[i * aligned_row_len], a_matrix_n);
     if (v > m) m = v;
   }
   a_scale = m;
@@ -2339,7 +2501,8 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_tol(int row_nr,
   }
   // true division instead of multiplying by 1/val (one rounding less)
   divide(&L_matrix[row_base], val, n_sub);
-  divide(&U_matrix[row_base + row_nr + 1], val, n_sub - row_nr - 1);
+  divide(&U_matrix[row_base + row_nr + 1], val,
+                            n_sub - row_nr - 1);
   U_matrix[row_base + row_nr] = 1.0f;
   return IVP_OK;
 }
@@ -2348,8 +2511,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_tol(int row_nr,
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_L(int row_nr) {
   IVP_DOUBLE *base = &L_matrix[row_nr * aligned_row_len];
   IVP_DOUBLE val = base[row_nr];
-  if (!(IVP_Inline_Math::fabsd(val) >
-        ivp_lu_eps(MATRIX_EPS) / scale_or_one())) {
+  if (!(IVP_Inline_Math::fabsd(val) > ivp_lu_eps(MATRIX_EPS) / scale_or_one())) {
     return IVP_FAULT;
   }
   divide(&base[0], val, n_sub);
@@ -2570,8 +2732,9 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::increment_l_u() {
   IVP_RETURN_TYPE ret = normize_row(n);
   if (ret == IVP_OK) {
     // only L row n and U column n changed
-    l_abs_max =
-        nan_max(l_abs_max, max_abs(&L_matrix[n * aligned_row_len], n + 1));
+    l_abs_max = nan_max(
+        l_abs_max,
+        max_abs(&L_matrix[n * aligned_row_len], n + 1));
     for (i = 0; i < n; i++) {
       u_abs_max = nan_max(
           u_abs_max, IVP_Inline_Math::fabsd(U_matrix[i * aligned_row_len + n]));
@@ -2609,11 +2772,11 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::decrement_l_u(int del_nr) {
   if (mirror_ok) {
     a_matrix_swap_vars(del_nr, last);
     // a_scale only changes if the removed row/column held the maximum
-    IVP_DOUBLE removed = max_abs(&A_matrix[last * aligned_row_len], n);
+    IVP_DOUBLE removed = max_abs(
+        &A_matrix[last * aligned_row_len], n);
     for (int k = 0; k < last; k++) {
-      removed =
-          nan_max(removed,
-                  IVP_Inline_Math::fabsd(A_matrix[k * aligned_row_len + last]));
+      removed = nan_max(
+          removed, IVP_Inline_Math::fabsd(A_matrix[k * aligned_row_len + last]));
     }
     a_matrix_n = last;
     if (!(removed < a_scale)) {
@@ -2678,11 +2841,13 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::decrement_l_u(int del_nr) {
     IVP_DOUBLE *row = &L_matrix[i * aligned_row_len];
     IVP_DOUBLE factor = row[last];
     if (factor != 0.0f) {
-      touched_l =
-          nan_max(touched_l, axpy_max_abs(row, last_row, -factor, n_sub));
+      touched_l = nan_max(
+          touched_l,
+          axpy_max_abs(row, last_row, -factor, n_sub));
       row[last] = 0.0f;
     } else if (i >= del_nr) {
-      touched_l = nan_max(touched_l, max_abs(row, n_sub));
+      touched_l = nan_max(
+          touched_l, max_abs(row, n_sub));
     }
   }
   // in U only row del_nr grew (division by its pivot)
@@ -2733,7 +2898,8 @@ void IVP_Incr_L_U_Matrix::exchange_columns_l_u(int col0, int col1) {
 void IVP_Incr_L_U_Matrix::add_neg_col_L(int col0, int col_dest,
                                         IVP_DOUBLE factor) {
   // Vector FPU not possible (strided access)
-  for (int i = n_sub - 1; i >= 0; i--) {
+  int i;
+  for (i = n_sub - 1; i >= 0; i--) {
     L_matrix[i * aligned_row_len + col_dest] -=
         factor * L_matrix[i * aligned_row_len + col0];
   }
@@ -2768,8 +2934,8 @@ void IVP_Incr_L_U_Matrix::solve_vec_with_U() {
   // Back substitution, U has unit diagonal.
   for (int i = n_sub - 1; i >= 0; i--) {
     IVP_DOUBLE leftsum = IVP_VecFPU::fpu_large_dot_product(
-        &U_matrix[i * aligned_row_len + i + 1], &temp_vec[i + 1], n_sub - i - 1,
-        IVP_FALSE);
+        &U_matrix[i * aligned_row_len + i + 1], &temp_vec[i + 1],
+        n_sub - i - 1, IVP_FALSE);
     IVP_DOUBLE res = temp_vec[i] - leftsum;
     temp_vec[i] = res;
     out_vec[i] = res;
@@ -2811,7 +2977,8 @@ void IVP_Incr_L_U_Matrix::add_neg_row_to_row_l_u_index(int pivot_row,
   add_neg_row_to_row_l_u(pivot_row, dest_row, factor);
 }
 
-void IVP_Incr_L_U_Matrix::exchange_rows_l_u_index(int pivot_col, int exchange) {
+void IVP_Incr_L_U_Matrix::exchange_rows_l_u_index(int pivot_col,
+                                                  int exchange) {
   exchange_rows_l_u(pivot_col, exchange);
 }
 
@@ -2869,8 +3036,8 @@ void IVP_Incr_L_U_Matrix::debug_print_a() {
       IVP_DOUBLE worst = 0.0f;
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-          IVP_DOUBLE d = IVP_Inline_Math::fabsd(
-              a[i * n + j] - A_matrix[i * aligned_row_len + j]);
+          IVP_DOUBLE d = IVP_Inline_Math::fabsd(a[i * n + j] -
+                                                A_matrix[i * aligned_row_len + j]);
           if (d > worst) worst = d;
         }
       }

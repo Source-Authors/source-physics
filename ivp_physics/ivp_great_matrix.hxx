@@ -307,6 +307,7 @@ class IVP_Linear_Constraint_Solver {
   int first_permute_ignored;
   int second_permute_ignored;
 
+  int x_unscale_exp;      // result = normalized x * 2^x_unscale_exp
   int sub_solver_status;  // 0 is ok, 1 is not usable
   IVP_Incr_L_U_Matrix lu_sub_solver;
   IVP_Great_Matrix_Many_Zero sub_solver_mat;
