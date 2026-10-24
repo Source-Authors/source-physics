@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <cstring>
 #include <utility>
+#include <vector>
+#include <limits>
 
 #define IVP_UNILATERAL_SOLVER_MAX_STEP 250
 #define IVP_STATIC_FRICTION_TEST_EPS 0.00001f  // is a percentage value
@@ -46,16 +48,16 @@ namespace {
 static_assert(sizeof(IVP_DOUBLE) == sizeof(float),
               "DirectXMath backend requires IVP_DOUBLE == float");
 
-inline DirectX::XMVECTOR XM_CALLCONV load4(const IVP_DOUBLE* p) {
+inline DirectX::XMVECTOR XM_CALLCONV load4(const IVP_DOUBLE *p) {
   return DirectX::XMLoadFloat4(reinterpret_cast<const DirectX::XMFLOAT4*>(p));
 }
 
-inline void XM_CALLCONV store4(IVP_DOUBLE* p, DirectX::FXMVECTOR v) {
+inline void XM_CALLCONV store4(IVP_DOUBLE *p, DirectX::FXMVECTOR v) {
   DirectX::XMStoreFloat4(reinterpret_cast<DirectX::XMFLOAT4*>(p), v);
 }
 
 // dst[i] += src[i] * f
-inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
+inline void axpy(IVP_DOUBLE *dst, const IVP_DOUBLE *src, IVP_DOUBLE f, int n) {
   using namespace DirectX;
   const XMVECTOR vf = XMVectorReplicate(f);
   int i = 0;
@@ -77,7 +79,7 @@ inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
 }
 
 // dst[i] *= f
-inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
+inline void scale(IVP_DOUBLE *dst, IVP_DOUBLE f, int n) {
   using namespace DirectX;
   const XMVECTOR vf = XMVectorReplicate(f);
   int i = 0;
@@ -96,7 +98,7 @@ inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
   }
 }
 
-inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
+inline void swap_rows(IVP_DOUBLE *a, IVP_DOUBLE *b, int n) {
   using namespace DirectX;
   int i = 0;
   for (; i + 4 <= n; i += 4) {
@@ -110,7 +112,7 @@ inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
   }
 }
 
-inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
+inline IVP_DOUBLE dot(const IVP_DOUBLE *a, const IVP_DOUBLE *b, int n) {
   using namespace DirectX;
   XMVECTOR acc0 = XMVectorZero();
   XMVECTOR acc1 = XMVectorZero();
@@ -137,7 +139,7 @@ static_assert(sizeof(IVP_DOUBLE) == sizeof(double),
               "SSE2 backend requires IVP_DOUBLE == double");
 
 // dst[i] += src[i] * f  (mul then add, bit-identical to the scalar code)
-inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
+inline void axpy(IVP_DOUBLE *dst, const IVP_DOUBLE *src, IVP_DOUBLE f, int n) {
   const __m128d vf = _mm_set1_pd(f);
   int i = 0;
   for (; i + 4 <= n; i += 4) {
@@ -158,7 +160,7 @@ inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
   }
 }
 
-inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
+inline void scale(IVP_DOUBLE *dst, IVP_DOUBLE f, int n) {
   const __m128d vf = _mm_set1_pd(f);
   int i = 0;
   for (; i + 4 <= n; i += 4) {
@@ -176,7 +178,7 @@ inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
   }
 }
 
-inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
+inline void swap_rows(IVP_DOUBLE *a, IVP_DOUBLE *b, int n) {
   int i = 0;
   for (; i + 2 <= n; i += 2) {
     const __m128d va = _mm_loadu_pd(a + i);
@@ -189,7 +191,7 @@ inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
   }
 }
 
-inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
+inline IVP_DOUBLE dot(const IVP_DOUBLE *a, const IVP_DOUBLE *b, int n) {
   __m128d acc0 = _mm_setzero_pd();
   __m128d acc1 = _mm_setzero_pd();
   int i = 0;
@@ -214,25 +216,25 @@ inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
 
 #else  // portable scalar fallback
 
-inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
+inline void axpy(IVP_DOUBLE *dst, const IVP_DOUBLE *src, IVP_DOUBLE f, int n) {
   for (int i = 0; i < n; i++) {
     dst[i] += src[i] * f;
   }
 }
 
-inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
+inline void scale(IVP_DOUBLE *dst, IVP_DOUBLE f, int n) {
   for (int i = 0; i < n; i++) {
     dst[i] *= f;
   }
 }
 
-inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
+inline void swap_rows(IVP_DOUBLE *a, IVP_DOUBLE *b, int n) {
   for (int i = 0; i < n; i++) {
     std::swap(a[i], b[i]);
   }
 }
 
-inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
+inline IVP_DOUBLE dot(const IVP_DOUBLE *a, const IVP_DOUBLE *b, int n) {
   IVP_DOUBLE sum = 0.0f;
   for (int i = 0; i < n; i++) {
     sum += a[i] * b[i];
@@ -241,6 +243,124 @@ inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
 }
 
 #endif
+
+// dst[i] /= d  (true division, used for pivot normalization)
+inline void divide(IVP_DOUBLE *dst, IVP_DOUBLE d, int n) {
+  int i = 0;
+#if defined(IVP_VECFPU_BACKEND_DXMATH)
+  using namespace DirectX;
+  const XMVECTOR vd = XMVectorReplicate(d);
+  for (; i + 4 <= n; i += 4) {
+    store4(dst + i, XMVectorDivide(load4(dst + i), vd));
+  }
+#elif defined(IVP_VECFPU_BACKEND_SSE2)
+  const __m128d vd = _mm_set1_pd(d);
+  for (; i + 2 <= n; i += 2) {
+    _mm_storeu_pd(dst + i, _mm_div_pd(_mm_loadu_pd(dst + i), vd));
+  }
+#endif
+  for (; i < n; i++) {
+    dst[i] /= d;
+  }
+}
+
+// max |p[i]| over [0, n); returns NaN if any element is NaN
+inline IVP_DOUBLE max_abs(const IVP_DOUBLE *p, int n) {
+  int i = 0;
+  IVP_DOUBLE m = 0.0f;
+  bool has_nan = false;
+#if defined(IVP_VECFPU_BACKEND_DXMATH)
+  using namespace DirectX;
+  XMVECTOR vm = XMVectorZero();
+  XMVECTOR vnan = XMVectorZero();
+  for (; i + 4 <= n; i += 4) {
+    const XMVECTOR v = load4(p + i);
+    vnan = XMVectorOrInt(vnan, XMVectorIsNaN(v));
+    vm = XMVectorMax(vm, XMVectorAbs(v));
+  }
+  has_nan = !XMVector4EqualInt(vnan, XMVectorZero());
+  XMFLOAT4 t;
+  XMStoreFloat4(&t, vm);
+  m = std::max(std::max(t.x, t.y), std::max(t.z, t.w));
+#elif defined(IVP_VECFPU_BACKEND_SSE2)
+  const __m128d sign = _mm_set1_pd(-0.0);
+  __m128d m0 = _mm_setzero_pd(), m1 = _mm_setzero_pd();
+  __m128d vnan = _mm_setzero_pd();
+  for (; i + 4 <= n; i += 4) {
+    const __m128d v0 = _mm_andnot_pd(sign, _mm_loadu_pd(p + i));
+    const __m128d v1 = _mm_andnot_pd(sign, _mm_loadu_pd(p + i + 2));
+    vnan = _mm_or_pd(
+        vnan, _mm_or_pd(_mm_cmpunord_pd(v0, v0), _mm_cmpunord_pd(v1, v1)));
+    m0 = _mm_max_pd(m0, v0);
+    m1 = _mm_max_pd(m1, v1);
+  }
+  m0 = _mm_max_pd(m0, m1);
+  m0 = _mm_max_sd(m0, _mm_unpackhi_pd(m0, m0));
+  m = _mm_cvtsd_f64(m0);
+  has_nan = _mm_movemask_pd(vnan) != 0;
+#endif
+  for (; i < n; i++) {
+    const IVP_DOUBLE v = p[i] < 0 ? -p[i] : p[i];
+    if (v != v) has_nan = true;
+    if (v > m) m = v;
+  }
+  return has_nan ? std::numeric_limits<IVP_DOUBLE>::quiet_NaN() : m;
+}
+
+// dst[i] += src[i] * f (bit-identical to axpy), returns max |dst[i]| of the
+// result (NaN if any result is NaN)
+inline IVP_DOUBLE axpy_max_abs(IVP_DOUBLE *dst, const IVP_DOUBLE *src,
+                               IVP_DOUBLE f, int n) {
+  int i = 0;
+  IVP_DOUBLE m = 0.0f;
+  bool has_nan = false;
+#if defined(IVP_VECFPU_BACKEND_DXMATH)
+  using namespace DirectX;
+  const XMVECTOR vf = XMVectorReplicate(f);
+  XMVECTOR vm = XMVectorZero();
+  XMVECTOR vnan = XMVectorZero();
+  for (; i + 4 <= n; i += 4) {
+    const XMVECTOR r = XMVectorMultiplyAdd(load4(src + i), vf, load4(dst + i));
+    store4(dst + i, r);
+    vnan = XMVectorOrInt(vnan, XMVectorIsNaN(r));
+    vm = XMVectorMax(vm, XMVectorAbs(r));
+  }
+  has_nan = !XMVector4EqualInt(vnan, XMVectorZero());
+  XMFLOAT4 t;
+  XMStoreFloat4(&t, vm);
+  m = std::max(std::max(t.x, t.y), std::max(t.z, t.w));
+#elif defined(IVP_VECFPU_BACKEND_SSE2)
+  const __m128d sign = _mm_set1_pd(-0.0);
+  const __m128d vf = _mm_set1_pd(f);
+  __m128d vm = _mm_setzero_pd();
+  __m128d vnan = _mm_setzero_pd();
+  for (; i + 2 <= n; i += 2) {
+    const __m128d r = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(src + i), vf),
+                                 _mm_loadu_pd(dst + i));
+    _mm_storeu_pd(dst + i, r);
+    const __m128d a = _mm_andnot_pd(sign, r);
+    vnan = _mm_or_pd(vnan, _mm_cmpunord_pd(a, a));
+    vm = _mm_max_pd(vm, a);
+  }
+  vm = _mm_max_sd(vm, _mm_unpackhi_pd(vm, vm));
+  m = _mm_cvtsd_f64(vm);
+  has_nan = _mm_movemask_pd(vnan) != 0;
+#endif
+  for (; i < n; i++) {
+    dst[i] += src[i] * f;
+    const IVP_DOUBLE v = dst[i] < 0 ? -dst[i] : dst[i];
+    if (v != v) has_nan = true;
+    if (v > m) m = v;
+  }
+  return has_nan ? std::numeric_limits<IVP_DOUBLE>::quiet_NaN() : m;
+}
+
+// NaN-sticky maximum
+inline IVP_DOUBLE nan_max(IVP_DOUBLE a, IVP_DOUBLE b) {
+  if (a != a) return a;
+  if (b != b) return b;
+  return (a > b) ? a : b;
+}
 
 }  // namespace
 
@@ -766,6 +886,13 @@ void IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory *my_mem) {
   lu_sub_solver.out_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   lu_sub_solver.temp_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   lu_sub_solver.mult_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.A_matrix =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  lu_sub_solver.row_scale = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.n_max = n_variables;
+
+  // own scratch: must not alias lu_sub_solver.temp_vec
+  temp = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
   sub_solver_mat.matrix_values =
       my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
@@ -808,11 +935,12 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
 
   lu_sub_solver.aligned_row_len = aligned_size;
   lu_sub_solver.n_sub = 0;
+  lu_sub_solver.decomposition_valid = IVP_FALSE;
+  lu_sub_solver.a_matrix_n = -1;
+  lu_sub_solver.n_valid = -1;
   lu_sub_solver.MATRIX_EPS =
       SOLVER_EPS * 10;  // makes incrementel lu more often to fail but prevents
                         // from getting numerical inaccurate
-
-  temp = lu_sub_solver.temp_vec;
 
   sub_solver_mat.MATRIX_EPS =
       GAUSS_EPS;  // for gauss a more liberal EPS is enough (otherwise it may
@@ -2051,55 +2179,216 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::invert(
   return lu_inverse(dest, index_vec);
 }
 
+// ---------------------------------------------------------------------------
+// IVP_Incr_L_U_Matrix
+// ---------------------------------------------------------------------------
+
+IVP_Incr_L_U_Matrix::IVP_Incr_L_U_Matrix() {
+  MATRIX_EPS = 1E-6f;
+  L_matrix = NULL;
+  U_matrix = NULL;
+  index_pos_contains = NULL;
+  inv_index_pos_contains = NULL;
+  input_vec = NULL;
+  out_vec = NULL;
+  temp_vec = NULL;
+  mult_vec = NULL;
+  aligned_row_len = 0;
+  n_sub = 0;
+  A_matrix = NULL;
+  row_scale = NULL;
+  n_max = 0;
+  a_scale = 0.0f;
+  growth_baseline = 0.0f;
+  growth_baseline_L = 0.0f;
+  l_abs_max = 0.0f;
+  u_abs_max = 0.0f;
+  a_matrix_n = -1;
+  n_valid = -1;
+  decomposition_valid = IVP_FALSE;
+}
+
+// the decomposition is only trusted if nobody changed n_sub behind our back
+IVP_BOOL IVP_Incr_L_U_Matrix::is_valid() const {
+  return (decomposition_valid && n_valid == n_sub) ? IVP_TRUE : IVP_FALSE;
+}
+
+// MATRIX_EPS, but never finer than the floating point type can resolve
+// (1e-6 is only ~8 ulp for float, so singularity tests would be noise)
+static constexpr inline IVP_DOUBLE ivp_lu_eps(IVP_DOUBLE matrix_eps) {
+  constexpr IVP_DOUBLE floor_eps =
+      IVP_DOUBLE(64.0f) * std::numeric_limits<IVP_DOUBLE>::epsilon();
+  return (matrix_eps > floor_eps) ? matrix_eps : floor_eps;
+}
+
+IVP_DOUBLE IVP_Incr_L_U_Matrix::scale_or_one() const {
+  return (a_scale > 0.0f) ? a_scale : IVP_DOUBLE(1.0f);
+}
+
+// Growth control.
+// Two quantities are watched, both dimensionless:
+//  - max|L| * a_scale: a fresh pivoted decomposition rejects a matrix when a
+//    pivot falls below eps * a_scale, i.e. roughly when |L| * a_scale exceeds
+//    1/eps. Using the same bound makes incremental updates accept/reject the
+//    same matrices a full decomposition would.
+//  - max off-diagonal |U| (ratios), with 100x headroom.
+// Each limit is never stricter than what the last full decomposition itself
+// produced (otherwise an accepted, ill-conditioned matrix would refactorize on
+// every update). NaN/Inf always fail.
+
+IVP_BOOL IVP_Incr_L_U_Matrix::bounds_ok(IVP_DOUBLE l_max,
+                                        IVP_DOUBLE u_max) const {
+  const IVP_DOUBLE eps = ivp_lu_eps(MATRIX_EPS);
+  const IVP_DOUBLE base = IVP_DOUBLE(1.0f) / eps;
+  IVP_DOUBLE l_lim = base;
+  if (growth_baseline_L > l_lim) l_lim = growth_baseline_L;
+  IVP_DOUBLE u_lim = base;
+  if (growth_baseline > u_lim) u_lim = growth_baseline;
+  u_lim *= 100.0f;
+  return (l_max * scale_or_one() <= l_lim && u_max <= u_lim) ? IVP_TRUE
+                                                             : IVP_FALSE;
+}
+
+// exact max|L| and max off-diagonal |U|
+void IVP_Incr_L_U_Matrix::scan_factors(IVP_DOUBLE *l_max,
+                                       IVP_DOUBLE *u_max) const {
+  IVP_DOUBLE lm = 0.0f, um = 0.0f;
+  for (int i = 0; i < n_sub; i++) {
+    lm = nan_max(lm, max_abs(&L_matrix[i * aligned_row_len], n_sub));
+    um = nan_max(
+        um, max_abs(&U_matrix[i * aligned_row_len + i + 1], n_sub - i - 1));
+  }
+  *l_max = lm;
+  *u_max = um;
+}
+
+// ratio to the allowed growth (<= 1 is fine), exact
+IVP_DOUBLE IVP_Incr_L_U_Matrix::growth_measure() const {
+  IVP_DOUBLE lm, um;
+  scan_factors(&lm, &um);
+  const IVP_DOUBLE eps = ivp_lu_eps(MATRIX_EPS);
+  const IVP_DOUBLE base = IVP_DOUBLE(1.0f) / eps;
+  IVP_DOUBLE l_lim = base;
+  if (growth_baseline_L > l_lim) l_lim = growth_baseline_L;
+  IVP_DOUBLE u_lim = base;
+  if (growth_baseline > u_lim) u_lim = growth_baseline;
+  u_lim *= 100.0f;
+  return nan_max(lm * scale_or_one() / l_lim, um / u_lim);
+}
+
+// IVP_FALSE when the factors are no longer trustworthy or contain NaN/Inf
+IVP_BOOL IVP_Incr_L_U_Matrix::growth_ok() const {
+  if (!is_valid()) {
+    return IVP_FALSE;
+  }
+  IVP_DOUBLE lm, um;
+  scan_factors(&lm, &um);
+  return bounds_ok(lm, um);
+}
+
+// fast path used after updates: check the running upper bounds, rescan
+// exactly only if they fail
+IVP_BOOL IVP_Incr_L_U_Matrix::check_growth_fast() {
+  if (bounds_ok(l_abs_max, u_abs_max)) {
+    return IVP_TRUE;
+  }
+  scan_factors(&l_abs_max, &u_abs_max);
+  return bounds_ok(l_abs_max, u_abs_max);
+}
+
+// exchange variables var0/var1 in the mirrored A (rows and columns)
+void IVP_Incr_L_U_Matrix::a_matrix_swap_vars(int var0, int var1) {
+  if (var0 == var1) return;
+  const int n = a_matrix_n;
+  IVP_VecFPU::fpu_exchange_rows(&A_matrix[var0 * aligned_row_len],
+                                &A_matrix[var1 * aligned_row_len], n, IVP_TRUE);
+  for (int i = 0; i < n; i++) {
+    IVP_DOUBLE *row = &A_matrix[i * aligned_row_len];
+    std::swap(row[var0], row[var1]);
+  }
+}
+
+void IVP_Incr_L_U_Matrix::a_matrix_recompute_scale() {
+  IVP_DOUBLE m = 0.0f;
+  for (int i = 0; i < a_matrix_n; i++) {
+    const IVP_DOUBLE v = max_abs(&A_matrix[i * aligned_row_len], a_matrix_n);
+    if (v > m) m = v;
+  }
+  a_scale = m;
+}
+
+// rebuild L and U from the mirrored A with full pivoting search
+IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::refactorize() {
+  if (A_matrix == NULL || a_matrix_n != n_sub) {
+    decomposition_valid = IVP_FALSE;
+    return IVP_FAULT;
+  }
+  for (int i = 0; i < n_sub; i++) {
+    IVP_VecFPU::fpu_copy_rows(&U_matrix[i * aligned_row_len],
+                              &A_matrix[i * aligned_row_len], n_sub, IVP_TRUE);
+  }
+  return l_u_decomposition_with_pivoting();
+}
+
+IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_tol(int row_nr,
+                                                     IVP_DOUBLE tol) {
+  int row_base = row_nr * aligned_row_len;
+  IVP_DOUBLE val = U_matrix[row_base + row_nr];
+  if (!(IVP_Inline_Math::fabsd(val) > tol)) {  // also rejects NaN
+    return IVP_FAULT;
+  }
+  // true division instead of multiplying by 1/val (one rounding less)
+  divide(&L_matrix[row_base], val, n_sub);
+  divide(&U_matrix[row_base + row_nr + 1], val, n_sub - row_nr - 1);
+  U_matrix[row_base + row_nr] = 1.0f;
+  return IVP_OK;
+}
+
+// L pivot: L is in units of 1/A
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_L(int row_nr) {
   IVP_DOUBLE *base = &L_matrix[row_nr * aligned_row_len];
   IVP_DOUBLE val = base[row_nr];
-  if (IVP_Inline_Math::fabsd(val) < MATRIX_EPS) {
+  if (!(IVP_Inline_Math::fabsd(val) >
+        ivp_lu_eps(MATRIX_EPS) / scale_or_one())) {
     return IVP_FAULT;
   }
-  IVP_DOUBLE inv_val = 1.0f / val;
-
-  IVP_VecFPU::fpu_multiply_row(&base[0], inv_val, n_sub, IVP_TRUE);
-
+  divide(&base[0], val, n_sub);
   base[row_nr] = 1.0f;
   return IVP_OK;
 }
 
+// U pivot of a row that is still in units of A
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row(int row_nr) {
-  int row_base = row_nr * aligned_row_len;
-  IVP_DOUBLE val = U_matrix[row_base + row_nr];
-  if (IVP_Inline_Math::fabsd(val) < MATRIX_EPS) {
-    return IVP_FAULT;
-  }
-  IVP_DOUBLE inv_val = 1.0f / val;
-  IVP_VecFPU::fpu_multiply_row(&L_matrix[row_base], inv_val, n_sub, IVP_TRUE);
-  IVP_VecFPU::fpu_multiply_row(&U_matrix[row_base + row_nr + 1], inv_val,
-                               n_sub - row_nr - 1, IVP_FALSE);
-
-  U_matrix[row_base + row_nr] = 1.0f;
-  return IVP_OK;
+  return normize_row_tol(row_nr, ivp_lu_eps(MATRIX_EPS) * scale_or_one());
 }
 
 void IVP_Incr_L_U_Matrix::exchange_rows_l_u(int pivot_col, int exchange) {
   int base_a = pivot_col * aligned_row_len;
   int base_b = exchange * aligned_row_len;
 
+  // entries left of pivot_col are zero in both rows of U
   IVP_VecFPU::fpu_exchange_rows(&U_matrix[base_a + pivot_col],
                                 &U_matrix[base_b + pivot_col],
                                 n_sub - pivot_col, IVP_FALSE);
   IVP_VecFPU::fpu_exchange_rows(&L_matrix[base_a], &L_matrix[base_b], n_sub,
                                 IVP_TRUE);
+  if (row_scale) {
+    std::swap(row_scale[pivot_col], row_scale[exchange]);
+  }
 }
 
 // search from col_nr|colnr down to n_sub|colnr
+// uses implicit row scaling (row_scale) when available
 void IVP_Incr_L_U_Matrix::pivot_search_l_u(int col_nr) {
   IVP_DOUBLE biggest =
       IVP_Inline_Math::fabsd(U_matrix[col_nr * aligned_row_len + col_nr]);
+  if (row_scale) biggest *= row_scale[col_nr];
   int pivot_row = col_nr;
 
   for (int i = n_sub - 1; i > col_nr; i--) {
     IVP_DOUBLE new_val =
         IVP_Inline_Math::fabsd(U_matrix[i * aligned_row_len + col_nr]);
+    if (row_scale) new_val *= row_scale[i];
     if (new_val > biggest) {
       pivot_row = i;
       biggest = new_val;
@@ -2118,12 +2407,12 @@ void IVP_Incr_L_U_Matrix::add_neg_row_upwards_l_u(int row_down, int dest_row,
   IVP_DOUBLE *base_b = &U_matrix[dest_row * aligned_row_len];
   IVP_VecFPU::fpu_add_multiple_row(&base_b[row_down + 1], &base_a[row_down + 1],
                                    -factor, n_sub - row_down - 1, IVP_FALSE);
+  base_b[row_down] = 0.0f;  // the eliminated U entry (was wrongly cleared in L)
 
   base_a = &L_matrix[row_down * aligned_row_len];
   base_b = &L_matrix[dest_row * aligned_row_len];
   IVP_VecFPU::fpu_add_multiple_row(&base_b[0], &base_a[0], -factor, n_sub,
                                    IVP_TRUE);
-  base_b[row_down] = 0.0f;
 }
 
 // add row to a row more downwards
@@ -2150,24 +2439,46 @@ void IVP_Incr_L_U_Matrix::subtract_row_L(int from, int dest,
   base_b[from] = 0.0f;
 }
 
+// U holds A (first n_sub entries of the first n_sub rows)
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::l_u_decomposition_with_pivoting() {
-  if (n_sub == 0) {
+  IVP_ASSERT(n_max <= 0 || n_sub <= n_max);
+  a_scale = 0.0f;
+  growth_baseline = 0.0f;
+  growth_baseline_L = 0.0f;
+  l_abs_max = 0.0f;
+  u_abs_max = 0.0f;
+  n_valid = n_sub;
+  if (n_sub <= 0) {
+    a_matrix_n = A_matrix ? 0 : -1;
+    decomposition_valid = IVP_TRUE;
     return IVP_OK;
   }
 
+  // scale of A, implicit row scaling, mirror of A
   int i;
+  for (i = 0; i < n_sub; i++) {
+    const IVP_DOUBLE *row = &U_matrix[i * aligned_row_len];
+    const IVP_DOUBLE m = max_abs(row, n_sub);
+    if (m > a_scale) a_scale = m;
+    if (row_scale) row_scale[i] = (m > 0.0f) ? IVP_DOUBLE(1.0f) / m : 0.0f;
+    if (A_matrix) {
+      IVP_VecFPU::fpu_copy_rows(&A_matrix[i * aligned_row_len], row, n_sub,
+                                IVP_TRUE);
+    }
+  }
+  a_matrix_n = A_matrix ? n_sub : -1;
+
   for (i = n_sub - 1; i >= 0; i--) {
     IVP_DOUBLE *base = &L_matrix[i * aligned_row_len];
     IVP_VecFPU::fpu_set_row_to_zero(&base[0], n_sub, IVP_TRUE);
     base[i] = 1.0f;
   }
 
+  decomposition_valid = IVP_FALSE;
   int rows_to_do;
   for (rows_to_do = 1; rows_to_do < n_sub; rows_to_do++) {
-    // debug_print_l_u();
     int pivot_elem = rows_to_do - 1;
     pivot_search_l_u(pivot_elem);
-    // L_matrix[pivot_elem * n_max + pivot_elem] = 1.0f;
     if (normize_row(pivot_elem) == IVP_FAULT) {
       return IVP_FAULT;
     }
@@ -2181,98 +2492,242 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::l_u_decomposition_with_pivoting() {
       }
     }
   }
-  // L_matrix[ (n_sub-1)*n_max + n_sub-1 ] = 1.0f;
   if (normize_row(n_sub - 1) == IVP_FAULT) {
     return IVP_FAULT;
   }
-  // debug_print_l_u();
+  decomposition_valid = IVP_TRUE;
+  scan_factors(&l_abs_max, &u_abs_max);
+  growth_baseline = u_abs_max;
+  growth_baseline_L = l_abs_max * scale_or_one();
   return IVP_OK;
 }
 
 // incremental l_u_decomposition: matrix is correctly decomposed to n_sub*n_sub
 // last row of new U was already added, row has length n_sub+1
 // last column of new U is stored in input_vec, column has length n_sub
+// On failure n_sub is still incremented (the caller relies on this).
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::increment_l_u() {
-  int i;
-  IVP_VecFPU::fpu_copy_rows(mult_vec, input_vec, n_sub, IVP_TRUE);
+  const int n = n_sub;
+  IVP_ASSERT(n_max <= 0 || n < n_max);
+  if (n_max > 0 && n >= n_max) {
+    return IVP_FAULT;  // would write beyond the buffers
+  }
+  const IVP_BOOL was_valid = is_valid();
+  IVP_DOUBLE *new_row = &U_matrix[n * aligned_row_len];
 
+  // keep scale and mirror of A up to date
+  int i;
+  for (i = 0; i <= n; i++) {
+    IVP_DOUBLE v = IVP_Inline_Math::fabsd(new_row[i]);
+    if (v > a_scale) a_scale = v;
+  }
+  for (i = 0; i < n; i++) {
+    IVP_DOUBLE v = IVP_Inline_Math::fabsd(input_vec[i]);
+    if (v > a_scale) a_scale = v;
+  }
+  const IVP_BOOL mirror_ok =
+      (A_matrix != NULL && a_matrix_n == n) ? IVP_TRUE : IVP_FALSE;
+  if (mirror_ok) {
+    IVP_VecFPU::fpu_copy_rows(&A_matrix[n * aligned_row_len], new_row, n + 1,
+                              IVP_TRUE);
+    for (i = 0; i < n; i++) {
+      A_matrix[i * aligned_row_len + n] = input_vec[i];
+    }
+    a_matrix_n = n + 1;
+  } else {
+    a_matrix_n = -1;
+  }
+
+  if (!was_valid) {
+    n_sub = n + 1;
+    return refactorize();  // fails cleanly if there is no usable mirror
+  }
+
+  IVP_VecFPU::fpu_copy_rows(mult_vec, input_vec, n, IVP_TRUE);
   mult_vec_with_L();
 
-  for (i = n_sub - 1; i >= 0; i--) {
-    U_matrix[i * aligned_row_len + n_sub] = temp_vec[i];
+  for (i = n - 1; i >= 0; i--) {
+    U_matrix[i * aligned_row_len + n] = temp_vec[i];
   }
 
   // clear row and column of L
-  for (i = n_sub - 1; i >= 0; i--) {
-    L_matrix[i * aligned_row_len + n_sub] = 0.0f;
+  for (i = n - 1; i >= 0; i--) {
+    L_matrix[i * aligned_row_len + n] = 0.0f;
   }
-  IVP_VecFPU::fpu_set_row_to_zero(&L_matrix[n_sub * aligned_row_len], n_sub,
-                                  IVP_TRUE);
+  IVP_VecFPU::fpu_set_row_to_zero(&L_matrix[n * aligned_row_len], n, IVP_TRUE);
+  L_matrix[n * aligned_row_len + n] = 1.0f;
 
-  L_matrix[n_sub * aligned_row_len + n_sub] = 1.0f;
-
-  // inv_index_pos_contains[ n_sub ] = n_sub;
-  // index_pos_contains[ n_sub ] = n_sub;
-
-  int base_row = n_sub * aligned_row_len;
-
-  n_sub++;
-  for (i = 0; i < n_sub - 1; i++) {
-    IVP_DOUBLE factor = U_matrix[base_row + i];
-    add_neg_row_to_row_l_u(i, n_sub - 1, factor);
+  n_sub = n + 1;
+  n_valid = n_sub;
+  for (i = 0; i < n; i++) {
+    IVP_DOUBLE factor = new_row[i];
+    if (factor != 0.0f) {
+      add_neg_row_to_row_l_u(i, n, factor);
+    }
   }
 
-  IVP_RETURN_TYPE ret = normize_row(n_sub - 1);
-  // debug_print_l_u();
+  // the new row is still in units of A
+  IVP_RETURN_TYPE ret = normize_row(n);
+  if (ret == IVP_OK) {
+    // only L row n and U column n changed
+    l_abs_max =
+        nan_max(l_abs_max, max_abs(&L_matrix[n * aligned_row_len], n + 1));
+    for (i = 0; i < n; i++) {
+      u_abs_max = nan_max(
+          u_abs_max, IVP_Inline_Math::fabsd(U_matrix[i * aligned_row_len + n]));
+    }
+    if (check_growth_fast()) {
+      return IVP_OK;
+    }
+  }
+  // tiny pivot (no pivoting possible incrementally) or error growth:
+  // rebuild from A with pivoting
+  if (mirror_ok) {
+    return refactorize();
+  }
+  if (ret != IVP_OK) {
+    decomposition_valid = IVP_FALSE;
+  }
   return ret;
 }
 
-// variable with nr del_nr is removed from linear equation systems
+// variable with nr del_nr is removed from linear equation systems; the last
+// variable takes its place (matches IVP_Linear_Constraint_Solver ordering)
 // first U is transformed in a way only 0 0 1 0 0 is found in the row
 // then L is transformed in a way only 0 0 1 0 0 is found in the column
 // then column and row is deleted from L and U
+// On failure n_sub is still decremented (the caller relies on this).
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::decrement_l_u(int del_nr) {
-  int i;
-  // exchange_rows_l_u(del_nr,n_sub-1);
-  exchange_columns_L(del_nr, n_sub - 1);
-  exchange_columns_U(del_nr, n_sub - 1);
+  const int n = n_sub;
+  const int last = n - 1;
+  IVP_ASSERT(del_nr >= 0 && del_nr < n);
+  const IVP_BOOL was_valid = is_valid();
 
-  for (i = n_sub - 2; i > del_nr; i--) {
+  // mirror of A: move del_nr to the end and drop it
+  const IVP_BOOL mirror_ok =
+      (A_matrix != NULL && a_matrix_n == n) ? IVP_TRUE : IVP_FALSE;
+  if (mirror_ok) {
+    a_matrix_swap_vars(del_nr, last);
+    // a_scale only changes if the removed row/column held the maximum
+    IVP_DOUBLE removed = max_abs(&A_matrix[last * aligned_row_len], n);
+    for (int k = 0; k < last; k++) {
+      removed =
+          nan_max(removed,
+                  IVP_Inline_Math::fabsd(A_matrix[k * aligned_row_len + last]));
+    }
+    a_matrix_n = last;
+    if (!(removed < a_scale)) {
+      a_matrix_recompute_scale();
+    }
+  } else {
+    a_matrix_n = -1;
+  }
+
+  if (!was_valid) {
+    n_sub = last;
+    return refactorize();
+  }
+
+  int i;
+  exchange_columns_L(del_nr, last);
+  exchange_columns_U(del_nr, last);
+
+  // U row 'last' is now the unit vector e(del_nr)
+  for (i = last - 1; i > del_nr; i--) {
     IVP_DOUBLE factor = U_matrix[i * aligned_row_len + del_nr];
     if (factor != 0.0f) {
-      add_neg_row_L(n_sub - 1, i, factor);
+      add_neg_row_L(last, i, factor);
     }
     U_matrix[i * aligned_row_len + del_nr] = 0.0f;
   }
-  if (normize_row(del_nr) != IVP_OK) {
-    // ivp_message("special_case_decrement\n");
-    add_neg_row_L(n_sub - 1, del_nr, -1.0f);
-    U_matrix[del_nr * aligned_row_len + del_nr] = 1.0f;
+
+  // row del_nr is already normalized -> its pivot is dimensionless
+  if (normize_row_tol(del_nr, ivp_lu_eps(MATRIX_EPS)) != IVP_OK) {
+    // add +-row 'last' (= e(del_nr) in U) so the pivot gets magnitude >= 1;
+    // the exact new value is kept and then properly normalized
+    IVP_DOUBLE d = U_matrix[del_nr * aligned_row_len + del_nr];
+    IVP_DOUBLE s = (d >= 0.0f) ? IVP_DOUBLE(1.0f) : IVP_DOUBLE(-1.0f);
+    add_neg_row_L(last, del_nr, -s);
+    U_matrix[del_nr * aligned_row_len + del_nr] = d + s;
+    normize_row_tol(del_nr, 0.0f);
   }
 
-  for (i = del_nr; i < n_sub - 1; i++) {
-    IVP_DOUBLE factor = U_matrix[(n_sub - 1) * aligned_row_len + i];
+  for (i = del_nr; i < last; i++) {
+    IVP_DOUBLE factor = U_matrix[last * aligned_row_len + i];
     if (factor != 0.0f) {
-      add_neg_row_to_row_l_u(i, n_sub - 1, factor);
+      add_neg_row_to_row_l_u(i, last, factor);
     }
   }
-  // normize_row(n_sub-1);
 
-  if (normize_row_L(n_sub - 1) != IVP_OK) {
-    n_sub--;
+  if (normize_row_L(last) != IVP_OK) {
+    n_sub = last;
+    n_valid = n_sub;
+    if (mirror_ok) {
+      return refactorize();
+    }
+    decomposition_valid = IVP_FALSE;
     return IVP_FAULT;
   }
 
-  del_nr = n_sub - 1;
-  for (i = del_nr - 1; i >= 0; i--) {
-    IVP_DOUBLE factor = L_matrix[i * aligned_row_len + del_nr];
+  // same as subtract_row_L(last, i, factor), fused with tracking the new
+  // maxima of the touched L rows. Rows that are not touched here and lie
+  // outside [del_nr, last) are unchanged by this decrement.
+  IVP_DOUBLE touched_l = 0.0f;
+  const IVP_DOUBLE *last_row = &L_matrix[last * aligned_row_len];
+  for (i = last - 1; i >= 0; i--) {
+    IVP_DOUBLE *row = &L_matrix[i * aligned_row_len];
+    IVP_DOUBLE factor = row[last];
     if (factor != 0.0f) {
-      subtract_row_L(del_nr, i, factor);
+      touched_l =
+          nan_max(touched_l, axpy_max_abs(row, last_row, -factor, n_sub));
+      row[last] = 0.0f;
+    } else if (i >= del_nr) {
+      touched_l = nan_max(touched_l, max_abs(row, n_sub));
     }
   }
+  // in U only row del_nr grew (division by its pivot)
+  const IVP_DOUBLE touched_u = max_abs(
+      &U_matrix[del_nr * aligned_row_len + del_nr + 1], last - del_nr - 1);
 
-  n_sub--;
+  // clear the dropped row and column so no stale values remain
+  IVP_VecFPU::fpu_set_row_to_zero(&L_matrix[last * aligned_row_len], n,
+                                  IVP_TRUE);
+  IVP_VecFPU::fpu_set_row_to_zero(&U_matrix[last * aligned_row_len], n,
+                                  IVP_TRUE);
+  for (i = 0; i < last; i++) {
+    L_matrix[i * aligned_row_len + last] = 0.0f;
+    U_matrix[i * aligned_row_len + last] = 0.0f;
+  }
+
+  n_sub = last;
+  n_valid = n_sub;
+  l_abs_max = nan_max(l_abs_max, touched_l);
+  u_abs_max = nan_max(u_abs_max, touched_u);
+  if (!check_growth_fast() && mirror_ok) {
+    return refactorize();
+  }
   return IVP_OK;
+}
+
+// remove variable var_nr (the last variable takes its place);
+// success is reflected in decomposition_valid
+void IVP_Incr_L_U_Matrix::delete_row_and_col_l_u(int var_nr) {
+  decrement_l_u(var_nr);
+}
+
+// exchange the variables col0 and col1 (rows and columns of A).
+// U would lose its triangular shape, so the factors are rebuilt from the
+// mirror of A when available, otherwise the decomposition is marked invalid.
+void IVP_Incr_L_U_Matrix::exchange_columns_l_u(int col0, int col1) {
+  if (col0 == col1) return;
+  if (A_matrix != NULL && a_matrix_n == n_sub) {
+    a_matrix_swap_vars(col0, col1);
+    refactorize();
+  } else {
+    exchange_columns_L(col0, col1);
+    exchange_columns_U(col0, col1);
+    decomposition_valid = IVP_FALSE;
+  }
 }
 
 void IVP_Incr_L_U_Matrix::add_neg_col_L(int col0, int col_dest,
@@ -2287,7 +2742,7 @@ void IVP_Incr_L_U_Matrix::add_neg_col_L(int col0, int col_dest,
 void IVP_Incr_L_U_Matrix::exchange_columns_L(int col0, int col1) {
   // Vector FPU not possible (strided access)
   for (int i = 0; i < n_sub; i++) {
-    IVP_DOUBLE* row = &L_matrix[i * aligned_row_len];
+    IVP_DOUBLE *row = &L_matrix[i * aligned_row_len];
     std::swap(row[col0], row[col1]);
   }
 }
@@ -2295,7 +2750,7 @@ void IVP_Incr_L_U_Matrix::exchange_columns_L(int col0, int col1) {
 void IVP_Incr_L_U_Matrix::exchange_columns_U(int col0, int col1) {
   // Vector FPU not possible (strided access)
   for (int i = 0; i < n_sub; i++) {
-    IVP_DOUBLE* row = &U_matrix[i * aligned_row_len];
+    IVP_DOUBLE *row = &U_matrix[i * aligned_row_len];
     std::swap(row[col0], row[col1]);
   }
 }
@@ -2310,10 +2765,7 @@ void IVP_Incr_L_U_Matrix::mult_vec_with_L() {
 }
 
 void IVP_Incr_L_U_Matrix::solve_vec_with_U() {
-  // dimhotepus: Back substitution, U has unit diagonal.
-  // The old vectorised attempt here ("doesnt work, but why?") failed because
-  // the aligned kernels rounded the range down/up and so multiplied stale
-  // entries beyond n_sub; the exact-range dot product has no such problem.
+  // Back substitution, U has unit diagonal.
   for (int i = n_sub - 1; i >= 0; i--) {
     IVP_DOUBLE leftsum = IVP_VecFPU::fpu_large_dot_product(
         &U_matrix[i * aligned_row_len + i + 1], &temp_vec[i + 1], n_sub - i - 1,
@@ -2325,6 +2777,7 @@ void IVP_Incr_L_U_Matrix::solve_vec_with_U() {
 }
 
 void IVP_Incr_L_U_Matrix::solve_lin_equ() {
+  IVP_ASSERT(is_valid());
   IVP_VecFPU::fpu_copy_rows(mult_vec, input_vec, n_sub, IVP_TRUE);
   mult_vec_with_L();
   solve_vec_with_U();
@@ -2337,6 +2790,29 @@ void IVP_Incr_L_U_Matrix::add_neg_row_L(int source_row, int dest_row,
 
   IVP_VecFPU::fpu_add_multiple_row(&L_matrix[base_b], &L_matrix[base_a],
                                    -factor, n_sub, IVP_TRUE);
+}
+
+// index variants: no index permutation is used, identical to the plain ones
+void IVP_Incr_L_U_Matrix::solve_lin_equ_index() { solve_lin_equ(); }
+
+void IVP_Incr_L_U_Matrix::mult_vec_with_L_index() { mult_vec_with_L(); }
+
+IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::l_u_decomposition_with_pivoting_index() {
+  return l_u_decomposition_with_pivoting();
+}
+
+void IVP_Incr_L_U_Matrix::pivot_search_l_u_index(int col_nr) {
+  pivot_search_l_u(col_nr);
+}
+
+void IVP_Incr_L_U_Matrix::add_neg_row_to_row_l_u_index(int pivot_row,
+                                                       int dest_row,
+                                                       IVP_DOUBLE factor) {
+  add_neg_row_to_row_l_u(pivot_row, dest_row, factor);
+}
+
+void IVP_Incr_L_U_Matrix::exchange_rows_l_u_index(int pivot_col, int exchange) {
+  exchange_rows_l_u(pivot_col, exchange);
 }
 
 void IVP_Incr_L_U_Matrix::debug_print_l_u() {
@@ -2355,24 +2831,59 @@ void IVP_Incr_L_U_Matrix::debug_print_l_u() {
   }
 }
 
+// prints A = inverse(L) * U (and its deviation from the mirrored A)
 void IVP_Incr_L_U_Matrix::debug_print_a() {
-  IVP_Great_Matrix_Many_Zero was_l(n_sub);
-  IVP_Great_Matrix_Many_Zero was_u(n_sub);
-
-  for (int i = 0; i < n_sub; i++) {
-    for (int j = 0; j < n_sub; j++) {
-      was_l.matrix_values[i * n_sub + j] = L_matrix[i * aligned_row_len + j];
-      was_u.matrix_values[i * n_sub + j] = U_matrix[i * aligned_row_len + j];
+  const int n = n_sub;
+  if (n <= 0) {
+    ivp_message("Matrix: orig_A (empty)\n");
+    return;
+  }
+  std::vector<IVP_DOUBLE> l(n * n), u(n * n), inv_l(n * n), a(n * n);
+  std::vector<IVP_DOUBLE> v0(n), v1(n), v2(n), v3(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      l[i * n + j] = L_matrix[i * aligned_row_len + j];
+      u[i * n + j] = U_matrix[i * aligned_row_len + j];
     }
   }
 
-  IVP_Great_Matrix_Many_Zero inv_l(n_sub);
-  was_l.invert(&inv_l);
+  // these matrices use the packed 'columns' layout and borrow vector memory
+  IVP_Great_Matrix_Many_Zero was_l, inv_l_mat, new_a;
+  was_l.columns = inv_l_mat.columns = new_a.columns = n;
+  was_l.aligned_row_len = inv_l_mat.aligned_row_len = new_a.aligned_row_len = n;
+  was_l.matrix_values = l.data();
+  was_l.desired_vector = v0.data();
+  was_l.result_vector = v1.data();
+  inv_l_mat.matrix_values = inv_l.data();
+  inv_l_mat.desired_vector = v2.data();
+  inv_l_mat.result_vector = v3.data();
+  new_a.matrix_values = a.data();
+  new_a.desired_vector = v2.data();
+  new_a.result_vector = v3.data();
 
-  IVP_Great_Matrix_Many_Zero new_a(n_sub);
-  new_a.matrix_multiplication(inv_l.matrix_values, was_u.matrix_values);
+  if (was_l.invert(&inv_l_mat) == IVP_OK) {
+    new_a.matrix_multiplication(inv_l.data(), u.data());
+    std::fill(v2.begin(), v2.end(), IVP_DOUBLE(0));
+    new_a.print_great_matrix("orig_A");
+    if (A_matrix != NULL && a_matrix_n == n) {
+      IVP_DOUBLE worst = 0.0f;
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+          IVP_DOUBLE d = IVP_Inline_Math::fabsd(
+              a[i * n + j] - A_matrix[i * aligned_row_len + j]);
+          if (d > worst) worst = d;
+        }
+      }
+      ivp_message("orig_A max deviation from mirrored A: %g\n", worst);
+    }
+  } else {
+    ivp_message("Matrix: orig_A (L not invertible)\n");
+  }
 
-  new_a.print_great_matrix("orig_A");
+  was_l.matrix_values = was_l.desired_vector = was_l.result_vector = NULL;
+  inv_l_mat.matrix_values = inv_l_mat.desired_vector = NULL;
+  inv_l_mat.result_vector = NULL;
+  new_a.matrix_values = new_a.desired_vector = new_a.result_vector = NULL;
 }
 
 // when matrix is singular give dependences of a variable

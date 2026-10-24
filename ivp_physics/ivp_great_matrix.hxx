@@ -54,13 +54,27 @@ class IVP_Great_Matrix_Many_Zero;
 // U_matrix and L_matrix are aligned_row_len*n_max big, rowwise organized, but
 // only first n_sub entries of rows are filled first matrix A is copied to
 // U_matrix, then following equation holds: L_matrix * A = U_matrix
+//
+// U has a unit diagonal.
+//
+// dimhotepus: Tolerances are scale invariant: MATRIX_EPS is a *relative* tolerance.
+// Pivots of unnormalized U rows (units of A) are tested against
+// MATRIX_EPS * a_scale, pivots of L (units of 1/A) against MATRIX_EPS /
+// a_scale, and pivots of already normalized U rows (dimensionless) against
+// MATRIX_EPS.
+//
+// dimhotepus: Optional robustness buffers (owned by the caller, may be NULL):
+//   A_matrix  : mirror of the current sub matrix A. When present, a failed or
+//               numerically degraded increment/decrement falls back to a full
+//               refactorization with pivoting instead of failing.
+//   row_scale : n_max scratch values for implicit row scaling in pivot search.
 class IVP_Incr_L_U_Matrix {
  public:
-  IVP_DOUBLE MATRIX_EPS;
+  IVP_DOUBLE MATRIX_EPS;  // relative pivot tolerance
   IVP_DOUBLE *L_matrix;
   IVP_DOUBLE *U_matrix;
-  int *index_pos_contains;  // index
-  int *inv_index_pos_contains;
+  int *index_pos_contains;      // dimhotepus: unused, always NULL (kept for compatibility)
+  int *inv_index_pos_contains;  // dimhotepus: unused, always NULL (kept for compatibility)
 
   IVP_DOUBLE *input_vec;
   IVP_DOUBLE *out_vec;
@@ -70,6 +84,27 @@ class IVP_Incr_L_U_Matrix {
   int aligned_row_len;  // length of each row
   int n_sub;            // only those are in use
 
+  // dimhotepus: New members.
+  IVP_DOUBLE *A_matrix;   // optional mirror of A (aligned_row_len * n_max)
+  IVP_DOUBLE *row_scale;  // optional scratch (n_max)
+  int n_max;              // row capacity of the buffers, 0 = unknown
+  
+  // dimhotepus: New members.
+  // maintained internally
+  IVP_DOUBLE a_scale;            // max |a_ij| of the current sub matrix
+  IVP_DOUBLE growth_baseline;    // max off-diag |U| after last decomposition
+  IVP_DOUBLE growth_baseline_L;  // max |L| * a_scale after last decomposition
+  IVP_DOUBLE l_abs_max;          // running upper bound of max |L|
+  IVP_DOUBLE u_abs_max;          // running upper bound of max off-diag |U|
+  int a_matrix_n;                // size A_matrix mirrors, -1 = stale / none
+  int n_valid;                   // n_sub of the last consistent decomposition
+  IVP_BOOL decomposition_valid;
+
+  // dimhotepus: ctor.
+  IVP_Incr_L_U_Matrix();
+
+  // the *_index variants are identical to the plain ones (the index
+  // permutation arrays above are not used by this implementation)
   void solve_lin_equ_index();
   void mult_vec_with_L_index();
   IVP_RETURN_TYPE l_u_decomposition_with_pivoting_index();
@@ -83,6 +118,8 @@ class IVP_Incr_L_U_Matrix {
   void mult_vec_with_L();
   void solve_vec_with_U();
   IVP_RETURN_TYPE normize_row(int nr);
+  // dimhotepus: Check growth.
+  IVP_BOOL growth_ok() const;
   IVP_RETURN_TYPE l_u_decomposition_with_pivoting();
   void pivot_search_l_u(int col_nr);
   void add_neg_row_to_row_l_u(int pivot_row, int dest_row, IVP_DOUBLE factor);
@@ -100,6 +137,19 @@ class IVP_Incr_L_U_Matrix {
 
   void debug_print_a();
   void debug_print_l_u();
+
+ private:
+  // dimhotepus: New members.
+  IVP_BOOL is_valid() const;
+  IVP_DOUBLE scale_or_one() const;
+  IVP_DOUBLE growth_measure() const;
+  void scan_factors(IVP_DOUBLE* l_max, IVP_DOUBLE* u_max) const;
+  IVP_BOOL bounds_ok(IVP_DOUBLE l_max, IVP_DOUBLE u_max) const;
+  IVP_BOOL check_growth_fast();
+  IVP_RETURN_TYPE normize_row_tol(int row_nr, IVP_DOUBLE tol);
+  IVP_RETURN_TYPE refactorize();
+  void a_matrix_swap_vars(int var0, int var1);
+  void a_matrix_recompute_scale();
 };
 
 // NxN Matrix with N = columns
@@ -111,9 +161,9 @@ class IVP_Great_Matrix_Many_Zero {
   int columns;
   int aligned_row_len;
 
-  IVP_DOUBLE *matrix_values;   // N*N flat array
-  IVP_DOUBLE *desired_vector;  // N array
-  IVP_DOUBLE *result_vector;   // N array
+  IVP_DOUBLE* matrix_values;   // N*N flat array
+  IVP_DOUBLE* desired_vector;  // N array
+  IVP_DOUBLE* result_vector;   // N array
 
   IVP_Great_Matrix_Many_Zero();
   IVP_Great_Matrix_Many_Zero(int n);
@@ -129,38 +179,38 @@ class IVP_Great_Matrix_Many_Zero {
   void add_multiple_line(int first, int second, IVP_DOUBLE factor);
   void exchange_rows(int a, int b);
   void find_pivot_in_column(int j);
-  int test_result(IVP_DOUBLE *old_matrix, IVP_DOUBLE *old_desired);
+  int test_result(IVP_DOUBLE* old_matrix, IVP_DOUBLE* old_desired);
   void matrix_out_before_gauss();
-  void copy_matrix(IVP_DOUBLE *values, IVP_DOUBLE *desired);
-  void copy_matrix(IVP_Great_Matrix_Many_Zero *orig_mat);
-  void copy_to_sub_matrix(IVP_DOUBLE *values_big_matrix,
-                          IVP_Great_Matrix_Many_Zero *sub_matrix,
-                          int *original_pos);
+  void copy_matrix(IVP_DOUBLE* values, IVP_DOUBLE* desired);
+  void copy_matrix(IVP_Great_Matrix_Many_Zero* orig_mat);
+  void copy_to_sub_matrix(IVP_DOUBLE* values_big_matrix,
+                          IVP_Great_Matrix_Many_Zero* sub_matrix,
+                          int* original_pos);
   int get_number_null_lines();
   IVP_RETURN_TYPE solve_lower_null_matrix_unsymmetrical(
-      int *col_is_original, int *columns_went_inactive,
-      int *number_columns_went_inactive);
+      int* col_is_original, int* columns_went_inactive,
+      int* number_columns_went_inactive);
 
-  void matrix_multiplication(IVP_DOUBLE *values_0, IVP_DOUBLE *values_1);
-  void fill_from_bigger_matrix(IVP_Great_Matrix_Many_Zero *big_matrix,
-                               int *original_pos, int n_column);
+  void matrix_multiplication(IVP_DOUBLE* values_0, IVP_DOUBLE* values_1);
+  void fill_from_bigger_matrix(IVP_Great_Matrix_Many_Zero* big_matrix,
+                               int* original_pos, int n_column);
   IVP_RETURN_TYPE solve_lp_with_complex();
-  IVP_RETURN_TYPE solve_lp_with_own_complex(IVP_U_Memory *mem);
+  IVP_RETURN_TYPE solve_lp_with_own_complex(IVP_U_Memory* mem);
   void matrix_test_unequation();  // text out for visualizing
   IVP_RETURN_TYPE matrix_check_unequation_line(int linenum);
 
   void set_value(IVP_DOUBLE val, int col, int row);
   IVP_DOUBLE get_value(int col, int row) const;
 
-  IVP_RETURN_TYPE lu_crout(int *index, IVP_DOUBLE *sign);
-  IVP_RETURN_TYPE lu_solve(int *index_vec);
-  IVP_RETURN_TYPE lu_inverse(IVP_Great_Matrix_Many_Zero *matrix_out,
-                             int *index_vec);
+  IVP_RETURN_TYPE lu_crout(int* index, IVP_DOUBLE* sign);
+  IVP_RETURN_TYPE lu_solve(int* index_vec);
+  IVP_RETURN_TYPE lu_inverse(IVP_Great_Matrix_Many_Zero* matrix_out,
+                             int* index_vec);
 
-  IVP_RETURN_TYPE invert(IVP_Great_Matrix_Many_Zero *out_matrix);
+  IVP_RETURN_TYPE invert(IVP_Great_Matrix_Many_Zero* out_matrix);
   void mult();          // input: desired_vector, output: result_vector
   void mult_aligned();  // same but matrix is aligned
-  int print_great_matrix(const char *comment) const;
+  int print_great_matrix(const char* comment) const;
 
   void debug_fill_zero();
 #ifdef DEBUG
@@ -177,60 +227,55 @@ class IVP_Complex_Simple {
   int memory_column;  // aligned to 4
   int n_columns;
   int m_rows;
-  IVP_INT32 *inactives;
-  IVP_INT32 *inactives_copy;
-  IVP_INT32 *actives;
-  IVP_INT32 *actives_copy;
-  IVP_DOUBLE *matrix;
-  IVP_DOUBLE *matrix_copy;
+  IVP_INT32* inactives;
+  IVP_INT32* inactives_copy;
+  IVP_INT32* actives;
+  IVP_INT32* actives_copy;
+  IVP_DOUBLE* matrix;
+  IVP_DOUBLE* matrix_copy;
   // IVP_DOUBLE *x_vals;
-  IVP_INT32 *index_is_at;
-  IVP_INT32 *index_is_at_copy;
+  IVP_INT32* index_is_at;
+  IVP_INT32* index_is_at_copy;
 
-  IVP_DOUBLE *help_column;
-  IVP_DOUBLE *help_row;
+  IVP_DOUBLE* help_column;
+  IVP_DOUBLE* help_row;
 
-  int search_for_save_pivots(int *pivot_row,
-                             int *pivot_column);  // returns 0 if fail
+  int search_for_save_pivots(int* pivot_row,
+                             int* pivot_column);  // returns 0 if fail
   void complex_step(int pivot_row, int pivot_column);
   void complex_step_fast(int pivot_row, int pivot_column);
   IVP_RETURN_TYPE complex_solving();
-  void debug_print(void *fp);
+  void debug_print(void* fp);
   void make_copy();
   void undo_copy();
 };
 
-// dimhotepus: Row kernels used by the solvers.
-//
+// Row kernels used by the solvers.
 // All kernels touch exactly the elements [0, size) of the given pointers and
 // have no alignment requirement (unaligned SIMD loads/stores are used, which
 // cost nothing extra on aligned data on any CPU from the last ~15 years).
 // 'adress_aligned' is kept only for source compatibility and is ignored.
-//
 // Backend: DirectXMath when IVP_DOUBLE is float (IVP_NO_DOUBLE), SSE2
 // packed-double when IVP_DOUBLE is double, plain C++ otherwise.
 class IVP_VecFPU {
  public:
-  static inline void fpu_add_multiple_row(IVP_DOUBLE *target_adress,
-                                          // dimhotepus: Add const.
-                                          const IVP_DOUBLE *source_adress,
+  static inline void fpu_add_multiple_row(IVP_DOUBLE* target_adress,
+                                          const IVP_DOUBLE* source_adress,
                                           IVP_DOUBLE factor, int size,
                                           IVP_BOOL adress_aligned);
-  static inline void fpu_multiply_row(IVP_DOUBLE *target_adress,
+  static inline void fpu_multiply_row(IVP_DOUBLE* target_adress,
                                       IVP_DOUBLE factor, int size,
                                       IVP_BOOL adress_aligned);
-  static inline void fpu_exchange_rows(IVP_DOUBLE *target_adress1,
-                                       IVP_DOUBLE *target_adress2, int size,
+  static inline void fpu_exchange_rows(IVP_DOUBLE* target_adress1,
+                                       IVP_DOUBLE* target_adress2, int size,
                                        IVP_BOOL adress_aligned);
-  static inline void fpu_copy_rows(IVP_DOUBLE *target_adress,
-                                   // dimhotepus: Add const.
-                                   const IVP_DOUBLE *source_adress, int size,
+  static inline void fpu_copy_rows(IVP_DOUBLE* target_adress,
+                                   const IVP_DOUBLE* source_adress, int size,
                                    IVP_BOOL adress_aligned);
-  static inline void fpu_set_row_to_zero(IVP_DOUBLE *target_adress, int size,
+  static inline void fpu_set_row_to_zero(IVP_DOUBLE* target_adress, int size,
                                          IVP_BOOL adress_aligned);
-  // dimhotepus: Add const x2.
-  static inline IVP_DOUBLE fpu_large_dot_product(const IVP_DOUBLE *base_a,
-                                                 const IVP_DOUBLE *x, int size,
+  static inline IVP_DOUBLE fpu_large_dot_product(const IVP_DOUBLE* base_a,
+                                                 const IVP_DOUBLE* x, int size,
                                                  IVP_BOOL adress_aligned);
 };
 
@@ -239,17 +284,17 @@ class IVP_Linear_Constraint_Solver {
   IVP_DOUBLE GAUSS_EPS;
   IVP_DOUBLE TEST_EPS;
   IVP_DOUBLE MAX_STEP_LEN;
-  IVP_DOUBLE *full_A;
-  IVP_DOUBLE *full_b;
-  IVP_DOUBLE *temp;
-  IVP_DOUBLE *full_x;   // must be greater equal 0.0
-  IVP_DOUBLE *delta_f;  // delta of above per step
-  IVP_DOUBLE *accel;    // is A*x-b must be greater equal 0.0
-  IVP_DOUBLE *delta_accel;
-  IVP_DOUBLE *reset_x;
-  IVP_DOUBLE *reset_accel;
-  int *actives_inactives_ignored;
-  int *variable_is_found_at;
+  IVP_DOUBLE* full_A;
+  IVP_DOUBLE* full_b;
+  IVP_DOUBLE* temp;
+  IVP_DOUBLE* full_x;   // must be greater equal 0.0
+  IVP_DOUBLE* delta_f;  // delta of above per step
+  IVP_DOUBLE* accel;    // is A*x-b must be greater equal 0.0
+  IVP_DOUBLE* delta_accel;
+  IVP_DOUBLE* reset_x;
+  IVP_DOUBLE* reset_accel;
+  int* actives_inactives_ignored;
+  int* variable_is_found_at;
   int n_variables;
   int aligned_size;
   int r_actives;
@@ -275,7 +320,7 @@ class IVP_Linear_Constraint_Solver {
   void exchange_lcs_variables(int nr0, int nr1);
   void update_step_vars(IVP_DOUBLE step_size);
 
-  void alloc_memory(IVP_U_Memory *my_mem);
+  void alloc_memory(IVP_U_Memory* my_mem);
   void mult_active_x_for_accel();
   void mult_x_with_full_A_minus_b();
   IVP_RETURN_TYPE get_fdirection();
@@ -285,7 +330,7 @@ class IVP_Linear_Constraint_Solver {
   void get_values_when_setup();
   void startup_setup(int num_actives);
   IVP_BOOL numerical_stability_ok();
-  void increase_step_count(int *counter);
+  void increase_step_count(int* counter);
   void do_a_little_random_permutation();
   void lcs_bubble_sort_x_vals();
   void move_not_necessary_actives_to_inactives();
@@ -299,9 +344,9 @@ class IVP_Linear_Constraint_Solver {
   void debug_dep_var(int full_var_nr);
 
  public:
-  IVP_RETURN_TYPE init_and_solve_lc(IVP_DOUBLE *A_in, IVP_DOUBLE *b_in,
-                                    IVP_DOUBLE *result_vec_out, int var_num,
-                                    int actives_at_begin, IVP_U_Memory *my_mem);
+  IVP_RETURN_TYPE init_and_solve_lc(IVP_DOUBLE* A_in, IVP_DOUBLE* b_in,
+                                    IVP_DOUBLE* result_vec_out, int var_num,
+                                    int actives_at_begin, IVP_U_Memory* my_mem);
 };
 
 #endif
