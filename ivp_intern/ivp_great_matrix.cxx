@@ -19,7 +19,8 @@
 #include <cmath>
 #include <cstdint>
 
-#define IVP_UNILATERAL_SOLVER_MAX_STEP 250
+#define IVP_UNILATERAL_SOLVER_MAX_STEP 250      // minimum step budget
+#define IVP_UNILATERAL_SOLVER_STEPS_PER_VAR 10  // budget grows with size
 #define IVP_STATIC_FRICTION_TEST_EPS 0.00001f  // is a percentage value
 #define IVP_NUMERIC_TEST_EVERY_N 7
 
@@ -36,8 +37,8 @@
 #if !defined(IVP_VECFPU_NO_SIMD) && defined(IVP_NO_DOUBLE)
 #include <DirectXMath.h>
 #define IVP_VECFPU_BACKEND_DXMATH 1
-#elif !defined(IVP_VECFPU_NO_SIMD) &&                             \
-    (defined(__SSE2__) || defined(_M_X64) || defined(_M_AMD64) || \
+#elif !defined(IVP_VECFPU_NO_SIMD) &&                                     \
+    (defined(__SSE2__) || defined(_M_X64) || defined(_M_AMD64) ||         \
      (defined(_M_IX86_FP) && _M_IX86_FP >= 2))
 #include <emmintrin.h>
 #define IVP_VECFPU_BACKEND_SSE2 1
@@ -51,11 +52,11 @@ static_assert(sizeof(IVP_DOUBLE) == sizeof(float),
               "DirectXMath backend requires IVP_DOUBLE == float");
 
 inline DirectX::XMVECTOR XM_CALLCONV load4(const IVP_DOUBLE *p) {
-  return DirectX::XMLoadFloat4(reinterpret_cast<const DirectX::XMFLOAT4*>(p));
+  return DirectX::XMLoadFloat4(reinterpret_cast<const DirectX::XMFLOAT4 *>(p));
 }
 
 inline void XM_CALLCONV store4(IVP_DOUBLE *p, DirectX::FXMVECTOR v) {
-  DirectX::XMStoreFloat4(reinterpret_cast<DirectX::XMFLOAT4*>(p), v);
+  DirectX::XMStoreFloat4(reinterpret_cast<DirectX::XMFLOAT4 *>(p), v);
 }
 
 // dst[i] += src[i] * f
@@ -1302,6 +1303,13 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
   // ivp_message("\n\n\n\n\ndoing_lcs_ %d\n",n_variables);
 
   IVP_DOUBLE solver_eps = SOLVER_EPS;
+  // pivot steps needed grow with the problem size (measured up to ~3.6 n);
+  // a fixed budget made every island beyond ~100 variables fail
+  const int max_steps =
+      (n_variables * IVP_UNILATERAL_SOLVER_STEPS_PER_VAR >
+       IVP_UNILATERAL_SOLVER_MAX_STEP)
+          ? n_variables * IVP_UNILATERAL_SOLVER_STEPS_PER_VAR
+          : IVP_UNILATERAL_SOLVER_MAX_STEP;
   // magnitude that cancels when the limiting variable hits zero; the
   // plausibility asserts below are relative to it (cancellation error scales
   // with it, so an absolute bound fails for large, well-solved values)
@@ -1311,7 +1319,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
     if (did_real_step) {
       increase_step_count(&step_count);
     }
-    if (step_count > IVP_UNILATERAL_SOLVER_MAX_STEP) {
+    if (step_count > max_steps) {
       IVP_IF(1) {
         ivp_message("\n\ngiveup_stepcount_linear_constraint_solver\n\n\n");
       }
@@ -1323,7 +1331,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
       if ((numerical_stability_ok() == IVP_FALSE)) {
       perform_full_setup:
         increase_step_count(&step_count);
-        if (step_count > IVP_UNILATERAL_SOLVER_MAX_STEP) {
+        if (step_count > max_steps) {
           IVP_IF(1) {
             ivp_message("\n\ngiveup_stepcount_linear_constraint_solver\n\n\n");
           }
@@ -1340,6 +1348,11 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
     }
 
     if (ignored_pos >= n_variables) {
+      refine_active_solution();
+      if (!result_is_finite()) {  // NaN/Inf input never counts as success
+        IVP_VecFPU::fpu_set_row_to_zero(full_x, n_variables, IVP_TRUE);
+        return IVP_FAULT;
+      }
       return IVP_OK;
     }
 
@@ -1645,6 +1658,65 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
   IVP_IF(debug_lcs) { debug_out_lcs(); }
 
   return IVP_OK;
+}
+
+// dimhotepus: Iterative refinement on the final active set.
+// Long incremental runs accumulate drift (~1e-5 relative after hundreds of
+// pivots). Recompute the residual of the active equations exactly and correct
+// x with a solve; the LU is rebuilt for the final active set if the
+// incremental one is switched off. Skipped when the residual is already at
+// working precision; a correction that would make an active x negative is
+// rejected (that would need pivoting, not refinement).
+void IVP_Linear_Constraint_Solver::refine_active_solution() {
+  if (r_actives <= 0) return;
+  // normalized units (|A|,|b| ~ 1): tolerance in units of b
+  const IVP_DOUBLE tol = ivp_lu_eps(SOLVER_EPS);  // >= 64 ulp of the type
+  for (int pass = 0; pass < 2; pass++) {
+    IVP_DOUBLE worst = 0.0f;
+    for (int i = 0; i < r_actives; i++) {
+      const int ri = actives_inactives_ignored[i];
+      const IVP_DOUBLE *row = &full_A[ri * aligned_size];
+      IVP_DOUBLE s = full_b[ri];
+      for (int j = 0; j < r_actives; j++) {
+        const int cj = actives_inactives_ignored[j];
+        s -= row[cj] * full_x[cj];
+      }
+      temp[i] = s;
+      const IVP_DOUBLE a = IVP_Inline_Math::fabsd(s);
+      if (!(a <= worst)) worst = a;  // NaN sticks -> handled by caller check
+    }
+    if (worst <= tol || worst != worst) return;
+    if (!(sub_solver_status == 0 && lu_sub_solver.n_sub == r_actives)) {
+      lu_sub_solver.n_sub = r_actives;
+      if (setup_l_u_solver() != IVP_OK) return;
+      sub_solver_status = 0;
+    }
+    IVP_VecFPU::fpu_copy_rows(lu_sub_solver.input_vec, temp, r_actives,
+                              IVP_TRUE);
+    lu_sub_solver.solve_lin_equ();
+    for (int i = 0; i < r_actives; i++) {
+      if (full_x[actives_inactives_ignored[i]] + lu_sub_solver.out_vec[i] <
+          0.0f) {
+        return;
+      }
+    }
+    for (int i = 0; i < r_actives; i++) {
+      full_x[actives_inactives_ignored[i]] += lu_sub_solver.out_vec[i];
+    }
+  }
+}
+
+// Bad input (NaN/Inf in A or b) propagates into x or the incrementally
+// maintained accelerations, so an O(n) check at the end catches it.
+IVP_BOOL IVP_Linear_Constraint_Solver::result_is_finite() const {
+  constexpr IVP_DOUBLE big = std::numeric_limits<IVP_DOUBLE>::max();
+  for (int i = 0; i < n_variables; i++) {
+    if (!(IVP_Inline_Math::fabsd(full_x[i]) <= big) ||
+        !(IVP_Inline_Math::fabsd(accel[i]) <= big)) {
+      return IVP_FALSE;
+    }
+  }
+  return IVP_TRUE;
 }
 
 // both numbers are in sub-space

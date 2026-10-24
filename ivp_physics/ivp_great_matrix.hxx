@@ -337,6 +337,8 @@ class IVP_Linear_Constraint_Solver {
   void move_not_necessary_actives_to_inactives();
   int full_setup_test_ranges();  // returns number of illegal variables
   void move_variable_to_end(int var_nr);
+  void refine_active_solution();
+  IVP_BOOL result_is_finite() const;
 
   // debug
   void debug_out_lcs();
