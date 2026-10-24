@@ -200,12 +200,20 @@ class IVP_Complex_Simple {
   void undo_copy();
 };
 
-// assumption: the memory is always allocated aligned to the block size
-//             otherwise -> failure
+// dimhotepus: Row kernels used by the solvers.
+//
+// All kernels touch exactly the elements [0, size) of the given pointers and
+// have no alignment requirement (unaligned SIMD loads/stores are used, which
+// cost nothing extra on aligned data on any CPU from the last ~15 years).
+// 'adress_aligned' is kept only for source compatibility and is ignored.
+//
+// Backend: DirectXMath when IVP_DOUBLE is float (IVP_NO_DOUBLE), SSE2
+// packed-double when IVP_DOUBLE is double, plain C++ otherwise.
 class IVP_VecFPU {
  public:
   static inline void fpu_add_multiple_row(IVP_DOUBLE *target_adress,
-                                          IVP_DOUBLE *source_adress,
+                                          // dimhotepus: Add const.
+                                          const IVP_DOUBLE *source_adress,
                                           IVP_DOUBLE factor, int size,
                                           IVP_BOOL adress_aligned);
   static inline void fpu_multiply_row(IVP_DOUBLE *target_adress,
@@ -215,12 +223,14 @@ class IVP_VecFPU {
                                        IVP_DOUBLE *target_adress2, int size,
                                        IVP_BOOL adress_aligned);
   static inline void fpu_copy_rows(IVP_DOUBLE *target_adress,
-                                   IVP_DOUBLE *source_adress, int size,
+                                   // dimhotepus: Add const.
+                                   const IVP_DOUBLE *source_adress, int size,
                                    IVP_BOOL adress_aligned);
   static inline void fpu_set_row_to_zero(IVP_DOUBLE *target_adress, int size,
                                          IVP_BOOL adress_aligned);
-  static inline IVP_DOUBLE fpu_large_dot_product(IVP_DOUBLE *base_a,
-                                                 IVP_DOUBLE *x, int size,
+  // dimhotepus: Add const x2.
+  static inline IVP_DOUBLE fpu_large_dot_product(const IVP_DOUBLE *base_a,
+                                                 const IVP_DOUBLE *x, int size,
                                                  IVP_BOOL adress_aligned);
 };
 

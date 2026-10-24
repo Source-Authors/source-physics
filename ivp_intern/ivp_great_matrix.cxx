@@ -1,7 +1,4 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
-#ifdef IVP_WILLAMETTE
-#include <emmintrin.h>
-#endif
 
 // IVP_EXPORT_PRIVATE
 
@@ -14,335 +11,292 @@
 #include <ivp_debug_manager.hxx>
 #include <ivu_memory.hxx>
 
+#include <algorithm>
+#include <cstring>
+#include <utility>
+
 #define IVP_UNILATERAL_SOLVER_MAX_STEP 250
 #define IVP_STATIC_FRICTION_TEST_EPS 0.00001f  // is a percentage value
 #define IVP_NUMERIC_TEST_EVERY_N 7
 
-inline void IVP_VecFPU::fpu_add_multiple_row(IVP_DOUBLE *target_adress,
-                                             IVP_DOUBLE *source_adress,
-                                             IVP_DOUBLE factor, int size,
-                                             IVP_BOOL adress_aligned) {
-  if (adress_aligned == IVP_FALSE) {
-    // we have to calculate the block size and shift adresses to lower aligned
-    // adresses
-    hk_intp result_adress = hk_intp(source_adress) & IVP_VECFPU_MEM_MASK;
-    target_adress =
-        (IVP_DOUBLE *)(hk_intp(target_adress) & IVP_VECFPU_MEM_MASK);
-    size += (hk_intp(source_adress) - result_adress) >> IVP_VECFPU_MEMSHIFT;
-    source_adress = (IVP_DOUBLE *)result_adress;
-  }
-
-  IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
-                            ->ivp_willamette_optimization) {
-#if defined(IVP_WILLAMETTE)
-    ;
-    __m128d factor128 = _mm_set1_pd(factor);
-
-    for (int i = size; i > 0; i -= IVP_VECFPU_SIZE) {
-      __m128d source_d = _mm_load_pd(source_adress);
-      __m128d prod_d = _mm_mul_pd(factor128, source_d);
-      __m128d target_d = _mm_load_pd(target_adress);
-      target_d = _mm_add_pd(prod_d, target_d);
-      _mm_store_pd(target_adress, target_d);
-
-      target_adress += IVP_VECFPU_SIZE;
-      source_adress += IVP_VECFPU_SIZE;
-    }
+// ---------------------------------------------------------------------------
+// SIMD backend selection for IVP_VecFPU.
+//
+// DirectXMath is a float32-only library (XMVECTOR = 4 x float). It is used
+// when IVP_DOUBLE is float. When IVP_DOUBLE is double, routing data through
+// DirectXMath would silently truncate every value to float and break the LCP
+// solver (SOLVER_EPS = 1e-7 is below float resolution), so the double build
+// uses SSE2 packed doubles instead (the same instruction family DirectXMath
+// itself is built on). Define IVP_VECFPU_NO_SIMD to force the scalar path.
+// ---------------------------------------------------------------------------
+#if !defined(IVP_VECFPU_NO_SIMD) && defined(IVP_NO_DOUBLE)
+#include <DirectXMath.h>
+#define IVP_VECFPU_BACKEND_DXMATH 1
+#elif !defined(IVP_VECFPU_NO_SIMD) &&                             \
+    (defined(__SSE2__) || defined(_M_X64) || defined(_M_AMD64) || \
+     (defined(_M_IX86_FP) && _M_IX86_FP >= 2))
+#include <emmintrin.h>
+#define IVP_VECFPU_BACKEND_SSE2 1
 #endif
+
+namespace {
+
+#if defined(IVP_VECFPU_BACKEND_DXMATH)
+
+static_assert(sizeof(IVP_DOUBLE) == sizeof(float),
+              "DirectXMath backend requires IVP_DOUBLE == float");
+
+inline DirectX::XMVECTOR XM_CALLCONV load4(const IVP_DOUBLE* p) {
+  return DirectX::XMLoadFloat4(reinterpret_cast<const DirectX::XMFLOAT4*>(p));
+}
+
+inline void XM_CALLCONV store4(IVP_DOUBLE* p, DirectX::FXMVECTOR v) {
+  DirectX::XMStoreFloat4(reinterpret_cast<DirectX::XMFLOAT4*>(p), v);
+}
+
+// dst[i] += src[i] * f
+inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
+  using namespace DirectX;
+  const XMVECTOR vf = XMVectorReplicate(f);
+  int i = 0;
+  for (; i + 8 <= n; i += 8) {
+    const XMVECTOR s0 = load4(src + i);
+    const XMVECTOR s1 = load4(src + i + 4);
+    const XMVECTOR t0 = load4(dst + i);
+    const XMVECTOR t1 = load4(dst + i + 4);
+    store4(dst + i, XMVectorMultiplyAdd(s0, vf, t0));
+    store4(dst + i + 4, XMVectorMultiplyAdd(s1, vf, t1));
   }
-  else {
-    for (int i = size; i > 0; i -= IVP_VECFPU_SIZE) {
-#if IVP_VECFPU_SIZE == 2
-      IVP_DOUBLE a = source_adress[0] * factor;
-      IVP_DOUBLE b = source_adress[1] * factor;
-      a += target_adress[0];
-      b += target_adress[1];
-      target_adress[0] = a;
-      target_adress[1] = b;
-#elif IVP_VECFPU_SIZE == 4
-      IVP_DOUBLE a = source_adress[0] * factor;
-      IVP_DOUBLE b = source_adress[1] * factor;
-      IVP_DOUBLE c = source_adress[2] * factor;
-      IVP_DOUBLE d = source_adress[3] * factor;
-      a += target_adress[0];
-      b += target_adress[1];
-      c += target_adress[2];
-      d += target_adress[3];
-      target_adress[0] = a;
-      target_adress[1] = b;
-      target_adress[2] = c;
-      target_adress[3] = d;
-#else
-      IVP_DOUBLE a = source_adress[0] * factor;
-      a += target_adress[0];
-      target_adress[0] = a;
-#endif
-      target_adress += IVP_VECFPU_SIZE;
-      source_adress += IVP_VECFPU_SIZE;
-    }
+  if (i + 4 <= n) {
+    store4(dst + i, XMVectorMultiplyAdd(load4(src + i), vf, load4(dst + i)));
+    i += 4;
+  }
+  for (; i < n; i++) {
+    dst[i] += src[i] * f;
   }
 }
 
-inline IVP_DOUBLE IVP_VecFPU::fpu_large_dot_product(IVP_DOUBLE *base_a,
-                                                    IVP_DOUBLE *base_b,
-                                                    int size,
-                                                    IVP_BOOL adress_aligned) {
-  if (adress_aligned == IVP_FALSE) {
-    // we have to calculate the block size and shift adresses to lower aligned
-    // adresses
-    hk_intp result_adress = hk_intp(base_a) & IVP_VECFPU_MEM_MASK;
-    base_b = (IVP_DOUBLE *)(hk_intp(base_b) & IVP_VECFPU_MEM_MASK);
-    size += (hk_intp(base_a) - result_adress) >>
-            IVP_VECFPU_MEMSHIFT;  // because start changed
-    base_a = (IVP_DOUBLE *)result_adress;
+// dst[i] *= f
+inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
+  using namespace DirectX;
+  const XMVECTOR vf = XMVectorReplicate(f);
+  int i = 0;
+  for (; i + 8 <= n; i += 8) {
+    const XMVECTOR t0 = load4(dst + i);
+    const XMVECTOR t1 = load4(dst + i + 4);
+    store4(dst + i, XMVectorMultiply(t0, vf));
+    store4(dst + i + 4, XMVectorMultiply(t1, vf));
   }
-#if defined(IVP_WILLAMETTE)
-  IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
-                            ->ivp_willamette_optimization) {
-    __m128d sum128 = _mm_set1_pd(0.0f);
-
-    int i;
-    for (i = size; i >= IVP_VECFPU_SIZE; i -= IVP_VECFPU_SIZE) {
-      __m128d mult1 = _mm_load_pd(base_a);
-      __m128d mult2 = _mm_load_pd(base_b);
-      __m128d prod = _mm_mul_pd(mult1, mult2);
-      sum128 = _mm_add_pd(prod, sum128);
-      base_a += IVP_VECFPU_SIZE;
-      base_b += IVP_VECFPU_SIZE;
-    }
-
-    __m128d dummy, low, high;
-    low = sum128;
-    dummy = sum128;
-    //_mm_shuffle_pd(sum128,sum128,1); //swap high and low
-    sum128 = _mm_unpackhi_pd(sum128, dummy);
-    high = sum128;
-    __m128d sum64 = _mm_add_sd(low, high);
-    __m128d res = sum64;
-    //_mm_shuffle_pd(sum64,sum64,1);
-    IVP_DOUBLE result_sum;
-    _mm_store_sd(&result_sum, res);
-
-    for (; i >= 0; i--) {
-      result_sum += base_a[i] * base_b[i];
-    }
-
-    return result_sum;
+  if (i + 4 <= n) {
+    store4(dst + i, XMVectorMultiply(load4(dst + i), vf));
+    i += 4;
   }
-  else {
-    IVP_DOUBLE sum = 0.0f;
-    for (int i = size - 1; i >= 0; i--) {
-      sum += base_a[i] * base_b[i];
-    }
-    return sum;
+  for (; i < n; i++) {
+    dst[i] *= f;
   }
-#else
-  IVP_DOUBLE sum = 0.0;
-  for (int i = 0; i < size; i++) {
-    sum += base_a[i] * base_b[i];
+}
+
+inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
+  using namespace DirectX;
+  int i = 0;
+  for (; i + 4 <= n; i += 4) {
+    const XMVECTOR va = load4(a + i);
+    const XMVECTOR vb = load4(b + i);
+    store4(a + i, vb);
+    store4(b + i, va);
+  }
+  for (; i < n; i++) {
+    std::swap(a[i], b[i]);
+  }
+}
+
+inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
+  using namespace DirectX;
+  XMVECTOR acc0 = XMVectorZero();
+  XMVECTOR acc1 = XMVectorZero();
+  int i = 0;
+  for (; i + 8 <= n; i += 8) {
+    acc0 = XMVectorMultiplyAdd(load4(a + i), load4(b + i), acc0);
+    acc1 = XMVectorMultiplyAdd(load4(a + i + 4), load4(b + i + 4), acc1);
+  }
+  if (i + 4 <= n) {
+    acc0 = XMVectorMultiplyAdd(load4(a + i), load4(b + i), acc0);
+    i += 4;
+  }
+  acc0 = XMVectorAdd(acc0, acc1);
+  IVP_DOUBLE sum = XMVectorGetX(XMVector4Dot(acc0, XMVectorSplatOne()));
+  for (; i < n; i++) {
+    sum += a[i] * b[i];
   }
   return sum;
+}
+
+#elif defined(IVP_VECFPU_BACKEND_SSE2)
+
+static_assert(sizeof(IVP_DOUBLE) == sizeof(double),
+              "SSE2 backend requires IVP_DOUBLE == double");
+
+// dst[i] += src[i] * f  (mul then add, bit-identical to the scalar code)
+inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
+  const __m128d vf = _mm_set1_pd(f);
+  int i = 0;
+  for (; i + 4 <= n; i += 4) {
+    const __m128d s0 = _mm_loadu_pd(src + i);
+    const __m128d s1 = _mm_loadu_pd(src + i + 2);
+    const __m128d t0 = _mm_loadu_pd(dst + i);
+    const __m128d t1 = _mm_loadu_pd(dst + i + 2);
+    _mm_storeu_pd(dst + i, _mm_add_pd(_mm_mul_pd(s0, vf), t0));
+    _mm_storeu_pd(dst + i + 2, _mm_add_pd(_mm_mul_pd(s1, vf), t1));
+  }
+  if (i + 2 <= n) {
+    _mm_storeu_pd(dst + i, _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(src + i), vf),
+                                      _mm_loadu_pd(dst + i)));
+    i += 2;
+  }
+  if (i < n) {
+    dst[i] += src[i] * f;
+  }
+}
+
+inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
+  const __m128d vf = _mm_set1_pd(f);
+  int i = 0;
+  for (; i + 4 <= n; i += 4) {
+    const __m128d t0 = _mm_loadu_pd(dst + i);
+    const __m128d t1 = _mm_loadu_pd(dst + i + 2);
+    _mm_storeu_pd(dst + i, _mm_mul_pd(t0, vf));
+    _mm_storeu_pd(dst + i + 2, _mm_mul_pd(t1, vf));
+  }
+  if (i + 2 <= n) {
+    _mm_storeu_pd(dst + i, _mm_mul_pd(_mm_loadu_pd(dst + i), vf));
+    i += 2;
+  }
+  if (i < n) {
+    dst[i] *= f;
+  }
+}
+
+inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
+  int i = 0;
+  for (; i + 2 <= n; i += 2) {
+    const __m128d va = _mm_loadu_pd(a + i);
+    const __m128d vb = _mm_loadu_pd(b + i);
+    _mm_storeu_pd(a + i, vb);
+    _mm_storeu_pd(b + i, va);
+  }
+  if (i < n) {
+    std::swap(a[i], b[i]);
+  }
+}
+
+inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
+  __m128d acc0 = _mm_setzero_pd();
+  __m128d acc1 = _mm_setzero_pd();
+  int i = 0;
+  for (; i + 4 <= n; i += 4) {
+    acc0 =
+        _mm_add_pd(acc0, _mm_mul_pd(_mm_loadu_pd(a + i), _mm_loadu_pd(b + i)));
+    acc1 = _mm_add_pd(
+        acc1, _mm_mul_pd(_mm_loadu_pd(a + i + 2), _mm_loadu_pd(b + i + 2)));
+  }
+  if (i + 2 <= n) {
+    acc0 =
+        _mm_add_pd(acc0, _mm_mul_pd(_mm_loadu_pd(a + i), _mm_loadu_pd(b + i)));
+    i += 2;
+  }
+  acc0 = _mm_add_pd(acc0, acc1);
+  IVP_DOUBLE sum = _mm_cvtsd_f64(_mm_add_sd(acc0, _mm_unpackhi_pd(acc0, acc0)));
+  if (i < n) {
+    sum += a[i] * b[i];
+  }
+  return sum;
+}
+
+#else  // portable scalar fallback
+
+inline void axpy(IVP_DOUBLE* dst, const IVP_DOUBLE* src, IVP_DOUBLE f, int n) {
+  for (int i = 0; i < n; i++) {
+    dst[i] += src[i] * f;
+  }
+}
+
+inline void scale(IVP_DOUBLE* dst, IVP_DOUBLE f, int n) {
+  for (int i = 0; i < n; i++) {
+    dst[i] *= f;
+  }
+}
+
+inline void swap_rows(IVP_DOUBLE* a, IVP_DOUBLE* b, int n) {
+  for (int i = 0; i < n; i++) {
+    std::swap(a[i], b[i]);
+  }
+}
+
+inline IVP_DOUBLE dot(const IVP_DOUBLE* a, const IVP_DOUBLE* b, int n) {
+  IVP_DOUBLE sum = 0.0f;
+  for (int i = 0; i < n; i++) {
+    sum += a[i] * b[i];
+  }
+  return sum;
+}
+
 #endif
+
+}  // namespace
+
+// dimhotepus: The 'adress_aligned' argument is ignored: every kernel processes
+// exactly [0, size) with unaligned loads. The old code instead rounded the
+// start address down / the size up to the vector block, i.e. it read and wrote
+// elements outside the requested range (and with the PLATFORM_64BITS
+// MEMSHIFT=2 setting it miscounted doubles and overran by one block).
+
+inline void IVP_VecFPU::fpu_add_multiple_row(IVP_DOUBLE *target_adress,
+                                             const IVP_DOUBLE *source_adress,
+                                             IVP_DOUBLE factor, int size,
+                                             IVP_BOOL) {
+  axpy(target_adress, source_adress, factor, size);
+}
+
+inline IVP_DOUBLE IVP_VecFPU::fpu_large_dot_product(const IVP_DOUBLE *base_a,
+                                                    const IVP_DOUBLE *base_b,
+                                                    int size, IVP_BOOL) {
+  return dot(base_a, base_b, size);
 }
 
 inline void IVP_VecFPU::fpu_multiply_row(IVP_DOUBLE *target_adress,
                                          IVP_DOUBLE factor, int size,
-                                         IVP_BOOL adress_aligned) {
-  if (adress_aligned == IVP_FALSE) {
-    // we have to calculate the block size and shift adresses to lower aligned
-    // adresses
-    hk_intp adress, result_adress;
-    adress = (hk_intp)target_adress;
-    result_adress = adress & IVP_VECFPU_MEM_MASK;
-    size += (adress - result_adress) >> IVP_VECFPU_MEMSHIFT;
-    target_adress = (IVP_DOUBLE *)result_adress;
-  }
-  IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
-                            ->ivp_willamette_optimization) {
-#ifdef IVP_WILLAMETTE
-    __m128d factor128 = _mm_set1_pd(factor);
-    int i;
-    for (i = size; i > 0; i -= IVP_VECFPU_SIZE) {
-      __m128d target_d = _mm_load_pd(target_adress);
-      target_d = _mm_mul_pd(factor128, target_d);
-      _mm_store_pd(target_adress, target_d);
-
-      target_adress += IVP_VECFPU_SIZE;
-    }
-#endif
-  }
-  else {
-    int i;
-    for (i = size; i > 0; i -= IVP_VECFPU_SIZE) {
-#if IVP_VECFPU_SIZE == 2
-      IVP_DOUBLE a = target_adress[0] * factor;
-      IVP_DOUBLE b = target_adress[1] * factor;
-      target_adress[0] = a;
-      target_adress[1] = b;
-#elif IVP_VECFPU_SIZE == 4
-      IVP_DOUBLE a = target_adress[0] * factor;
-      IVP_DOUBLE b = target_adress[1] * factor;
-      IVP_DOUBLE c = target_adress[2] * factor;
-      IVP_DOUBLE d = target_adress[3] * factor;
-      target_adress[0] = a;
-      target_adress[1] = b;
-      target_adress[2] = c;
-      target_adress[3] = d;
-#else
-      IVP_DOUBLE a = target_adress[0] * factor;
-      target_adress[0] = a;
-#endif
-      target_adress += IVP_VECFPU_SIZE;
-    }
-  }
+                                         IVP_BOOL) {
+  scale(target_adress, factor, size);
 }
-// #+# sparc says rui, optimize for non vector units ( IVP_VECFPU_SIZE = 4 )
+
 inline void IVP_VecFPU::fpu_exchange_rows(IVP_DOUBLE *target_adress1,
                                           IVP_DOUBLE *target_adress2, int size,
-                                          IVP_BOOL adress_aligned) {
-  if (adress_aligned == IVP_FALSE) {
-    // we have to calculate the block size and shift adresses to lower aligned
-    // adresses
-    hk_intp adress, result_adress;
-    adress = (hk_intp)target_adress1;
-    result_adress = adress & IVP_VECFPU_MEM_MASK;
-    size += (adress - result_adress) >> IVP_VECFPU_MEMSHIFT;
-    target_adress1 = (IVP_DOUBLE *)result_adress;
-    adress = (hk_intp)target_adress2;
-    adress = adress & IVP_VECFPU_MEM_MASK;
-    target_adress2 = (IVP_DOUBLE *)adress;
-  }
-  IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
-                            ->ivp_willamette_optimization) {
-#ifdef IVP_WILLAMETTE
-    int i;
-    for (i = size; i > 0; i -= IVP_VECFPU_SIZE) {
-      __m128d a_d = _mm_load_pd(target_adress1);
-      __m128d b_d = _mm_load_pd(target_adress2);
-      _mm_store_pd(target_adress1, b_d);
-      _mm_store_pd(target_adress2, a_d);
-
-      target_adress1 += IVP_VECFPU_SIZE;
-      target_adress2 += IVP_VECFPU_SIZE;
-    }
-#endif
-  }
-  else {
-    int i;
-    for (i = size; i > 0; i -= IVP_VECFPU_SIZE) {
-#if IVP_VECFPU_SIZE == 2
-      IVP_DOUBLE h;
-      h = target_adress1[0];
-      target_adress1[0] = target_adress2[0];
-      target_adress2[0] = h;
-      h = target_adress1[1];
-      target_adress1[1] = target_adress2[1];
-      target_adress2[1] = h;
-#elif IVP_VECFPU_SIZE == 4
-      IVP_DOUBLE h;
-      h = target_adress1[0];
-      target_adress1[0] = target_adress2[0];
-      target_adress2[0] = h;
-      h = target_adress1[1];
-      target_adress1[1] = target_adress2[1];
-      target_adress2[1] = h;
-      h = target_adress1[2];
-      target_adress1[2] = target_adress2[2];
-      target_adress2[2] = h;
-      h = target_adress1[3];
-      target_adress1[3] = target_adress2[3];
-      target_adress2[3] = h;
-#else
-      std::swap(target_adress1[0], target_adress2[0]);
-#endif
-      target_adress1 += IVP_VECFPU_SIZE;
-      target_adress2 += IVP_VECFPU_SIZE;
-    }
-  }
+                                          IVP_BOOL) {
+  swap_rows(target_adress1, target_adress2, size);
 }
 
 inline void IVP_VecFPU::fpu_copy_rows(IVP_DOUBLE *target_adress,
-                                      IVP_DOUBLE *source_adress, int size,
-                                      IVP_BOOL adress_aligned) {
-  if (adress_aligned == IVP_FALSE) {
-    // we have to calculate the block size and shift adresses to lower aligned
-    // adresses
-    hk_intp adress, result_adress;
-    adress = (hk_intp)source_adress;
-    result_adress = adress & IVP_VECFPU_MEM_MASK;
-    size += (adress - result_adress) >> IVP_VECFPU_MEMSHIFT;
-    source_adress = (IVP_DOUBLE *)result_adress;
-    adress = (hk_intp)target_adress;
-    adress = adress & IVP_VECFPU_MEM_MASK;
-    target_adress = (IVP_DOUBLE *)adress;
-  }
-  IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
-                            ->ivp_willamette_optimization) {
-#ifdef IVP_WILLAMETTE
-    int i;
-    for (i = size - 1; i >= 0; i -= IVP_VECFPU_SIZE) {
-      __m128d target_d = _mm_load_pd(source_adress);
-      _mm_store_pd(target_adress, target_d);
-
-      target_adress += IVP_VECFPU_SIZE;
-      source_adress += IVP_VECFPU_SIZE;
-    }
-#endif
-  }
-  else {
-    int i;
-    for (i = size - 1; i >= 0; i -= IVP_VECFPU_SIZE) {
-      int j;
-      for (j = 0; j < IVP_VECFPU_SIZE; j++) {
-        target_adress[j] = source_adress[j];
-      }
-      target_adress += IVP_VECFPU_SIZE;
-      source_adress += IVP_VECFPU_SIZE;
-    }
+                                      const IVP_DOUBLE *source_adress, int size,
+                                      IVP_BOOL) {
+  if (size > 0) {
+    std::memcpy(target_adress, source_adress,
+                size_t(size) * sizeof(IVP_DOUBLE));
   }
 }
 
 inline void IVP_VecFPU::fpu_set_row_to_zero(IVP_DOUBLE *target_adress, int size,
-                                            IVP_BOOL adress_aligned) {
-  if (adress_aligned == IVP_FALSE) {
-    hk_intp adress, result_adress;
-    adress = (hk_intp)target_adress;
-    result_adress = adress & IVP_VECFPU_MEM_MASK;
-    size += (adress - result_adress) >> IVP_VECFPU_MEMSHIFT;
-    target_adress = (IVP_DOUBLE *)result_adress;
-  }
-  IVP_IF_WILLAMETTE_OPT(IVP_Environment_Manager::get_environment_manager()
-                            ->ivp_willamette_optimization) {
-#ifdef IVP_WILLAMETTE
-    __m128d zero128 = _mm_set1_pd(0.0f);
-    int i;
-    for (i = size - 1; i >= 0; i -= IVP_VECFPU_SIZE) {
-      _mm_store_pd(target_adress, zero128);
-
-      target_adress += IVP_VECFPU_SIZE;
-    }
-#endif
-  }
-  else {
-    int i;
-    for (i = size - 1; i >= 0; i -= IVP_VECFPU_SIZE) {
-      int j;
-      for (j = 0; j < IVP_VECFPU_SIZE; j++) {
-        target_adress[j] = 0.0f;
-      }
-      target_adress += IVP_VECFPU_SIZE;
-    }
+                                            IVP_BOOL) {
+  if (size > 0) {
+    std::fill_n(target_adress, size, IVP_DOUBLE(0));
   }
 }
 
 // tests a line to be greater equal result value
 IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::matrix_check_unequation_line(
     int linenum) {
-  IVP_DOUBLE *dline = &matrix_values[aligned_row_len * linenum];
-  IVP_DOUBLE left_side = 0.0f;
-  for (int i = 0; i < columns; i++) {
-    left_side += result_vector[i] * *dline++;
-  }
+  const IVP_DOUBLE *dline = &matrix_values[aligned_row_len * linenum];
+  IVP_DOUBLE left_side = IVP_VecFPU::fpu_large_dot_product(dline, result_vector,
+                                                           columns, IVP_TRUE);
   IVP_DOUBLE eps = IVP_Inline_Math::fabsd(desired_vector[linenum] *
                                           IVP_STATIC_FRICTION_TEST_EPS);
   if (left_side + eps >= desired_vector[linenum]) {
@@ -355,10 +309,8 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::matrix_check_unequation_line(
 
 void IVP_Great_Matrix_Many_Zero::matrix_test_unequation() {
   for (int i = 0; i < columns; i++) {
-    IVP_DOUBLE left = 0.0f;
-    for (int j = 0; j < columns; j++) {
-      left += result_vector[j] * matrix_values[i * aligned_row_len + j];
-    }
+    IVP_DOUBLE left = IVP_VecFPU::fpu_large_dot_product(
+        &matrix_values[i * aligned_row_len], result_vector, columns, IVP_TRUE);
     IVP_IF(1) {
       ivp_message("unequation_test left %f right %f\n", left,
                   desired_vector[i]);
@@ -394,9 +346,8 @@ void IVP_Great_Matrix_Many_Zero::add_multiple_line(int first, int second,
 void IVP_Great_Matrix_Many_Zero::debug_fill_zero() {
   // prevent SUN from getting read from uninitialized errors
   for (int i = 0; i < columns; i++) {
-    for (int j = 0; j < aligned_row_len; j++) {
-      matrix_values[i * aligned_row_len + j] = 0.0f;
-    }
+    IVP_VecFPU::fpu_set_row_to_zero(&matrix_values[i * aligned_row_len],
+                                    aligned_row_len, IVP_TRUE);
   }
 }
 
@@ -442,12 +393,8 @@ void IVP_Great_Matrix_Many_Zero::align_matrix_values() {
 
 void IVP_Great_Matrix_Many_Zero::copy_matrix(IVP_DOUBLE *values,
                                              IVP_DOUBLE *desired) {
-  for (int d = columns * columns - 1; d >= 0; d--) {
-    values[d] = matrix_values[d];
-  }
-  for (int j = 0; j < columns; j++) {
-    desired[j] = desired_vector[j];
-  }
+  IVP_VecFPU::fpu_copy_rows(values, matrix_values, columns * columns, IVP_TRUE);
+  IVP_VecFPU::fpu_copy_rows(desired, desired_vector, columns, IVP_TRUE);
 }
 
 void IVP_Great_Matrix_Many_Zero::find_pivot_in_column(int col) {
@@ -469,21 +416,11 @@ void IVP_Great_Matrix_Many_Zero::find_pivot_in_column(int col) {
 // optimization: when called from transform_to_lower_null_triangle, begin by 'a'
 // (first values are 0.0f)
 void IVP_Great_Matrix_Many_Zero::exchange_rows(int a, int b) {
-  IVP_DOUBLE h;
-#if 0 /* without Vector FPU */   
-    for(int i=columns-1;i>=0;i--) {
-	h=matrix_values[a*aligned_row_len+i];
-	matrix_values[a*aligned_row_len+i]=matrix_values[b*aligned_row_len+i];
-	matrix_values[b*aligned_row_len+i]=h;
-    }
-#endif
   IVP_VecFPU::fpu_exchange_rows(&matrix_values[b * aligned_row_len],
                                 &matrix_values[a * aligned_row_len], columns,
                                 IVP_TRUE);
 
-  h = desired_vector[a];
-  desired_vector[a] = desired_vector[b];
-  desired_vector[b] = h;
+  std::swap(desired_vector[a], desired_vector[b]);
 }
 
 // solve with Gauss-Algo. : upper triangle matrix with nulls in lower part
@@ -496,17 +433,6 @@ void IVP_Great_Matrix_Many_Zero::transform_to_lower_null_triangle() {
   // walk through columns
   for (j = 0; j < columns; j++) {
     IVP_DOUBLE diagonal_elem, negativ_inv_diagonal;
-#if 0
-	//not always pivot search
-	diagonal_elem=matrix_values[j*aligned_row_len+j];
-	if(IVP_Inline_Math::fabsd(diagonal_elem)<MATRIX_EPS) {
-	    find_pivot_in_column(j);
-	    diagonal_elem=matrix_values[j*aligned_row_len+j];
-	    if(IVP_Inline_Math::fabsd(diagonal_elem)<MATRIX_EPS) {
-		goto column_done;
-	    }
-	}
-#endif
     // always pivot search
     find_pivot_in_column(j);
     diagonal_elem = matrix_values[j * aligned_row_len + j];
@@ -527,24 +453,6 @@ void IVP_Great_Matrix_Many_Zero::transform_to_lower_null_triangle() {
 
   // now matrix has zeros in lower-left part
   // solve columns from bottom to top
-#if 0
-    ivp_message("matrix_after_gauss:\n");
-    for(j=0;j<columns;j++)
-    {
-	//walk through lines
-	for(i=0;i<columns;i++)
-	{
-	    ivp_message("%.5f  ",matrix_values[j*columns+i]);
-	    old_matrix[j*columns+i]=matrix_values[j*columns+i];
-	}
-	ivp_message(" x -> %.5f\n",desired_vector[j]);
-	res_p[j]=desired_vector[j];
-    }
-#endif
-
-  // this->test_result(old_matrix,res_p);
-  // P_DELETE(old_matrix);
-  // return 0;
 }
 
 #ifdef DEBUG
@@ -585,13 +493,7 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::solve_lower_null_matrix() {
         IVP_IF(0) { ivp_message("gauss_singular_matrix\n"); }
       } else {
         // no result possible
-        if (1) {
-          i = columns - 1;
-          while (i >= 0) {
-            result_vector[i] = 0.0f;  // prevent SUN from detecting rui error
-            i--;
-          }
-        }
+        IVP_VecFPU::fpu_set_row_to_zero(result_vector, columns, IVP_TRUE);
         return IVP_FAULT;
       }
     } else {
@@ -605,9 +507,7 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::solve_lower_null_matrix() {
     }
   }
 
-  for (i = 0; i < columns; i++) {
-    result_vector[i] = desired_vector[i];
-  }
+  IVP_VecFPU::fpu_copy_rows(result_vector, desired_vector, columns, IVP_TRUE);
 
   return IVP_OK;
 }
@@ -727,6 +627,8 @@ void IVP_Great_Matrix_Many_Zero::set_value(IVP_DOUBLE val, int col, int row) {
   IVP_ASSERT(col >= 0 && col < columns);
   IVP_ASSERT(row >= 0 && row < columns);
 
+  // dimhotepus: note, uses 'columns' as row stride while get_value() uses
+  // 'aligned_row_len'. Kept as-is (mult()/invert() use the 'columns' layout).
   *(this->matrix_values + col + columns * row) = val;
 }
 
@@ -761,39 +663,19 @@ int IVP_Great_Matrix_Many_Zero::print_great_matrix(const char *comment) const {
   return 0;  // for dbx
 }
 
-// #+# use vector FPU
+// input: desired_vector, output: result_vector, rows have aligned_row_len
 void IVP_Great_Matrix_Many_Zero::mult_aligned() {
-  // can be optimized -> usage of vector FPU
-
-  int j;  // row
-  // for each row
-  for (j = 0; j < columns; j++) {
-    int i;  // col
-    // walk through row
-    IVP_DOUBLE left_side = 0.0f;
-    IVP_DOUBLE *source = &matrix_values[j * aligned_row_len];
-    for (i = 0; i < columns; i++) {
-      left_side += source[i] * desired_vector[i];
-    }
-    result_vector[j] = left_side;
+  for (int j = 0; j < columns; j++) {
+    result_vector[j] = IVP_VecFPU::fpu_large_dot_product(
+        &matrix_values[j * aligned_row_len], desired_vector, columns, IVP_TRUE);
   }
 }
 
+// from desired_vector to result_vector, rows have 'columns' length
 void IVP_Great_Matrix_Many_Zero::mult() {
-  // from desired_vector to result_vector
-
-  // @@OG superslow copypaste, can be optimized!! (rowoffset, revert loop, etc)
-
-  int j;  // row
-  // for each row
-  for (j = 0; j < columns; j++) {
-    int i;  // col
-    // walk through row
-    IVP_DOUBLE left_side = 0.0f;
-    for (i = 0; i < columns; i++) {
-      left_side += matrix_values[j * columns + i] * desired_vector[i];
-    }
-    result_vector[j] = left_side;
+  for (int j = 0; j < columns; j++) {
+    result_vector[j] = IVP_VecFPU::fpu_large_dot_product(
+        &matrix_values[j * columns], desired_vector, columns, IVP_FALSE);
   }
 }
 
@@ -876,43 +758,32 @@ void IVP_Linear_Constraint_Solver::alloc_memory(IVP_U_Memory *my_mem) {
   reset_x = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   reset_accel = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  lu_sub_solver.L_matrix = my_mem->get_mem<IVP_DOUBLE>(
-      aligned_size * n_variables);
-  lu_sub_solver.U_matrix = my_mem->get_mem<IVP_DOUBLE>(
-      aligned_size * n_variables);
-  lu_sub_solver.input_vec =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  lu_sub_solver.out_vec =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  lu_sub_solver.temp_vec =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  lu_sub_solver.mult_vec =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.L_matrix =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  lu_sub_solver.U_matrix =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  lu_sub_solver.input_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.out_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.temp_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  lu_sub_solver.mult_vec = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  sub_solver_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  sub_solver_mat.matrix_values =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
   sub_solver_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
   sub_solver_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
-  inv_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
-      aligned_size * n_variables);
-  inv_mat.desired_vector =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-  inv_mat.result_vector =
-      my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  inv_mat.matrix_values =
+      my_mem->get_mem<IVP_DOUBLE>(aligned_size * n_variables);
+  inv_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+  inv_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
 
   IVP_IF(1) {  // fill LU for fast align access
-    for (int j = 0; j < n_variables; j++) {
-      IVP_DOUBLE *L = &lu_sub_solver.L_matrix[j * aligned_size];
-      IVP_DOUBLE *U = &lu_sub_solver.U_matrix[j * aligned_size];
-      IVP_DOUBLE *S = &sub_solver_mat.matrix_values[j * aligned_size];
-      IVP_DOUBLE *M = &inv_mat.matrix_values[j * aligned_size];
-      for (int i = 0 /*n_variables*/; i < aligned_size; i++) {
-        L[i] = 0.0f;
-        U[i] = 0.0f;
-        S[i] = 0.0f;
-        M[i] = 0.0f;
-      }
-    }
+    const int total = aligned_size * n_variables;
+    IVP_VecFPU::fpu_set_row_to_zero(lu_sub_solver.L_matrix, total, IVP_TRUE);
+    IVP_VecFPU::fpu_set_row_to_zero(lu_sub_solver.U_matrix, total, IVP_TRUE);
+    IVP_VecFPU::fpu_set_row_to_zero(sub_solver_mat.matrix_values, total,
+                                    IVP_TRUE);
+    IVP_VecFPU::fpu_set_row_to_zero(inv_mat.matrix_values, total, IVP_TRUE);
     for (int k = n_variables; k < aligned_size; k++) {
       reset_accel[k] = 0.0f;
     }
@@ -951,12 +822,10 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::init_and_solve_lc(
   inv_mat.MATRIX_EPS = SOLVER_EPS;
 
   IVP_IF(1) {
-    debug_mat.matrix_values = my_mem->get_mem<IVP_DOUBLE>(
-        aligned_size * var_num);
-    debug_mat.desired_vector =
-        my_mem->get_mem<IVP_DOUBLE>(aligned_size);
-    debug_mat.result_vector =
-        my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+    debug_mat.matrix_values =
+        my_mem->get_mem<IVP_DOUBLE>(aligned_size * var_num);
+    debug_mat.desired_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
+    debug_mat.result_vector = my_mem->get_mem<IVP_DOUBLE>(aligned_size);
     debug_mat.MATRIX_EPS = SOLVER_EPS;
   }
 
@@ -1318,16 +1187,6 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::solve_lc() {
         smallest_step = P_DOUBLE_MAX;
       }
 
-#if 0
-	    if( delta_accel[ ignored_full_index ] > solver_eps ) {
-		smallest_step = - accel[ignored_full_index] / delta_accel[ ignored_full_index ];
-		IVP_ASSERT( smallest_step > 0.0f );
-		limiting_var = ignored_pos;
-	    } else {
-		limiting_var = -1;
-		smallest_step = P_DOUBLE_MAX;
-	    }
-#endif
       // smallest step of clamped
       for (i = 0; i < r_actives; i++) {
         index = actives_inactives_ignored[i];
@@ -1532,18 +1391,21 @@ void IVP_Linear_Constraint_Solver::exchange_activ_inactiv(int change_var) {
   variable_is_found_at[full_space_1] = change_var;
 }
 
-// optimization: do not go from 0 to n_variables
-//               make two loops: one for actives, one for others
 void IVP_Linear_Constraint_Solver::update_step_vars(IVP_DOUBLE step_size) {
   int i;
-  IVP_IF(debug_lcs) { ivp_message("deltaa  "); }
-  for (i = 0; i < n_variables; i++) {
-    IVP_IF(debug_lcs) { ivp_message("%f ", delta_accel[i]); }
-    accel[i] =
-        accel[i] + step_size * delta_accel[i];  // Vector Optimization possible
-    full_x[i] = full_x[i] + step_size * delta_f[i];  // dito
+  IVP_IF(debug_lcs) {
+    ivp_message("deltaa  ");
+    for (i = 0; i < n_variables; i++) {
+      ivp_message("%f ", delta_accel[i]);
+    }
+    ivp_message("\n");
   }
-  IVP_IF(debug_lcs) { ivp_message("\n"); }
+  // accel += step * delta_accel; x += step * delta_f
+  // (same per-element mul+add as before, so results are bit-identical)
+  IVP_VecFPU::fpu_add_multiple_row(accel, delta_accel, step_size, n_variables,
+                                   IVP_TRUE);
+  IVP_VecFPU::fpu_add_multiple_row(full_x, delta_f, step_size, n_variables,
+                                   IVP_TRUE);
 
   // in some cases (e.g. overriding an inactive) acceleration of inactives gets
   // negative
@@ -1563,9 +1425,7 @@ void IVP_Linear_Constraint_Solver::update_step_vars(IVP_DOUBLE step_size) {
 IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
   // clear all
   int i, k;
-  for (i = 0; i < aligned_size; i++) {
-    this->delta_f[i] = 0.0f;
-  }
+  IVP_VecFPU::fpu_set_row_to_zero(delta_f, aligned_size, IVP_TRUE);
 
   if (r_actives == 0) {
     return IVP_OK;
@@ -1660,10 +1520,9 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::get_fdirection() {
       }
     }
     ret_val = sub_solver_mat.solve_great_matrix_many_zero();
-    for (i = 0; i < r_actives; i++) {
-      lu_sub_solver.out_vec[i] =
-          sub_solver_mat.result_vector[i];  // Vector Optimization possible
-    }
+    IVP_VecFPU::fpu_copy_rows(lu_sub_solver.out_vec,
+                              sub_solver_mat.result_vector, r_actives,
+                              IVP_TRUE);
   }
 
   // copy clamped
@@ -1815,21 +1674,17 @@ void IVP_Linear_Constraint_Solver::get_values_when_setup() {
   full_solver_mat.desired_vector = delta_f;
 
   int i;
-  {
-    for (i = 0; i < n_variables; i++) {
-      reset_accel[i] -= full_b[i];
-    }
-  }
+  // reset_accel -= b
+  IVP_VecFPU::fpu_add_multiple_row(reset_accel, full_b, -1.0f, n_variables,
+                                   IVP_TRUE);
 
   for (i = 0; i < r_actives; i++) {
     reset_accel[actives_inactives_ignored[i]] =
         0.0f;  // just to remove rounding errors
   }
 
-  for (i = n_variables - 1; i >= 0; i--) {
-    accel[i] = reset_accel[i];
-    full_x[i] = reset_x[i];
-  }
+  IVP_VecFPU::fpu_copy_rows(accel, reset_accel, n_variables, IVP_TRUE);
+  IVP_VecFPU::fpu_copy_rows(full_x, reset_x, n_variables, IVP_TRUE);
 }
 
 void IVP_Linear_Constraint_Solver::startup_setup(int try_actives) {
@@ -1839,9 +1694,7 @@ void IVP_Linear_Constraint_Solver::startup_setup(int try_actives) {
   lu_sub_solver.n_sub = r_actives;
 
   int i;
-  for (i = 0; i < aligned_size; i++) {
-    reset_x[i] = 0.0f;
-  }
+  IVP_VecFPU::fpu_set_row_to_zero(reset_x, aligned_size, IVP_TRUE);
   if (setup_l_u_solver() == IVP_OK) {
     sub_solver_status = 0;
     // input vec for lu_sub_solver is filled within setup_l_u_solver
@@ -1866,10 +1719,8 @@ void IVP_Linear_Constraint_Solver::startup_setup(int try_actives) {
           exchange_lcs_variables(r_actives, i);
           decrement_sub_solver(i);
           if (sub_solver_status > 0) {
-            for (i = 0; i < n_variables; i++) {
-              accel[i] = 0.0f;
-              full_x[i] = 0.0f;
-            }
+            IVP_VecFPU::fpu_set_row_to_zero(accel, n_variables, IVP_TRUE);
+            IVP_VecFPU::fpu_set_row_to_zero(full_x, n_variables, IVP_TRUE);
             goto fast_setup_failed;
           } else {
             for (i = 0; i < r_actives; i++) {
@@ -1897,9 +1748,7 @@ IVP_RETURN_TYPE IVP_Linear_Constraint_Solver::full_setup() {
   int i;
   lu_sub_solver.n_sub = r_actives;
 
-  for (i = 0; i < aligned_size; i++) {
-    reset_x[i] = 0.0f;
-  }
+  IVP_VecFPU::fpu_set_row_to_zero(reset_x, aligned_size, IVP_TRUE);
 
   do_a_little_random_permutation();
   if (setup_l_u_solver() == IVP_OK) {
@@ -2001,9 +1850,7 @@ void IVP_Linear_Constraint_Solver::debug_test_all_values() {
   sub_solver_mat.columns = r_actives;
   int i;
 
-  for (i = 0; i < aligned_size; i++) {
-    reset_x[i] = full_x[i];
-  }
+  IVP_VecFPU::fpu_copy_rows(reset_x, full_x, aligned_size, IVP_TRUE);
 
   full_solver_mat.result_vector = reset_accel;
   full_solver_mat.desired_vector = reset_x;  // temporary misuse
@@ -2011,9 +1858,8 @@ void IVP_Linear_Constraint_Solver::debug_test_all_values() {
   full_solver_mat.result_vector = delta_accel;
   full_solver_mat.desired_vector = delta_f;
 
-  for (i = 0; i < aligned_size; i++) {
-    reset_accel[i] -= full_b[i];
-  }
+  IVP_VecFPU::fpu_add_multiple_row(reset_accel, full_b, -1.0f, aligned_size,
+                                   IVP_TRUE);
 
   IVP_IF(debug_lcs) {
     for (i = 0; i < n_variables; i++) {
@@ -2030,7 +1876,6 @@ void IVP_Linear_Constraint_Solver::debug_test_all_values() {
   }
 }
 
-#if 1
 IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::lu_crout(int *index_vec,
                                                      IVP_DOUBLE *sign) {
   /* use desired_vector to store scalings */
@@ -2095,11 +1940,9 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::lu_crout(int *index_vec,
     // Permute current row with imax
 
     if (j != imax) {
-      for (k = 0; k < n_columns; k++) {
-        temp = matrix_values[imax * n_columns + k];
-        matrix_values[imax * n_columns + k] = matrix_values[j * n_columns + k];
-        matrix_values[j * n_columns + k] = temp;
-      }
+      IVP_VecFPU::fpu_exchange_rows(&matrix_values[imax * n_columns],
+                                    &matrix_values[j * n_columns], n_columns,
+                                    IVP_FALSE);
       *sign = -*sign;
       desired_vector[imax] = desired_vector[j];
     }
@@ -2126,9 +1969,7 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::lu_inverse(
   // solve the Identity matrix column for column to get inverse
   int i, j;
   for (i = 0; i < columns; i++) {
-    for (j = 0; j < columns; j++) {
-      desired_vector[j] = 0.0f;
-    }
+    IVP_VecFPU::fpu_set_row_to_zero(desired_vector, columns, IVP_TRUE);
     desired_vector[i] = 1.0f;
 
     if (this->lu_solve(index_vec) == IVP_OK) {
@@ -2174,10 +2015,10 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::lu_solve(int *index_vec) {
   // backsubstitution
 
   for (i = n_columns - 1; i >= 0; i--) {
-    sum = desired_vector[i];
-    for (j = i + 1; j < n_columns; j++) {
-      sum -= matrix_values[i * n_columns + j] * desired_vector[j];
-    }
+    sum = desired_vector[i] - IVP_VecFPU::fpu_large_dot_product(
+                                  &matrix_values[i * n_columns + i + 1],
+                                  &desired_vector[i + 1], n_columns - i - 1,
+                                  IVP_FALSE);
     desired_vector[i] = (sum / matrix_values[i * n_columns + i]);
     result_vector[i] =
         desired_vector[i];  // in place of desired_vector is possible!
@@ -2210,8 +2051,6 @@ IVP_RETURN_TYPE IVP_Great_Matrix_Many_Zero::invert(
   return lu_inverse(dest, index_vec);
 }
 
-#endif
-
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_L(int row_nr) {
   IVP_DOUBLE *base = &L_matrix[row_nr * aligned_row_len];
   IVP_DOUBLE val = base[row_nr];
@@ -2220,8 +2059,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row_L(int row_nr) {
   }
   IVP_DOUBLE inv_val = 1.0f / val;
 
-  IVP_VecFPU::fpu_multiply_row(&base[0], inv_val, n_sub,
-                               IVP_FALSE);  // should be TRUE
+  IVP_VecFPU::fpu_multiply_row(&base[0], inv_val, n_sub, IVP_TRUE);
 
   base[row_nr] = 1.0f;
   return IVP_OK;
@@ -2234,7 +2072,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::normize_row(int row_nr) {
     return IVP_FAULT;
   }
   IVP_DOUBLE inv_val = 1.0f / val;
-  IVP_VecFPU::fpu_multiply_row(&L_matrix[row_base], inv_val, n_sub, IVP_FALSE);
+  IVP_VecFPU::fpu_multiply_row(&L_matrix[row_base], inv_val, n_sub, IVP_TRUE);
   IVP_VecFPU::fpu_multiply_row(&U_matrix[row_base + row_nr + 1], inv_val,
                                n_sub - row_nr - 1, IVP_FALSE);
 
@@ -2246,26 +2084,11 @@ void IVP_Incr_L_U_Matrix::exchange_rows_l_u(int pivot_col, int exchange) {
   int base_a = pivot_col * aligned_row_len;
   int base_b = exchange * aligned_row_len;
 
-#if 0 /* single FPU */  
-    IVP_DOUBLE temp;
-    int i;
-    for(i=n_sub-1;i>=pivot_col;i--) {
-	temp=U_matrix[base_a + i];
-	U_matrix[base_a + i]=U_matrix[base_b + i];
-	U_matrix[base_b + i]=temp;
-    }
-    for(i=n_sub-1;i>=0;i--) {
-	temp=L_matrix[base_a + i];
-	L_matrix[base_a + i]=L_matrix[base_b + i];
-	L_matrix[base_b + i]=temp;	
-    }
-#else
   IVP_VecFPU::fpu_exchange_rows(&U_matrix[base_a + pivot_col],
                                 &U_matrix[base_b + pivot_col],
                                 n_sub - pivot_col, IVP_FALSE);
   IVP_VecFPU::fpu_exchange_rows(&L_matrix[base_a], &L_matrix[base_b], n_sub,
-                                IVP_FALSE);
-#endif
+                                IVP_TRUE);
 }
 
 // search from col_nr|colnr down to n_sub|colnr
@@ -2293,26 +2116,13 @@ void IVP_Incr_L_U_Matrix::add_neg_row_upwards_l_u(int row_down, int dest_row,
                                                   IVP_DOUBLE factor) {
   IVP_DOUBLE *base_a = &U_matrix[row_down * aligned_row_len];
   IVP_DOUBLE *base_b = &U_matrix[dest_row * aligned_row_len];
-#if 0 /* single FPU */
-    int i;
-    for(i=row_down+1;i<n_sub;i++) {
-	base_b[i] -= factor * base_a[i];
-    }
-#else
   IVP_VecFPU::fpu_add_multiple_row(&base_b[row_down + 1], &base_a[row_down + 1],
                                    -factor, n_sub - row_down - 1, IVP_FALSE);
-#endif
 
   base_a = &L_matrix[row_down * aligned_row_len];
   base_b = &L_matrix[dest_row * aligned_row_len];
-#if 0    
-    for(i=n_sub-1;i>=0;i--) {
-	base_b[i] -=factor * base_a[i];
-    }
-#else
   IVP_VecFPU::fpu_add_multiple_row(&base_b[0], &base_a[0], -factor, n_sub,
-                                   IVP_TRUE);  // should be TRUE
-#endif
+                                   IVP_TRUE);
   base_b[row_down] = 0.0f;
 }
 
@@ -2322,21 +2132,11 @@ void IVP_Incr_L_U_Matrix::add_neg_row_to_row_l_u(int pivot_row, int dest_row,
   int base_a = pivot_row * aligned_row_len;
   int base_b = dest_row * aligned_row_len;
 
-#if 0 /* single FPU */    
-    int i;
-    for(i=n_sub-1;i>pivot_row;i--) {
-	U_matrix[ base_b + i ] -= factor*U_matrix[ base_a + i];
-    }
-    for(i=n_sub-1;i>=0;i--) {
-	L_matrix[ base_b + i ] -= factor*L_matrix[ base_a + i]; 
-    }
-#else
   IVP_VecFPU::fpu_add_multiple_row(&U_matrix[base_b + pivot_row + 1],
                                    &U_matrix[base_a + pivot_row + 1], -factor,
                                    n_sub - pivot_row - 1, IVP_FALSE);
   IVP_VecFPU::fpu_add_multiple_row(&L_matrix[base_b], &L_matrix[base_a],
-                                   -factor, n_sub, IVP_FALSE);  // set to TRUE
-#endif
+                                   -factor, n_sub, IVP_TRUE);
   U_matrix[base_b + pivot_row] = 0.0f;
 }
 
@@ -2344,15 +2144,8 @@ void IVP_Incr_L_U_Matrix::subtract_row_L(int from, int dest,
                                          IVP_DOUBLE factor) {
   IVP_DOUBLE *base_a = &L_matrix[from * aligned_row_len];
   IVP_DOUBLE *base_b = &L_matrix[dest * aligned_row_len];
-#if 0 /* single FPU */
-    int i;
-    for(i=n_sub-1;i>=0;i--) {
-	base_b[i] -= base_a[i]*factor;
-    }
-#else
   IVP_VecFPU::fpu_add_multiple_row(&base_b[0], &base_a[0], -factor, n_sub,
-                                   IVP_FALSE);  // should be TRUE
-#endif
+                                   IVP_TRUE);
 
   base_b[from] = 0.0f;
 }
@@ -2365,8 +2158,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::l_u_decomposition_with_pivoting() {
   int i;
   for (i = n_sub - 1; i >= 0; i--) {
     IVP_DOUBLE *base = &L_matrix[i * aligned_row_len];
-    IVP_VecFPU::fpu_set_row_to_zero(&base[0], n_sub,
-                                    IVP_FALSE);  // should be TRUE
+    IVP_VecFPU::fpu_set_row_to_zero(&base[0], n_sub, IVP_TRUE);
     base[i] = 1.0f;
   }
 
@@ -2402,10 +2194,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::l_u_decomposition_with_pivoting() {
 // last column of new U is stored in input_vec, column has length n_sub
 IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::increment_l_u() {
   int i;
-  for (i = n_sub - 1; i >= 0; i--) {
-    int original_index = i;  // index_pos_contains[ i ];
-    mult_vec[i] = input_vec[original_index];
-  }
+  IVP_VecFPU::fpu_copy_rows(mult_vec, input_vec, n_sub, IVP_TRUE);
 
   mult_vec_with_L();
 
@@ -2418,7 +2207,7 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::increment_l_u() {
     L_matrix[i * aligned_row_len + n_sub] = 0.0f;
   }
   IVP_VecFPU::fpu_set_row_to_zero(&L_matrix[n_sub * aligned_row_len], n_sub,
-                                  IVP_FALSE);  // should be TRUE
+                                  IVP_TRUE);
 
   L_matrix[n_sub * aligned_row_len + n_sub] = 1.0f;
 
@@ -2488,41 +2277,26 @@ IVP_RETURN_TYPE IVP_Incr_L_U_Matrix::decrement_l_u(int del_nr) {
 
 void IVP_Incr_L_U_Matrix::add_neg_col_L(int col0, int col_dest,
                                         IVP_DOUBLE factor) {
-  // Vector FPU not possible
-  int i;
-  for (i = n_sub - 1; i >= 0; i--) {
+  // Vector FPU not possible (strided access)
+  for (int i = n_sub - 1; i >= 0; i--) {
     L_matrix[i * aligned_row_len + col_dest] -=
         factor * L_matrix[i * aligned_row_len + col0];
   }
 }
 
 void IVP_Incr_L_U_Matrix::exchange_columns_L(int col0, int col1) {
-  // Vector FPU not possible
-  int i;
-  for (i = 0; i < n_sub; i++) {
-    IVP_DOUBLE temp_val;
-    // temp_val=L_matrix[i * n_max + col0];
-    // L_matrix[i * n_max + col0]=L_matrix[i * n_max + col1];
-    // L_matrix[i * n_max + col1]=temp_val;
-
-    temp_val = L_matrix[i * aligned_row_len + col0];
-    L_matrix[i * aligned_row_len + col0] = L_matrix[i * aligned_row_len + col1];
-    L_matrix[i * aligned_row_len + col1] = temp_val;
+  // Vector FPU not possible (strided access)
+  for (int i = 0; i < n_sub; i++) {
+    IVP_DOUBLE* row = &L_matrix[i * aligned_row_len];
+    std::swap(row[col0], row[col1]);
   }
 }
 
 void IVP_Incr_L_U_Matrix::exchange_columns_U(int col0, int col1) {
-  // Vector FPU not possible
-  int i;
-  for (i = 0; i < n_sub; i++) {
-    IVP_DOUBLE temp_val;
-    // temp_val=L_matrix[i * n_max + col0];
-    // L_matrix[i * n_max + col0]=L_matrix[i * n_max + col1];
-    // L_matrix[i * n_max + col1]=temp_val;
-
-    temp_val = U_matrix[i * aligned_row_len + col0];
-    U_matrix[i * aligned_row_len + col0] = U_matrix[i * aligned_row_len + col1];
-    U_matrix[i * aligned_row_len + col1] = temp_val;
+  // Vector FPU not possible (strided access)
+  for (int i = 0; i < n_sub; i++) {
+    IVP_DOUBLE* row = &U_matrix[i * aligned_row_len];
+    std::swap(row[col0], row[col1]);
   }
 }
 
@@ -2536,26 +2310,14 @@ void IVP_Incr_L_U_Matrix::mult_vec_with_L() {
 }
 
 void IVP_Incr_L_U_Matrix::solve_vec_with_U() {
-  int i;
-  for (i = n_sub - 1; i >= 0; i--) {
-    // #if !defined(IVP_WILLAMETTE)
-    IVP_DOUBLE leftsum = 0.0f;
-    int j;
-    for (j = n_sub - 1; j > i; j--) {
-      leftsum += U_matrix[i * aligned_row_len + j] * temp_vec[j];
-    }
-#if 0 /*doesnt work, but why?*/
-		//WARNING !!!!!
-		//this is dirty: vector multiplication starts in middle of datastructure
-		//               put one zero in front -> zero mult something is zero
-		IVP_DOUBLE remember=U_matrix[i*aligned_row_len+i];
-		U_matrix[i*aligned_row_len+i]=0.0;
-		IVP_DOUBLE leftsum = IVP_VecFPU::fpu_large_dot_product(&U_matrix[i*aligned_row_len+i+1],&temp_vec[i+1],n_sub-i-1,IVP_FALSE);
-		U_matrix[i*aligned_row_len+i]=remember;
-		if( fabs(leftsum-oldleftsum) > 0.0001 ) {
-			leftsum=oldleftsum;
-		}
-#endif
+  // dimhotepus: Back substitution, U has unit diagonal.
+  // The old vectorised attempt here ("doesnt work, but why?") failed because
+  // the aligned kernels rounded the range down/up and so multiplied stale
+  // entries beyond n_sub; the exact-range dot product has no such problem.
+  for (int i = n_sub - 1; i >= 0; i--) {
+    IVP_DOUBLE leftsum = IVP_VecFPU::fpu_large_dot_product(
+        &U_matrix[i * aligned_row_len + i + 1], &temp_vec[i + 1], n_sub - i - 1,
+        IVP_FALSE);
     IVP_DOUBLE res = temp_vec[i] - leftsum;
     temp_vec[i] = res;
     out_vec[i] = res;
@@ -2563,10 +2325,7 @@ void IVP_Incr_L_U_Matrix::solve_vec_with_U() {
 }
 
 void IVP_Incr_L_U_Matrix::solve_lin_equ() {
-  int i;
-  for (i = n_sub - 1; i >= 0; i--) {
-    mult_vec[i] = input_vec[i];
-  }
+  IVP_VecFPU::fpu_copy_rows(mult_vec, input_vec, n_sub, IVP_TRUE);
   mult_vec_with_L();
   solve_vec_with_U();
 }
@@ -2576,32 +2335,12 @@ void IVP_Incr_L_U_Matrix::add_neg_row_L(int source_row, int dest_row,
   int base_a = source_row * aligned_row_len;
   int base_b = dest_row * aligned_row_len;
 
-#if 0 /* single FPU */    
-    int i;
-    for(i=n_sub-1;i>=0;i--) {
-	L_matrix[ base_b + i ] -= factor*L_matrix[ base_a + i]; 
-    }
-#else
   IVP_VecFPU::fpu_add_multiple_row(&L_matrix[base_b], &L_matrix[base_a],
-                                   -factor, n_sub,
-                                   IVP_FALSE);  // should be TRUE
-#endif
+                                   -factor, n_sub, IVP_TRUE);
 }
 
 void IVP_Incr_L_U_Matrix::debug_print_l_u() {
   int i;
-#if 0
-    ivp_message("\nindex  ");
-    for(i=0;i<n_sub;i++) {
-	ivp_message("%d  ",index_pos_contains[i]);
-    }
-    ivp_message("\n");
-    ivp_message("\ninvindex  ");
-    for(i=0;i<n_sub;i++) {
-	ivp_message("%d  ",inv_index_pos_contains[i]);
-    }
-    ivp_message("\n");
-#endif
   ivp_message("  L                                      U\n");
   for (i = 0; i < n_sub; i++) {
     int j;
