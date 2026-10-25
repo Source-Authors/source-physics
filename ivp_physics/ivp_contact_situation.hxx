@@ -18,21 +18,22 @@ class IVP_Material;
  *	Description:	Contact situations are simple, condensed information
  *			about a collision.
  ********************************************************************************/
-struct IVP_Contact_Situation {
-  // can be requested in a collision or friction situations
-  IVP_U_Float_Point
-      surf_normal;  // 16bytes: the normized normal of the contact surface
-                    // (world space), pointing to second obj
-  IVP_U_Float_Point speed;       // 16bytes: the speed (world space) of contact
-                                 // surface1 relative to contact surface0
-  IVP_U_Point contact_point_ws;  // 16bytes[ND]:
-  IVP_Real_Object* objects[2];   // 8bytes: link to involved objects
-  const class IVP_Compact_Edge*
-      compact_edges[2];  // 8bytes: link to involved Edges (needs source code
-                         // license for more info
-  IVP_Material* materials[2];  // 8bytes: materials (might be virtual materials
-                               // for point and edge cases)
-  IVP_Contact_Situation() = default;
+struct IVP_Contact_Situation
+{
+	// can be requested in a collision or friction situations
+	IVP_U_Float_Point
+	surf_normal;                       // 16bytes: the normized normal of the contact surface
+									   // (world space), pointing to second obj
+	IVP_U_Float_Point speed;           // 16bytes: the speed (world space) of contact
+									   // surface1 relative to contact surface0
+	IVP_U_Point      contact_point_ws; // 16bytes[ND]:
+	IVP_Real_Object *objects[2];       // 8bytes: link to involved objects
+	const class IVP_Compact_Edge *
+	compact_edges[2];           // 8bytes: link to involved Edges (needs source code
+								// license for more info
+	IVP_Material *materials[2]; // 8bytes: materials (might be virtual materials
+								// for point and edge cases)
+	IVP_Contact_Situation() = default;
 };
 
 #endif

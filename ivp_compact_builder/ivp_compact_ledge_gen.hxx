@@ -9,30 +9,31 @@ class IVP_Triangle;
 class IVP_Compact_Triangle;
 class IVP_Compact_Poly_Point;
 
-class IVP_Compact_Ledge_Generator {
-  // all for intermediate usage
-  IVP_point_hash *point_hash;
+class IVP_Compact_Ledge_Generator
+{
+	// all for intermediate usage
+	IVP_point_hash *point_hash;
 
-  IVP_U_Vector<IVP_U_Point> point_vec;
-  IVP_U_Vector<IVP_Compact_Triangle> triangle_vec;
-  int point_cnt;
-  int edge_cnt;
-  int n_triangles;
-  IVP_Hash *edge_hash;
-  // dimhotepus: Comment unused.
-  // IVP_Hash *common_hash;
+	IVP_U_Vector< IVP_U_Point >          point_vec;
+	IVP_U_Vector< IVP_Compact_Triangle > triangle_vec;
+	int                                  point_cnt;
+	int                                  edge_cnt;
+	int                                  n_triangles;
+	IVP_Hash                            *edge_hash;
+	// dimhotepus: Comment unused.
+	// IVP_Hash *common_hash;
 
-  IVP_Compact_Ledge *compact_ledge;            // for validate
-  IVP_U_Vector<IVP_Triangle> *orig_triangles;  // for validate
- public:
-  // builds up intermediates and returns calculated size
-  int prepare_compact_ledge(IVP_U_Vector<IVP_Triangle> *tri_vec);
-  // fills intermeds into mem
-  void generate_compact_ledge(uchar *mem_to_fill);
+	IVP_Compact_Ledge            *compact_ledge;  // for validate
+	IVP_U_Vector< IVP_Triangle > *orig_triangles; // for validate
+public:
+	// builds up intermediates and returns calculated size
+	int prepare_compact_ledge( IVP_U_Vector< IVP_Triangle > *tri_vec );
+	// fills intermeds into mem
+	void generate_compact_ledge( uchar *mem_to_fill );
 #ifdef DEBUG
-  // for debug purposes
-  IVP_RETURN_TYPE validate();
+	// for debug purposes
+	IVP_RETURN_TYPE validate();
 #endif
-  IVP_Compact_Ledge_Generator();
-  ~IVP_Compact_Ledge_Generator();
+	IVP_Compact_Ledge_Generator();
+	~IVP_Compact_Ledge_Generator();
 };

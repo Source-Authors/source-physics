@@ -18,9 +18,10 @@
  *		    (i.e. the shape of an object)
  ********************************************************************************/
 
-class IVP_Compact_Modify {
- public:
-  /******************************************************************************
+class IVP_Compact_Modify
+{
+public:
+	/******************************************************************************
    *  Method:		chop
    *  Description:    Chop off a slice of an object
    *	Input:		<c_surface_in> a given compact surface
@@ -37,11 +38,11 @@ class IVP_Compact_Modify {
    *want to slice off 1 cm, you should call: "chop(pole_cs,
    *IVP_U_Float_Point(1.0 ,0.0, 0.0), 0.01);"
    *****************************************************************************/
-  static IVP_Compact_Surface *chop(const IVP_Compact_Surface *c_surface_in,
-                                   const IVP_U_Float_Point *chop_vector,
-                                   IVP_FLOAT chop_depth);
+	static IVP_Compact_Surface *chop( const IVP_Compact_Surface *c_surface_in,
+	                                  const IVP_U_Float_Point   *chop_vector,
+	                                  IVP_FLOAT                  chop_depth );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		shrink
    *  Description:    Reduce the size of the given ledge by shifting each of its
    *			planes towards the geometrical center of the object
@@ -54,11 +55,11 @@ class IVP_Compact_Modify {
    *	Warning:	Function may fail due to numerical errors (unlikely but
    *			possible)
    *****************************************************************************/
-  static IVP_Compact_Ledge *shrink(const IVP_Compact_Ledge *ledge_in,
-                                   IVP_FLOAT shrink_value,
-                                   IVP_DOUBLE pointmerge_threshold);
+	static IVP_Compact_Ledge *shrink( const IVP_Compact_Ledge *ledge_in,
+	                                  IVP_FLOAT                shrink_value,
+	                                  IVP_DOUBLE               pointmerge_threshold );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		shrink
    *  Description:    Reduce the size of the given compact surface by shrinking
    *			all of its compact ledges.
@@ -73,9 +74,9 @@ class IVP_Compact_Modify {
    *	Warning:	Function may fail due to numerical errors (unlikely but
    *			possible)
    *****************************************************************************/
-  static IVP_Compact_Surface *shrink(const IVP_Compact_Surface *c_surface_in,
-                                     IVP_FLOAT shrink_value,
-                                     IVP_DOUBLE pointmerge_threshold);
+	static IVP_Compact_Surface *shrink( const IVP_Compact_Surface *c_surface_in,
+	                                    IVP_FLOAT                  shrink_value,
+	                                    IVP_DOUBLE                 pointmerge_threshold );
 };
 
 #endif

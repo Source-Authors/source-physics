@@ -29,9 +29,10 @@
  *		    to collide (e.g. the wheels of a car)
  *******************************************************************************/
 
-class IVP_Collision_Filter {
- public:
-  /******************************************************************************
+class IVP_Collision_Filter
+{
+public:
+	/******************************************************************************
    *  Method:		check_objects_for_collision_detection
    *  Description:    This method gets called for every pair of objects that
    *			is likely to collide within the next time step. It
@@ -42,19 +43,19 @@ class IVP_Collision_Filter {
    *objects shall be ignored Note:		Use this method to implement
    *your own filter conditions.
    *****************************************************************************/
-  virtual IVP_BOOL check_objects_for_collision_detection(
-      IVP_Real_Object *object0, IVP_Real_Object *object1) = 0;
+	virtual IVP_BOOL check_objects_for_collision_detection(
+	IVP_Real_Object *object0, IVP_Real_Object *object1 ) = 0;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		environment_will_be_deleted
    *  Description:    This method gets called when deleting the physical
    *			environment. Use it to clean up any of your own personal
    *			filter-internal data.
    *	Input:		<environment> the soon-to-be-deleted environment
    *****************************************************************************/
-  virtual void environment_will_be_deleted(IVP_Environment *environment) = 0;
+	virtual void environment_will_be_deleted( IVP_Environment *environment ) = 0;
 
-  virtual ~IVP_Collision_Filter();
+	virtual ~IVP_Collision_Filter();
 };
 
 /********************************************************************************
@@ -67,13 +68,14 @@ class IVP_Collision_Filter {
  *		    object.
  *******************************************************************************/
 
-class IVP_Collision_Filter_Coll_Group_Ident : public IVP_Collision_Filter {
- private:
-  // internal data
-  IVP_BOOL delete_on_env_delete;
+class IVP_Collision_Filter_Coll_Group_Ident : public IVP_Collision_Filter
+{
+private:
+	// internal data
+	IVP_BOOL delete_on_env_delete;
 
- public:
-  /******************************************************************************
+public:
+	/******************************************************************************
    *  Method:		check_objects_for_collision_detection
    *  Description:    This method checks the coll_group_ident string of both
    *			supplied objects. If they are the same it will return
@@ -84,27 +86,27 @@ class IVP_Collision_Filter_Coll_Group_Ident : public IVP_Collision_Filter {
    *	Output:		IVP_TRUE, if collision should be detected
    *			IVP_FALSE, if collision between objects shall be ignored
    *****************************************************************************/
-  IVP_BOOL check_objects_for_collision_detection(
-      IVP_Real_Object *object0, IVP_Real_Object *object1) override;
+	IVP_BOOL check_objects_for_collision_detection(
+	IVP_Real_Object *object0, IVP_Real_Object *object1 ) override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		environment_will_be_deleted
    *  Description:    This method will delete the collision filter as soon as
    *the corresponding environment gets deleted. Note:		You can avoid
    *this by setting a special flag when calling the class constructor (see
    *below).
    *****************************************************************************/
-  void environment_will_be_deleted(IVP_Environment *) override;
+	void environment_will_be_deleted( IVP_Environment * ) override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		constructor
    *	Input:		<delete_on_env_delete> set to IVP_TRUE, if you want the
    *			                       filter to be automatically
    *destroyed when the corresponding environment gets deleted.
    *****************************************************************************/
-  IVP_Collision_Filter_Coll_Group_Ident(IVP_BOOL delete_on_env_delete);
+	IVP_Collision_Filter_Coll_Group_Ident( IVP_BOOL delete_on_env_delete );
 
-  ~IVP_Collision_Filter_Coll_Group_Ident();
+	~IVP_Collision_Filter_Coll_Group_Ident();
 };
 
 class IVP_CFEP_Objectpair;
@@ -119,35 +121,36 @@ class IVP_CFEP_Hash;
  *		    hash.
  *******************************************************************************/
 
-class IVP_Collision_Filter_Exclusive_Pair : public IVP_Collision_Filter {
- private:
-  // internal methods & data
-  IVP_CFEP_Hash *hash_table;  // the "no-collision" hash list
+class IVP_Collision_Filter_Exclusive_Pair : public IVP_Collision_Filter
+{
+private:
+	// internal methods & data
+	IVP_CFEP_Hash *hash_table; // the "no-collision" hash list
 
-  void generate_hash_entry(IVP_Real_Object *object0, IVP_Real_Object *object1,
-                           IVP_CFEP_Objectpair *entry);
+	void generate_hash_entry( IVP_Real_Object *object0, IVP_Real_Object *object1,
+	                          IVP_CFEP_Objectpair *entry );
 
- public:
-  /******************************************************************************
+public:
+	/******************************************************************************
    *  Method:		disable_collision_between_objects
    *  Description:    Use this method to disable the collision detection for a
    *			certain pair of objects.
    *	Input:		<object0> first possible collision partner
    *			<object1> second possible collision partner
    *****************************************************************************/
-  void disable_collision_between_objects(IVP_Real_Object *object0,
-                                         IVP_Real_Object *object1);
+	void disable_collision_between_objects( IVP_Real_Object *object0,
+	                                        IVP_Real_Object *object1 );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		enable_collision_between_objects
    *  Description:    Use this method to enable again the collision detection
    *for a certain pair of objects. Input:		<object0> first possible
    *collision partner <object1> second possible collision partner
    *****************************************************************************/
-  void enable_collision_between_objects(IVP_Real_Object *object0,
-                                        IVP_Real_Object *object1);
+	void enable_collision_between_objects( IVP_Real_Object *object0,
+	                                       IVP_Real_Object *object1 );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		check_objects_for_collision_detection
    *  Description:    This method checks whether the supplied object pair is
    *			present in the filter's internal "no-collision" list. If
@@ -157,18 +160,18 @@ class IVP_Collision_Filter_Exclusive_Pair : public IVP_Collision_Filter {
    *	Output:		IVP_TRUE, if collision should be detected
    *			IVP_FALSE, if collision between objects shall be ignored
    *****************************************************************************/
-  IVP_BOOL check_objects_for_collision_detection(
-      IVP_Real_Object *object0, IVP_Real_Object *object1) override;
+	IVP_BOOL check_objects_for_collision_detection(
+	IVP_Real_Object *object0, IVP_Real_Object *object1 ) override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		environment_will_be_deleted
    *  Description:    This method will delete the collision filter as soon as
    *the corresponding environment gets deleted.
    *****************************************************************************/
-  void environment_will_be_deleted(IVP_Environment *) override;
+	void environment_will_be_deleted( IVP_Environment * ) override;
 
-  IVP_Collision_Filter_Exclusive_Pair();
-  ~IVP_Collision_Filter_Exclusive_Pair();
+	IVP_Collision_Filter_Exclusive_Pair();
+	~IVP_Collision_Filter_Exclusive_Pair();
 };
 
 /********************************************************************************
@@ -178,16 +181,17 @@ class IVP_Collision_Filter_Exclusive_Pair : public IVP_Collision_Filter {
  *                  Collision_Filters and the meta collision filter will
  *                  filter out collisions that are filtered by any of them
  *******************************************************************************/
-class IVP_Meta_Collision_Filter : public IVP_Collision_Filter {
- private:
-  IVP_BOOL delete_on_env_delete;
-  IVP_U_Vector<IVP_Collision_Filter> filter_set;
+class IVP_Meta_Collision_Filter : public IVP_Collision_Filter
+{
+private:
+	IVP_BOOL                             delete_on_env_delete;
+	IVP_U_Vector< IVP_Collision_Filter > filter_set;
 
- public:
-  void add_collision_filter(IVP_Collision_Filter *filter);
-  void remove_collision_filter(IVP_Collision_Filter *filter);
+public:
+	void add_collision_filter( IVP_Collision_Filter *filter );
+	void remove_collision_filter( IVP_Collision_Filter *filter );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:         check_objects_for_collision_detection
    *  Description:    This method checks all collision_filters that are
    *                  in the set of collision_filters. If any collision filter
@@ -198,27 +202,27 @@ class IVP_Meta_Collision_Filter : public IVP_Collision_Filter {
    *  Output:         IVP_TRUE, if collision should be detected
    *                  IVP_FALSE, if collision between objects shall be ignored
    *****************************************************************************/
-  IVP_BOOL check_objects_for_collision_detection(
-      IVP_Real_Object *object0, IVP_Real_Object *object1) override;
+	IVP_BOOL check_objects_for_collision_detection(
+	IVP_Real_Object *object0, IVP_Real_Object *object1 ) override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:         environment_will_be_deleted
    *  Description:    This method will delete the collision filter as soon as
    *the corresponding environment gets deleted. Note:           You can avoid
    *this by setting a special flag when calling the class constructor (see
    *below).
    *****************************************************************************/
-  void environment_will_be_deleted(IVP_Environment *) override;
+	void environment_will_be_deleted( IVP_Environment * ) override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:         constructor
    *  Input:          <delete_on_env_delete> set to IVP_TRUE, if you want the
    *                                         filter to be automatically
    *destroyed when the corresponding environment gets deleted.
    *****************************************************************************/
-  IVP_Meta_Collision_Filter(IVP_BOOL delete_on_env_delete);
+	IVP_Meta_Collision_Filter( IVP_BOOL delete_on_env_delete );
 
-  ~IVP_Meta_Collision_Filter();
+	~IVP_Meta_Collision_Filter();
 };
 
 #endif

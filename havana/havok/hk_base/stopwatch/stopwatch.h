@@ -8,17 +8,18 @@
 typedef hk_Stopwatch_qpt hk_Stopwatch;
 #else  /* do nothing version */
 
-class hk_Stopwatch {
- public:
-  hk_Stopwatch() {}
-  ~hk_Stopwatch() {}
+class hk_Stopwatch
+{
+public:
+	hk_Stopwatch() {}
+	~hk_Stopwatch() {}
 
-  void start() {}
-  void stop() {}
-  void reset() {}
+	void start() {}
+	void stop() {}
+	void reset() {}
 
-  hk_real get_elapsed_time() const { return 0; }
-  hk_real get_split_time() { return 0; }
+	hk_real get_elapsed_time() const { return 0; }
+	hk_real get_split_time() { return 0; }
 };
 #endif /* special stopwatch implementation */
 

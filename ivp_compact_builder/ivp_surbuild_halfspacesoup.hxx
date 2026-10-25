@@ -28,17 +28,18 @@
  *provide a set of halfspace planes that defines an infinite volume!
  *******************************************************************************/
 
-class IVP_SurfaceBuilder_Halfspacesoup {
-  friend class IVP_SurfaceBuilder_Q12;
+class IVP_SurfaceBuilder_Halfspacesoup
+{
+	friend class IVP_SurfaceBuilder_Q12;
 
- private:
-  // internal methods
-  static IVP_U_Point *insert_point_into_list(IVP_U_Point *point,
-                                             IVP_U_Vector<IVP_U_Point> *points,
-                                             IVP_DOUBLE quad_threshold);
+private:
+	// internal methods
+	static IVP_U_Point *insert_point_into_list( IVP_U_Point                 *point,
+	                                            IVP_U_Vector< IVP_U_Point > *points,
+	                                            IVP_DOUBLE                   quad_threshold );
 
- public:
-  /******************************************************************************
+public:
+	/******************************************************************************
    *  Method:		convert_halfspacesoup_to_points
    *  Description:    This function will convert the supplied set of halfspace
    *			planes into the set of outer points
@@ -49,11 +50,11 @@ class IVP_SurfaceBuilder_Halfspacesoup {
    *			                       resulting points
    *	Output:		Number of resulting points
    *****************************************************************************/
-  static int convert_halfspacesoup_to_points(IVP_Halfspacesoup *halfspaces,
-                                             IVP_DOUBLE pointmerge_threshold,
-                                             IVP_U_Vector<IVP_U_Point> *points);
+	static int convert_halfspacesoup_to_points( IVP_Halfspacesoup           *halfspaces,
+	                                            IVP_DOUBLE                   pointmerge_threshold,
+	                                            IVP_U_Vector< IVP_U_Point > *points );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		convert_halfspacesoup_to_compact_ledge
    *  Description:    This method will build a IVP_Compact_Ledge from the
    *			supplied set of halfspace planes
@@ -62,10 +63,10 @@ class IVP_SurfaceBuilder_Halfspacesoup {
    *			                       to each other than this distance
    *	Output:		Pointer to IVP_Compact_Ledge structure
    *****************************************************************************/
-  static IVP_Compact_Ledge *convert_halfspacesoup_to_compact_ledge(
-      IVP_Halfspacesoup *halfspaces, IVP_DOUBLE pointmerge_threshold);
+	static IVP_Compact_Ledge *convert_halfspacesoup_to_compact_ledge(
+	IVP_Halfspacesoup *halfspaces, IVP_DOUBLE pointmerge_threshold );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		convert_halfspacesoup_to_compact_surface
    *  Description:    This method will build a IVP_Compact_Surface from the
    *			supplied set of halfspace planes
@@ -74,8 +75,8 @@ class IVP_SurfaceBuilder_Halfspacesoup {
    *			                       to each other than this distance
    *	Output:		Pointer to IVP_Compact_Surface structure
    *****************************************************************************/
-  static IVP_Compact_Surface *convert_halfspacesoup_to_compact_surface(
-      IVP_Halfspacesoup *halfspaces, IVP_DOUBLE pointmerge_threshold);
+	static IVP_Compact_Surface *convert_halfspacesoup_to_compact_surface(
+	IVP_Halfspacesoup *halfspaces, IVP_DOUBLE pointmerge_threshold );
 };
 
 #endif

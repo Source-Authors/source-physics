@@ -20,7 +20,7 @@ class IVP_Compact_Mopp;
 class IVP_Compact_Poly_Point;
 class IVP_Template_Surbuild_Ledgesoup;
 class IVP_I_FPoint_VHash;
-class hkMoppCode;  // bv - tree
+class hkMoppCode; // bv - tree
 
 /********************************************************************************
  *  Class:	    IVP_SurfaceBuilder_Ledge_Soup
@@ -30,51 +30,52 @@ class hkMoppCode;  // bv - tree
  *		    surface to create a physical object.
  *  Note:	    Algorithm is fast but still O(n*sqrt(n));
  *******************************************************************************/
-class IVP_SurfaceBuilder_Mopp {
- private:
-  // internal methods
-  IVP_Compact_Ledge* convex_hull;
-  IVP_Compact_Mopp* compact_mopp;
-  //	IVP_DOUBLE smallest_radius;
-  //	int size_of_tree_in_bytes; // benchmarking
-  IVP_U_Vector<IVP_Compact_Ledge>
-      c_ledge_vec;  // including inner recursive compact ledges
+class IVP_SurfaceBuilder_Mopp
+{
+private:
+	// internal methods
+	IVP_Compact_Ledge *convex_hull;
+	IVP_Compact_Mopp  *compact_mopp;
+	//	IVP_DOUBLE smallest_radius;
+	//	int size_of_tree_in_bytes; // benchmarking
+	IVP_U_Vector< IVP_Compact_Ledge >
+	c_ledge_vec; // including inner recursive compact ledges
 
-  IVP_Template_Surbuild_LedgeSoup* parameters;
+	IVP_Template_Surbuild_LedgeSoup *parameters;
 
-  // compact surface creation
-  IVP_Compact_Ledge* first_compact_ledge;
-  IVP_Compact_Poly_Point* first_poly_point;
-  int n_poly_points_allocated;
+	// compact surface creation
+	IVP_Compact_Ledge      *first_compact_ledge;
+	IVP_Compact_Poly_Point *first_poly_point;
+	int                     n_poly_points_allocated;
 
-  IVP_I_FPoint_VHash* point_hash;
+	IVP_I_FPoint_VHash *point_hash;
 
-  //	hkMoppCode* ledgetree_work;
+	//	hkMoppCode* ledgetree_work;
 
-  //	char *clt_highmem; // debugging
-  //	char *clt_lowmem; // debugging
+	//	char *clt_highmem; // debugging
+	//	char *clt_lowmem; // debugging
 
- protected:
-  //	void ledges_to_boxes_and_spheres();
+protected:
+	//	void ledges_to_boxes_and_spheres();
 
-  int recompile_point_indizes_of_compact_ledge(IVP_Compact_Ledge* ledge_source,
-                                               char* dest);
+	int recompile_point_indizes_of_compact_ledge( IVP_Compact_Ledge *ledge_source,
+	                                              char              *dest );
 
-  void insert_compact_ledges();
+	void insert_compact_ledges();
 
-  void insert_radius_in_compact_mopp();
+	void insert_radius_in_compact_mopp();
 
-  //	void cleanup();
+	//	void cleanup();
 
-  void build_root_convex_hull();
+	void build_root_convex_hull();
 
-  // finally call both functions to fill ledge
-  IVP_Compact_Mopp* allocate_compact_mopp();
+	// finally call both functions to fill ledge
+	IVP_Compact_Mopp *allocate_compact_mopp();
 
-  hkMoppCode* create_compact_ledgetree();
+	hkMoppCode *create_compact_ledgetree();
 
- public:
-  /******************************************************************************
+public:
+	/******************************************************************************
    *  Method:		insert_ledge
    *  Description:    Use this method to add additional ledges (i.e. convex
    *			subparts of your object) to the ledgesoup builder
@@ -82,9 +83,9 @@ class IVP_SurfaceBuilder_Mopp {
    *	Output:		Pointer to the original (supplied) IVP_Compact_Ledge
    *			(compatibility reason)
    *****************************************************************************/
-  void insert_ledge(IVP_Compact_Ledge* ledge);
+	void insert_ledge( IVP_Compact_Ledge *ledge );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		compile
    *  Description:    This method will actually build the new (possibly concave)
    *			compact surface out of the (convex) ledges
@@ -102,11 +103,11 @@ class IVP_SurfaceBuilder_Mopp {
    *THEM YOURSELF! Note:		Invoking this function a second time
    *(without adding new ledges in the meantime) will return NULL.
    *****************************************************************************/
-  IVP_Compact_Mopp* compile(IVP_Template_Surbuild_LedgeSoup* templ = NULL);
+	IVP_Compact_Mopp *compile( IVP_Template_Surbuild_LedgeSoup *templ = NULL );
 
-  IVP_SurfaceBuilder_Mopp();
+	IVP_SurfaceBuilder_Mopp();
 
-  ~IVP_SurfaceBuilder_Mopp();
+	~IVP_SurfaceBuilder_Mopp();
 };
 
 #endif

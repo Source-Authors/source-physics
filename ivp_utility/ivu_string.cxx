@@ -7,9 +7,9 @@
 #include <cstring>
 
 #include <cctype>
-#include <array>  // std::size
+#include <array> // std::size
 
-#if !defined(__MWERKS__) || !defined(__POWERPC__)
+#if !defined( __MWERKS__ ) || !defined( __POWERPC__ )
 #ifdef OSX
 #include <malloc/malloc.h>
 #else
@@ -18,395 +18,502 @@
 #endif
 #ifdef WIN32
 extern "C"
-    __declspec(dllimport) void __stdcall OutputDebugStringA(const char *);
+__declspec( dllimport ) void __stdcall
+OutputDebugStringA( const char * );
 #endif
 
-void P_String::uppercase(char *str) {
-  char c;
-  while ((c = *str)) {
-    if ((c <= 'z') && (c >= 'a')) *str = c - 'a' + 'A';
-    str++;
-  }
+void P_String::uppercase( char *str )
+{
+	char c;
+	while ( ( c = *str ) )
+	{
+		if ( ( c <= 'z' ) && ( c >= 'a' ) )
+			*str = c - 'a' + 'A';
+		str++;
+	}
 }
 
-const char *P_String::find_string(const char *str, const char *key,
-                                  int upper_case) {
-  /* checks for a substring in another string
+const char *P_String::find_string( const char *str, const char *key,
+                                   int upper_case )
+{
+	/* checks for a substring in another string
      upper_case = 0	->exact match
                 = 1	-> a==A
                 = 2	-> a==A && a==?
   */
-  if (str == nullptr) return nullptr;
+	if ( str == nullptr )
+		return nullptr;
 
-  const char *p1, *p2;
-  char b;
-  switch (upper_case) {
-    case 1:
-      for (p1 = str, p2 = key; *p1;) {
-        if (!(b = *p2)) {
-          return str;
-        }
+	const char *p1, *p2;
+	char        b;
+	switch ( upper_case )
+	{
+	case 1:
+		for ( p1 = str, p2 = key; *p1; )
+		{
+			if ( !( b = *p2 ) )
+			{
+				return str;
+			}
 
-        if (toupper(static_cast<unsigned char>(*p1)) == toupper(static_cast<unsigned char>(b))) {
-          p1++;
-          p2++;
-        } else {
-          p2 = key;
-          p1 = (++str);
-        }
-      }
-      if (!*p2) return str;
-      break;
-    case 0:
-      for (p1 = str, p2 = key; *p1;) {
-        if (!(b = *p2)) {
-          return str;
-        }
+			if ( toupper( static_cast< unsigned char >( *p1 ) ) == toupper( static_cast< unsigned char >( b ) ) )
+			{
+				p1++;
+				p2++;
+			}
+			else
+			{
+				p2 = key;
+				p1 = ( ++str );
+			}
+		}
+		if ( !*p2 )
+			return str;
+		break;
+	case 0:
+		for ( p1 = str, p2 = key; *p1; )
+		{
+			if ( !( b = *p2 ) )
+			{
+				return str;
+			}
 
-        if (b == *p1) {
-          p1++;
-          p2++;
-        } else {
-          p2 = key;
-          p1 = (++str);
-        }
-      }
-      if (!*p2) return str;
-      break;
-    case 2:
-      for (p1 = str, p2 = key; *p1;) {
-        if (!(b = *p2)) {
-          return str;
-        }
+			if ( b == *p1 )
+			{
+				p1++;
+				p2++;
+			}
+			else
+			{
+				p2 = key;
+				p1 = ( ++str );
+			}
+		}
+		if ( !*p2 )
+			return str;
+		break;
+	case 2:
+		for ( p1 = str, p2 = key; *p1; )
+		{
+			if ( !( b = *p2 ) )
+			{
+				return str;
+			}
 
-        if (b == *p1 || (b == '?')) {
-          p1++;
-          p2++;
-        } else {
-          p2 = key;
-          p1 = (++str);
-        }
-      }
-      if (!*p2) return str;
-      break;
-    default:
-      for (p1 = str, p2 = key; *p1;) {
-        if (!(b = *p2)) {
-          return str;
-        }
+			if ( b == *p1 || ( b == '?' ) )
+			{
+				p1++;
+				p2++;
+			}
+			else
+			{
+				p2 = key;
+				p1 = ( ++str );
+			}
+		}
+		if ( !*p2 )
+			return str;
+		break;
+	default:
+		for ( p1 = str, p2 = key; *p1; )
+		{
+			if ( !( b = *p2 ) )
+			{
+				return str;
+			}
 
-        if (toupper(static_cast<unsigned char>(*p1)) == toupper(static_cast<unsigned char>(b)) || (b == '?')) {
-          p1++;
-          p2++;
-        } else {
-          p2 = key;
-          p1 = (++str);
-        }
-      }
-      if (!*p2) return str;
-      break;
-  }
-  return nullptr;
+			if ( toupper( static_cast< unsigned char >( *p1 ) ) == toupper( static_cast< unsigned char >( b ) ) || ( b == '?' ) )
+			{
+				p1++;
+				p2++;
+			}
+			else
+			{
+				p2 = key;
+				p1 = ( ++str );
+			}
+		}
+		if ( !*p2 )
+			return str;
+		break;
+	}
+	return nullptr;
 }
 
-int P_String::string_cmp(const char *str, const char *search,
-                         IVP_BOOL upper_case)
+int P_String::string_cmp( const char *str, const char *search,
+                          IVP_BOOL upper_case )
 /*	*	Wildcard in search string */
 /*	?	any	Charakter	*/
 /*	if uppercase	change all letters to uppercase */
 /*	returns 0 if strings are equal -1 or +1 if left strings is
         less/greater than right string */
 {
-  const char *p1, *p2;
-  char a, b, *d;
-  IVP_INT32 i;
-  char fsbuf[256];
+	const char *p1, *p2;
+	char        a, b, *d;
+	IVP_INT32   i;
+	char        fsbuf[256];
 
-  p1 = str;
-  if (!p1) return -1;
-  p2 = search;
-  while (1) {
-    a = *p1;
-    b = *p2;
-    if (b == '*') {
-      if (!p2[1]) return 0; /* last character is wildcard */
-      i = 0;
-      d = fsbuf;
-      for (p2++; (b = *p2) && (b != '*');) {
-        *(d++) = b;
-        p2++;
-        i++;
-        if (i > 250) break;
-      }
-      if (*p2 != '*') {
-        p1 += strlen(p1) - i;    /* check the end of the string */
-        if (p1 < str) return -1; /* neither less or greater */
-        p2 -= i;
-      } else {
-        *d = 0;
-        p1 = find_string(p1, fsbuf, upper_case + 2);
-        if (!p1) return -1;
-        p1 += i;
-      }
-      continue;
-    } else {
-      if (!a) return b;
-      if (!b) return a;
-      if (b != '?') {
-        if (upper_case) {
-          if (toupper(static_cast<unsigned char>(a)) != toupper(static_cast<unsigned char>(b))) return 1;
-        } else {
-          if (a != b) return 1;
-        }
-      }
-    }
-    p1++;
-    p2++;
-  }
-  return 0; /* just to satisfy the compiler */
+	p1 = str;
+	if ( !p1 )
+		return -1;
+	p2 = search;
+	while ( 1 )
+	{
+		a = *p1;
+		b = *p2;
+		if ( b == '*' )
+		{
+			if ( !p2[1] )
+				return 0; /* last character is wildcard */
+			i = 0;
+			d = fsbuf;
+			for ( p2++; ( b = *p2 ) && ( b != '*' ); )
+			{
+				*( d++ ) = b;
+				p2++;
+				i++;
+				if ( i > 250 )
+					break;
+			}
+			if ( *p2 != '*' )
+			{
+				p1 += strlen( p1 ) - i; /* check the end of the string */
+				if ( p1 < str )
+					return -1; /* neither less or greater */
+				p2 -= i;
+			}
+			else
+			{
+				*d = 0;
+				p1 = find_string( p1, fsbuf, upper_case + 2 );
+				if ( !p1 )
+					return -1;
+				p1 += i;
+			}
+			continue;
+		}
+		else
+		{
+			if ( !a )
+				return b;
+			if ( !b )
+				return a;
+			if ( b != '?' )
+			{
+				if ( upper_case )
+				{
+					if ( toupper( static_cast< unsigned char >( a ) ) != toupper( static_cast< unsigned char >( b ) ) )
+						return 1;
+				}
+				else
+				{
+					if ( a != b )
+						return 1;
+				}
+			}
+		}
+		p1++;
+		p2++;
+	}
+	return 0; /* just to satisfy the compiler */
 }
 
-char *gbs_add_path(char *path, char *name) {
-  if (!name) return name;
-  if (!path) return nullptr;
-  if (*name == '/') return name;
+char *gbs_add_path( char *path, char *name )
+{
+	if ( !name )
+		return name;
+	if ( !path )
+		return nullptr;
+	if ( *name == '/' )
+		return name;
 
-  hk_intp found = 0;
-  hk_intp len = strlen(path);
-  for (hk_intp i = 0; i < len; i++) {
-    if (path[i] == '/') found = i + 1;
-  }
-  len = found + strlen(name);
-  char *erg = (char *)p_calloc(sizeof(char), (size_t)(len + 1));
-  for (hk_intp i = 0; i < found; i++) {
-    erg[i] = path[i];
-  }
-  for (hk_intp i = found; i < len; i++) {
-    erg[i] = name[i - found];
-  }
-  return erg;
+	hk_intp found = 0;
+	hk_intp len = strlen( path );
+	for ( hk_intp i = 0; i < len; i++ )
+	{
+		if ( path[i] == '/' )
+			found = i + 1;
+	}
+	len = found + strlen( name );
+	char *erg = (char *)p_calloc( sizeof( char ), (size_t)( len + 1 ) );
+	for ( hk_intp i = 0; i < found; i++ )
+	{
+		erg[i] = path[i];
+	}
+	for ( hk_intp i = found; i < len; i++ )
+	{
+		erg[i] = name[i - found];
+	}
+	return erg;
 }
 
 /********************************************************************************************
                                         String Replace
 ********************************************************************************************/
 
-char *GBS_remove_escape(char *com) /* \ is the escape charakter */
+char *GBS_remove_escape( char *com ) /* \ is the escape charakter */
 {
-  char *result, *s, *d;
-  char ch;
+	char *result, *s, *d;
+	char  ch;
 
-  s = d = result = p_strdup(com);
-  // dimhotepus: Handle p_strdup failure.
-  if (!s) return nullptr;
+	s = d = result = p_strdup( com );
+	// dimhotepus: Handle p_strdup failure.
+	if ( !s )
+		return nullptr;
 
-  while ((ch = *(s++))) {
-    switch (ch) {
-      case '\\':
-        ch = *(s++);
-        if (!ch) {
-          s--;
-          break;
-        };
-        switch (ch) {
-          case 'n':
-            *(d++) = '\n';
-            break;
-          case 't':
-            *(d++) = '\t';
-            break;
-          case '0':
-            *(d++) = '\0';
-            break;
-          default:
-            *(d++) = ch;
-            break;
-        }
-        break;
-      default:
-        *(d++) = ch;
-    }
-  }
-  *d = '\0';
-  return result;
+	while ( ( ch = *( s++ ) ) )
+	{
+		switch ( ch )
+		{
+		case '\\':
+			ch = *( s++ );
+			if ( !ch )
+			{
+				s--;
+				break;
+			};
+			switch ( ch )
+			{
+			case 'n':
+				*( d++ ) = '\n';
+				break;
+			case 't':
+				*( d++ ) = '\t';
+				break;
+			case '0':
+				*( d++ ) = '\0';
+				break;
+			default:
+				*( d++ ) = ch;
+				break;
+			}
+			break;
+		default:
+			*( d++ ) = ch;
+		}
+	}
+	*d = '\0';
+	return result;
 }
 
-char *p_strdup(const char *s) {
-  // kann auch NULLen
-  if (s) {
-    size_t len = strlen(s) + 1;
-    char *s2 = (char *)p_malloc(len);
-    memcpy(s2, s, len);
-    return s2;
-  }
+char *p_strdup( const char *s )
+{
+	// kann auch NULLen
+	if ( s )
+	{
+		size_t len = strlen( s ) + 1;
+		char  *s2 = (char *)p_malloc( len );
+		memcpy( s2, s, len );
+		return s2;
+	}
 
-  return nullptr;
+	return nullptr;
 }
 
 #define MAX_MAKE_STRING_LEN 10000
 
-char *p_make_string_fast(const char *templat, ...) {
-  // returns an allocated string with format like ivp_message
-  // NULL-Strings and empty strings allowed
-  // Check for overflow
+char *p_make_string_fast( const char *templat, ... )
+{
+	// returns an allocated string with format like ivp_message
+	// NULL-Strings and empty strings allowed
+	// Check for overflow
 
-  if (!templat) return nullptr;
+	if ( !templat )
+		return nullptr;
 
-  char buffer[MAX_MAKE_STRING_LEN];
-  va_list parg;
-  va_start(parg, templat);  //-V2019 //-V2018
-  vsnprintf(buffer, std::size(buffer), templat, parg);
-  va_end(parg);
-  return p_strdup(buffer);
+	char    buffer[MAX_MAKE_STRING_LEN];
+	va_list parg;
+	va_start( parg, templat ); //-V2019 //-V2018
+	vsnprintf( buffer, std::size( buffer ), templat, parg );
+	va_end( parg );
+	return p_strdup( buffer );
 }
 
-char *p_make_string(const char *templat, ...) {  //-V524
-  // returns an allocated string with format like ivp_message
-  // NULL-Strings and empty strings allowed
-  // Check for overflow
+char *p_make_string( const char *templat, ... )
+{ //-V524
+	// returns an allocated string with format like ivp_message
+	// NULL-Strings and empty strings allowed
+	// Check for overflow
 
-  if (!templat) return nullptr;
+	if ( !templat )
+		return nullptr;
 
-  char buffer[MAX_MAKE_STRING_LEN];
-  va_list parg;
-  va_start(parg, templat);  //-V2019 //-V2018
-  vsnprintf(buffer, std::size(buffer), templat, parg);
-  va_end(parg);
-  return p_strdup(buffer);
+	char    buffer[MAX_MAKE_STRING_LEN];
+	va_list parg;
+	va_start( parg, templat ); //-V2019 //-V2018
+	vsnprintf( buffer, std::size( buffer ), templat, parg );
+	va_end( parg );
+	return p_strdup( buffer );
 }
 
 // dimhotepus: Reduce error buffer size 10000 -> 2048 as it is enough.
 #define MAX_ERROR_BUFFER_LEN 2048
 char *p_error_buffer = nullptr;
 
-IVP_ERROR_STRING p_export_error(const char *templat, ...) {
-  if (!templat) return nullptr;
+IVP_ERROR_STRING p_export_error( const char *templat, ... )
+{
+	if ( !templat )
+		return nullptr;
 
-  // for general error management... z.B. p_error_message()
-  char buffer[MAX_ERROR_BUFFER_LEN];
-  va_list parg;
+	// for general error management... z.B. p_error_message()
+	char    buffer[MAX_ERROR_BUFFER_LEN];
+	va_list parg;
 
-  va_start(parg, templat);  //-V2019 //-V2018
-  vsnprintf(buffer, std::size(buffer), templat, parg);
-  va_end(parg);
+	va_start( parg, templat ); //-V2019 //-V2018
+	vsnprintf( buffer, std::size( buffer ), templat, parg );
+	va_end( parg );
 
-  P_FREE(p_error_buffer);
-  p_error_buffer = p_strdup(buffer);
-  return p_error_buffer;
+	P_FREE( p_error_buffer );
+	p_error_buffer = p_strdup( buffer );
+	return p_error_buffer;
 }
 
-void ivp_message(const char *fmt, ...) {
-  // for general error management... z.B. p_error_message()
-  char buffer_tmp[MAX_ERROR_BUFFER_LEN];
-  va_list args;
+void ivp_message( const char *fmt, ... )
+{
+	// for general error management... z.B. p_error_message()
+	char    buffer_tmp[MAX_ERROR_BUFFER_LEN];
+	va_list args;
 
-  va_start(args, fmt);  //-V2019 //-V2018
-  vsnprintf(buffer_tmp, std::size(buffer_tmp), fmt, args);
-  va_end(args);
+	va_start( args, fmt ); //-V2019 //-V2018
+	vsnprintf( buffer_tmp, std::size( buffer_tmp ), fmt, args );
+	va_end( args );
 
-  char buffer_out[MAX_ERROR_BUFFER_LEN];
-  snprintf(buffer_out, std::size(buffer_out), "[havok] %s", buffer_tmp);
+	char buffer_out[MAX_ERROR_BUFFER_LEN];
+	snprintf( buffer_out, std::size( buffer_out ), "[havok] %s", buffer_tmp );
 
 #ifdef WIN32
-  OutputDebugStringA(buffer_out);
+	OutputDebugStringA( buffer_out );
 #else
-  fprintf(stderr, "%s", buffer_out);
+	fprintf( stderr, "%s", buffer_out );
 #endif
 }
 
-IVP_ERROR_STRING p_get_error() { return p_error_buffer; }
+IVP_ERROR_STRING p_get_error()
+{
+	return p_error_buffer;
+}
 
-void p_print_error() {
-  char buffer_out[MAX_ERROR_BUFFER_LEN];
-  snprintf(buffer_out, std::size(buffer_out), "[havok] %s", p_get_error());
+void p_print_error()
+{
+	char buffer_out[MAX_ERROR_BUFFER_LEN];
+	snprintf( buffer_out, std::size( buffer_out ), "[havok] %s", p_get_error() );
 
 #ifdef WIN32
-  OutputDebugStringA(buffer_out);
+	OutputDebugStringA( buffer_out );
 #else
-  fprintf(stderr, "%s", buffer_out);
+	fprintf( stderr, "%s", buffer_out );
 #endif
 }
 
-char *p_read_first_token(FILE *fp) {
-  static char buffer[1024];
-  while (fgets(buffer, 1000, fp)) {
-    if (buffer[0] == '#') continue;  // Comment
-    char *tok = p_str_tok(buffer, IVP_WHITESPACE);
-    if (!tok) continue;
-    return tok;
-  }
-  return nullptr;
+char *p_read_first_token( FILE *fp )
+{
+	static char buffer[1024];
+	while ( fgets( buffer, 1000, fp ) )
+	{
+		if ( buffer[0] == '#' )
+			continue; // Comment
+		char *tok = p_str_tok( buffer, IVP_WHITESPACE );
+		if ( !tok )
+			continue;
+		return tok;
+	}
+	return nullptr;
 }
 
-char *p_get_string() {
-  char *s = p_str_tok(0, "\n");
-  return p_strdup(s);
+char *p_get_string()
+{
+	char *s = p_str_tok( 0, "\n" );
+	return p_strdup( s );
 }
 
-char *p_get_next_token() { return p_str_tok(0, IVP_WHITESPACE); }
-
-int p_get_num() { return atoi(p_str_tok(nullptr, IVP_WHITESPACE)); }
-
-IVP_DOUBLE p_get_float() {
-  char *str = p_str_tok(nullptr, IVP_WHITESPACE);
-  if (!str) return 0.0f;
-  // dimhotepus: atof -> strtof
-  return IVP_DOUBLE(strtof(str, nullptr));
+char *p_get_next_token()
+{
+	return p_str_tok( 0, IVP_WHITESPACE );
 }
 
-std::ptrdiff_t p_strlen(const char *s) {
-  if (!s || s[0] == 0) return 0;
-  return strlen(s);
+int p_get_num()
+{
+	return atoi( p_str_tok( nullptr, IVP_WHITESPACE ) );
 }
 
-int p_strcmp(const char *s1, const char *s2) {
-  if (s1 == nullptr) {
-    if (s2 == nullptr) return 0;
-    return 1;
-  }
-  if (s2 == nullptr) return -1;
-  return strcmp(s1, s2);
+IVP_DOUBLE p_get_float()
+{
+	char *str = p_str_tok( nullptr, IVP_WHITESPACE );
+	if ( !str )
+		return 0.0f;
+	// dimhotepus: atof -> strtof
+	return IVP_DOUBLE( strtof( str, nullptr ) );
 }
 
-char *p_str_tok(char *a, const char *deli) {
-  char *temp = strtok(a, deli);
-  // Windows will always append a '0d'; maybe correct this with deli
-  if (!temp) return nullptr;
-  int i = 0;
-  while (temp[i]) {
-    if (temp[i] == 13) {
-      temp[i] = '\0';
-    }
-    i++;
-  }
-  return temp;
+std::ptrdiff_t p_strlen( const char *s )
+{
+	if ( !s || s[0] == 0 )
+		return 0;
+	return strlen( s );
 }
 
-IVP_DOUBLE p_atof(const char *s) {
-  if (!s) return 0.0f;
-  // dimhotepus: atof -> strtof
-  return IVP_DOUBLE(strtof(s, nullptr));
+int p_strcmp( const char *s1, const char *s2 )
+{
+	if ( s1 == nullptr )
+	{
+		if ( s2 == nullptr )
+			return 0;
+		return 1;
+	}
+	if ( s2 == nullptr )
+		return -1;
+	return strcmp( s1, s2 );
+}
+
+char *p_str_tok( char *a, const char *deli )
+{
+	char *temp = strtok( a, deli );
+	// Windows will always append a '0d'; maybe correct this with deli
+	if ( !temp )
+		return nullptr;
+	int i = 0;
+	while ( temp[i] )
+	{
+		if ( temp[i] == 13 )
+		{
+			temp[i] = '\0';
+		}
+		i++;
+	}
+	return temp;
+}
+
+IVP_DOUBLE p_atof( const char *s )
+{
+	if ( !s )
+		return 0.0f;
+	// dimhotepus: atof -> strtof
+	return IVP_DOUBLE( strtof( s, nullptr ) );
 };
 
-int p_atoi(const char *s) {
-  if (!s) return 0;
-  return atoi(s);
+int p_atoi( const char *s )
+{
+	if ( !s )
+		return 0;
+	return atoi( s );
 }
 
 #ifdef WIN32
 #include <ctime>
 
 // dimhotepus: long long instead of long for 64 bits.
-long long p_get_time() {  // returns seconds since 1970
-  time_t t;
-  return time(&t);
+long long p_get_time()
+{ // returns seconds since 1970
+	time_t t;
+	return time( &t );
 }
 
 // there's no strcasecmp on Windows !?!
 
 // not sure, whether this implementation is entirely correct
-int strcasecmp(const char *a, const char *b) {
-  // chris, Sept 2000
-  return stricmp(a, b);
+int strcasecmp( const char *a, const char *b )
+{
+	// chris, Sept 2000
+	return stricmp( a, b );
 }
 #endif

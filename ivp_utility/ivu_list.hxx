@@ -9,44 +9,53 @@
    next, prev
    */
 
-template <class T>
-class P_List {
- public:
-  T *first;
-  int len;
+template< class T >
+class P_List
+{
+public:
+	T  *first;
+	int len;
 
-  void insert(T *elem) {
-    IVP_ASSERT(!elem->next);
-    elem->next = this->first;
-    if (first) {
-      first->prev = elem;
-    }
-    elem->prev = 0;
-    first = elem;
-    len++;
-  }
+	void insert( T *elem )
+	{
+		IVP_ASSERT( !elem->next );
+		elem->next = this->first;
+		if ( first )
+		{
+			first->prev = elem;
+		}
+		elem->prev = 0;
+		first = elem;
+		len++;
+	}
 
-  void remove(T *elem) {
-    T *e = elem;
-    T *h;
-    IVP_ASSERT(e->next != (T *)-1);
-    if ((h = e->prev)) {
-      h->next = e->next;
-    } else {
-      first = e->next;
-    }
-    if ((h = e->next)) {
-      h->prev = e->prev;
-    }
-    e->next = (T *)-1;  // invalid flag !!
-    len--;
-    // elem->next = 0;
-  }
+	void remove( T *elem )
+	{
+		T *e = elem;
+		T *h;
+		IVP_ASSERT( e->next != (T *)-1 );
+		if ( ( h = e->prev ) )
+		{
+			h->next = e->next;
+		}
+		else
+		{
+			first = e->next;
+		}
+		if ( ( h = e->next ) )
+		{
+			h->prev = e->prev;
+		}
+		e->next = (T *)-1; // invalid flag !!
+		len--;
+		// elem->next = 0;
+	}
 
-  P_List() {
-    first = 0;
-    len = 0;
-  }
+	P_List()
+	{
+		first = 0;
+		len = 0;
+	}
 };
 
 /* list header, list elements should have:

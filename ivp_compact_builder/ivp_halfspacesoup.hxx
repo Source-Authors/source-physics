@@ -11,7 +11,7 @@
 #ifndef _IVP_HALFSPACE_SOUP_INCLUDED
 #define _IVP_HALFSPACE_SOUP_INCLUDED
 
-#define HALFSPACESOUP_TOLERANCE (0.01f * P_MIN_EDGE_LEN)
+#define HALFSPACESOUP_TOLERANCE ( 0.01f * P_MIN_EDGE_LEN )
 
 /********************************************************************************
  *  Class:	    IVP_Halfspacesoup
@@ -25,9 +25,10 @@
  *the supplied "add_halfspace" method!
  *******************************************************************************/
 
-class IVP_Halfspacesoup : public IVP_U_Vector<IVP_U_Hesse> {
- public:
-  /******************************************************************************
+class IVP_Halfspacesoup : public IVP_U_Vector< IVP_U_Hesse >
+{
+public:
+	/******************************************************************************
    *  Method:		add_halfspace
    *  Description:    This method allows to add a new plane to the already
    *			existing set of halfspace planes.
@@ -36,19 +37,19 @@ class IVP_Halfspacesoup : public IVP_U_Vector<IVP_U_Hesse> {
    *			is further away from the enclosed volume.
    *	Input:		<plane> a new halfspace plane
    *****************************************************************************/
-  void add_halfspace(const IVP_U_Hesse *plane);
+	void add_halfspace( const IVP_U_Hesse *plane );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		constructor
    *  Description:    This constructor will immediately convert the supplied
    *			compact ledge into a set of halfspace planes.
    *	Input:		<ledge> compact ledge you want to have converted into
    *			        halfspace planes
    *****************************************************************************/
-  IVP_Halfspacesoup(const IVP_Compact_Ledge *ledge);
+	IVP_Halfspacesoup( const IVP_Compact_Ledge *ledge );
 
-  IVP_Halfspacesoup() = default;
-  ~IVP_Halfspacesoup();
+	IVP_Halfspacesoup() = default;
+	~IVP_Halfspacesoup();
 };
 
 #endif

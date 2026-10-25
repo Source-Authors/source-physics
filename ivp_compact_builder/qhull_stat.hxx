@@ -43,202 +43,203 @@
     remove leaders with  query-replace-regexp [ ^I]+  (
 */
 #if qh_KEEPstatistics
-enum statistics { /* alphabetical after Z/W */
-                  Zacoplanar,
-                  Wacoplanarmax,
-                  Wacoplanartot,
-                  Zangle,
-                  Wangle,
-                  Wanglemax,
-                  Wanglemin,
-                  Zangletests,
-                  Wareatot,
-                  Wareamax,
-                  Wareamin,
-                  Zavoidold,
-                  Wavoidoldmax,
-                  Wavoidoldtot,
-                  Zback0,
-                  Zbestcentrum,
-                  Zbestdist,
-                  Zcentrumtests,
-                  Zcheckpart,
-                  Zcomputefurthest,
-                  Zconcave,
-                  Wconcavemax,
-                  Wconcavetot,
-                  Zconcaveridges,
-                  Zconcaveridge,
-                  Zcoplanar,
-                  Wcoplanarmax,
-                  Wcoplanartot,
-                  Zcoplanarangle,
-                  Zcoplanarcentrum,
-                  Zcoplanarhorizon,
-                  Zcoplanarinside,
-                  Zcoplanarpart,
-                  Zcoplanarridges,
-                  Wcpu,
-                  Zcyclefacetmax,
-                  Zcyclefacettot,
-                  Zcyclehorizon,
-                  Zcyclevertex,
-                  Zdegen,
-                  Wdegenmax,
-                  Wdegentot,
-                  Zdegenvertex,
-                  Zdelfacetdup,
-                  Zdelridge,
-                  Zdelvertextot,
-                  Zdelvertexmax,
-                  Zdetsimplex,
-                  Zdistcheck,
-                  Zdistconvex,
-                  Zdistgood,
-                  Zdistio,
-                  Zdistplane,
-                  Zdiststat,
-                  Zdistvertex,
-                  Zdistzero,
-                  Zdoc1,
-                  Zdoc2,
-                  Zdoc3,
-                  Zdoc4,
-                  Zdoc5,
-                  Zdoc6,
-                  Zdoc7,
-                  Zdoc8,
-                  Zdoc9,
-                  Zdoc10,
-                  Zdoc11,
-                  Zdropdegen,
-                  Zdropneighbor,
-                  Zdupflip,
-                  Zduplicate,
-                  Wduplicatemax,
-                  Wduplicatetot,
-                  Zdupridge,
-                  Zdupsame,
-                  Zfindfail,
-                  Zflipped,
-                  Wflippedmax,
-                  Wflippedtot,
-                  Zflippedfacets,
-                  Zgauss0,
-                  Zgoodfacet,
-                  Zhashlookup,
-                  Zhashridge,
-                  Zhashridgetest,
-                  Zhashtests,
-                  Zinsidevisible,
-                  Zintersect,
-                  Zintersectfail,
-                  Zintersectmax,
-                  Zintersectnum,
-                  Zintersecttot,
-                  Zmaxneighbors,
-                  Wmaxout,
-                  Wmaxoutside,
-                  Zmaxridges,
-                  Zmaxvertex,
-                  Zmaxvertices,
-                  Zmaxvneighbors,
-                  Zmemfacets,
-                  Zmempoints,
-                  Zmemridges,
-                  Zmemvertices,
-                  Zmergeflipdup,
-                  Zmergehorizon,
-                  Zmergeinittot,
-                  Zmergeinitmax,
-                  Zmergeinittot2,
-                  Zmergeintohorizon,
-                  Zmergenew,
-                  Zmergesettot,
-                  Zmergesetmax,
-                  Zmergesettot2,
-                  Zmergesimplex,
-                  Zmergevertex,
-                  Wmindenom,
-                  Wminvertex,
-                  Zminnorm,
-                  Zmultiridge,
-                  Znearlysingular,
-                  Zneighbor,
-                  Wnewbalance,
-                  Wnewbalance2,
-                  Znewfacettot,
-                  Znewfacetmax,
-                  Znewvertex,
-                  Wnewvertex,
-                  Wnewvertexmax,
-                  Znoarea,
-                  Znotgood,
-                  Znotgoodnew,
-                  Znotmax,
-                  Znumfacets,
-                  Znummergemax,
-                  Znummergetot,
-                  Znumneighbors,
-                  Znumridges,
-                  Znumvertices,
-                  Znumvisibility,
-                  Znumvneighbors,
-                  Zonehorizon,
-                  Zpartcoplanar,
-                  Zpartinside,
-                  Zpartition,
-                  Zpartitionall,
-                  Zpartnear,
-                  Zpbalance,
-                  Wpbalance,
-                  Wpbalance2,
-                  Zpostfacets,
-                  Zpremergetot,
-                  Zprocessed,
-                  Zremvertex,
-                  Zremvertexdel,
-                  Zrenameall,
-                  Zrenamepinch,
-                  Zrenameshare,
-                  Zretry,
-                  Wretrymax,
-                  Zridge,
-                  Wridge,
-                  Wridgemax,
-                  Zridge0,
-                  Wridge0,
-                  Wridge0max,
-                  Zridgemid,
-                  Wridgemid,
-                  Wridgemidmax,
-                  Zridgeok,
-                  Wridgeok,
-                  Wridgeokmax,
-                  Zsearchpoints,
-                  Zsetplane,
-                  Ztestvneighbor,
-                  Ztotcheck,
-                  Ztothorizon,
-                  Ztotmerge,
-                  Ztotpartcoplanar,
-                  Ztotpartition,
-                  Ztotridges,
-                  Ztotvertices,
-                  Ztotvisible,
-                  Wvertexmax,
-                  Wvertexmin,
-                  Zvertexridge,
-                  Zvertexridgetot,
-                  Zvertexridgemax,
-                  Zvertices,
-                  Zvisfacettot,
-                  Zvisfacetmax,
-                  Zvisvertextot,
-                  Zvisvertexmax,
-                  Zwidefacet,
-                  Zwidevertices,
-                  ZEND
+enum statistics
+{ /* alphabetical after Z/W */
+	Zacoplanar,
+	Wacoplanarmax,
+	Wacoplanartot,
+	Zangle,
+	Wangle,
+	Wanglemax,
+	Wanglemin,
+	Zangletests,
+	Wareatot,
+	Wareamax,
+	Wareamin,
+	Zavoidold,
+	Wavoidoldmax,
+	Wavoidoldtot,
+	Zback0,
+	Zbestcentrum,
+	Zbestdist,
+	Zcentrumtests,
+	Zcheckpart,
+	Zcomputefurthest,
+	Zconcave,
+	Wconcavemax,
+	Wconcavetot,
+	Zconcaveridges,
+	Zconcaveridge,
+	Zcoplanar,
+	Wcoplanarmax,
+	Wcoplanartot,
+	Zcoplanarangle,
+	Zcoplanarcentrum,
+	Zcoplanarhorizon,
+	Zcoplanarinside,
+	Zcoplanarpart,
+	Zcoplanarridges,
+	Wcpu,
+	Zcyclefacetmax,
+	Zcyclefacettot,
+	Zcyclehorizon,
+	Zcyclevertex,
+	Zdegen,
+	Wdegenmax,
+	Wdegentot,
+	Zdegenvertex,
+	Zdelfacetdup,
+	Zdelridge,
+	Zdelvertextot,
+	Zdelvertexmax,
+	Zdetsimplex,
+	Zdistcheck,
+	Zdistconvex,
+	Zdistgood,
+	Zdistio,
+	Zdistplane,
+	Zdiststat,
+	Zdistvertex,
+	Zdistzero,
+	Zdoc1,
+	Zdoc2,
+	Zdoc3,
+	Zdoc4,
+	Zdoc5,
+	Zdoc6,
+	Zdoc7,
+	Zdoc8,
+	Zdoc9,
+	Zdoc10,
+	Zdoc11,
+	Zdropdegen,
+	Zdropneighbor,
+	Zdupflip,
+	Zduplicate,
+	Wduplicatemax,
+	Wduplicatetot,
+	Zdupridge,
+	Zdupsame,
+	Zfindfail,
+	Zflipped,
+	Wflippedmax,
+	Wflippedtot,
+	Zflippedfacets,
+	Zgauss0,
+	Zgoodfacet,
+	Zhashlookup,
+	Zhashridge,
+	Zhashridgetest,
+	Zhashtests,
+	Zinsidevisible,
+	Zintersect,
+	Zintersectfail,
+	Zintersectmax,
+	Zintersectnum,
+	Zintersecttot,
+	Zmaxneighbors,
+	Wmaxout,
+	Wmaxoutside,
+	Zmaxridges,
+	Zmaxvertex,
+	Zmaxvertices,
+	Zmaxvneighbors,
+	Zmemfacets,
+	Zmempoints,
+	Zmemridges,
+	Zmemvertices,
+	Zmergeflipdup,
+	Zmergehorizon,
+	Zmergeinittot,
+	Zmergeinitmax,
+	Zmergeinittot2,
+	Zmergeintohorizon,
+	Zmergenew,
+	Zmergesettot,
+	Zmergesetmax,
+	Zmergesettot2,
+	Zmergesimplex,
+	Zmergevertex,
+	Wmindenom,
+	Wminvertex,
+	Zminnorm,
+	Zmultiridge,
+	Znearlysingular,
+	Zneighbor,
+	Wnewbalance,
+	Wnewbalance2,
+	Znewfacettot,
+	Znewfacetmax,
+	Znewvertex,
+	Wnewvertex,
+	Wnewvertexmax,
+	Znoarea,
+	Znotgood,
+	Znotgoodnew,
+	Znotmax,
+	Znumfacets,
+	Znummergemax,
+	Znummergetot,
+	Znumneighbors,
+	Znumridges,
+	Znumvertices,
+	Znumvisibility,
+	Znumvneighbors,
+	Zonehorizon,
+	Zpartcoplanar,
+	Zpartinside,
+	Zpartition,
+	Zpartitionall,
+	Zpartnear,
+	Zpbalance,
+	Wpbalance,
+	Wpbalance2,
+	Zpostfacets,
+	Zpremergetot,
+	Zprocessed,
+	Zremvertex,
+	Zremvertexdel,
+	Zrenameall,
+	Zrenamepinch,
+	Zrenameshare,
+	Zretry,
+	Wretrymax,
+	Zridge,
+	Wridge,
+	Wridgemax,
+	Zridge0,
+	Wridge0,
+	Wridge0max,
+	Zridgemid,
+	Wridgemid,
+	Wridgemidmax,
+	Zridgeok,
+	Wridgeok,
+	Wridgeokmax,
+	Zsearchpoints,
+	Zsetplane,
+	Ztestvneighbor,
+	Ztotcheck,
+	Ztothorizon,
+	Ztotmerge,
+	Ztotpartcoplanar,
+	Ztotpartition,
+	Ztotridges,
+	Ztotvertices,
+	Ztotvisible,
+	Wvertexmax,
+	Wvertexmin,
+	Zvertexridge,
+	Zvertexridgetot,
+	Zvertexridgemax,
+	Zvertices,
+	Zvisfacettot,
+	Zvisfacetmax,
+	Zvisvertextot,
+	Zvisvertexmax,
+	Zwidefacet,
+	Zwidevertices,
+	ZEND
 };
 
 /*-<a                             href="qh-c.htm#stat"
@@ -251,50 +252,51 @@ enum statistics { /* alphabetical after Z/W */
   checking!)
 */
 #else
-enum statistics { /* for zzdef etc. macros */
-                  Zback0,
-                  Zbestdist,
-                  Zcentrumtests,
-                  Zconcaveridges,
-                  Zcoplanarhorizon,
-                  Zcoplanarpart,
-                  Zcoplanarridges,
-                  Zcyclefacettot,
-                  Zcyclehorizon,
-                  Zdistcheck,
-                  Zdistconvex,
-                  Zdistzero,
-                  Zdoc1,
-                  Zdoc2,
-                  Zdoc3,
-                  Zdoc11,
-                  Zflippedfacets,
-                  Zgauss0,
-                  Zminnorm,
-                  Zmultiridge,
-                  Znearlysingular,
-                  Wnewvertexmax,
-                  Znumvisibility,
-                  Zpartcoplanar,
-                  Zpartition,
-                  Zpartitionall,
-                  Zprocessed,
-                  Zretry,
-                  Zridge,
-                  Wridge,
-                  Wridgemax,
-                  Zridge0,
-                  Wridge0,
-                  Wridge0max,
-                  Zridgemid,
-                  Wridgemid,
-                  Wridgemidmax,
-                  Zridgeok,
-                  Wridgeok,
-                  Wridgeokmax,
-                  Zsetplane,
-                  Ztotmerge,
-                  ZEND
+enum statistics
+{ /* for zzdef etc. macros */
+	Zback0,
+	Zbestdist,
+	Zcentrumtests,
+	Zconcaveridges,
+	Zcoplanarhorizon,
+	Zcoplanarpart,
+	Zcoplanarridges,
+	Zcyclefacettot,
+	Zcyclehorizon,
+	Zdistcheck,
+	Zdistconvex,
+	Zdistzero,
+	Zdoc1,
+	Zdoc2,
+	Zdoc3,
+	Zdoc11,
+	Zflippedfacets,
+	Zgauss0,
+	Zminnorm,
+	Zmultiridge,
+	Znearlysingular,
+	Wnewvertexmax,
+	Znumvisibility,
+	Zpartcoplanar,
+	Zpartition,
+	Zpartitionall,
+	Zprocessed,
+	Zretry,
+	Zridge,
+	Wridge,
+	Wridgemax,
+	Zridge0,
+	Wridge0,
+	Wridge0max,
+	Zridgemid,
+	Wridgemid,
+	Wridgemidmax,
+	Zridgeok,
+	Wridgeok,
+	Wridgeokmax,
+	Zsetplane,
+	Ztotmerge,
+	ZEND
 };
 #endif
 
@@ -307,17 +309,18 @@ enum statistics { /* for zzdef etc. macros */
   notes:
     The type should be the same as the macro for collecting the statistic
 */
-enum ztypes {
-  zdoc,
-  zinc,
-  zadd,
-  zmax,
-  zmin,
-  ZTYPEreal,
-  wadd,
-  wmax,
-  wmin,
-  ZTYPEend
+enum ztypes
+{
+	zdoc,
+	zinc,
+	zadd,
+	zmax,
+	zmin,
+	ZTYPEreal,
+	wadd,
+	wmax,
+	wmin,
+	ZTYPEend
 };
 
 /*========== macros and constants =============*/
@@ -340,19 +343,19 @@ enum ztypes {
     define an averaged statistic
     printed as name/count
 */
-#define zzdef_(stype, name, string, cnt) \
-  qhstat id[qhstat next++] = name;       \
-  qhstat doc[name] = string;             \
-  qhstat count[name] = cnt;              \
-  qhstat type[name] = stype
+#define zzdef_( stype, name, string, cnt ) \
+	qhstat id[qhstat next++] = name;       \
+	qhstat doc[name] = string;             \
+	qhstat count[name] = cnt;              \
+	qhstat type[name] = stype
 #if qh_KEEPstatistics
-#define zdef_(stype, name, string, cnt) \
-  qhstat id[qhstat next++] = name;      \
-  qhstat doc[name] = string;            \
-  qhstat count[name] = cnt;             \
-  qhstat type[name] = stype
+#define zdef_( stype, name, string, cnt ) \
+	qhstat id[qhstat next++] = name;      \
+	qhstat doc[name] = string;            \
+	qhstat count[name] = cnt;             \
+	qhstat type[name] = stype
 #else
-#define zdef_(type, name, doc, count)
+#define zdef_( type, name, doc, count )
 #endif
 
 /*-<a                             href="qh-c.htm#stat"
@@ -361,21 +364,23 @@ enum ztypes {
   zzinc_( name ), zinc_( name)
     increment an integer statistic
 */
-#define zzinc_(id)        \
-  do {                    \
-    MAYdebugx;            \
-    qhstat stats[id].i++; \
-  } while (false)
+#define zzinc_( id )          \
+	do                        \
+	{                         \
+		MAYdebugx;            \
+		qhstat stats[id].i++; \
+	} while ( false )
 #if qh_KEEPstatistics
-#define zinc_(id)         \
-  do {                    \
-    MAYdebugx;            \
-    qhstat stats[id].i++; \
-  } while (false)
+#define zinc_( id )           \
+	do                        \
+	{                         \
+		MAYdebugx;            \
+		qhstat stats[id].i++; \
+	} while ( false )
 #else
-#define zinc_(id) \
-  {               \
-  }
+#define zinc_( id ) \
+	{               \
+	}
 #endif
 
 /*-<a                             href="qh-c.htm#stat"
@@ -384,34 +389,38 @@ enum ztypes {
   zzadd_( name, value ), zadd_( name, value ), wadd_( name, value )
     add value to an integer or real statistic
 */
-#define zzadd_(id, val)          \
-  do {                           \
-    MAYdebugx;                   \
-    qhstat stats[id].i += (val); \
-  } while (false)
-#define wwadd_(id, val)          \
-  do {                           \
-    MAYdebugx;                   \
-    qhstat stats[id].r += (val); \
-  } while (false)
+#define zzadd_( id, val )              \
+	do                                 \
+	{                                  \
+		MAYdebugx;                     \
+		qhstat stats[id].i += ( val ); \
+	} while ( false )
+#define wwadd_( id, val )              \
+	do                                 \
+	{                                  \
+		MAYdebugx;                     \
+		qhstat stats[id].r += ( val ); \
+	} while ( false )
 #if qh_KEEPstatistics
-#define zadd_(id, val)           \
-  do {                           \
-    MAYdebugx;                   \
-    qhstat stats[id].i += (val); \
-  } while (false)
-#define wadd_(id, val)           \
-  do {                           \
-    MAYdebugx;                   \
-    qhstat stats[id].r += (val); \
-  } while (false)
+#define zadd_( id, val )               \
+	do                                 \
+	{                                  \
+		MAYdebugx;                     \
+		qhstat stats[id].i += ( val ); \
+	} while ( false )
+#define wadd_( id, val )               \
+	do                                 \
+	{                                  \
+		MAYdebugx;                     \
+		qhstat stats[id].r += ( val ); \
+	} while ( false )
 #else
-#define zadd_(id, val) \
-  {                    \
-  }
-#define wadd_(id, val) \
-  {                    \
-  }
+#define zadd_( id, val ) \
+	{                    \
+	}
+#define wadd_( id, val ) \
+	{                    \
+	}
 #endif
 
 /*-<a                             href="qh-c.htm#stat"
@@ -420,14 +429,14 @@ enum ztypes {
   zzval_( name ), zval_( name ), wwval_( name )
     set or return value of a statistic
 */
-#define zzval_(id) ((qhstat stats[id]).i)
-#define wwval_(id) ((qhstat stats[id]).r)
+#define zzval_( id ) ( ( qhstat stats[id] ).i )
+#define wwval_( id ) ( ( qhstat stats[id] ).r )
 #if qh_KEEPstatistics
-#define zval_(id) ((qhstat stats[id]).i)
-#define wval_(id) ((qhstat stats[id]).r)
+#define zval_( id ) ( ( qhstat stats[id] ).i )
+#define wval_( id ) ( ( qhstat stats[id] ).r )
 #else
-#define zval_(id) qhstat tempi
-#define wval_(id) qhstat tempr
+#define zval_( id ) qhstat tempi
+#define wval_( id ) qhstat tempr
 #endif
 
 /*-<a                             href="qh-c.htm#stat"
@@ -436,29 +445,32 @@ enum ztypes {
   zmax_( id, val ), wmax_( id, value )
     maximize id with val
 */
-#define wwmax_(id, val)                   \
-  do {                                    \
-    MAYdebugx;                            \
-    maximize_(qhstat stats[id].r, (val)); \
-  } while (false)
+#define wwmax_( id, val )                         \
+	do                                            \
+	{                                             \
+		MAYdebugx;                                \
+		maximize_( qhstat stats[id].r, ( val ) ); \
+	} while ( false )
 #if qh_KEEPstatistics
-#define zmax_(id, val)                    \
-  do {                                    \
-    MAYdebugx;                            \
-    maximize_(qhstat stats[id].i, (val)); \
-  } while (false)
-#define wmax_(id, val)                    \
-  do {                                    \
-    MAYdebugx;                            \
-    maximize_(qhstat stats[id].r, (val)); \
-  } while (false)
+#define zmax_( id, val )                          \
+	do                                            \
+	{                                             \
+		MAYdebugx;                                \
+		maximize_( qhstat stats[id].i, ( val ) ); \
+	} while ( false )
+#define wmax_( id, val )                          \
+	do                                            \
+	{                                             \
+		MAYdebugx;                                \
+		maximize_( qhstat stats[id].r, ( val ) ); \
+	} while ( false )
 #else
-#define zmax_(id, val) \
-  {                    \
-  }
-#define wmax_(id, val) \
-  {                    \
-  }
+#define zmax_( id, val ) \
+	{                    \
+	}
+#define wmax_( id, val ) \
+	{                    \
+	}
 #endif
 
 /*-<a                             href="qh-c.htm#stat"
@@ -468,23 +480,25 @@ enum ztypes {
     minimize id with val
 */
 #if qh_KEEPstatistics
-#define zmin_(id, val)                    \
-  do {                                    \
-    MAYdebugx;                            \
-    minimize_(qhstat stats[id].i, (val)); \
-  } while (false)
-#define wmin_(id, val)                    \
-  do {                                    \
-    MAYdebugx;                            \
-    minimize_(qhstat stats[id].r, (val)); \
-  } while (false)
+#define zmin_( id, val )                          \
+	do                                            \
+	{                                             \
+		MAYdebugx;                                \
+		minimize_( qhstat stats[id].i, ( val ) ); \
+	} while ( false )
+#define wmin_( id, val )                          \
+	do                                            \
+	{                                             \
+		MAYdebugx;                                \
+		minimize_( qhstat stats[id].r, ( val ) ); \
+	} while ( false )
 #else
-#define zmin_(id, val) \
-  {                    \
-  }
-#define wmin_(id, val) \
-  {                    \
-  }
+#define zmin_( id, val ) \
+	{                    \
+	}
+#define wmin_( id, val ) \
+	{                    \
+	}
 #endif
 
 /*================== stat.h types ==============*/
@@ -496,9 +510,10 @@ enum ztypes {
     union of integer and real, used for statistics
 */
 typedef union intrealT intrealT; /* union of int and realT */
-union intrealT {
-  int i;
-  realT r;
+union intrealT
+{
+	int   i;
+	realT r;
 };
 
 /*-<a                             href="qh-c.htm#stat"
@@ -526,43 +541,44 @@ extern qhstatT *qh_qhstat;
 #define qhstat qh_qhstat.
 extern qhstatT qh_qhstat;
 #endif
-struct qhstatT {
-  intrealT stats[ZEND];        /* integer and real statistics */
-  unsigned char id[ZEND + 10]; /* id's in print order */
-  const char *doc[ZEND];       /* array of documentation strings */
-  short int count[ZEND];       /* -1 if none, else index of count to use */
-  char type[ZEND];             /* type, see ztypes above */
-  char printed[ZEND];          /* true, if statistic has been printed */
-  intrealT init[ZTYPEend];     /* initial values by types, set initstatistics */
+struct qhstatT
+{
+	intrealT      stats[ZEND];    /* integer and real statistics */
+	unsigned char id[ZEND + 10];  /* id's in print order */
+	const char   *doc[ZEND];      /* array of documentation strings */
+	short int     count[ZEND];    /* -1 if none, else index of count to use */
+	char          type[ZEND];     /* type, see ztypes above */
+	char          printed[ZEND];  /* true, if statistic has been printed */
+	intrealT      init[ZTYPEend]; /* initial values by types, set initstatistics */
 
-  int next;      /* next index for zdef_ */
-  int precision; /* index for precision problems */
-  int vridges;   /* index for Voronoi ridges */
-  int tempi;
-  realT tempr;
+	int   next;      /* next index for zdef_ */
+	int   precision; /* index for precision problems */
+	int   vridges;   /* index for Voronoi ridges */
+	int   tempi;
+	realT tempr;
 };
 
 /*========== function prototypes ===========*/
 
-void qh_allstatA(void);
-void qh_allstatB(void);
-void qh_allstatC(void);
-void qh_allstatD(void);
-void qh_allstatE(void);
-void qh_allstatF(void);
-void qh_allstatG(void);
-void qh_allstatH(void);
-void qh_allstatI(void);
-void qh_allstatistics(void);
-void qh_collectstatistics(void);
-void qh_freestatistics(void);
-void qh_initstatistics(void);
-boolT qh_newstats(int index, int *nextindex);
-boolT qh_nostatistic(int i);
-void qh_printallstatistics(FILE *fp, const char *string);
-void qh_printstatistics(FILE *fp, const char *string);
-void qh_printstatlevel(FILE *fp, int id, int start);
-void qh_printstats(FILE *fp, int index, int *nextindex);
-realT qh_stddev(int num, realT tot, realT tot2, realT *ave);
+void  qh_allstatA( void );
+void  qh_allstatB( void );
+void  qh_allstatC( void );
+void  qh_allstatD( void );
+void  qh_allstatE( void );
+void  qh_allstatF( void );
+void  qh_allstatG( void );
+void  qh_allstatH( void );
+void  qh_allstatI( void );
+void  qh_allstatistics( void );
+void  qh_collectstatistics( void );
+void  qh_freestatistics( void );
+void  qh_initstatistics( void );
+boolT qh_newstats( int index, int *nextindex );
+boolT qh_nostatistic( int i );
+void  qh_printallstatistics( FILE *fp, const char *string );
+void  qh_printstatistics( FILE *fp, const char *string );
+void  qh_printstatlevel( FILE *fp, int id, int start );
+void  qh_printstats( FILE *fp, int index, int *nextindex );
+realT qh_stddev( int num, realT tot, realT tot2, realT *ave );
 
 #endif /* qhDEFstat */

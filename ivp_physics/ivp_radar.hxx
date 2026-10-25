@@ -5,11 +5,12 @@
  *	Description:	Information about a hit
  *	Attention:	positions are only an estimate
  ********************************************************************************/
-class IVP_Radar_Hit {
- public:
-  IVP_Object *this_object;
-  IVP_Object *other_object;
-  IVP_DOUBLE dist;
+class IVP_Radar_Hit
+{
+public:
+	IVP_Object *this_object;
+	IVP_Object *other_object;
+	IVP_DOUBLE  dist;
 };
 
 /********************************************************************************
@@ -20,12 +21,13 @@ class IVP_Radar_Hit {
  *set by the user before calling IVP_Environment::do_radar_checking Attention:
  *Only objects returned, which will also cause a collision with the start object
  ********************************************************************************/
-class IVP_Radar {
- public:
-  //////////// minimal settings for radar checking
-  IVP_DOUBLE max_range;  // max distance to check
-  IVP_DOUBLE
-  max_relative_error;  // maximum relative distance error for checking
+class IVP_Radar
+{
+public:
+	//////////// minimal settings for radar checking
+	IVP_DOUBLE max_range; // max distance to check
+	IVP_DOUBLE
+	max_relative_error; // maximum relative distance error for checking
 
-  virtual void radar_hit(IVP_Radar_Hit *) = 0;
+	virtual void radar_hit( IVP_Radar_Hit * ) = 0;
 };

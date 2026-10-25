@@ -5,21 +5,22 @@
  *	Description:	create rekursive compact ledges
  ********************************************************************************/
 
-class IVP_Compact_Recursive {
-  IVP_U_Vector<IVP_Compact_Ledge> ledges;
-  IVP_Compact_Ledge *hull;
+class IVP_Compact_Recursive
+{
+	IVP_U_Vector< IVP_Compact_Ledge > ledges;
+	IVP_Compact_Ledge                *hull;
 
-  void build_convex_hull();
-  void set_rekursive_convex_hull();
+	void build_convex_hull();
+	void set_rekursive_convex_hull();
 
-  void add_compact_ledge_treenode(const IVP_Compact_Ledgetree_Node *node);
+	void add_compact_ledge_treenode( const IVP_Compact_Ledgetree_Node *node );
 
- public:
-  IVP_Compact_Recursive();
-  ~IVP_Compact_Recursive();
+public:
+	IVP_Compact_Recursive();
+	~IVP_Compact_Recursive();
 
-  void add_compact_ledge(const IVP_Compact_Ledge *ledge);
-  void add_compact_surface(const IVP_Compact_Surface *surface);
+	void add_compact_ledge( const IVP_Compact_Ledge *ledge );
+	void add_compact_surface( const IVP_Compact_Surface *surface );
 
-  IVP_Compact_Ledge *compile();
+	IVP_Compact_Ledge *compile();
 };

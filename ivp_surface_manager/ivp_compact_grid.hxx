@@ -19,9 +19,10 @@
  *  Description:    an INTERNAL structure
  *******************************************************************************/
 
-class IVP_Compact_Grid_Element {
- public:
-  short compact_ledge_index[2];  // maximum of two ledges for one square
+class IVP_Compact_Grid_Element
+{
+public:
+	short compact_ledge_index[2]; // maximum of two ledges for one square
 };
 
 /********************************************************************************
@@ -38,46 +39,49 @@ class IVP_Compact_Grid_Element {
  *  Important:	    Only use "ivp_free_aligned()" to free a compact grid!
  *******************************************************************************/
 
-class IVP_Compact_Grid {
- public:
-  IVP_U_Float_Hesse center;
-  IVP_U_Matrix m_grid_f_object;  // scales to grid, virtual grid size 1.0
-                                 // x and y are grid axles, z is height
-                                 // center is at 0,0
-  short n_rows;                  // number of grid's rows
-  short n_columns;               // number of grid's columns
-  int n_compact_ledges;  // number of ledges (i.e. convex subparts) in grid
+class IVP_Compact_Grid
+{
+public:
+	IVP_U_Float_Hesse center;
+	IVP_U_Matrix      m_grid_f_object; // scales to grid, virtual grid size 1.0
+									   // x and y are grid axles, z is height
+									   // center is at 0,0
+	short n_rows;                      // number of grid's rows
+	short n_columns;                   // number of grid's columns
+	int   n_compact_ledges;            // number of ledges (i.e. convex subparts) in grid
 
-  IVP_FLOAT radius;
+	IVP_FLOAT radius;
 
-  hk_intp byte_size;
+	hk_intp byte_size;
 
-  IVP_FLOAT inv_grid_size;
+	IVP_FLOAT inv_grid_size;
 
-  int offset_grid_elements;
-  int offset_compact_ledge_array[1];  // array of offsets to compact ledges
+	int offset_grid_elements;
+	int offset_compact_ledge_array[1]; // array of offsets to compact ledges
 
-  // grid elements follow    size n_rows * n_columns
-  // compact ledges follow   size = sum of size of compact ledges
+	// grid elements follow    size n_rows * n_columns
+	// compact ledges follow   size = sum of size of compact ledges
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		get_grid_elements
    *  Description:    INTERNAL METHOD
    *****************************************************************************/
-  const IVP_Compact_Grid_Element *get_grid_elements() {
-    char *base = (char *)(((hk_intp)this) + this->offset_grid_elements);
-    return ((const IVP_Compact_Grid_Element *)base);
-  }
+	const IVP_Compact_Grid_Element *get_grid_elements()
+	{
+		char *base = (char *)( ( (hk_intp)this ) + this->offset_grid_elements );
+		return ( (const IVP_Compact_Grid_Element *)base );
+	}
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		get_compact_ledge_at
    *  Description:    INTERNAL METHOD
    *****************************************************************************/
-  const IVP_Compact_Ledge *get_compact_ledge_at(int i) {
-    char *base =
-        (char *)(((hk_intp)this) + this->offset_compact_ledge_array[i]);
-    return ((const IVP_Compact_Ledge *)base);
-  }
+	const IVP_Compact_Ledge *get_compact_ledge_at( int i )
+	{
+		char *base =
+		(char *)( ( (hk_intp)this ) + this->offset_compact_ledge_array[i] );
+		return ( (const IVP_Compact_Ledge *)base );
+	}
 };
 
 #endif

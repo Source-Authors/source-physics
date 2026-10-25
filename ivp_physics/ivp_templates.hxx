@@ -37,15 +37,16 @@ class IVP_Material;
  *	Name:	       	IVP_Template_Object
  *	Description:	An object
  ********************************************************************************/
-class IVP_Template_Object {
-  // dimhotepus: char* -> const char*
-  const char *name;
+class IVP_Template_Object
+{
+	// dimhotepus: char* -> const char*
+	const char *name;
 
- public:
-  void set_name(const char *name);
-  const char *get_name() const { return name; }
-  IVP_Template_Object();
-  ~IVP_Template_Object();
+public:
+	void        set_name( const char *name );
+	const char *get_name() const { return name; }
+	IVP_Template_Object();
+	~IVP_Template_Object();
 };
 
 /********************************************************************************
@@ -54,38 +55,40 @@ class IVP_Template_Object {
  *	Attention:	There is no use for clusters in the current
  *implementation of the physics engine.
  ********************************************************************************/
-class IVP_Template_Cluster : public IVP_Template_Object {
- public:
-  // ...
+class IVP_Template_Cluster : public IVP_Template_Object
+{
+public:
+	// ...
 };
 
 /********************************************************************************
  *	Name:	     	IVP_Template_Real_Object
  *	Description:	A real object with mass and rotation inertia properties.
  ********************************************************************************/
-class IVP_Template_Real_Object : public IVP_Template_Object {
-  char nocoll_group_ident
-      [IVP_NO_COLL_GROUP_STRING_LEN];  // Optional (malloced) string used by the
-                                       // IVP_Collision_Filter_Coll_Group_Ident
-                                       // (use set ... to set this)
- public:
-  IVP_BOOL physical_unmoveable;  // If set to TRUE, the object is unmoveable
-                                 // (cannot be changed later)
-  IVP_BOOL
-  enable_piling_optimization;  // Objects get more wobbly but simulation of
-                               // object piles is faster (dominos)
-  IVP_BOOL pinned;
-  // IVP_BOOL low_simulation_forbidden;   // not used anymore
-  IVP_Material *material;  // Pointer to the material (used only if no surface
-                           // material is set)
-  void set_nocoll_group_ident(
-      const char *nocoll_group);  // Optional string used by the
-                                  // IVP_Collision_Filter_Coll_Group_Ident,
-                                  // maxlen = IVP_NO_COLL_GROUP_STRING_LEN
-  const char *get_nocoll_group_ident() const { return &nocoll_group_ident[0]; }
-  IVP_DOUBLE mass;  // Mass of object (unit: kilogram), default 1.0
+class IVP_Template_Real_Object : public IVP_Template_Object
+{
+	char nocoll_group_ident
+	[IVP_NO_COLL_GROUP_STRING_LEN]; // Optional (malloced) string used by the
+									// IVP_Collision_Filter_Coll_Group_Ident
+									// (use set ... to set this)
+public:
+	IVP_BOOL physical_unmoveable; // If set to TRUE, the object is unmoveable
+								  // (cannot be changed later)
+	IVP_BOOL
+	enable_piling_optimization; // Objects get more wobbly but simulation of
+								// object piles is faster (dominos)
+	IVP_BOOL pinned;
+	// IVP_BOOL low_simulation_forbidden;   // not used anymore
+	IVP_Material *material; // Pointer to the material (used only if no surface
+							// material is set)
+	void set_nocoll_group_ident(
+	const char *nocoll_group ); // Optional string used by the
+								// IVP_Collision_Filter_Coll_Group_Ident,
+								// maxlen = IVP_NO_COLL_GROUP_STRING_LEN
+	const char *get_nocoll_group_ident() const { return &nocoll_group_ident[0]; }
+	IVP_DOUBLE  mass; // Mass of object (unit: kilogram), default 1.0
 
-  /********************************************************************************
+	/********************************************************************************
    *	Feature:       	rot_inertia
    *	Description:	To set the rotation inertia, you may either:
    *			1. set the rotation inertia directly
@@ -113,13 +116,13 @@ class IVP_Template_Real_Object : public IVP_Template_Object {
    *objects, however very realistic), 0.1 -> medium 0.5 -> strong (safe and
    *unrealistic) default is 0.03
    ********************************************************************************/
-  IVP_BOOL rot_inertia_is_factor;  // default: IVP_TRUE, see above
-  IVP_U_Float_Point rot_inertia; /* the diagonal values of the rotation inertia
+	IVP_BOOL          rot_inertia_is_factor; // default: IVP_TRUE, see above
+	IVP_U_Float_Point rot_inertia;           /* the diagonal values of the rotation inertia
                                   * matrix default: (1.0f,1.0f,1.0f)
                                   */
-  IVP_FLOAT auto_check_rot_inertia;
+	IVP_FLOAT         auto_check_rot_inertia;
 
-  /********************************************************************************
+	/********************************************************************************
    *	Feature:	   	Dampening
    *	Description:		Object may be dampened in many ways. The
    *following two values allow dampening of the movement of an object in world
@@ -139,12 +142,12 @@ class IVP_Template_Real_Object : public IVP_Template_Object {
    *and 0.05f are hardly noticeable. Values greater 1 cause the objects to
    *appear as if swimming in liquid. Experiment with different values.
    ********************************************************************************/
-  IVP_DOUBLE speed_damp_factor;       // default 0.01f
-  IVP_U_Point rot_speed_damp_factor;  //  default 0.01f,0.01f,0.01f
+	IVP_DOUBLE  speed_damp_factor;     // default 0.01f
+	IVP_U_Point rot_speed_damp_factor; //  default 0.01f,0.01f,0.01f
 
-  IVP_FLOAT extra_radius;  // extra radius around each object
+	IVP_FLOAT extra_radius; // extra radius around each object
 
-  /********************************************************************************
+	/********************************************************************************
    *	Feature:	Rotation axis and mass center
    *	Description:	By default (mass_center_override=NULL), the Ipion ViPE
    *			calculates the center of mass automatically and assumes
@@ -159,24 +162,25 @@ class IVP_Template_Real_Object : public IVP_Template_Object {
    *	Hint:		Simply design your objects symmetrically to the object
    *coordinate system and forget mass_center_override.
    ********************************************************************************/
-  IVP_U_Matrix *mass_center_override;  // optional
+	IVP_U_Matrix *mass_center_override; // optional
 
-  /********************************************************************************
+	/********************************************************************************
    *	Feature:	Rotation axis and mass center
    ********************************************************************************/
-  void *client_data;  // user supplied client data
-  IVP_Template_Real_Object();
-  ~IVP_Template_Real_Object();
+	void *client_data; // user supplied client data
+	IVP_Template_Real_Object();
+	~IVP_Template_Real_Object();
 };
 
 /********************************************************************************
  *	Name:	       	IVP_Template_Ball
  *	Version Info:
  ********************************************************************************/
-class IVP_Template_Ball {
- public:
-  IVP_FLOAT radius;  // unit: meters // add extra_radius in
-                     // IVP_Template_Real_Object to get real radius
+class IVP_Template_Ball
+{
+public:
+	IVP_FLOAT radius; // unit: meters // add extra_radius in
+					  // IVP_Template_Real_Object to get real radius
 };
 
 #endif

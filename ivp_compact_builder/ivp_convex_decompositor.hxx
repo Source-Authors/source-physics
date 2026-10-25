@@ -33,9 +33,10 @@
  *  Note:	    Just a little helping class. :-)
  *******************************************************************************/
 
-class IVP_Concave_Polyhedron_Face_Pointoffset {
- public:
-  int offset;
+class IVP_Concave_Polyhedron_Face_Pointoffset
+{
+public:
+	int offset;
 };
 
 /********************************************************************************
@@ -51,18 +52,19 @@ class IVP_Concave_Polyhedron_Face_Pointoffset {
  *		    remaining points in counter-clockwise direction.
  *******************************************************************************/
 
-class IVP_Concave_Polyhedron_Face {
- public:
-  IVP_U_Vector<IVP_Concave_Polyhedron_Face_Pointoffset> point_offset;
+class IVP_Concave_Polyhedron_Face
+{
+public:
+	IVP_U_Vector< IVP_Concave_Polyhedron_Face_Pointoffset > point_offset;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		add_offset
    *  Description:    Use this method to add a new point offset to the list.
    *	Note:		This method will drop any duplicate offsets.
    *****************************************************************************/
-  void add_offset(hk_intp offset);
+	void add_offset( hk_intp offset );
 
-  ~IVP_Concave_Polyhedron_Face();
+	~IVP_Concave_Polyhedron_Face();
 };
 
 /********************************************************************************
@@ -73,10 +75,11 @@ class IVP_Concave_Polyhedron_Face {
  *		    'faces' vector stores ALL the polyhedron's faces!
  *******************************************************************************/
 
-class IVP_Concave_Polyhedron {
- public:
-  IVP_U_BigVector<IVP_U_Point> points;
-  IVP_U_BigVector<IVP_Concave_Polyhedron_Face> faces;
+class IVP_Concave_Polyhedron
+{
+public:
+	IVP_U_BigVector< IVP_U_Point >                 points;
+	IVP_U_BigVector< IVP_Concave_Polyhedron_Face > faces;
 };
 
 /********************************************************************************
@@ -85,11 +88,12 @@ class IVP_Concave_Polyhedron {
  *		    'points' will get filled with the subparts pointsoup.
  *******************************************************************************/
 
-class IVP_Convex_Subpart {
- public:
-  IVP_U_Vector<IVP_U_Point> points;
+class IVP_Convex_Subpart
+{
+public:
+	IVP_U_Vector< IVP_U_Point > points;
 
-  ~IVP_Convex_Subpart();
+	~IVP_Convex_Subpart();
 };
 
 /********************************************************************************
@@ -97,13 +101,14 @@ class IVP_Convex_Subpart {
  *  Description:    User-definable parameters for convex decomposition.
  *******************************************************************************/
 
-class IVP_Convex_Decompositor_Parameters {
- public:
-  float tolin;  // tolerance in
-                //    float aspc2d;
-                //    float atol2d;
-  float angacc;
-  float rdacc;
+class IVP_Convex_Decompositor_Parameters
+{
+public:
+	float tolin; // tolerance in
+				 //    float aspc2d;
+				 //    float atol2d;
+	float angacc;
+	float rdacc;
 };
 
 /********************************************************************************
@@ -112,9 +117,10 @@ class IVP_Convex_Decompositor_Parameters {
  *		    objects into simple convex subparts.
  *******************************************************************************/
 
-class IVP_Convex_Decompositor {
- public:
-  /******************************************************************************
+class IVP_Convex_Decompositor
+{
+public:
+	/******************************************************************************
    *  Method:		perform_convex_decomposition_on_concave_polyhedron
    *  Description:    This method will split a supplied concave polyhedron into
    *			several convex subparts. It will return a pointsoup for
@@ -126,10 +132,10 @@ class IVP_Convex_Decompositor {
    *			                         objects
    *	Output:		Number of created subparts
    *****************************************************************************/
-  static int perform_convex_decomposition_on_concave_polyhedron(
-      IVP_Concave_Polyhedron *concave_polyhedron_in,
-      IVP_Convex_Decompositor_Parameters *params,
-      IVP_U_BigVector<IVP_Convex_Subpart> *convex_subparts_out);
+	static int perform_convex_decomposition_on_concave_polyhedron(
+	IVP_Concave_Polyhedron                *concave_polyhedron_in,
+	IVP_Convex_Decompositor_Parameters    *params,
+	IVP_U_BigVector< IVP_Convex_Subpart > *convex_subparts_out );
 };
 
 #endif

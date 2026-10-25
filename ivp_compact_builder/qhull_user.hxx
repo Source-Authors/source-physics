@@ -64,25 +64,25 @@
 */
 #define REALfloat 0
 
-#if (REALfloat == 1)
-#define realT float
-#define REALmax FLT_MAX
-#define REALmin FLT_MIN
-#define REALepsilon FLT_EPSILON
+#if ( REALfloat == 1 )
+#define realT         float
+#define REALmax       FLT_MAX
+#define REALmin       FLT_MIN
+#define REALepsilon   FLT_EPSILON
 #define qh_REALdigits 8 /* maximum number of significant digits */
-#define qh_REAL_1 "%6.8g "
-#define qh_REAL_2n "%6.8g %6.8g\n"
-#define qh_REAL_3n "%6.8g %6.8g %6.8g\n"
+#define qh_REAL_1     "%6.8g "
+#define qh_REAL_2n    "%6.8g %6.8g\n"
+#define qh_REAL_3n    "%6.8g %6.8g %6.8g\n"
 
-#elif (REALfloat == 0)
-#define realT double
-#define REALmax DBL_MAX
-#define REALmin DBL_MIN
-#define REALepsilon DBL_EPSILON
+#elif ( REALfloat == 0 )
+#define realT         double
+#define REALmax       DBL_MAX
+#define REALmin       DBL_MIN
+#define REALepsilon   DBL_EPSILON
 #define qh_REALdigits 16 /* maximum number of significant digits */
-#define qh_REAL_1 "%6.16g "
-#define qh_REAL_2n "%6.16g %6.16g\n"
-#define qh_REAL_3n "%6.16g %6.16g %6.16g\n"
+#define qh_REAL_1     "%6.16g "
+#define qh_REAL_2n    "%6.16g %6.16g\n"
+#define qh_REAL_3n    "%6.16g %6.16g %6.16g\n"
 
 #else
 #error unknown float option
@@ -118,30 +118,30 @@
 */
 #define qh_CLOCKtype 0 /* change to the desired number */
 
-#if (qh_CLOCKtype == 1)
+#if ( qh_CLOCKtype == 1 )
 
-#if defined(CLOCKS_PER_SECOND)
-#define qh_CPUclock ((unsigned long)clock()) /* return CPU clock */
+#if defined( CLOCKS_PER_SECOND )
+#define qh_CPUclock ( (unsigned long)clock() ) /* return CPU clock */
 #define qh_SECticks CLOCKS_PER_SECOND
 
-#elif defined(CLOCKS_PER_SEC)
-#define qh_CPUclock ((unsigned long)clock()) /* return CPU clock */
+#elif defined( CLOCKS_PER_SEC )
+#define qh_CPUclock ( (unsigned long)clock() ) /* return CPU clock */
 #define qh_SECticks CLOCKS_PER_SEC
 
-#elif defined(CLK_TCK)
-#define qh_CPUclock ((unsigned long)clock()) /* return CPU clock */
+#elif defined( CLK_TCK )
+#define qh_CPUclock ( (unsigned long)clock() ) /* return CPU clock */
 #define qh_SECticks CLK_TCK
 
 #else
-#define qh_CPUclock ((unsigned long)clock()) /* return CPU clock */
+#define qh_CPUclock ( (unsigned long)clock() ) /* return CPU clock */
 #define qh_SECticks 1E6
 #endif
 
-#elif (qh_CLOCKtype == 2)
+#elif ( qh_CLOCKtype == 2 )
 #define qh_CPUclock qh_clock() /* return CPU clock */
 #define qh_SECticks 100
 
-#elif (qh_CLOCKtype == 0)
+#elif ( qh_CLOCKtype == 0 )
 #define qh_CPUclock 1 /* return CPU clock */
 #define qh_SECticks 1
 
@@ -183,34 +183,34 @@
 */
 #define qh_RANDOMtype 5 /* *** change to the desired number *** */
 
-#if (qh_RANDOMtype == 1)
-#define qh_RANDOMmax ((realT)0x7fffffffUL) /* 31 bits, random()/MAX */
-#define qh_RANDOMint random()
-#define qh_RANDOMseed_(seed) srandom(seed);
+#if ( qh_RANDOMtype == 1 )
+#define qh_RANDOMmax           ( (realT)0x7fffffffUL ) /* 31 bits, random()/MAX */
+#define qh_RANDOMint           random()
+#define qh_RANDOMseed_( seed ) srandom( seed );
 
-#elif (qh_RANDOMtype == 2)
+#elif ( qh_RANDOMtype == 2 )
 #ifdef RAND_MAX
-#define qh_RANDOMmax ((realT)RAND_MAX)
+#define qh_RANDOMmax ( (realT)RAND_MAX )
 #else
-#define qh_RANDOMmax ((realT)32767) /* 15 bits (System 5) */
+#define qh_RANDOMmax ( (realT)32767 ) /* 15 bits (System 5) */
 #endif
-#define qh_RANDOMint rand()
-#define qh_RANDOMseed_(seed) srand((unsigned)seed);
+#define qh_RANDOMint           rand()
+#define qh_RANDOMseed_( seed ) srand( (unsigned)seed );
 
-#elif (qh_RANDOMtype == 3)
-#define qh_RANDOMmax ((realT)0x7fffffffUL) /* 31 bits, Sun */
-#define qh_RANDOMint rand()
-#define qh_RANDOMseed_(seed) srand((unsigned)seed);
+#elif ( qh_RANDOMtype == 3 )
+#define qh_RANDOMmax           ( (realT)0x7fffffffUL ) /* 31 bits, Sun */
+#define qh_RANDOMint           rand()
+#define qh_RANDOMseed_( seed ) srand( (unsigned)seed );
 
-#elif (qh_RANDOMtype == 4)
-#define qh_RANDOMmax ((realT)0x7fffffffUL) /* 31 bits, lrand38()/MAX */
-#define qh_RANDOMint lrand48()
-#define qh_RANDOMseed_(seed) srand48(seed);
+#elif ( qh_RANDOMtype == 4 )
+#define qh_RANDOMmax           ( (realT)0x7fffffffUL ) /* 31 bits, lrand38()/MAX */
+#define qh_RANDOMint           lrand48()
+#define qh_RANDOMseed_( seed ) srand48( seed );
 
-#elif (qh_RANDOMtype == 5)
-#define qh_RANDOMmax ((realT)2147483646UL) /* 31 bits, qh_rand/MAX */
-#define qh_RANDOMint qh_rand()
-#define qh_RANDOMseed_(seed) qh_srand(seed);
+#elif ( qh_RANDOMtype == 5 )
+#define qh_RANDOMmax           ( (realT)2147483646UL ) /* 31 bits, qh_rand/MAX */
+#define qh_RANDOMint           qh_rand()
+#define qh_RANDOMseed_( seed ) qh_srand( seed );
 /* unlike rand(), never returns 0 */
 
 #else
@@ -362,7 +362,7 @@
     If using gcc, best alignment is
               #define qh_MEMalign fmax_(__alignof__(realT),__alignof__(void *))
 */
-#define qh_MEMalign fmax_(sizeof(realT), sizeof(void *))
+#define qh_MEMalign fmax_( sizeof( realT ), sizeof( void * ) )
 
 /*-<a                             href="qh-c.htm#user"
   >--------------------------------</a><a name="MEMbufsize">-</a>
@@ -574,7 +574,7 @@
   qh_BESTcentrum2
      if qh_BESTcentrum2 * DIM3 + BESTcentrum < #vertices tests centrums
 */
-#define qh_BESTcentrum 20
+#define qh_BESTcentrum  20
 #define qh_BESTcentrum2 2
 
 /*-<a                             href="qh-c.htm#user"
@@ -634,7 +634,7 @@
    if too big then O(n^2) behavior for partitioning in cone
    if very small then important points not processed
 */
-#define qh_DISToutside fmax_(4 * qh MINoutside, 2 * qh max_outside)
+#define qh_DISToutside fmax_( 4 * qh MINoutside, 2 * qh max_outside )
 
 /*-<a                             href="qh-c.htm#user"
   >--------------------------------</a><a name="RATIOnearinside">-</a>

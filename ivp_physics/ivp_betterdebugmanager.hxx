@@ -6,65 +6,69 @@
 #define _IVP_BETTERDEBUGMANAGER_INCLUDED
 
 // dimhotepus: Disable debug manager in Release as it is not initialized.
-#if defined(NDEBUG) && !defined(IVP_NO_DEBUGMANAGER)
+#if defined( NDEBUG ) && !defined( IVP_NO_DEBUGMANAGER )
 #define IVP_NO_DEBUGMANAGER
 #endif
 
 #ifndef IVP_NO_DEBUGMANAGER
 // dimhotepus: Use func parameter
-#define IVP_IFDEBUG(dci, func)                  \
-  if (ivp_debugmanager.is_debug_enabled(dci)) { \
-    func                                        \
-  }
+#define IVP_IFDEBUG( dci, func )                    \
+	if ( ivp_debugmanager.is_debug_enabled( dci ) ) \
+	{                                               \
+		func                                        \
+	}
 // dimhotepus: Use func parameter
-#define IVP_DEBUGCODE(func) func
+#define IVP_DEBUGCODE( func ) func
 #else
-#define IVP_IFDEBUG(a, b) \
-  if (0) {                \
-  }
-#define IVP_DEBUGCODE(func)
+#define IVP_IFDEBUG( a, b ) \
+	if ( 0 )                \
+	{                       \
+	}
+#define IVP_DEBUGCODE( func )
 #endif
 
 // NOTE: The values from 0-1023 are reserved for internal
 //       Ipion use. Feel free to define your own debug
 //       identifiers using values from 1024-2047.
-enum IVP_DEBUG_CLASS {
-  IVP_DM_DUMMY,
-  IVP_DM_SURBUILD_POINTSOUP,
-  IVP_DM_SURBUILD_HALFSPACESOUP,
-  IVP_DM_SURBUILD_LEDGESOUP,
-  IVP_DM_SURBUILD_Q12,
-  IVP_DM_CONVEX_DECOMPOSITOR,
-  IVP_DM_QHULL,
-  IVP_DM_GEOMPACK_LEVEL1,
-  IVP_DM_GEOMPACK_LEVEL2,
-  IVP_DM_GEOMPACK_LEVEL3,
-  IVP_DM_CLUSTERING_SHORTRANGE_VISUALIZER,
+enum IVP_DEBUG_CLASS
+{
+	IVP_DM_DUMMY,
+	IVP_DM_SURBUILD_POINTSOUP,
+	IVP_DM_SURBUILD_HALFSPACESOUP,
+	IVP_DM_SURBUILD_LEDGESOUP,
+	IVP_DM_SURBUILD_Q12,
+	IVP_DM_CONVEX_DECOMPOSITOR,
+	IVP_DM_QHULL,
+	IVP_DM_GEOMPACK_LEVEL1,
+	IVP_DM_GEOMPACK_LEVEL2,
+	IVP_DM_GEOMPACK_LEVEL3,
+	IVP_DM_CLUSTERING_SHORTRANGE_VISUALIZER,
 
-  IVP_DEBUG_IPION_ERROR_MSG = 1024,
+	IVP_DEBUG_IPION_ERROR_MSG = 1024,
 
-  IVP_DEBUG_MAX_N_CLASSES = 2048  // DO NOT CHANGE THIS VALUE!
+	IVP_DEBUG_MAX_N_CLASSES = 2048 // DO NOT CHANGE THIS VALUE!
 };
 
-class IVP_BetterDebugmanager {
-  int initialized;
-  int flag_list[IVP_DEBUG_MAX_N_CLASSES];
+class IVP_BetterDebugmanager
+{
+	int initialized;
+	int flag_list[IVP_DEBUG_MAX_N_CLASSES];
 
- public:
-  void enable_debug_output(IVP_DEBUG_CLASS class_id);
-  void disable_debug_output(IVP_DEBUG_CLASS class_id);
+public:
+	void enable_debug_output( IVP_DEBUG_CLASS class_id );
+	void disable_debug_output( IVP_DEBUG_CLASS class_id );
 
-  IVP_BOOL is_debug_enabled(IVP_DEBUG_CLASS class_identifier) const;
-  IVP_BOOL is_debug_enabled(IVP_BOOL toggle) const;
-  void dprint(IVP_DEBUG_CLASS class_id, const char *formatstring, ...);
+	IVP_BOOL is_debug_enabled( IVP_DEBUG_CLASS class_identifier ) const;
+	IVP_BOOL is_debug_enabled( IVP_BOOL toggle ) const;
+	void     dprint( IVP_DEBUG_CLASS class_id, const char *formatstring, ... );
 
-  // feel free to override this method with your customized
-  // output function (e.g. for redirecting all debug outputs
-  // into a file)
-  virtual void output_function(IVP_DEBUG_CLASS class_id, const char *string);
+	// feel free to override this method with your customized
+	// output function (e.g. for redirecting all debug outputs
+	// into a file)
+	virtual void output_function( IVP_DEBUG_CLASS class_id, const char *string );
 
-  IVP_BetterDebugmanager();
-  virtual ~IVP_BetterDebugmanager();
+	IVP_BetterDebugmanager();
+	virtual ~IVP_BetterDebugmanager();
 };
 
 // use global variable only in emergency

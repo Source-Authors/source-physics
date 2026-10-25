@@ -3,7 +3,7 @@
 
 using hk_incrlu_real = float;
 
-#if defined(HK_PIII_SSE)
+#if defined( HK_PIII_SSE )
 #include <xmmintrin.h>
 #endif
 

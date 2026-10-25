@@ -62,10 +62,11 @@
 */
 typedef struct hashentryT hashentryT;
 
-struct hashentryT {
-  facetT *facet;      /* facet */
-  hashentryT *next;   /* next hash table entry for this bucket */
-  unsigned skipindex; /* skipped vertex in facet, for orientation */
+struct hashentryT
+{
+	facetT     *facet;     /* facet */
+	hashentryT *next;      /* next hash table entry for this bucket */
+	unsigned    skipindex; /* skipped vertex in facet, for orientation */
 };
 
 /*=========== -macros- =========================*/
@@ -83,9 +84,9 @@ struct hashentryT {
   see:
     FORALLfacets
 */
-#define FORALLfacet_(facetlist) \
-  if (facetlist)                \
-    for (facet = (facetlist); facet && facet->next; facet = facet->next)
+#define FORALLfacet_( facetlist ) \
+	if ( facetlist )              \
+		for ( facet = ( facetlist ); facet && facet->next; facet = facet->next )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FORALLnew_facets">-</a>
@@ -97,9 +98,9 @@ struct hashentryT {
     uses 'facetT *newfacet;'
     at exit, newfacet==NULL
 */
-#define FORALLnew_facets                                        \
-  for (newfacet = qh newfacet_list; newfacet && newfacet->next; \
-       newfacet = newfacet->next)
+#define FORALLnew_facets                                           \
+	for ( newfacet = qh newfacet_list; newfacet && newfacet->next; \
+	      newfacet = newfacet->next )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FORALLvertex_">-</a>
@@ -111,8 +112,8 @@ struct hashentryT {
     uses 'vertexT *vertex;'
     at exit, vertex==NULL
 */
-#define FORALLvertex_(vertexlist) \
-  for (vertex = (vertexlist); vertex && vertex->next; vertex = vertex->next)
+#define FORALLvertex_( vertexlist ) \
+	for ( vertex = ( vertexlist ); vertex && vertex->next; vertex = vertex->next )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FORALLvisible_facets">-</a>
@@ -124,9 +125,9 @@ struct hashentryT {
     uses 'vacetT *visible;'
     at exit, visible==NULL
 */
-#define FORALLvisible_facets                                   \
-  for (visible = qh visible_list; visible && visible->visible; \
-       visible = visible->next)
+#define FORALLvisible_facets                                      \
+	for ( visible = qh visible_list; visible && visible->visible; \
+	      visible = visible->next )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FORALLsame_">-</a>
@@ -138,8 +139,8 @@ struct hashentryT {
     uses 'facetT *same;'
     stops when it returns to newfacet
 */
-#define FORALLsame_(newfacet) \
-  for (same = newfacet->f.samecycle; same != newfacet; same = same->f.samecycle)
+#define FORALLsame_( newfacet ) \
+	for ( same = newfacet->f.samecycle; same != newfacet; same = same->f.samecycle )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FORALLsame_cycle_">-</a>
@@ -151,9 +152,9 @@ struct hashentryT {
     uses 'facetT *same;'
     at exit, same == NULL
 */
-#define FORALLsame_cycle_(newfacet)        \
-  for (same = newfacet->f.samecycle; same; \
-       same = (same == newfacet ? 0 : same->f.samecycle))
+#define FORALLsame_cycle_( newfacet )         \
+	for ( same = newfacet->f.samecycle; same; \
+	      same = ( same == newfacet ? 0 : same->f.samecycle ) )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FOREACHentry_">-</a>
@@ -165,7 +166,7 @@ struct hashentryT {
     uses 'hashentryT *entry, **entryp;'
     see <a href="qset.h#FOREACHsetelement_">FOREACHsetelement_</a>
 */
-#define FOREACHentry_(entries) FOREACHsetelement_(hashentryT, entries, entry)
+#define FOREACHentry_( entries ) FOREACHsetelement_( hashentryT, entries, entry )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FOREACHneighborA_">-</a>
@@ -182,8 +183,8 @@ struct hashentryT {
   see:
     <a href="qset.h#FOREACHsetelement_">FOREACHsetelement_</a>
 */
-#define FOREACHneighborA_(facet) \
-  FOREACHsetelement_(facetT, facet->neighbors, neighborA)
+#define FOREACHneighborA_( facet ) \
+	FOREACHsetelement_( facetT, facet->neighbors, neighborA )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FOREACHvisible_">-</a>
@@ -195,7 +196,7 @@ struct hashentryT {
     uses 'facetT *facet, *facetp;'
     see <a href="qset.h#FOREACHsetelement_">FOREACHsetelement_</a>
 */
-#define FOREACHvisible_(facets) FOREACHsetelement_(facetT, facets, visible)
+#define FOREACHvisible_( facets ) FOREACHsetelement_( facetT, facets, visible )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FOREACHnewfacet_">-</a>
@@ -207,7 +208,7 @@ struct hashentryT {
     uses 'facetT *newfacet, *newfacetp;'
     see <a href="qset.h#FOREACHsetelement_">FOREACHsetelement_</a>
 */
-#define FOREACHnewfacet_(facets) FOREACHsetelement_(facetT, facets, newfacet)
+#define FOREACHnewfacet_( facets ) FOREACHsetelement_( facetT, facets, newfacet )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FOREACHvertexA_">-</a>
@@ -219,7 +220,7 @@ struct hashentryT {
     uses 'vertexT *vertexA, *vertexAp;'
     see <a href="qset.h#FOREACHsetelement_">FOREACHsetelement_</a>
 */
-#define FOREACHvertexA_(vertices) FOREACHsetelement_(vertexT, vertices, vertexA)
+#define FOREACHvertexA_( vertices ) FOREACHsetelement_( vertexT, vertices, vertexA )
 
 /*-<a                             href="qh-c.htm#poly"
   >--------------------------------</a><a name="FOREACHvertexreverse12_">-</a>
@@ -232,92 +233,92 @@ struct hashentryT {
     uses 'vertexT *vertex, *vertexp;'
     see <a href="qset.h#FOREACHsetelement_">FOREACHsetelement_</a>
 */
-#define FOREACHvertexreverse12_(vertices) \
-  FOREACHsetelementreverse12_(vertexT, vertices, vertex)
+#define FOREACHvertexreverse12_( vertices ) \
+	FOREACHsetelementreverse12_( vertexT, vertices, vertex )
 
 /*=============== prototypes poly.c in alphabetical order ================*/
 
-void qh_appendfacet(facetT *facet);
-void qh_appendvertex(vertexT *vertex);
-void qh_attachnewfacets(void);
-boolT qh_checkflipped(facetT *facet, realT *dist, boolT allerror);
-void qh_delfacet(facetT *facet);
-void qh_deletevisible(void /*qh visible_list, qh horizon_list*/);
-setT *qh_facetintersect(facetT *facetA, facetT *facetB, int *skipAp,
-                        int *skipBp, int extra);
-unsigned qh_gethash(int hashsize, setT *set, int size, int firstindex,
-                    void *skipelem);
-facetT *qh_makenewfacet(setT *vertices, boolT toporient, facetT *facet);
-void qh_makenewplanes(void /* newfacet_list */);
-facetT *qh_makenew_nonsimplicial(facetT *visible, vertexT *apex, int *numnew);
-facetT *qh_makenew_simplicial(facetT *visible, vertexT *apex, int *numnew);
-void qh_matchneighbor(facetT *newfacet, int newskip, int hashsize,
-                      int *hashcount);
-void qh_matchnewfacets(void);
-boolT qh_matchvertices(int firstindex, setT *verticesA, int skipA,
-                       setT *verticesB, int *skipB, boolT *same);
-facetT *qh_newfacet(void);
-ridgeT *qh_newridge(void);
-int qh_pointid(pointT *point);
-void qh_removefacet(facetT *facet);
-void qh_removevertex(vertexT *vertex);
-void qh_updatevertices(void);
+void     qh_appendfacet( facetT *facet );
+void     qh_appendvertex( vertexT *vertex );
+void     qh_attachnewfacets( void );
+boolT    qh_checkflipped( facetT *facet, realT *dist, boolT allerror );
+void     qh_delfacet( facetT *facet );
+void     qh_deletevisible( void /*qh visible_list, qh horizon_list*/ );
+setT    *qh_facetintersect( facetT *facetA, facetT *facetB, int *skipAp,
+                            int *skipBp, int extra );
+unsigned qh_gethash( int hashsize, setT *set, int size, int firstindex,
+                     void *skipelem );
+facetT  *qh_makenewfacet( setT *vertices, boolT toporient, facetT *facet );
+void     qh_makenewplanes( void /* newfacet_list */ );
+facetT  *qh_makenew_nonsimplicial( facetT *visible, vertexT *apex, int *numnew );
+facetT  *qh_makenew_simplicial( facetT *visible, vertexT *apex, int *numnew );
+void     qh_matchneighbor( facetT *newfacet, int newskip, int hashsize,
+                           int *hashcount );
+void     qh_matchnewfacets( void );
+boolT    qh_matchvertices( int firstindex, setT *verticesA, int skipA,
+                           setT *verticesB, int *skipB, boolT *same );
+facetT  *qh_newfacet( void );
+ridgeT  *qh_newridge( void );
+int      qh_pointid( pointT *point );
+void     qh_removefacet( facetT *facet );
+void     qh_removevertex( vertexT *vertex );
+void     qh_updatevertices( void );
 
 /*========== -prototypes poly2.c in alphabetical order ===========*/
 
-void qh_addhash(void *newelem, setT *hashtable, int hashsize, unsigned hash);
-void qh_check_bestdist(void);
-void qh_check_maxout(void);
-void qh_check_output(void);
-void qh_check_point(pointT *point, facetT *facet, realT *maxoutside,
-                    realT *maxdist, facetT **errfacet1, facetT **errfacet2);
-void qh_check_points(void);
-void qh_checkconvex(facetT *facetlist, int fault);
-void qh_checkfacet(facetT *facet, boolT newmerge, boolT *waserrorp);
-void qh_checkflipped_all(facetT *facetlist);
-void qh_checkpolygon(facetT *facetlist);
-void qh_checkvertex(vertexT *vertex);
-void qh_clearcenters(qh_CENTER type);
-void qh_createsimplex(setT *vertices);
-void qh_delridge(ridgeT *ridge);
-void qh_delvertex(vertexT *vertex);
-setT *qh_facet3vertex(facetT *facet);
-facetT *qh_findbestfacet(pointT *point, boolT bestoutside, realT *bestdist,
-                         boolT *isoutside);
-facetT *qh_findfacet_all(pointT *point, realT *bestdist, boolT *isoutside,
-                         int *numpart);
-int qh_findgood(facetT *facetlist, int goodhorizon);
-void qh_findgood_all(facetT *facetlist);
-void qh_furthestnext(void /* qh facet_list */);
-void qh_furthestout(facetT *facet);
-void qh_infiniteloop [[noreturn]] (facetT *facet);
-void qh_initbuild(void);
-void qh_initialhull(setT *vertices);
-setT *qh_initialvertices(int dim, setT *maxpoints, pointT *points,
-                         int numpoints);
-vertexT *qh_isvertex(pointT *point, setT *vertices);
-vertexT *qh_makenewfacets(pointT *point /*horizon_list, visible_list*/);
-void qh_matchduplicates(facetT *atfacet, int atskip, int hashsize,
-                        int *hashcount);
-void qh_nearcoplanar(void /* qh.facet_list */);
-vertexT *qh_nearvertex(facetT *facet, pointT *point, realT *bestdistp);
-int qh_newhashtable(int newsize);
-vertexT *qh_newvertex(pointT *point);
-ridgeT *qh_nextridge3d(ridgeT *atridge, facetT *facet, vertexT **vertexp);
-void qh_outcoplanar(void /* facet_list */);
-pointT *qh_point(int id);
-void qh_point_add(setT *set, pointT *point, void *elem);
-setT *qh_pointfacet(void /*qh facet_list*/);
-setT *qh_pointvertex(void /*qh facet_list*/);
-void qh_prependfacet(facetT *facet, facetT **facetlist);
-void qh_printhashtable(FILE *fp);
-void qh_printlists(void);
-void qh_resetlists(
-    boolT stats /*qh newvertex_list newfacet_list visible_list*/);
-void qh_setvoronoi_all(void);
-void qh_vertexintersect(setT **vertexsetA, setT *vertexsetB);
-setT *qh_vertexintersect_new(setT *vertexsetA, setT *vertexsetB);
-void qh_vertexneighbors(void /*qh facet_list*/);
-boolT qh_vertexsubset(setT *vertexsetA, setT *vertexsetB);
+void     qh_addhash( void *newelem, setT *hashtable, int hashsize, unsigned hash );
+void     qh_check_bestdist( void );
+void     qh_check_maxout( void );
+void     qh_check_output( void );
+void     qh_check_point( pointT *point, facetT *facet, realT *maxoutside,
+                         realT *maxdist, facetT **errfacet1, facetT **errfacet2 );
+void     qh_check_points( void );
+void     qh_checkconvex( facetT *facetlist, int fault );
+void     qh_checkfacet( facetT *facet, boolT newmerge, boolT *waserrorp );
+void     qh_checkflipped_all( facetT *facetlist );
+void     qh_checkpolygon( facetT *facetlist );
+void     qh_checkvertex( vertexT *vertex );
+void     qh_clearcenters( qh_CENTER type );
+void     qh_createsimplex( setT *vertices );
+void     qh_delridge( ridgeT *ridge );
+void     qh_delvertex( vertexT *vertex );
+setT    *qh_facet3vertex( facetT *facet );
+facetT  *qh_findbestfacet( pointT *point, boolT bestoutside, realT *bestdist,
+                           boolT *isoutside );
+facetT  *qh_findfacet_all( pointT *point, realT *bestdist, boolT *isoutside,
+                           int *numpart );
+int      qh_findgood( facetT *facetlist, int goodhorizon );
+void     qh_findgood_all( facetT *facetlist );
+void     qh_furthestnext( void /* qh facet_list */ );
+void     qh_furthestout( facetT *facet );
+void     qh_infiniteloop [[noreturn]] ( facetT *facet );
+void     qh_initbuild( void );
+void     qh_initialhull( setT *vertices );
+setT    *qh_initialvertices( int dim, setT *maxpoints, pointT *points,
+                             int numpoints );
+vertexT *qh_isvertex( pointT *point, setT *vertices );
+vertexT *qh_makenewfacets( pointT *point /*horizon_list, visible_list*/ );
+void     qh_matchduplicates( facetT *atfacet, int atskip, int hashsize,
+                             int *hashcount );
+void     qh_nearcoplanar( void /* qh.facet_list */ );
+vertexT *qh_nearvertex( facetT *facet, pointT *point, realT *bestdistp );
+int      qh_newhashtable( int newsize );
+vertexT *qh_newvertex( pointT *point );
+ridgeT  *qh_nextridge3d( ridgeT *atridge, facetT *facet, vertexT **vertexp );
+void     qh_outcoplanar( void /* facet_list */ );
+pointT  *qh_point( int id );
+void     qh_point_add( setT *set, pointT *point, void *elem );
+setT    *qh_pointfacet( void /*qh facet_list*/ );
+setT    *qh_pointvertex( void /*qh facet_list*/ );
+void     qh_prependfacet( facetT *facet, facetT **facetlist );
+void     qh_printhashtable( FILE *fp );
+void     qh_printlists( void );
+void     qh_resetlists(
+boolT stats /*qh newvertex_list newfacet_list visible_list*/ );
+void  qh_setvoronoi_all( void );
+void  qh_vertexintersect( setT **vertexsetA, setT *vertexsetB );
+setT *qh_vertexintersect_new( setT *vertexsetA, setT *vertexsetB );
+void  qh_vertexneighbors( void /*qh facet_list*/ );
+boolT qh_vertexsubset( setT *vertexsetA, setT *vertexsetB );
 
 #endif /* qhDEFpoly */

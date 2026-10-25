@@ -11,15 +11,15 @@
  *                      needs to update its display.
  ********************************************************************************/
 
-class IVP_Statisticsmanager_Console_Callback
-    : public IVP_BetterStatisticsmanager_Callback_Interface {
- private:
-  void output_request(IVP_BetterStatisticsmanager_Data_Entity *entity) override;
-  void enable() override;
-  void disable() override;
+class IVP_Statisticsmanager_Console_Callback : public IVP_BetterStatisticsmanager_Callback_Interface
+{
+private:
+	void output_request( IVP_BetterStatisticsmanager_Data_Entity *entity ) override;
+	void enable() override;
+	void disable() override;
 
- public:
-  IVP_Statisticsmanager_Console_Callback();
+public:
+	IVP_Statisticsmanager_Console_Callback();
 };
 
 #endif

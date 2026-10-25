@@ -22,24 +22,25 @@ class IVP_Template_Ball;
  *  Version Info:   Not fully implemented (yet).
  *******************************************************************************/
 
-class IVP_Ball : public IVP_Real_Object {
-  friend class IVP_Environment;
-  friend class IVP_Contact_Point;
+class IVP_Ball : public IVP_Real_Object
+{
+	friend class IVP_Environment;
+	friend class IVP_Contact_Point;
 
- protected:
-  // internal methods
-  IVP_Ball(IVP_Cluster *father, const IVP_Template_Ball *tball,
-           const IVP_Template_Real_Object *real, const IVP_U_Quat *rotation,
-           const IVP_U_Point *position);
-  virtual ~IVP_Ball();
+protected:
+	// internal methods
+	IVP_Ball( IVP_Cluster *father, const IVP_Template_Ball *tball,
+	          const IVP_Template_Real_Object *real, const IVP_U_Quat *rotation,
+	          const IVP_U_Point *position );
+	virtual ~IVP_Ball();
 
- public:
-  /******************************************************************************
+public:
+	/******************************************************************************
    *  Method:		get_radius
    *  Description:    Use this method to retrieve the ball's radius.
    *	Output:		Radius of ball/sphere.
    *****************************************************************************/
-  IVP_FLOAT get_radius() const { return (get_extra_radius()); }
+	IVP_FLOAT get_radius() const { return ( get_extra_radius() ); }
 };
 
 #endif

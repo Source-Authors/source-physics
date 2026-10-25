@@ -2,7 +2,7 @@
 
 #include <ivp_physics.hxx>
 
-#if !defined(SUN) && !defined(SUN4)
+#if !defined( SUN ) && !defined( SUN4 )
 #include <cstring>
 #endif
 #include <ivu_types.hxx>
@@ -12,15 +12,21 @@
 static int IVP_RAND_SEED = 1;
 
 // returns 0 .. 1.0
-IVP_FLOAT ivp_rand() {
-  IVP_RAND_SEED *= 75;
-  IVP_FLOAT res = (IVP_RAND_SEED & 0xffff) / (float)0x10000;
-  return res;
+IVP_FLOAT ivp_rand()
+{
+	IVP_RAND_SEED *= 75;
+	IVP_FLOAT res = ( IVP_RAND_SEED & 0xffff ) / (float)0x10000;
+	return res;
 }
 
-void ivp_srand(int seed) {
-  if (seed == 0) seed = 1;
-  IVP_RAND_SEED = seed;
+void ivp_srand( int seed )
+{
+	if ( seed == 0 )
+		seed = 1;
+	IVP_RAND_SEED = seed;
 }
 
-int ivp_srand_read() { return IVP_RAND_SEED; }
+int ivp_srand_read()
+{
+	return IVP_RAND_SEED;
+}

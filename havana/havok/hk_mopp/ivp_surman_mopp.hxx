@@ -29,33 +29,34 @@ class hkMoppCode;
  *accessing the compact surface!
  *******************************************************************************/
 
-class IVP_SurfaceManager_Mopp : public IVP_SurfaceManager {
- protected:
-  IVP_SurfaceManager_Mopp();  // internal methods & data
+class IVP_SurfaceManager_Mopp : public IVP_SurfaceManager
+{
+protected:
+	IVP_SurfaceManager_Mopp(); // internal methods & data
 
-  const IVP_Compact_Mopp*
-      compact_mopp;  // should be constructed using ivp_malloc_aligned
+	const IVP_Compact_Mopp *
+	compact_mopp; // should be constructed using ivp_malloc_aligned
 
- public:
-  static IVP_FLOAT short_to_long_raycast;
+public:
+	static IVP_FLOAT short_to_long_raycast;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Description:	INTERNAL METHODS
    *****************************************************************************/
-  void add_reference_to_ledge(const IVP_Compact_Ledge* ledge) override;
+	void add_reference_to_ledge( const IVP_Compact_Ledge *ledge ) override;
 
-  void remove_reference_to_ledge(const IVP_Compact_Ledge* ledge) override;
+	void remove_reference_to_ledge( const IVP_Compact_Ledge *ledge ) override;
 
-  void insert_all_ledges_hitting_ray(IVP_Ray_Solver* ray_solver,
-                                     IVP_Real_Object* object) override;
+	void insert_all_ledges_hitting_ray( IVP_Ray_Solver  *ray_solver,
+	                                    IVP_Real_Object *object ) override;
 
-  void get_radius_and_radius_dev_to_given_center(
-      const IVP_U_Float_Point* center, IVP_FLOAT* radius,
-      IVP_FLOAT* radius_deviation) const override;
+	void get_radius_and_radius_dev_to_given_center(
+	const IVP_U_Float_Point *center, IVP_FLOAT *radius,
+	IVP_FLOAT *radius_deviation ) const override;
 
-  IVP_SURMAN_TYPE get_type() override;
+	IVP_SURMAN_TYPE get_type() override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		is_single_convex
    *	Output:		Returns the ledge if compact surface consists of exactly
    *			one (convex) ledge.
@@ -63,23 +64,23 @@ class IVP_SurfaceManager_Mopp : public IVP_SurfaceManager {
    *			or more (convex) ledges (e.g. a cube made out of four
    *			subcubed) this method will return NULL!
    *****************************************************************************/
-  const IVP_Compact_Ledge* get_single_convex() const override;
+	const IVP_Compact_Ledge *get_single_convex() const override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		get_mass_center
    *	Output:		sets the compact surface's mass center
    *****************************************************************************/
-  void get_mass_center(IVP_U_Float_Point* mass_center_out) const override;
+	void get_mass_center( IVP_U_Float_Point *mass_center_out ) const override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		get_rotation_inertia
    *	Description:	Returns the compact surface's rotation inertia
    *	Input:		<rotation_inertia_out> vector to be filled with inertia
    *****************************************************************************/
-  void get_rotation_inertia(
-      IVP_U_Float_Point* rotation_inertia_out) const override;
+	void get_rotation_inertia(
+	IVP_U_Float_Point *rotation_inertia_out ) const override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		get_all_ledges_within_radius
    *	Description:	Fills a supplied vector with all of the compact
    *surface's (convex) ledges which are within a certain radius around a given
@@ -88,33 +89,34 @@ class IVP_SurfaceManager_Mopp : public IVP_SurfaceManager {
    *observation (in compact surface coordinate system!) <radius> radius to check
    *			<resulting_ledges> vector to be filled with ledges
    *****************************************************************************/
-  void get_all_ledges_within_radius(
-      const IVP_U_Point* observer_os, IVP_DOUBLE radius,
-      const IVP_Compact_Ledge* root_ledge, IVP_Real_Object* other_object,
-      const IVP_Compact_Ledge* other_reference_ledge,
-      IVP_U_BigVector<IVP_Compact_Ledge>* resulting_ledges) override;
+	void get_all_ledges_within_radius(
+	const IVP_U_Point *observer_os, IVP_DOUBLE radius,
+	const IVP_Compact_Ledge *root_ledge, IVP_Real_Object *other_object,
+	const IVP_Compact_Ledge              *other_reference_ledge,
+	IVP_U_BigVector< IVP_Compact_Ledge > *resulting_ledges ) override;
 
-  void get_all_terminal_ledges(
-      IVP_U_BigVector<IVP_Compact_Ledge>* resulting_ledges) override;
+	void get_all_terminal_ledges(
+	IVP_U_BigVector< IVP_Compact_Ledge > *resulting_ledges ) override;
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		get_compact_mopp
    *	Output:		Returns a pointer to the surface manager's compact mopp
    *****************************************************************************/
-  const IVP_Compact_Mopp* get_compact_mopp() const { return compact_mopp; }
+	const IVP_Compact_Mopp *get_compact_mopp() const { return compact_mopp; }
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		constructor
    *	Description:	Simply initializes the surface manager with the supplied
    *			compact mopp.
    *	Input:		<compact_surface_in> compact surface to initilize the
    *			                     surface manager with
    *****************************************************************************/
-  IVP_SurfaceManager_Mopp(const IVP_Compact_Mopp* compact_mopp_in) {
-    compact_mopp = compact_mopp_in;
-  }
+	IVP_SurfaceManager_Mopp( const IVP_Compact_Mopp *compact_mopp_in )
+	{
+		compact_mopp = compact_mopp_in;
+	}
 
-  virtual ~IVP_SurfaceManager_Mopp();
+	virtual ~IVP_SurfaceManager_Mopp();
 };
 
-#endif  // IVP_SURMAN_MOPP_INCLUDED
+#endif // IVP_SURMAN_MOPP_INCLUDED

@@ -6,32 +6,39 @@
 #include <ivp_physics.hxx>
 #include "ivu_min_hash.hxx"
 
-IVP_U_Min_Hash::IVP_U_Min_Hash(int sizei) {
-  size = sizei;
-  int i;
-  for (i = 0; i < 32; i++) {
-    if ((1 << i) == sizei) break;
-  }
-  IVP_ASSERT(i != 32);  // must be power 2
+IVP_U_Min_Hash::IVP_U_Min_Hash( int sizei )
+{
+	size = sizei;
+	int i;
+	for ( i = 0; i < 32; i++ )
+	{
+		if ( ( 1 << i ) == sizei )
+			break;
+	}
+	IVP_ASSERT( i != 32 ); // must be power 2
 
-  elems = (IVP_U_Min_Hash_Elem **)p_calloc(sizeof(void *), size);
-  stadel = (IVP_U_Min_Hash_Elem **)p_calloc(sizeof(void *), size * 2);
-  min_per_array_pos = stadel + size;
-  counter = 0;
+	elems = (IVP_U_Min_Hash_Elem **)p_calloc( sizeof( void * ), size );
+	stadel = (IVP_U_Min_Hash_Elem **)p_calloc( sizeof( void * ), size * 2 );
+	min_per_array_pos = stadel + size;
+	counter = 0;
 }
 
-IVP_U_Min_Hash::~IVP_U_Min_Hash() {
-  unsigned int i;
-  for (i = 0; i < size; i++) {
-    if (!elems[i]) continue;
-    IVP_U_Min_Hash_Elem *next_elem;
-    for (IVP_U_Min_Hash_Elem *elem = elems[i]; elem; elem = next_elem) {
-      next_elem = elem->next;
-      delete elem;
-    }
-  }
-  P_FREE(elems);
-  P_FREE(stadel);
+IVP_U_Min_Hash::~IVP_U_Min_Hash()
+{
+	unsigned int i;
+	for ( i = 0; i < size; i++ )
+	{
+		if ( !elems[i] )
+			continue;
+		IVP_U_Min_Hash_Elem *next_elem;
+		for ( IVP_U_Min_Hash_Elem *elem = elems[i]; elem; elem = next_elem )
+		{
+			next_elem = elem->next;
+			delete elem;
+		}
+	}
+	P_FREE( elems );
+	P_FREE( stadel );
 }
 
 /**
@@ -51,138 +58,170 @@ IVP_U_Min_Hash::~IVP_U_Min_Hash() {
  */
 
 // a new minimum element at a given hash index was set, so update stadel
-void IVP_U_Min_Hash::min_added_at_index(IVP_U_Min_Hash_Elem *elem, hk_intp i) {
-  IVP_DOUBLE val = elem->value;
-  i += size;
-  stadel[i] = elem;  // transport new min element from bottom to top till
-                     // smaller element is found
-  for (unsigned height = size >> 1; height > 0;
-       height >>= 1) {  // stadel, go from bottom to to top
-    i = i >> 1;
-    if (stadel[i] && val >= stadel[i]->value) {
-      break;
-    }
-    stadel[i] = elem;
-  }
+void IVP_U_Min_Hash::min_added_at_index( IVP_U_Min_Hash_Elem *elem, hk_intp i )
+{
+	IVP_DOUBLE val = elem->value;
+	i += size;
+	stadel[i] = elem; // transport new min element from bottom to top till
+					  // smaller element is found
+	for ( unsigned height = size >> 1; height > 0;
+	      height >>= 1 )
+	{ // stadel, go from bottom to to top
+		i = i >> 1;
+		if ( stadel[i] && val >= stadel[i]->value )
+		{
+			break;
+		}
+		stadel[i] = elem;
+	}
 }
 
 // the minimum element at an array position has been removed
 // search new minimum in linked list.
 
-void IVP_U_Min_Hash::min_removed_at_index(IVP_U_Min_Hash_Elem *elem, hk_intp i) {
-  {  // search hash index position for new minimal element
-    IVP_U_Min_Hash_Elem *new_min = elems[i];
-    IVP_U_Min_Hash_Elem *el;
-    el = new_min;
-    if (el) {
-      for (el = el->next; el; el = el->next) {
-#if defined(SORT_MINDIST_ELEMENTS)
-        if (el->value < new_min->value ||
-            (hk_Math::almost_equal(el->value, new_min->value) &&
-             el->cmp_index < new_min->cmp_index)) {
-          new_min = el;
-        }
+void IVP_U_Min_Hash::min_removed_at_index( IVP_U_Min_Hash_Elem *elem, hk_intp i )
+{
+	{ // search hash index position for new minimal element
+		IVP_U_Min_Hash_Elem *new_min = elems[i];
+		IVP_U_Min_Hash_Elem *el;
+		el = new_min;
+		if ( el )
+		{
+			for ( el = el->next; el; el = el->next )
+			{
+#if defined( SORT_MINDIST_ELEMENTS )
+				if ( el->value < new_min->value ||
+				     ( hk_Math::almost_equal( el->value, new_min->value ) &&
+				       el->cmp_index < new_min->cmp_index ) )
+				{
+					new_min = el;
+				}
 #else
-        if (el->value < new_min->value) {
-          new_min = el;
-        }
+				if ( el->value < new_min->value )
+				{
+					new_min = el;
+				}
 #endif
-      }
-    }
-    min_per_array_pos[i] = new_min;
-  }
+			}
+		}
+		min_per_array_pos[i] = new_min;
+	}
 
-  // go from bottom to top and trace path of elem
-  // as long as element is found update stadel
-  i += size;
-  for (unsigned height = size >> 1; height > 0;
-       height >>= 1) {  // stadel, go from bottom to top
-    i = i >> 1;
-    if (elem != stadel[i]) {  // finito
-      break;
-    }
-    hk_intp j = i * 2;
-    if (!stadel[j]) {
-      stadel[i] = stadel[j + 1];
-    } else if (!stadel[j + 1]) {
-      stadel[i] = stadel[j];
-    } else {
-#if defined(SORT_MINDIST_ELEMENTS)
-      if (stadel[j]->value < stadel[j + 1]->value ||
-          (hk_Math::almost_equal(stadel[j]->value, stadel[j + 1]->value) &&
-           stadel[j]->cmp_index < stadel[j + 1]->cmp_index))
+	// go from bottom to top and trace path of elem
+	// as long as element is found update stadel
+	i += size;
+	for ( unsigned height = size >> 1; height > 0;
+	      height >>= 1 )
+	{ // stadel, go from bottom to top
+		i = i >> 1;
+		if ( elem != stadel[i] )
+		{ // finito
+			break;
+		}
+		hk_intp j = i * 2;
+		if ( !stadel[j] )
+		{
+			stadel[i] = stadel[j + 1];
+		}
+		else if ( !stadel[j + 1] )
+		{
+			stadel[i] = stadel[j];
+		}
+		else
+		{
+#if defined( SORT_MINDIST_ELEMENTS )
+			if ( stadel[j]->value < stadel[j + 1]->value ||
+			     ( hk_Math::almost_equal( stadel[j]->value, stadel[j + 1]->value ) &&
+			       stadel[j]->cmp_index < stadel[j + 1]->cmp_index ) )
 #else
-      if (stadel[j]->value < stadel[j + 1]->value)
+			if ( stadel[j]->value < stadel[j + 1]->value )
 #endif
 
-      {
-        stadel[i] = stadel[j];
-      } else {
-        stadel[i] = stadel[j + 1];
-      }
-    }
-  }
+			{
+				stadel[i] = stadel[j];
+			}
+			else
+			{
+				stadel[i] = stadel[j + 1];
+			}
+		}
+	}
 }
 
-void IVP_U_Min_Hash::add(void *elem, IVP_DOUBLE val) {
-  hk_intp i = hash_index((const hk_intp *)&elem);
-  IVP_U_Min_Hash_Elem *el = new IVP_U_Min_Hash_Elem();
-#if defined(SORT_MINDIST_ELEMENTS)
-  static int sort_counter = 1;
-  el->cmp_index = sort_counter++;
+void IVP_U_Min_Hash::add( void *elem, IVP_DOUBLE val )
+{
+	hk_intp              i = hash_index( (const hk_intp *)&elem );
+	IVP_U_Min_Hash_Elem *el = new IVP_U_Min_Hash_Elem();
+#if defined( SORT_MINDIST_ELEMENTS )
+	static int sort_counter = 1;
+	el->cmp_index = sort_counter++;
 #endif
-  el->elem = elem;
-  el->next = elems[i];
-  elems[i] = el;
-  el->value = val;
-  counter++;
-  if (!min_per_array_pos[i] || val < min_per_array_pos[i]->value) {
-    this->min_added_at_index(el, i);
-  }
+	el->elem = elem;
+	el->next = elems[i];
+	elems[i] = el;
+	el->value = val;
+	counter++;
+	if ( !min_per_array_pos[i] || val < min_per_array_pos[i]->value )
+	{
+		this->min_added_at_index( el, i );
+	}
 }
 
 /** update element in min_hash */
-void IVP_U_Min_Hash::change_value(void *elem, IVP_DOUBLE val) {
-  remove(elem);
-  add(elem, val);
+void IVP_U_Min_Hash::change_value( void *elem, IVP_DOUBLE val )
+{
+	remove( elem );
+	add( elem, val );
 }
 
 /** try to remove element from min_hash */
-void IVP_U_Min_Hash::remove(void *elem) {
-  hk_intp i = hash_index((const hk_intp *)&elem);
-  IVP_U_Min_Hash_Elem *last_el;
-  last_el = 0;
-  for (auto *el = elems[i]; el; el = el->next) {
-    if (el->elem == elem) {
-      if (last_el) {
-        last_el->next = el->next;
-      } else {
-        elems[i] = el->next;
-      }
-      if (el == min_per_array_pos[i]) {
-        min_removed_at_index(el, i);
-      }
-      P_DELETE(el);
-      counter--;
-      return;
-    }
-    last_el = el;
-  }
+void IVP_U_Min_Hash::remove( void *elem )
+{
+	hk_intp              i = hash_index( (const hk_intp *)&elem );
+	IVP_U_Min_Hash_Elem *last_el;
+	last_el = 0;
+	for ( auto *el = elems[i]; el; el = el->next )
+	{
+		if ( el->elem == elem )
+		{
+			if ( last_el )
+			{
+				last_el->next = el->next;
+			}
+			else
+			{
+				elems[i] = el->next;
+			}
+			if ( el == min_per_array_pos[i] )
+			{
+				min_removed_at_index( el, i );
+			}
+			P_DELETE( el );
+			counter--;
+			return;
+		}
+		last_el = el;
+	}
 }
 
-bool IVP_U_Min_Hash::is_elem(void *elem) const {
-  hk_intp i = hash_index((const hk_intp *)&elem);
-  for (auto *el = elems[i]; el; el = el->next) {
-    if (el->elem == elem) {
-      return true;
-    }
-  }
-  return false;
+bool IVP_U_Min_Hash::is_elem( void *elem ) const
+{
+	hk_intp i = hash_index( (const hk_intp *)&elem );
+	for ( auto *el = elems[i]; el; el = el->next )
+	{
+		if ( el->elem == elem )
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
-void IVP_U_Min_Hash::remove_min() {
-  IVP_U_Min_Hash_Elem *min = (IVP_U_Min_Hash_Elem *)this->find_min_elem();
-  if (min) {
-    this->remove(min);
-  }
+void IVP_U_Min_Hash::remove_min()
+{
+	IVP_U_Min_Hash_Elem *min = (IVP_U_Min_Hash_Elem *)this->find_min_elem();
+	if ( min )
+	{
+		this->remove( min );
+	}
 }

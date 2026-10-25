@@ -31,100 +31,101 @@ class IVP_Template_Surbuild_Ledgesoup;
  *		    surface to create a physical object.
  *  Note:	    Algorithm is fast but still O(n*sqrt(n));
  *******************************************************************************/
-class IVP_SurfaceBuilder_Ledge_Soup {
-  friend class P_Listener_X11;  // internally needed by graph_lib
- private:
-  // internal methods
-  IVP_Compact_Surface *compact_surface;
-  int number_of_terminal_spheres;
-  int number_of_nodes;
-  IVP_DOUBLE smallest_radius;
-  int size_of_tree_in_bytes;  // benchmarking
-  struct IVV_Sphere_Cluster *spheres_cluster;
-  // including inner recursive compact ledges
-  IVP_U_Vector<IVP_Compact_Ledge> c_ledge_vec;
+class IVP_SurfaceBuilder_Ledge_Soup
+{
+	friend class P_Listener_X11; // internally needed by graph_lib
+private:
+	// internal methods
+	IVP_Compact_Surface       *compact_surface;
+	int                        number_of_terminal_spheres;
+	int                        number_of_nodes;
+	IVP_DOUBLE                 smallest_radius;
+	int                        size_of_tree_in_bytes; // benchmarking
+	struct IVV_Sphere_Cluster *spheres_cluster;
+	// including inner recursive compact ledges
+	IVP_U_Vector< IVP_Compact_Ledge > c_ledge_vec;
 
-  // only spheres with inner recursive ledges
-  IVP_U_Vector<IVV_Sphere> rec_spheres;
-  IVP_U_Vector<IVV_Sphere> terminal_spheres;
+	// only spheres with inner recursive ledges
+	IVP_U_Vector< IVV_Sphere > rec_spheres;
+	IVP_U_Vector< IVV_Sphere > terminal_spheres;
 
-  IVP_U_Float_Point extents_min;
-  IVP_U_Float_Point extents_max;
-  int longest_axis;
-  int number_of_unclustered_spheres;
-  IVV_Cluster_Min_Hash *interval_minhash;
-  IVP_U_Vector<IVV_Sphere> overlapping_spheres;
-  // temporary; contains newly built minimal spheres during each pass
-  IVP_U_Vector<IVV_Sphere> built_spheres;
+	IVP_U_Float_Point          extents_min;
+	IVP_U_Float_Point          extents_max;
+	int                        longest_axis;
+	int                        number_of_unclustered_spheres;
+	IVV_Cluster_Min_Hash      *interval_minhash;
+	IVP_U_Vector< IVV_Sphere > overlapping_spheres;
+	// temporary; contains newly built minimal spheres during each pass
+	IVP_U_Vector< IVV_Sphere > built_spheres;
 
-  class IVP_Template_Surbuild_LedgeSoup *parameters;
+	class IVP_Template_Surbuild_LedgeSoup *parameters;
 
-  // compact surface creation
-  IVP_Compact_Ledge *first_compact_ledge;
-  IVP_Compact_Poly_Point *first_poly_point;
-  int n_poly_points_allocated;
+	// compact surface creation
+	IVP_Compact_Ledge      *first_compact_ledge;
+	IVP_Compact_Poly_Point *first_poly_point;
+	int                     n_poly_points_allocated;
 
-  class IVP_I_FPoint_VHash *point_hash;
+	class IVP_I_FPoint_VHash *point_hash;
 
-  class IVP_Compact_Ledgetree_Node *ledgetree_work;
+	class IVP_Compact_Ledgetree_Node *ledgetree_work;
 
-  char *clt_highmem;  // debugging
-  char *clt_lowmem;   // debugging
- protected:
-  IVP_U_Vector<IVV_Sphere> all_spheres;
+	char *clt_highmem; // debugging
+	char *clt_lowmem;  // debugging
+protected:
+	IVP_U_Vector< IVV_Sphere > all_spheres;
 
- protected:
-  void ledges_to_spheres();  // soon to be outdated!
-  void ledges_to_boxes_and_spheres();
-  void generate_interval_minhash(float blowup_factor);
-  void combine_spheres_in_vector(IVV_Cluster_Min_Hash *cluster_min_hash);
-  void remove_all_connected_combinations_from_hash(
-      IVV_Cluster_Min_Hash *cluster_min_hash, int sphere_1, int sphere_2);
-  void remove_all_further_spherecombinations_from_hash(
-      IVV_Cluster_Min_Hash *cluster_min_hash, int spherenumber);
-  IVV_Sphere *build_minimal_sphere(IVV_Sphere *sphere1, IVV_Sphere *sphere2);
-  void replace_childspheres_in_spherelist_with_motherspheres();
-  void calculate_boundingbox(IVP_U_Vector<IVV_Sphere> *terminals,
-                             IVP_U_Float_Point *ext_min,
-                             IVP_U_Float_Point *ext_max);
+protected:
+	void ledges_to_spheres(); // soon to be outdated!
+	void ledges_to_boxes_and_spheres();
+	void generate_interval_minhash( float blowup_factor );
+	void combine_spheres_in_vector( IVV_Cluster_Min_Hash *cluster_min_hash );
+	void remove_all_connected_combinations_from_hash(
+	IVV_Cluster_Min_Hash *cluster_min_hash, int sphere_1, int sphere_2 );
+	void remove_all_further_spherecombinations_from_hash(
+	IVV_Cluster_Min_Hash *cluster_min_hash, int spherenumber );
+	IVV_Sphere *build_minimal_sphere( IVV_Sphere *sphere1, IVV_Sphere *sphere2 );
+	void        replace_childspheres_in_spherelist_with_motherspheres();
+	void        calculate_boundingbox( IVP_U_Vector< IVV_Sphere > *terminals,
+	                                   IVP_U_Float_Point          *ext_min,
+	                                   IVP_U_Float_Point          *ext_max );
 
-  void recalc_min_hash_with_fixed_max_radius(
-      IVV_Cluster_Min_Hash *cluster_min_hash, IVP_DOUBLE fixed_max_radius);
-  void combine_sphere_and_calc_minimal_radius(
-      int base_sphere, IVV_Cluster_Min_Hash *cluster_min_hash,
-      IVP_DOUBLE fixed_max_radius);
-  int recompile_point_indizes_of_compact_ledge(IVP_Compact_Ledge *ledge_source,
-                                               char *dest);
-  IVP_Compact_Ledgetree_Node *build_ledgetree(
-      IVV_Sphere *node, IVV_Sphere *predecessor_node,
-      IVP_Compact_Ledgetree_Node *predecessor_ltnode);
-  IVP_Compact_Ledgetree_Node *build_ledgetree(IVV_Sphere *node);
-  void ledgetree_debug_output(
-      const IVP_Compact_Ledgetree_Node *node) const;  // debugging
-  void ledgetree_array_debug_output();
+	void recalc_min_hash_with_fixed_max_radius(
+	IVV_Cluster_Min_Hash *cluster_min_hash, IVP_DOUBLE fixed_max_radius );
+	void combine_sphere_and_calc_minimal_radius(
+	int base_sphere, IVV_Cluster_Min_Hash *cluster_min_hash,
+	IVP_DOUBLE fixed_max_radius );
+	int                         recompile_point_indizes_of_compact_ledge( IVP_Compact_Ledge *ledge_source,
+	                                                                      char              *dest );
+	IVP_Compact_Ledgetree_Node *build_ledgetree(
+	IVV_Sphere *node, IVV_Sphere *predecessor_node,
+	IVP_Compact_Ledgetree_Node *predecessor_ltnode );
+	IVP_Compact_Ledgetree_Node *build_ledgetree( IVV_Sphere *node );
+	void                        ledgetree_debug_output(
+	const IVP_Compact_Ledgetree_Node *node ) const; // debugging
+	void ledgetree_array_debug_output();
 
-  void insert_compact_ledges();
-  void insert_radius_in_compact_surface();
-  void cluster_spheres_bottomup(IVP_DOUBLE threshold_increase);
-  void cluster_spheres_topdown_mediancut(IVP_DOUBLE threshold_increase);
-  IVV_Sphere *cluster_spheres_topdown_mediancut_recursively(
-      IVP_U_Vector<IVV_Sphere> *terminals);
+	void        insert_compact_ledges();
+	void        insert_radius_in_compact_surface();
+	void        cluster_spheres_bottomup( IVP_DOUBLE threshold_increase );
+	void        cluster_spheres_topdown_mediancut( IVP_DOUBLE threshold_increase );
+	IVV_Sphere *cluster_spheres_topdown_mediancut_recursively(
+	IVP_U_Vector< IVV_Sphere > *terminals );
 
-  void cleanup();
+	void cleanup();
 
-  // finally call both functions to fill ledge
-  IVP_Compact_Surface *allocate_compact_surface();
-  IVP_RETURN_TYPE create_compact_ledgetree();
+	// finally call both functions to fill ledge
+	IVP_Compact_Surface *allocate_compact_surface();
+	IVP_RETURN_TYPE      create_compact_ledgetree();
 
-  // add triangle, old style, will be deleted in the
-  // future
-  IVP_Compact_Ledge *insert_ledge(IVP_Template_Ledge_Polygon_Soup *ledge_templ);
-  void add_ledge_tree_to_convex_hull(class IVP_Compact_Recursive &,
-                                     class IVV_Sphere *node);
-  void build_root_convex_hull();
+	// add triangle, old style, will be deleted in the
+	// future
+	IVP_Compact_Ledge *insert_ledge( IVP_Template_Ledge_Polygon_Soup *ledge_templ );
+	void               add_ledge_tree_to_convex_hull( class IVP_Compact_Recursive &,
+	                                                  class IVV_Sphere *node );
+	void               build_root_convex_hull();
 
- public:
-  /******************************************************************************
+public:
+	/******************************************************************************
    *  Method:		insert_ledge
    *  Description:    Use this method to add additional ledges (i.e. convex
    *			subparts of your object) to the ledgesoup builder
@@ -132,9 +133,9 @@ class IVP_SurfaceBuilder_Ledge_Soup {
    *	Output:		Pointer to the original (supplied) IVP_Compact_Ledge
    *			(compatibility reason)
    *****************************************************************************/
-  void insert_ledge(IVP_Compact_Ledge *ledge);
+	void insert_ledge( IVP_Compact_Ledge *ledge );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		compile
    *  Description:    This method will actually build the new (possibly concave)
    *			compact surface out of the (convex) ledges
@@ -152,10 +153,10 @@ class IVP_SurfaceBuilder_Ledge_Soup {
    *THEM YOURSELF! Note:		Invoking this function a second time
    *(without adding new ledges in the meantime) will return NULL.
    *****************************************************************************/
-  IVP_Compact_Surface *compile(IVP_Template_Surbuild_LedgeSoup *templ = NULL);
+	IVP_Compact_Surface *compile( IVP_Template_Surbuild_LedgeSoup *templ = NULL );
 
-  IVP_SurfaceBuilder_Ledge_Soup();
-  ~IVP_SurfaceBuilder_Ledge_Soup();
+	IVP_SurfaceBuilder_Ledge_Soup();
+	~IVP_SurfaceBuilder_Ledge_Soup();
 };
 
 #endif

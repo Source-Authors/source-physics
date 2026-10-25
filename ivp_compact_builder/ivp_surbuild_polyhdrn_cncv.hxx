@@ -21,9 +21,10 @@ class IVP_Compact_Surface;
  *		    compact surfaces from concave object data.
  *******************************************************************************/
 
-class IVP_SurfaceBuilder_Polyhedron_Concave {
- public:
-  /******************************************************************************
+class IVP_SurfaceBuilder_Polyhedron_Concave
+{
+public:
+	/******************************************************************************
    *  Method:		convert_concave_polyhedron_to_compact_ledges
    *  Description:    This method will convert the supplied concave object into
    *			a set of (convex) compact ledges.
@@ -33,12 +34,12 @@ class IVP_SurfaceBuilder_Polyhedron_Concave {
    *			                         the resulting compact ledges
    *	Output:		Number of compact ledges.
    *****************************************************************************/
-  static int convert_concave_polyhedron_to_compact_ledges(
-      IVP_Concave_Polyhedron *concave_polyhedron_in,
-      IVP_Convex_Decompositor_Parameters *params,
-      IVP_U_BigVector<IVP_Compact_Ledge> *ledges_out);
+	static int convert_concave_polyhedron_to_compact_ledges(
+	IVP_Concave_Polyhedron               *concave_polyhedron_in,
+	IVP_Convex_Decompositor_Parameters   *params,
+	IVP_U_BigVector< IVP_Compact_Ledge > *ledges_out );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		convert_concave_face_soup_to_compact_ledges
    *  Description:    This method will convert the supplied concave object into
    *			a set of (convex) compact ledges, where each face is
@@ -47,11 +48,11 @@ class IVP_SurfaceBuilder_Polyhedron_Concave {
    *			<ledges_out>             address of vector to fill with
    *			                         the resulting compact ledges
    *****************************************************************************/
-  static void convert_concave_face_soup_to_compact_ledges(
-      IVP_Concave_Polyhedron *concave_polyhedron_in,
-      IVP_U_BigVector<IVP_Compact_Ledge> *ledges_out);
+	static void convert_concave_face_soup_to_compact_ledges(
+	IVP_Concave_Polyhedron               *concave_polyhedron_in,
+	IVP_U_BigVector< IVP_Compact_Ledge > *ledges_out );
 
-  /******************************************************************************
+	/******************************************************************************
    *  Method:		convert_concave_polyhedron_to_single_compact_surface
    *  Description:    This method will compile a (concave) compact surface from
    *			the supplied concave object data.
@@ -62,10 +63,10 @@ class IVP_SurfaceBuilder_Polyhedron_Concave {
    *convert_concave_face_soup_to_compact_ledges and
    *
    *****************************************************************************/
-  static IVP_Compact_Surface *
-  convert_concave_polyhedron_to_single_compact_surface(
-      IVP_Concave_Polyhedron *concave_polyhedron_in,
-      IVP_Convex_Decompositor_Parameters *params);
+	static IVP_Compact_Surface *
+	convert_concave_polyhedron_to_single_compact_surface(
+	IVP_Concave_Polyhedron             *concave_polyhedron_in,
+	IVP_Convex_Decompositor_Parameters *params );
 };
 
 #endif

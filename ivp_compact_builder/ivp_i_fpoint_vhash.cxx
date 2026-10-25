@@ -1,7 +1,7 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #include <ivp_physics.hxx>
-#if defined(LINUX)
+#if defined( LINUX )
 #include <string.h>
 #endif
 
@@ -15,15 +15,18 @@
 
 IVP_I_FPoint_VHash::~IVP_I_FPoint_VHash() {}
 
-int IVP_I_FPoint_VHash::point_to_index(IVP_U_Float_Point *point) {
-  // ATTENTION: assumes that doubles are taken for IVP_Poly_Point coords
-  return hash_index((const char *)&point->k[0], sizeof(IVP_FLOAT) * 3);
+int IVP_I_FPoint_VHash::point_to_index( IVP_U_Float_Point *point )
+{
+	// ATTENTION: assumes that doubles are taken for IVP_Poly_Point coords
+	return hash_index( (const char *)&point->k[0], sizeof( IVP_FLOAT ) * 3 );
 }
 
-IVP_BOOL IVP_I_FPoint_VHash::compare(const void *elem0,
-                                     const void *elem1) const {
-  if (memcmp(elem0, elem1, sizeof(IVP_FLOAT) * 3) == 0) {
-    return IVP_TRUE;
-  }
-  return IVP_FALSE;
+IVP_BOOL IVP_I_FPoint_VHash::compare( const void *elem0,
+                                      const void *elem1 ) const
+{
+	if ( memcmp( elem0, elem1, sizeof( IVP_FLOAT ) * 3 ) == 0 )
+	{
+		return IVP_TRUE;
+	}
+	return IVP_FALSE;
 }

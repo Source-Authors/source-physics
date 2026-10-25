@@ -9,10 +9,11 @@
  *	Name:	       	IVP_Event_PSI
  *	Description:	information given to the IVP_Listener_PSI callback
  ********************************************************************************/
-class IVP_Event_PSI {
- public:
-  IVP_Environment
-      *environment;  // note: call environment->get_current_time() to get time
+class IVP_Event_PSI
+{
+public:
+	IVP_Environment
+	*environment; // note: call environment->get_current_time() to get time
 };
 
 //
@@ -23,10 +24,11 @@ class IVP_Event_PSI {
  *of objects by pushing them. Note:		event collision may remove
  *itself from listener list
  ********************************************************************************/
-class IVP_Listener_PSI {
- public:
-  virtual void event_PSI(IVP_Event_PSI *) = 0;
-  virtual void environment_will_be_deleted(IVP_Environment *) = 0;
+class IVP_Listener_PSI
+{
+public:
+	virtual void event_PSI( IVP_Event_PSI * ) = 0;
+	virtual void environment_will_be_deleted( IVP_Environment * ) = 0;
 };
 
 #endif

@@ -25,14 +25,15 @@
  *IVP_Environment::create_polygon(...)
  ********************************************************************************/
 
-class IVP_Polygon : public hk_Entity {
- protected:
-  friend class IVP_Environment;
-  IVP_Polygon(IVP_Cluster *father, IVP_SurfaceManager *surface_manager,
-              const IVP_Template_Real_Object *real,
-              const IVP_U_Quat *q_world_f_obj, const IVP_U_Point *position);
+class IVP_Polygon : public hk_Entity
+{
+protected:
+	friend class IVP_Environment;
+	IVP_Polygon( IVP_Cluster *father, IVP_SurfaceManager *surface_manager,
+	             const IVP_Template_Real_Object *real,
+	             const IVP_U_Quat *q_world_f_obj, const IVP_U_Point *position );
 
- public:
+public:
 };
 
 #endif
