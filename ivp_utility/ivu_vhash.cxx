@@ -16,10 +16,10 @@
  * @param value Value.
  * @return true if value is power of two.
  */
-template< typename T >
-static constexpr inline bool IsPowerOfTwo( T value ) noexcept
+template< typename T, std::enable_if_t< std::is_integral_v< T > && !std::is_same_v< T, bool >, int > = 0 >
+[[nodiscard]] static constexpr inline bool IsPowerOfTwo( T value ) noexcept
 {
-	return ( value & ( value - static_cast< T >( 1 ) ) ) == T{};
+	return value > 0 && ( value & ( value - 1 ) ) == 0;
 }
 
 IVP_VHash::IVP_VHash( int size_i )
