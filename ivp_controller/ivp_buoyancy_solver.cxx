@@ -1645,14 +1645,19 @@ const int decision, const int index_positiv, const int index_neg )
 			area_center_part_under_os.set( &area_center_of_triangle_os );
 			area_center_part_under_os.subtract( &area_center_part_above_os );
 
-			area_center_part_under_os.mult( 1.0f / ( 1.0f - k ) );
-			if ( ( 1.0f - k ) <
-			     buoyancy_eps )
-			{   // both other vertices are exactly on the surface, so
+			IVP_DOUBLE kInv = 1.0f - k;
+
+			// dimhotepus: if kInv == 0 exit early.
+			if ( kInv < buoyancy_eps )
+			{
+				// both other vertices are exactly on the surface, so
 				// there is nothing to damp
 				return;
 			}
-			triangle_surface_under_factor = 1.0f - k;
+
+			area_center_part_under_os.mult( 1.0f / kInv );
+
+			triangle_surface_under_factor = kInv;
 
 			break;
 		}
