@@ -254,7 +254,8 @@ hk_result hk_Dense_Matrix_Util::invert_3x3_symmetric( hk_Dense_Matrix &m,
 	hk_real D =
 	reinterpret_cast< const hk_Vector3 * >( co0 )->dot( r0 ); // main determinant
 
-	if ( hk_Math::fabs( D ) < tolerance * tolerance * tolerance )
+	// dimhotepus: tolerance is often 0 so we need to reject D == 0 as it has no solution.
+	if ( hk_Math::fabs( D ) <= tolerance * tolerance * tolerance )
 	{
 		return HK_FAULT; // cannot invert, may happen
 	}
