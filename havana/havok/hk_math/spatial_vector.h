@@ -2,7 +2,7 @@
 #define HK_SPATIAL_VECTOR_H
 
 #ifndef HK_MATH_VECMATH_H
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 #endif // HK_MATH_VECMATH_H
 
 class hk_Spatial_Matrix;
@@ -56,6 +56,6 @@ public:
 	hk_Vector3 bottom; // linear accel, torque
 };
 
-#include <hk_math/spatial_vector.inl>
+#include "hk_math/spatial_vector.inl"
 
 #endif // HK_SPATIAL_VECTOR_H

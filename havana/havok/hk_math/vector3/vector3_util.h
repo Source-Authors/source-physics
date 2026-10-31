@@ -29,6 +29,6 @@ public:
 	//: returns a vector orthonormal to v
 };
 
-#include <hk_math/vector3/vector3_util.inl>
+#include "hk_math/vector3/vector3_util.inl"
 
 #endif /*HK_MATH_VECTOR3_UTIL */

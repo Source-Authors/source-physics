@@ -1,5 +1,5 @@
-#include <hk_math/vecmath.h>
-#include <hk_math/quaternion/quaternion_util.h>
+#include "hk_math/vecmath.h"
+#include "hk_math/quaternion/quaternion_util.h"
 
 void hk_Quaternion_Util::set_mul_unit_dir( const hk_Quaternion &q0, int axis,
                                            hk_Quaternion &q_out )

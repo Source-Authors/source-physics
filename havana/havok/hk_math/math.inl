@@ -1,5 +1,5 @@
 #ifdef HK_PS2
-#include <hk_math/math_ps2.inl>
+#include "hk_math/math_ps2.inl"
 #else // HK_PS2
 
 #ifdef _LINUX

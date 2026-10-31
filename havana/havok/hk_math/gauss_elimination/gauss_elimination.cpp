@@ -1,7 +1,7 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
-#include <hk_math/gauss_elimination/gauss_elimination.h>
-#include <hk_math/vector_fpu/vector_fpu.h>
+#include "hk_math/gauss_elimination/gauss_elimination.h"
+#include "hk_math/vector_fpu/vector_fpu.h"
 
 // add factor * line number j to line number i (j=first i=second)
 // the matrix-entries left of j in both lines are zero

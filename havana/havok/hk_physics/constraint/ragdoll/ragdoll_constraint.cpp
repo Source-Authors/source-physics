@@ -5,10 +5,10 @@
 #include <hk_physics/constraint/ragdoll/ragdoll_constraint_bp.h>
 #include <hk_physics/core/vm_query_builder/vm_query_builder.h>
 
-#include <hk_math/densematrix_util.h>
-#include <hk_math/dense_vector.h>
-#include <hk_math/eulerangles.h>
-#include <hk_math/quaternion/quaternion_util.h>
+#include "hk_math/densematrix_util.h"
+#include "hk_math/dense_vector.h"
+#include "hk_math/eulerangles.h"
+#include "hk_math/quaternion/quaternion_util.h"
 
 #include <hk_physics/constraint/util/constraint_limit_util.h>
 #include <hk_physics/constraint/local_constraint_system/local_constraint_system.h>

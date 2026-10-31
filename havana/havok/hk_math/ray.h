@@ -1,7 +1,7 @@
 #ifndef HK_MATH_RAY_H
 #define HK_MATH_RAY_H
 
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
 class hk_Ray
 {
@@ -22,6 +22,6 @@ public:
 	hk_Vector3 m_direction;
 };
 
-#include <hk_math/ray.inl>
+#include "hk_math/ray.inl"
 
 #endif /*HK_MATH_RAY_H*/

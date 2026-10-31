@@ -6,11 +6,11 @@
 //
 // ------------------------------------------------------TKBMS v1.0
 
-#include <hk_math/vecmath.h>
-#include <hk_math/densematrix.h>
-#include <hk_math/densematrix_util.h>
-#include <hk_math/dense_vector.h>
-#include <hk_math/matrix/matrix_inverter.h>
+#include "hk_math/vecmath.h"
+#include "hk_math/densematrix.h"
+#include "hk_math/densematrix_util.h"
+#include "hk_math/dense_vector.h"
+#include "hk_math/matrix/matrix_inverter.h"
 
 /*
  * MULT

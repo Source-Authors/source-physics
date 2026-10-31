@@ -94,6 +94,6 @@ public:
 	                                              hk_double *dummy_type );
 };
 
-#include <hk_math/vector_fpu/vector_fpu.inl>
+#include "hk_math/vector_fpu/vector_fpu.inl"
 
 #endif // HK_VECTOR_FPU_INCLUDED

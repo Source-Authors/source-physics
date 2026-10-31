@@ -1,8 +1,8 @@
 #ifndef HK_MATH_DENSEMATRIX_H
 #define HK_MATH_DENSEMATRIX_H
 
-#include <hk_math/types.h>
-#include <hk_math/vecmath.h>
+#include "hk_math/types.h"
+#include "hk_math/vecmath.h"
 
 //: Prototype matrix class for high speed computation.
 // This class is subject to change.
@@ -166,6 +166,6 @@ public:
 	~hk_Dynamic_Dense_Matrix();
 };
 
-#include <hk_math/densematrix.inl>
+#include "hk_math/densematrix.inl"
 
 #endif /* HK_MATH_DENSEMATRIX_H */

@@ -1,8 +1,8 @@
 #ifndef HK_PHYSICS_VM_QUERY_BUILDER
 #define HK_PHYSICS_VM_QUERY_BUILDER
 
-#include <hk_math/densematrix.h>
-#include <hk_math/dense_vector.h>
+#include "hk_math/densematrix.h"
+#include "hk_math/dense_vector.h"
 #include <hk_physics/core/vm_query_builder/mass_relative_vector3.h>
 #include <hk_physics/core/vm_query.h>
 

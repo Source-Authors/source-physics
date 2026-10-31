@@ -1,7 +1,7 @@
 #ifndef HK_SPATIAL_MATRIX_H
 #define HK_SPATIAL_MATRIX_H
 
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
 class hk_Spatial_Vector;
 
@@ -60,6 +60,6 @@ private:
 	friend class hk_Spatial_Vector;
 };
 
-#include <hk_math/spatial_matrix.inl>
+#include "hk_math/spatial_matrix.inl"
 
 #endif // HK_SPATIAL_MATRIX_H

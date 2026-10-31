@@ -11,10 +11,10 @@
 #include <hk_physics/constraint/fixed/fixed_constraint.h>
 #include <hk_physics/constraint/fixed/fixed_bp.h>
 #include <hk_physics/core/vm_query_builder/vm_query_builder.h>
-#include <hk_math/vector3/vector3_util.h>
+#include "hk_math/vector3/vector3_util.h"
 
-#include <hk_math/densematrix_util.h>
-#include <hk_math/dense_vector.h>
+#include "hk_math/densematrix_util.h"
+#include "hk_math/dense_vector.h"
 
 /* Local class */
 #ifdef HK_ARCH_PPC

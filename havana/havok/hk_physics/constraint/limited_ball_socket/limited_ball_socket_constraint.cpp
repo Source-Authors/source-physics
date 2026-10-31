@@ -1,14 +1,14 @@
 
 #include <hk_physics/physics.h>
 #include <hk_physics/simunit/psi_info.h>
-#include <hk_math/interval.h>
+#include "hk_math/interval.h"
 #include <hk_physics/constraint/limited_ball_socket/limited_ball_socket_constraint.h>
 #include <hk_physics/constraint/limited_ball_socket/limited_ball_socket_bp.h>
 #include <hk_physics/core/vm_query_builder/vm_query_builder.h>
 
-#include <hk_math/densematrix_util.h>
-#include <hk_math/dense_vector.h>
-#include <hk_math/eulerangles.h>
+#include "hk_math/densematrix_util.h"
+#include "hk_math/dense_vector.h"
+#include "hk_math/eulerangles.h"
 
 /* Local class */
 

@@ -5,8 +5,8 @@
 #include <hk_physics/constraint/breakable_constraint/breakable_constraint_bp.h>
 #include <hk_physics/constraint/breakable_constraint/breakable_constraint.h>
 #include <hk_physics/core/vm_query_builder/vm_query_builder.h>
-#include <hk_math/densematrix_util.h>
-#include <hk_math/dense_vector.h>
+#include "hk_math/densematrix_util.h"
+#include "hk_math/dense_vector.h"
 
 #if defined( IVP_VERSION_SDK ) || defined( IVP_VERSION_EVAL ) // IPION
 #include <ivp_environment.hxx>

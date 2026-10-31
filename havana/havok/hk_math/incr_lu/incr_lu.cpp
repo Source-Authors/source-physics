@@ -1,12 +1,12 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
-#include <hk_math/incr_lu/incr_lu.h>
-#include <hk_math/vector_fpu/vector_fpu.h>
+#include "hk_math/incr_lu/incr_lu.h"
+#include "hk_math/vector_fpu/vector_fpu.h"
 
 // only for debugging:
-#include <hk_math/densematrix.h>
-#include <hk_math/gauss_elimination/gauss_elimination.h>
-#include <hk_math/lcp/lcp_solver.h>
+#include "hk_math/densematrix.h"
+#include "hk_math/gauss_elimination/gauss_elimination.h"
+#include "hk_math/lcp/lcp_solver.h"
 
 hk_result hk_Incr_LU_Matrix::normize_row_L( int row_nr )
 {

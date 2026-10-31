@@ -1,4 +1,4 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
 hk_Plane::hk_Plane( const hk_Vector3 &, const hk_Vector3 &, const hk_Vector3 & )
 {

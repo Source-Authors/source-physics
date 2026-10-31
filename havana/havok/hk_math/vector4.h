@@ -2,7 +2,7 @@
 #define HK_VECTOR4_H
 
 #ifndef HK_MATH_VECMATH_H
-#error Include <hk_math/vecmath.h> Do not include this file directly.
+#error Include "hk_math/vecmath.h" Do not include this file directly.
 #endif // HK_MATH_VECMATH_H
 
 class hk_Vector4 : public hk_Vector3

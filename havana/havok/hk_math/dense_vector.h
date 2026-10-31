@@ -94,6 +94,6 @@ public:
 	~hk_Dynamic_Dense_Vector();
 };
 
-#include <hk_math/dense_vector.inl>
+#include "hk_math/dense_vector.inl"
 
 #endif /*HK_MATH_DENSE_VECTOR_H*/

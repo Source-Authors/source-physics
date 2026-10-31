@@ -1,6 +1,6 @@
-#include <hk_math/vecmath.h>
-#include <hk_math/densematrix.h>
-#include <hk_math/vector_fpu/vector_fpu.h>
+#include "hk_math/vecmath.h"
+#include "hk_math/densematrix.h"
+#include "hk_math/vector_fpu/vector_fpu.h"
 
 void hk_Dense_Matrix::mult_vector( const hk_real *x_vector,
                                    hk_real       *result_vector ) const

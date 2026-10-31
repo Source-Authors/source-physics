@@ -36,6 +36,6 @@ public:
 	static void print( const hk_Dense_Matrix &m );
 };
 
-#include <hk_math/densematrix_util.inl>
+#include "hk_math/densematrix_util.inl"
 
 #endif /*HK_MATH_DENSE_MATRIX_UTIL_H*/

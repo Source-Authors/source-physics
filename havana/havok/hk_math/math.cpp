@@ -1,4 +1,4 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
 // BSD rand function
 unsigned int hk_Math::hk_random_seed = 'h' + 'a' + 'v' + 'o' + 'k';

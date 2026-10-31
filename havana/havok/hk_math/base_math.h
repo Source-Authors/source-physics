@@ -2,7 +2,7 @@
 #define HK_MATH_MATH_H
 
 #include "hk_base/base.h"
-#include <hk_math/types.h>
+#include "hk_math/types.h"
 
 #include <cmath>
 
@@ -69,7 +69,7 @@ public:
 };
 
 #ifndef IVP_NO_MATH_INL
-#include <hk_math/math.inl>
+#include "hk_math/math.inl"
 #endif
 
 #endif /* HK_MATH_MATH_H */

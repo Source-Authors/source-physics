@@ -4,9 +4,9 @@
 #include <hk_physics/constraint/car_wheel/car_wheel_constraint.h>
 
 #include <hk_physics/core/vm_query_builder/vm_query_builder.h>
-#include <hk_math/vector3/vector3_util.h>
-#include <hk_math/densematrix_util.h>
-#include <hk_math/dense_vector.h>
+#include "hk_math/vector3/vector3_util.h"
+#include "hk_math/densematrix_util.h"
+#include "hk_math/dense_vector.h"
 
 #include <hk_physics/constraint/util/constraint_limit_util.h>
 

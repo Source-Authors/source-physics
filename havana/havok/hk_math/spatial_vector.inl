@@ -1,7 +1,7 @@
 
 /* constructor / assignment */
 
-#include <hk_math/spatial_matrix.h>
+#include "hk_math/spatial_matrix.h"
 
 hk_Spatial_Vector::hk_Spatial_Vector( hk_real a, hk_real b, hk_real c, hk_real d,
                                       hk_real e, hk_real f ) :

@@ -1,7 +1,7 @@
 #ifndef HK_MATH_EULERANGLES_H
 #define HK_MATH_EULERANGLES_H
 
-// <hk_math/vector3/vector3.h>
+// "hk_math/vector3/vector3.h"
 
 //: Rotation represented by three rotation angles about the xyz axes.
 class hk_Euler_Angles : public hk_Vector3

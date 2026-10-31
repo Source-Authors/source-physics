@@ -1,10 +1,10 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
-#include <hk_math/densematrix.h>
-#include <hk_math/gauss_elimination/gauss_elimination.h>
-#include <hk_math/incr_lu/incr_lu.h>
-#include <hk_math/vector_fpu/vector_fpu.h>
-#include <hk_math/lcp/lcp_solver.h>
+#include "hk_math/densematrix.h"
+#include "hk_math/gauss_elimination/gauss_elimination.h"
+#include "hk_math/incr_lu/incr_lu.h"
+#include "hk_math/vector_fpu/vector_fpu.h"
+#include "hk_math/lcp/lcp_solver.h"
 
 // #define HK_DEBUG
 #ifdef HK_DEBUG

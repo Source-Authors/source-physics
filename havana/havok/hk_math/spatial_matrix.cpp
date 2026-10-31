@@ -1,6 +1,6 @@
-#include <hk_math/vecmath.h>
-#include <hk_math/spatial_matrix.h>
-#include <hk_math/spatial_vector.h>
+#include "hk_math/vecmath.h"
+#include "hk_math/spatial_matrix.h"
+#include "hk_math/spatial_vector.h"
 
 // construct spatial isolated inertia matrix from I and m
 // [ 0 M ]

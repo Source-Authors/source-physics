@@ -1,4 +1,4 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
 void hk_Vector3::set_transformed_pos( const hk_Transform &t,
                                       const hk_Vector3   &v )

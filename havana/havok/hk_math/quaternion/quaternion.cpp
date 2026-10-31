@@ -1,4 +1,4 @@
-#include <hk_math/vecmath.h>
+#include "hk_math/vecmath.h"
 
 static const hk_real HK_QUATERNION_DELTA = 1e-3f;
 

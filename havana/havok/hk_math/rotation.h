@@ -2,7 +2,7 @@
 #define HK_ROTATION_H
 
 #ifndef HK_MATH_VECMATH_H
-#error Include <hk_math/vecmath.h> Do not include this file directly.
+#error Include "hk_math/vecmath.h" Do not include this file directly.
 #endif // HK_MATH_VECMATH_H
 
 //: An orthonormal 3x3 matrix

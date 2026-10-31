@@ -1,5 +1,5 @@
 #ifdef HK_PS2
-#include <hk_math/matrix3ps2.inl>
+#include "hk_math/matrix3ps2.inl"
 #else // HK_PS2
 
 inline void hk_Matrix3::set_elem( int r, int c, hk_real v )

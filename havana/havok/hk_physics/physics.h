@@ -2,8 +2,8 @@
 #define IVP_PHYSICS_PHYSICS_H
 
 #include "hk_base/base.h"
-#include <hk_math/vecmath.h>
-#include <hk_math/densematrix.h>
+#include "hk_math/vecmath.h"
+#include "hk_math/densematrix.h"
 
 #include <hk_physics/constraint/constraint_limit.h>
 

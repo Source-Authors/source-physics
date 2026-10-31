@@ -17,8 +17,8 @@
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
-#include <hk_math/vecmath.h>
-#include <hk_math/odesolve.h>
+#include "hk_math/vecmath.h"
+#include "hk_math/odesolve.h"
 
 static const hk_real ONE_OVER_SIX = 1.0f / 6.0f;
 static const hk_real ONE_OVER_THREE = 1.0f / 3.0f;
