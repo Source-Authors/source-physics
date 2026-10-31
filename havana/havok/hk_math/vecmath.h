@@ -22,7 +22,7 @@ class hk_Diagonal_Matrix;
 
 /* class declarations */
 
-#include <hk_base/base.h>
+#include "hk_base/base.h"
 
 #include <hk_math/types.h>
 #include <hk_math/base_math.h>

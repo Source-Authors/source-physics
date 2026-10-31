@@ -1,7 +1,7 @@
 #ifndef HK_MATH_REAL_ARRAY_UTIL_H
 #define HK_MATH_REAL_ARRAY_UTIL_H
 
-#include <hk_base/base.h>
+#include "hk_base/base.h"
 
 //: Utility class for numerical operations on arrays of reals
 // This class is optimised to use vector units and prefetches

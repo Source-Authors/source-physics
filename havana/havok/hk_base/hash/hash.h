@@ -35,6 +35,6 @@ protected:
 	hk_Hash_Element *m_elems;
 };
 
-#include <hk_base/hash/hash.inl>
+#include "hk_base/hash/hash.inl"
 
 #endif /* HK_BASE_HASH_H */

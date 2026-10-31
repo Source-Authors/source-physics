@@ -2,7 +2,7 @@
 #define HK_BASE_ARRAY_H
 
 #ifndef HK_BASE_BASE_H
-#error Include <hk_base/base.h> instead.
+#error Include "hk_base/base.h" instead.
 #endif
 
 #include <algorithm> // std::swap
@@ -78,6 +78,6 @@ protected:
 	// for preallocated array
 };
 
-#include <hk_base/array/array.inl>
+#include "hk_base/array/array.inl"
 
 #endif /* HK_BASE_ARRAY_H */

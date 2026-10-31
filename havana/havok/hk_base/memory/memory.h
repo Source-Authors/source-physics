@@ -168,7 +168,7 @@ protected:
 	hk_uchar m_size_to_row[HK_MEMORY_MAX_SIZE_SMALL_BLOCK + 1];
 };
 
-#include <hk_base/memory/memory.inl>
+#include "hk_base/memory/memory.inl"
 
 template< typename T >
 T *hk_allocate( size_t size, hk_MEMORY_CLASS memory_class )

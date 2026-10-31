@@ -1,7 +1,7 @@
 #ifndef HK_MATH_MATH_H
 #define HK_MATH_MATH_H
 
-#include <hk_base/base.h>
+#include "hk_base/base.h"
 #include <hk_math/types.h>
 
 #include <cmath>

@@ -1,4 +1,4 @@
-#include <hk_base/array/array.h>
+#include "hk_base/array/array.h"
 
 #if 0 && defined( HK_DEBUG )
 	class hk_Vector3;

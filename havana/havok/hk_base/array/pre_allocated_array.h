@@ -2,7 +2,7 @@
 #define HK_BASE_PRE_ALLOCATED_ARRAY_H
 
 #ifndef HK_BASE_BASE_H
-#error Include <hk_base/base.h> instead.
+#error Include "hk_base/base.h" instead.
 #endif
 
 // array class where the elems are allocated just behind

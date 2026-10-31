@@ -1,7 +1,7 @@
 #ifndef IVP_PHYSICS_PHYSICS_H
 #define IVP_PHYSICS_PHYSICS_H
 
-#include <hk_base/base.h>
+#include "hk_base/base.h"
 #include <hk_math/vecmath.h>
 #include <hk_math/densematrix.h>
 

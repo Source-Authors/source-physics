@@ -1,5 +1,5 @@
-#include <hk_base/base.h>
-#include <hk_base/memory/memory_util.h>
+#include "hk_base/base.h"
+#include "hk_base/memory/memory_util.h"
 
 void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 {

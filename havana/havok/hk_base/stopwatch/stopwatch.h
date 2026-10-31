@@ -1,10 +1,10 @@
 #ifndef HK_BASE_STOPWATCH_H
 #define HK_BASE_STOPWATCH_H
 
-#include <hk_base/base_types.h>
+#include "hk_base/base_types.h"
 
 #ifdef HK_HAVE_QUERY_PERFORMANCE_TIMER
-#include <hk_base/stopwatch/stopwatch_qpt.inl>
+#include "hk_base/stopwatch/stopwatch_qpt.inl"
 typedef hk_Stopwatch_qpt hk_Stopwatch;
 #else  /* do nothing version */
 
