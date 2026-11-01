@@ -5,7 +5,7 @@
 /********************************************************************************
  *	File:	       	ivp_environment.hxx
  *	Description:	???
- *	Attention:	stdio.h must be included before.
+ *	Attention:	cstdio must be included before.
  ********************************************************************************/
 
 #ifndef _IVP_ENVIRONMENT_INCLUDED

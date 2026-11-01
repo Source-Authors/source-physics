@@ -21,7 +21,7 @@ static dword ( *dgetpos )( void );
 static jmp_buf EnvState;
 
 #ifdef FILELOAD
-#include <stdio.h>
+#include <cstdio>
 
 static FILE *InFile = 0;
 
