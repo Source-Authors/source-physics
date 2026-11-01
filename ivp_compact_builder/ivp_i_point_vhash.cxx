@@ -2,7 +2,7 @@
 
 #include <ivp_physics.hxx>
 #if defined( LINUX )
-#include <string.h>
+#include <cstring>
 #endif
 
 #include "ivp_object_polygon_tetra.hxx"

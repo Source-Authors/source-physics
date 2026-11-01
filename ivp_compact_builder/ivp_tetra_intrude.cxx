@@ -2,7 +2,7 @@
 
 #include <ivp_physics.hxx>
 #if defined( LINUX )
-#include <string.h>
+#include <cstring>
 #endif
 
 #include <ivu_memory.hxx>

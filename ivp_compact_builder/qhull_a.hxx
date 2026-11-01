@@ -31,7 +31,7 @@
 #include <climits>
 #include <cctype>
 /*** uncomment here and qset.c
-     if string.h does not define memcpy()
+     if cstring does not define memcpy()
 #include <memory.h>
 */
 #include "qhull.hxx"

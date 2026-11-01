@@ -7,7 +7,7 @@
 #define MEMLOAD
 
 #include <cstdlib>
-#include <string.h>
+#include <cstring>
 #include <csetjmp>
 
 #include <ivu_types.hxx>

@@ -11,7 +11,7 @@
 
 #include <ivp_physics.hxx>
 #ifdef LINUX
-#include <string.h>
+#include <cstring>
 #endif
 #include <limits>
 #include <type_traits>

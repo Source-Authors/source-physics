@@ -1,7 +1,7 @@
 #ifndef HK_PS2
 #include <memory.h>
 #else // HK_PS2
-#include <string.h>
+#include <cstring>
 #endif // HK_PS2
 
 inline void *hk_Memory::memcpy( void *dest, const void *src, hk_size_t size )

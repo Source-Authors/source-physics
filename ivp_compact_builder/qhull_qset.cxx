@@ -13,7 +13,7 @@
 #include <cstdio>
 #include <cstring>
 /*** uncomment here and qhull_a.h
-     if string.h does not define memcpy()
+     if cstring does not define memcpy()
 #include <memory.h>
 */
 #include "qhull_qset.hxx"
