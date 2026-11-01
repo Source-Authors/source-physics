@@ -34,7 +34,7 @@
 #include <csetjmp>
 #include <cfloat>
 #if !defined( PSXII ) && !defined( GEKKO )
-#include <time.h>
+#include <ctime>
 #endif
 
 #if defined( __MWERKS__ ) && defined( __POWERPC__ ) && !defined( GEKKO )
