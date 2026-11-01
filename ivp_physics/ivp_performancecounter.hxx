@@ -11,6 +11,8 @@
 #ifndef IVP_PERFROMANCECOUNTER_INCLUDED
 #define IVP_PERFROMANCECOUNTER_INCLUDED
 
+#include <chrono>
+
 #define IVP_ENABLE_PERFORMANCE_COUNTER
 
 enum IVP_PERFORMANCE_ELEMENT
@@ -58,10 +60,7 @@ struct IVP_PerformanceCounter
 class IVP_PerformanceCounter_Simple : public IVP_PerformanceCounter
 {
 public:
-#ifdef WIN32
-	const double inv_counter_freq;
-	long long    ref_counter64;
-#endif
+	std::chrono::steady_clock::time_point ref_time;
 
 	// dimhotepus: int -> unsigned.
 	unsigned int            count_PSIs;
