@@ -3,7 +3,7 @@
 #endif
 
 #if defined( IVP_NO_DOUBLE ) && !defined( SUN )
-#include <math.h>
+#include <cmath>
 
 #if defined( WIN32 ) || defined( PSXII ) || defined( LINUX )
 union p_float_ieee
