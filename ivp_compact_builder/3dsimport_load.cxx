@@ -6,7 +6,7 @@
 #define FILELOAD
 #define MEMLOAD
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string.h>
 #include <csetjmp>
 
