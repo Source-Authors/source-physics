@@ -31,7 +31,7 @@
 
 /*=========================== -included files ==============*/
 
-#include <setjmp.h>
+#include <csetjmp>
 #include <cfloat>
 #if !defined( PSXII ) && !defined( GEKKO )
 #include <time.h>

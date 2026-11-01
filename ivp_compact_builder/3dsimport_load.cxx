@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <setjmp.h>
+#include <csetjmp>
 
 #include <ivu_types.hxx>
 

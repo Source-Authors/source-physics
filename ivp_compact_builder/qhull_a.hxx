@@ -24,7 +24,7 @@
 
 // #include <cstdio>
 #include <cstdlib>
-#include <setjmp.h>
+#include <csetjmp>
 #include <cstring>
 // #include <cmath>
 #include <cfloat> /* some compilers will not need cfloat */
