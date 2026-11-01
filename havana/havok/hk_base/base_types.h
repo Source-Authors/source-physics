@@ -2,7 +2,7 @@
 #define HK_BASE_BASE_TYPES_H
 
 #ifdef _LINUX
-#include <signal.h>
+#include <csignal>
 #endif
 
 #ifndef _LINUX

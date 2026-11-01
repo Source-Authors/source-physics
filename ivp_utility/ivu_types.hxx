@@ -6,7 +6,7 @@
 #define _IVP_U_TYPES_INCLUDED
 
 #ifdef _LINUX
-#include <signal.h>
+#include <csignal>
 #endif
 
 #include <cstddef> // std::nullptr_t
