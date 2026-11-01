@@ -25,7 +25,7 @@
 #define _X86_
 #endif /* _X86_ */
 #include <excpt.h>
-#include <stdarg.h>
+#include <cstdarg>
 #include <windef.h>
 #endif
 
