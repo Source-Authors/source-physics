@@ -27,7 +27,7 @@
 #include <setjmp.h>
 #include <cstring>
 // #include <cmath>
-#include <cfloat> /* some compilers will not need float.h */
+#include <cfloat> /* some compilers will not need cfloat */
 #include <climits>
 #include <cctype>
 /*** uncomment here and qset.c
