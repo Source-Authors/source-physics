@@ -29,7 +29,7 @@
 // #include <cmath>
 #include <cfloat> /* some compilers will not need float.h */
 #include <climits>
-#include <ctype.h>
+#include <cctype>
 /*** uncomment here and qset.c
      if string.h does not define memcpy()
 #include <memory.h>

@@ -4,7 +4,7 @@
  */
 
 #include <ivp_physics.hxx>
-#include <ctype.h>
+#include <cctype>
 #ifndef WIN32
 #pragma implementation "ivp_surbuild_3ds.hxx"
 #endif

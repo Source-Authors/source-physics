@@ -17,7 +17,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstring>
-#include <ctype.h>
+#include <cctype>
 
 #define HK_LCP_SOLVER_EPS           ( 1E-7f )
 #define HK_LCP_TEST_EPS             ( HK_LCP_SOLVER_EPS * 1000.0f )
