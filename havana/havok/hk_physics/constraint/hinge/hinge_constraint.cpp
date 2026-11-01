@@ -13,7 +13,7 @@
 // IVP_EXPORT_PUBLIC
 
 #ifdef HK_ARCH_PPC
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
 #endif
 
 /* LOCAL CLASS */

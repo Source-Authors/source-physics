@@ -8,7 +8,7 @@
 #include <hk_physics/constraint/pulley/pulley_constraint.h>
 
 #ifdef HK_ARCH_PPC
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
 #endif
 
 class hk_Pulley_Work

@@ -15,7 +15,7 @@
 // #define DISABLE_ANGULAR_FORCES
 
 #ifdef HK_ARCH_PPC
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
 #endif
 
 // IVP_EXPORT_PUBLIC

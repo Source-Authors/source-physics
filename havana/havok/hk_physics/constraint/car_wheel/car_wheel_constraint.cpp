@@ -11,7 +11,7 @@
 #include <hk_physics/constraint/util/constraint_limit_util.h>
 
 #ifdef HK_ARCH_PPC
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
 #endif
 
 /* LOCAL CLASS */

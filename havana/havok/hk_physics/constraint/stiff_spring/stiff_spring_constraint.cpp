@@ -8,7 +8,7 @@
 #include <hk_physics/core/vm_query_builder/vm_query_builder.h>
 
 #ifdef HK_ARCH_PPC
-#include <stddef.h> // for size_t
+#include <cstddef> // for size_t
 #endif
 
 class hk_Stiff_Spring_Work
