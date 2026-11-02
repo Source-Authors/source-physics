@@ -1217,7 +1217,9 @@ IVP_Contact_Point::~IVP_Contact_Point()
 	}
 
 	{
+#ifndef NDEBUG
 		IVP_Core *core0 = nullptr, *core1 = nullptr;
+#endif
 		IVP_IFDEBUG( env->get_debug_manager()->check_fs,
 		             core0 = get_synapse( 0 )->l_obj->friction_core;
 		             core1 = get_synapse( 1 )->l_obj->friction_core; )
@@ -1377,7 +1379,9 @@ IVP_Friction_System *second_sys )
 
 	IVP_IF( 1 )
 	{
+#ifndef NDEBUG
 		IVP_Environment *env = first_sys->l_environment;
+#endif
 		IVP_IFDEBUG(
 		env->get_debug_manager()->check_fs,
 		ivp_message( "fusion_fs %f %p %p  cores ",

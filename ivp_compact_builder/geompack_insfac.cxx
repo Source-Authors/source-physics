@@ -8,7 +8,9 @@
 void IVP_Geompack::insfac_( int *p, double *nrmlc, int *nce, int *cedge,
                             double *cdang )
 {
+#ifndef NDEBUG
 	double *vcl = this->g_vcl;
+#endif
 	int    *polyhedronfirstfaceoffset = this->g_polyhedronfirstfaceoffset;
 	int    *polyhedronfaceindices = this->g_polyhedronfaceindices;
 	int    *facesdata = this->g_facesdata;
