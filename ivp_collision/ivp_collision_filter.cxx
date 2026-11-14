@@ -153,7 +153,7 @@ IVP_CFEP_Hash::~IVP_CFEP_Hash()
 void IVP_Collision_Filter_Exclusive_Pair::generate_hash_entry(
 IVP_Real_Object *obj0, IVP_Real_Object *obj1, IVP_CFEP_Objectpair *entry )
 {
-	if ( obj1 > obj0 )
+	if ( (hk_intp)obj1 > (hk_intp)obj0 )
 	{ // always sort objects by their memory address!
 		entry->object0 = obj0;
 		entry->object1 = obj1;
