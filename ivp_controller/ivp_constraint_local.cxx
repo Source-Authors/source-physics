@@ -350,7 +350,7 @@ IVP_Event_Sim *es, IVP_U_Vector< IVP_Core > * /*core_list*/ )
 	IVP_U_Matrix m_identity;
 	m_identity.init();
 	// Note: Optimization: use  m_Rcs_f_Acs
-	// can mmults be avoided ??
+	// can mmults be avoided?
 
 	/********************************************************************************
    *	Description:	calculate the translation system
@@ -382,7 +382,7 @@ IVP_Event_Sim *es, IVP_U_Vector< IVP_Core > * /*core_list*/ )
 
 	IVP_U_Matrix3 m_rs_f_ws, m_rs_f_Acs;
 
-	IVP_U_Point drRA_now_rs; // orientation difference between both ?rs
+	IVP_U_Point drRA_now_rs; // orientation difference between both ors
 	if ( fixedrot_dim + limitedrot_dim == 1 )
 	{ // cardan joint
 		pm_rs_f_Rcs = &m_rs_f_Rcs_buffer;
@@ -723,7 +723,7 @@ IVP_Event_Sim *es, IVP_U_Vector< IVP_Core > * /*core_list*/ )
 				m_fs_f_Acs.vimult3( &testimpulseA_pointR_fs, &testimpulseA_pointR_Acs );
 				m_fs_f_ws.vimult3( &testimpulseR_pointR_fs, &testimpulseR_pointR_ws );
 				m_fs_f_ws.vimult3( &testimpulseA_pointR_fs, &testimpulseA_pointR_ws );
-				/* So funktioniert die Berechnung unter der Annahme, da?sowohl coreR als
+				/* So funktioniert die Berechnung unter der Annahme, dasz sowohl coreR als
            auch coreA beweglich sind: coreR->test_push_core(&pointR_Rcs,
            &testimpulseR_pointR_Rcs, &testimpulseR_pointR_ws, &dvR_ws,
            &drR_Rcs); coreR->inline_get_surface_speed_on_test(&pointR_Rcs,
