@@ -216,3 +216,4 @@ void hk_deallocate( T *buffer, size_t size, hk_MEMORY_CLASS memory_class )
 }
 
 #endif // HK_BASE_MEMORY_H
+#endif // HK_BASE_MEMORY_H
