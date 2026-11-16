@@ -107,6 +107,8 @@ enum class hk_MEMORY_CLASS : unsigned
 		hk_Memory::get_instance()->deallocate( o, size, MEMORY_CLASS );          \
 	}
 
+// Thread-safe: all public allocate / deallocate methods may be called from
+// any thread concurrently.
 class hk_Memory
 {
 public:
@@ -121,11 +123,12 @@ public:
 
 	void init_memory( char *buffer, hk_size_t buffer_size );
 	//: initialized the memory pool
+	//: Note: all previously allocated small blocks become invalid.
 
 	~hk_Memory();
 
 	void *allocate( hk_size_t byte_size, hk_MEMORY_CLASS );
-	//: allocate a piece of memory
+	//: allocate a piece of memory, returns nullptr if out of memory
 	//: Note: the size of that piece is not stored, so
 	//: the user has to do remember the size !!!
 	//: the memory class is currently used only for statistics
@@ -156,7 +159,12 @@ public: // THE interfaces to the system allocate, change this if you want to
 	static inline void *memset( void *dest, hk_uchar val, hk_size_t size );
 
 private:
+	// dimhotepus: Caller must hold m_mutex. size must be small block size.
 	void *allocate_real( hk_size_t size );
+
+	// dimhotepus: Caller must hold m_mutex.
+	void record_allocate( hk_MEMORY_CLASS cl, hk_size_t size );
+	void record_deallocate( hk_MEMORY_CLASS cl, hk_size_t size );
 
 protected:
 	friend class hk_Memory_Util;
@@ -181,13 +189,19 @@ protected:
 	};
 
 protected:
+	// dimhotepus: Guards every member below.
+	mutable std::mutex m_mutex;
+
 	hk_Memory_Elem  *m_free_list[HK_MEMORY_MAX_ROW];
-	hk_Memory_Block *m_allocated_memory_blocks;
+	// dimhotepus: Default init, destructor frees this chain.
+	hk_Memory_Block *m_allocated_memory_blocks = nullptr;
+	// dimhotepus: Initial pool owned by us (if any), freed in destructor.
+	char *m_owned_buffer = nullptr;
 
 	hk_size_t m_blocks_in_use[HK_MEMORY_MAX_ROW];
-	char     *m_memory_start;
-	char     *m_memory_end;
-	char     *m_used_end;
+	char     *m_memory_start = nullptr;
+	char     *m_memory_end = nullptr;
+	char     *m_used_end = nullptr;
 	hk_uint16 m_row_to_size[HK_MEMORY_MAX_ROW];
 	hk_Memory_Statistics
 			 m_statistics[static_cast< unsigned >( hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX )];
@@ -215,5 +229,4 @@ void hk_deallocate( T *buffer, size_t size, hk_MEMORY_CLASS memory_class )
 	// hk_Memory::get_instance()->deallocate_debug(P,sizeof(T)*(N),__FILE__,__LINE__)
 }
 
-#endif // HK_BASE_MEMORY_H
 #endif // HK_BASE_MEMORY_H

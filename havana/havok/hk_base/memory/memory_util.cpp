@@ -1,10 +1,15 @@
 #include "hk_base/base.h"
 #include "hk_base/memory/memory_util.h"
 
+#include <cstddef>
+#include <mutex>
+
 void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 {
-	const char *enum_to_string[static_cast< unsigned >(
-	hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX )] = { nullptr };
+	constexpr unsigned k_classes =
+		static_cast< unsigned >( hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX );
+
+	const char *enum_to_string[k_classes] = { nullptr };
 	{
 #define H( a ) enum_to_string[static_cast< unsigned >( a )] = #a
 		H( hk_MEMORY_CLASS::HK_MEMORY_CLASS_UNKNOWN );
@@ -49,18 +54,46 @@ void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 #undef H
 	}
 
-	hk_size_t max_mem = 0, current_mem = 0, i = 0;
+	// dimhotepus: Take a consistent snapshot under the allocator lock, then
+	// print without it. out->printf may allocate through hk_Memory, which
+	// would deadlock on a non-recursive mutex.
+	hk_Memory::hk_Memory_Statistics stats[k_classes];
+	hk_size_t                       blocks_in_use[HK_MEMORY_MAX_ROW];
+	hk_size_t                       free_blocks[HK_MEMORY_MAX_ROW];
+	hk_uint16                       row_to_size[HK_MEMORY_MAX_ROW];
+	{
+		std::lock_guard< std::mutex > lock( mem->m_mutex );
+
+		for ( unsigned j = 0; j < k_classes; j++ )
+			stats[j] = mem->m_statistics[j];
+
+		for ( int j = 0; j < HK_MEMORY_MAX_ROW; j++ )
+		{
+			hk_size_t n = 0;
+			for ( hk_Memory::hk_Memory_Elem *el = mem->m_free_list[j]; el;
+			      el = el->m_next )
+			{
+				++n;
+			}
+			free_blocks[j] = n;
+			blocks_in_use[j] = mem->m_blocks_in_use[j];
+			row_to_size[j] = mem->m_row_to_size[j];
+		}
+	}
+
+	hk_size_t max_mem = 0, current_mem = 0;
 	{
 		// summary
-		for ( auto &&s : mem->m_statistics )
+		// dimhotepus: Old loop did 'continue' for DUMMY without incrementing
+		// the counter, so it never advanced and summed only the first
+		// classes. Iterate by index.
+		for ( unsigned j = 0; j < k_classes; j++ )
 		{
-			if ( i == static_cast< unsigned >( hk_MEMORY_CLASS::HK_MEMORY_CLASS_DUMMY ) )
+			if ( j == static_cast< unsigned >( hk_MEMORY_CLASS::HK_MEMORY_CLASS_DUMMY ) )
 				continue;
 
-			max_mem += s.m_max_size_in_use;
-			current_mem += s.m_size_in_use;
-
-			++i;
+			max_mem += stats[j].m_max_size_in_use;
+			current_mem += stats[j].m_size_in_use;
 		}
 	}
 
@@ -68,19 +101,19 @@ void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 	out->printf( "**************\n" );
 
 	out->printf( "\n%32s: Bytes allocated %zu, max bytes allocated %zu\n",
-	             "SUMMARY", current_mem, max_mem );
+	             "SUMMARY", static_cast< size_t >( current_mem ),
+	             static_cast< size_t >( max_mem ) );
 
 	{
 		// details per type
 		out->printf( "\nDetails per type\n" );
 		out->printf( "****************\n" );
-		for ( unsigned j = 0;
-		      j < static_cast< unsigned >( hk_MEMORY_CLASS::HK_MEMORY_CLASS_MAX ); j++ )
+		for ( unsigned j = 0; j < k_classes; j++ )
 		{
 			if ( j == static_cast< unsigned >( hk_MEMORY_CLASS::HK_MEMORY_CLASS_DUMMY ) )
 				continue;
 
-			hk_Memory::hk_Memory_Statistics &s = mem->m_statistics[j];
+			const hk_Memory::hk_Memory_Statistics &s = stats[j];
 			if ( !s.m_max_size_in_use )
 			{
 				continue;
@@ -91,12 +124,16 @@ void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 			{
 				type_name = "hk_Memory::print_statistics does not know type";
 			}
+			// dimhotepus: avg_size had spurious '+ 1'.
 			out->printf(
 			"%32s: blocks: %4zu  size: %5zu  max_size %5zu  avg_size %5zu  "
 			"allocs %6zu\n",
-			type_name, s.m_blocks_in_use, s.m_size_in_use, s.m_max_size_in_use,
-			s.m_blocks_in_use ? s.m_size_in_use / s.m_blocks_in_use + 1 : 0,
-			s.m_n_allocates );
+			type_name, static_cast< size_t >( s.m_blocks_in_use ),
+			static_cast< size_t >( s.m_size_in_use ),
+			static_cast< size_t >( s.m_max_size_in_use ),
+			static_cast< size_t >( s.m_blocks_in_use ? s.m_size_in_use / s.m_blocks_in_use
+			                                         : 0 ),
+			static_cast< size_t >( s.m_n_allocates ) );
 		}
 	}
 
@@ -107,15 +144,11 @@ void hk_Memory_Util::print_statistics( hk_Memory *mem, hk_Console *out )
 
 		for ( int j = 0; j < HK_MEMORY_MAX_ROW; j++ )
 		{
-			hk_size_t free_blocks = 0;
-			for ( hk_Memory::hk_Memory_Elem *el = mem->m_free_list[j]; el;
-			      el = el->m_next )
-			{
-				++free_blocks;
-			}
-			out->printf( "%32s  blocks %4zu  size %5hu  free_elems %4zu  total %6zu\n",
-			             "", mem->m_blocks_in_use[j], mem->m_row_to_size[j],
-			             free_blocks, mem->m_blocks_in_use[j] * mem->m_row_to_size[j] );
+			out->printf( "%32s  blocks %4zu  size %5u  free_elems %4zu  total %6zu\n",
+			             "", static_cast< size_t >( blocks_in_use[j] ),
+			             static_cast< unsigned >( row_to_size[j] ),
+			             static_cast< size_t >( free_blocks[j] ),
+			             static_cast< size_t >( blocks_in_use[j] * row_to_size[j] ) );
 		}
 	}
 }
