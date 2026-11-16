@@ -93,6 +93,10 @@ public:
 
 	hk_Memory( char *buffer, hk_size_t buffer_size );
 
+	// dimhotepus: Owns mutex and raw memory, copying is a bug.
+	hk_Memory( const hk_Memory & ) = delete;
+	hk_Memory &operator=( const hk_Memory & ) = delete;
+
 	void init_memory( char *buffer, hk_size_t buffer_size );
 	//: initialized the memory pool
 
