@@ -1,6 +1,13 @@
 #ifndef HK_BASE_MEMORY_H
 #define HK_BASE_MEMORY_H
 
+// dimhotepus: Header was not self-contained, add used std headers.
+#include <cstddef>
+#include <cstdint>
+#include <exception>
+#include <mutex>
+#include <new>
+
 #define HK_MEMORY_MAX_ROW              12
 #define HK_MEMORY_MAX_SIZE_SMALL_BLOCK 512U
 #define HK_MEMORY_EXTRA_BLOCK_SIZE     8192U
@@ -57,11 +64,23 @@ enum class hk_MEMORY_CLASS : unsigned
 	HK_MEMORY_CLASS_MAX = 256
 };
 
+// dimhotepus: operator new must never return nullptr (UB, compiler may assume
+// non-null). Fail like std::bad_alloc, or terminate if exceptions are off.
+[[noreturn]] inline void hk_memory_out_of_memory()
+{
+#if defined( __cpp_exceptions ) || defined( __EXCEPTIONS ) || defined( _CPPUNWIND )
+	throw std::bad_alloc();
+#else
+	std::terminate();
+#endif
+}
+
 #define HK_NEW_DELETE_FUNCTION_CLASS( THIS_CLASS, MEMORY_CLASS )                  \
 	inline void *operator new( hk_size_t size )                                   \
 	{                                                                             \
 		HK_ASSERT( sizeof( THIS_CLASS ) == size );                                \
 		void *object = hk_Memory::get_instance()->allocate( size, MEMORY_CLASS ); \
+		if ( !object ) hk_memory_out_of_memory();                                 \
 		return object;                                                            \
 	}                                                                             \
                                                                                   \
@@ -71,18 +90,21 @@ enum class hk_MEMORY_CLASS : unsigned
 		                                       MEMORY_CLASS );                    \
 	}
 
-#define HK_NEW_DELETE_FUNCTION_VIRTUAL_CLASS( THIS_CLASS, MEMORY_CLASS )             \
-	inline void *operator new( hk_size_t size )                                      \
-	{                                                                                \
-		THIS_CLASS *object =                                                         \
-		(THIS_CLASS *)hk_Memory::get_instance()->allocate( size, MEMORY_CLASS );     \
-		object->m_memsize = size;                                                    \
-		return object;                                                               \
-	}                                                                                \
-	inline void operator delete( void *o )                                           \
-	{                                                                                \
-		THIS_CLASS *object = (THIS_CLASS *)o;                                        \
-		hk_Memory::get_instance()->deallocate( o, object->m_memsize, MEMORY_CLASS ); \
+// dimhotepus: Old version wrote object->m_memsize into raw (not constructed)
+// memory in operator new and read it from destroyed object in operator delete
+// (UB, and constructor could overwrite it). Use C++14 sized deallocation: with
+// a virtual destructor the compiler passes the size of the *dynamic* type.
+// m_memsize member is no longer required (but is harmless if present).
+#define HK_NEW_DELETE_FUNCTION_VIRTUAL_CLASS( THIS_CLASS, MEMORY_CLASS )         \
+	inline void *operator new( hk_size_t size )                                  \
+	{                                                                            \
+		void *object = hk_Memory::get_instance()->allocate( size, MEMORY_CLASS ); \
+		if ( !object ) hk_memory_out_of_memory();                                \
+		return object;                                                           \
+	}                                                                            \
+	inline void operator delete( void *o, hk_size_t size )                       \
+	{                                                                            \
+		hk_Memory::get_instance()->deallocate( o, size, MEMORY_CLASS );          \
 	}
 
 class hk_Memory
