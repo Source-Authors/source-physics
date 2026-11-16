@@ -177,6 +177,10 @@ protected:
 template< typename T >
 T *hk_allocate( size_t size, hk_MEMORY_CLASS memory_class )
 {
+	// dimhotepus: Guard sizeof( T ) * size overflow.
+	if ( size > static_cast< size_t >( -1 ) / sizeof( T ) )
+		return nullptr;
+
 	return static_cast< T * >(
 	hk_Memory::get_instance()->allocate( sizeof( T ) * size, memory_class ) );
 	//(T*)hk_Memory::get_instance()->allocate_debug(sizeof(T)*(N),__FILE__,__LINE__)
