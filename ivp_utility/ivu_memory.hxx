@@ -28,6 +28,11 @@ struct p_Memory_Elem
 	char                  data[4]; //-V112
 };
 
+// dimhotepus: Worst case bytes needed besides payload: header offset + alignment padding.
+// Old code used sizeof( p_Memory_Elem ) + ALIGN, which mismatched block-reset math (see .cxx).
+constexpr inline std::size_t IVU_MEM_ELEM_OVERHEAD =
+	offsetof( p_Memory_Elem, data ) + IVU_MEM_ALIGN - 1;
+
 // NOTE (thread safety): IVP_U_Memory is NOT thread safe by design (it is a per-environment bump
 // allocator, locking would cost on the hot path). Use one instance per thread or lock externally.
 class IVP_U_Memory
