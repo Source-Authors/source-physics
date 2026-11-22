@@ -44,7 +44,7 @@ class IVP_U_Memory
 	int         transaction_in_use; // for asserts
 	std::size_t size_of_external_mem; // usable bytes of external first block, or 0 if not external
 
-	void        *speicher_callok( unsigned int groesse );
+	// dimhotepus: Removed speicher_callok(): declared, never defined.
 	void         free_mem_transaction();
 	inline void *align_to_next_adress( void *p );
 
