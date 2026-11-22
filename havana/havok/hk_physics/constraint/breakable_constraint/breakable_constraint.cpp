@@ -8,7 +8,7 @@
 #include "hk_math/densematrix_util.h"
 #include "hk_math/dense_vector.h"
 
-#if defined( IVP_VERSION_SDK ) || defined( IVP_VERSION_EVAL ) // IPION
+#if defined( IVP_VERSION_SDK ) // IPION
 #include <ivp_environment.hxx>
 #endif // IPION
 
