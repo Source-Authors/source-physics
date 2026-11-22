@@ -163,6 +163,10 @@ public:
 	{
 		int index = this->index_of( elem );
 		IVP_ASSERT( index >= 0 );
+		// dimhotepus: Prevent out of bounds in Release.
+		if ( index < 0 )
+			return;
+
 		n_elems--;
 		elems[index] = elems[n_elems];
 	}
@@ -171,11 +175,14 @@ public:
 	{
 		int index = this->index_of( elem );
 		IVP_ASSERT( index >= 0 );
+		// dimhotepus: Prevent out of bounds in Release.
+		if ( index < 0 )
+			return;
+
 		n_elems--;
-		while ( index < n_elems )
+		if ( index < n_elems )
 		{
-			elems[index] = ( elems + 1 )[index];
-			index++;
+			memmove( &elems[index], &elems[index + 1], ( n_elems - index ) * sizeof( void * ) );
 		}
 	}
 
