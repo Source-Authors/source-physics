@@ -140,7 +140,9 @@ inline void *IVP_U_Memory::get_mem( size_t groesse )
 	if ( groesse )
 	{
 		char *data = (char *)ivp_malloc_aligned( groesse, IVU_MEM_ALIGN );
-		mem_vector.add( data );
+		// dimhotepus: Don't add nullptr to vector (free path would crash) on OOM.
+		if ( data )
+			mem_vector.add( data );
 		return data;
 	}
 	else
