@@ -1476,6 +1476,19 @@ int IVP_Friction_Core_Pair::number_of_pair_dists()
 	return fr_dists.len();
 }
 
+constexpr inline float kLastImpactTimePairInit{ -1000.0f };
+
+// dimhotepus: Rebase pair impact time with the rest of the clock; otherwise
+// d_time_since_last_collision goes negative after reset_time().
+void IVP_Friction_Core_Pair::reset_time( IVP_Time offset )
+{
+	// Keep the "never impacted" sentinel (kLastImpactTimePairInit) intact.
+	if ( last_impact_time_pair.get_time() > kLastImpactTimePairInit + 1 )
+	{
+		last_impact_time_pair = IVP_Time( last_impact_time_pair - offset );
+	}
+}
+
 void IVP_Friction_Core_Pair::add_fr_dist_obj_pairs( IVP_Contact_Point *dist )
 {
 #if 0 /* TL: this code is for initializing span_friction_s, but why at this \
@@ -1868,6 +1881,8 @@ void IVP_Friction_System::reset_time( IVP_Time offset )
 	for ( int i = fr_pairs_of_objs.len() - 1; i >= 0; i-- )
 	{
 		IVP_Friction_Core_Pair *fr_pair = fr_pairs_of_objs.element_at( i );
+		// dimhotepus: Rebase pair itself, not only its contact points.
+		fr_pair->reset_time( offset );
 		for ( int c = fr_pair->fr_dists.len() - 1; c >= 0; c-- )
 		{
 			IVP_Contact_Point *my_dist = fr_pair->fr_dists.element_at( c );
@@ -2142,7 +2157,7 @@ IVP_Friction_Core_Pair::~IVP_Friction_Core_Pair() = default;
 IVP_Friction_Core_Pair::IVP_Friction_Core_Pair()
 {
 	next_ease_nr_psi = 1;
-	last_impact_time_pair = -1000.0f; // negative time
+	last_impact_time_pair = kLastImpactTimePairInit; // negative time
 	integrated_anti_energy = 0.0f;
 	objs[0] = nullptr;
 	objs[1] = nullptr;

@@ -398,6 +398,9 @@ public:
 	void del_fr_dist_obj_pairs( IVP_Contact_Point *dist );
 	int  number_of_pair_dists();
 
+	// dimhotepus: Allow to reset time on timestep change.
+	void reset_time( IVP_Time offset );
+
 	void debug_store_vector_before_ease();
 	void debug_read_vector_after_ease();
 	void debug_printf_pair();
