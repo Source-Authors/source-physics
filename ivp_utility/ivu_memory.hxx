@@ -1,18 +1,26 @@
-
-
 #ifndef IVP_MEM_INCLUDED
 #define IVP_MEM_INCLUDED
 
+// dimhotepus: Need size_t, offsetof, uintptr_t;
+#include <cstddef>
+#include <cstdint>
+
+// dimhotepus: Old 64-bit values were inconsistent: ALIGN=0x50 (80, not a power of two, comment said 64)
+// while MASK aligned to 32. Stride was 80 but pointers aligned to 32 -> wasted memory, and under MEMTEST
+// ivp_malloc_aligned(.., 0x50) produced garbage alignment. Use one power of two for all platforms
+// (x86, x86-64, arm64; Win/Lin/Mac).
 #ifdef PLATFORM_64BITS
-#define IVU_MEM_ALIGN         0x50U // align to cache line data 64Byte
-#define IVU_MEM_MASK          0xffffffffffffffe0U
-#define IVU_MEMORY_BLOCK_SIZE 0x7fe0 // size of block loaded by
+constexpr inline unsigned IVU_MEM_ALIGN{ 0x40U }; // align to 64 bytes (power of two)
 #else
-#define IVU_MEM_ALIGN 0x20U // align to cache line data 32Byte
-#define IVU_MEM_MASK  0xffffffe0U
-#define IVU_MEMORY_BLOCK_SIZE \
-	( 0x8000U - IVU_MEM_ALIGN ) // size of block loaded by
+constexpr inline unsigned IVU_MEM_ALIGN{ 0x20U }; // align to 32 bytes (power of two)
 #endif
+// dimhotepus: Derive mask from alignment (and uintptr_t width) instead of hardcoded 32/64-bit literals.
+constexpr inline std::uintptr_t IVU_MEM_MASK{ ~( static_cast< std::uintptr_t >( IVU_MEM_ALIGN ) - 1U ) };
+// dimhotepus: Same value on all platforms (was 0x7fe0 on both), single definition.
+constexpr inline unsigned IVU_MEMORY_BLOCK_SIZE{ 0x8000U - IVU_MEM_ALIGN }; // size of block loaded by malloc
+
+static_assert( ( IVU_MEM_ALIGN & ( IVU_MEM_ALIGN - 1U ) ) == 0,
+               "IVU_MEM_ALIGN must be power of two." );
 
 struct p_Memory_Elem
 {
