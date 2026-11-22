@@ -62,18 +62,20 @@ void *p_malloc( size_t size )
 
 char *p_calloc( size_t nelem, size_t size )
 {
-	size_t s = nelem * size;
+	// dimhotepus: nelem * size could overflow and give too small zeroed block.
+	if ( size && nelem > SIZE_MAX / size )
+		return nullptr;
 
 #ifndef GEKKO
-	char *sp = static_cast< char * >( malloc( s ) );
+	// dimhotepus: calloc gets pre-zeroed pages from OS for big blocks, avoids malloc + memset.
+	return static_cast< char * >( calloc( nelem, size ) );
 #else
-	char *sp = new char[s];
-#endif
-
+	const size_t s = nelem * size;
+	char        *sp = new ( std::nothrow ) char[s];
 	if ( sp )
 		memset( sp, 0, s );
-
 	return sp;
+#endif
 }
 
 void *p_realloc( void *memblock, size_t size )
