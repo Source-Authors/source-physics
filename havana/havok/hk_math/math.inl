@@ -198,32 +198,34 @@ inline int hk_Math::int_log2( hk_real )
 	return 0;
 }
 
+// dimhotepus: One template instead of two copy-pasted overloads, so float and
+// double can't drift apart. Overload resolution for hk_real/hk_double callers
+// is unchanged for same-typed arguments.
+template< typename T >
+inline bool hk_Math_almost_equal_impl( T a, T b, T eps ) noexcept
+{
+	// dimhotepus: Exact match first. Handles +-inf (inf - inf is NaN) and
+	// avoids the multiply for the common identical-values case.
+	if ( a == b )
+		return true;
+
+	const T diff = std::fabs( a - b );
+	a = std::fabs( a );
+	b = std::fabs( b );
+	const T largest = ( b > a ) ? b : a;
+
+	// NaN in any input makes diff or the comparison false, as before.
+	return diff <= largest * eps;
+}
+
 inline bool hk_Math::almost_equal( hk_real a, hk_real b, hk_real eps )
 {
-	// Calculate the difference.
-	const hk_real diff{ hk_Math::fabs( a - b ) };
-
-	a = hk_Math::fabs( a );
-	b = hk_Math::fabs( b );
-
-	// Find the largest.
-	const hk_real largest{ ( b > a ) ? b : a };
-
-	return diff <= largest * eps;
+	return hk_Math_almost_equal_impl< hk_real >( a, b, eps );
 }
 
 inline bool hk_Math::almost_equal( hk_double a, hk_double b, hk_double eps )
 {
-	// Calculate the difference.
-	const hk_double diff{ hk_Math::fabsd( a - b ) };
-
-	a = hk_Math::fabsd( a );
-	b = hk_Math::fabsd( b );
-
-	// Find the largest.
-	const hk_double largest{ ( b > a ) ? b : a };
-
-	return diff <= largest * eps;
+	return hk_Math_almost_equal_impl< hk_double >( a, b, eps );
 }
 
 inline bool hk_Math::almost_zero( hk_real a, hk_real eps )
