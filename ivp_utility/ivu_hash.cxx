@@ -7,7 +7,8 @@
 #include <cstring>
 #include <ivu_string_hash.hxx>
 
-// dimhotepus: Check CRC type.
+// dimhotepus: The CRC table and hash use 32-bit math. Fail the build instead of
+// silently hashing differently on an exotic target.
 static_assert( sizeof( unsigned int ) == 4, "CRC table requires 32-bit unsigned int" );
 
 class IVP_Hash_Elem
@@ -18,7 +19,9 @@ public:
 	char           key[1]; // variable length, allocated with offsetof(key) + bytes
 };
 
-// dimhotepus: Standard CRC-32 table (polynomial 0xEDB88320), exactly 256 entries.
+// dimhotepus: The original table had ~80 extra non-CRC values after the 256th
+// entry. They were unreachable because of the & 0xff mask, but they were
+// corrupted data. Now exactly the 256 standard CRC-32 entries (poly 0xEDB88320).
 const unsigned int IVP_Hash_crctab[256] = {
 	0x00000000U, 0x77073096U, 0xee0e612cU, 0x990951baU, 0x076dc419U, 0x706af48fU, 0xe963a535U, 0x9e6495a3U,
 	0x0edb8832U, 0x79dcb8a4U, 0xe0d5e91eU, 0x97d2d988U, 0x09b64c2bU, 0x7eb17cbdU, 0xe7b82d07U, 0x90bf1d91U,
@@ -56,10 +59,13 @@ const unsigned int IVP_Hash_crctab[256] = {
 
 namespace
 {
-// dimhotepus: Shared by IVP_Hash and IVP_U_String_Hash. Byte-wise, so the result is
-// independent of endianness and architecture.
+// dimhotepus: IVP_Hash and IVP_U_String_Hash had duplicated hash loops (the
+// string one with a confusing ptrdiff_t countdown). One shared helper keeps
+// them identical. It is byte-wise, so results don't depend on endianness or
+// architecture (x86, x86-64, arm64).
 inline int ivp_hash_bucket( const char *key, std::size_t length, int bucket_count )
 {
+	// dimhotepus: index % 0 is UB.
 	IVP_ASSERT( bucket_count > 0 );
 
 	const unsigned char *data = reinterpret_cast< const unsigned char * >( key );
@@ -68,10 +74,12 @@ inline int ivp_hash_bucket( const char *key, std::size_t length, int bucket_coun
 	{
 		index = IVP_Hash_crctab[( index ^ data[i] ) & 0xffU] ^ ( index >> 8 );
 	}
+	// dimhotepus: Explicit unsigned modulo. The old code mixed int and unsigned.
 	return static_cast< int >( index % static_cast< std::uint32_t >( bucket_count ) );
 }
 
-// dimhotepus: Shared.
+// dimhotepus: sizeof(IVP_Hash_Elem) + n relied on key[1] plus padding to cover
+// the bytes. offsetof is exact and doesn't trip fortify / bounds checkers.
 inline IVP_Hash_Elem *ivp_hash_alloc_elem( std::size_t key_bytes )
 {
 	IVP_Hash_Elem *el = static_cast< IVP_Hash_Elem * >(
@@ -80,7 +88,6 @@ inline IVP_Hash_Elem *ivp_hash_alloc_elem( std::size_t key_bytes )
 	return el;
 }
 
-// dimhotepus: Shared.
 inline IVP_Hash_Elem **ivp_hash_alloc_buckets( int count )
 {
 	IVP_ASSERT( count > 0 );
@@ -88,7 +95,7 @@ inline IVP_Hash_Elem **ivp_hash_alloc_buckets( int count )
 	p_calloc( sizeof( void * ), static_cast< std::size_t >( count ) ) );
 }
 
-// dimhotepus: Shared.
+// dimhotepus: Same teardown was copy-pasted in both destructors.
 inline void ivp_hash_free_all( IVP_Hash_Elem **&elems, int size )
 {
 	for ( int i = 0; i < size; i++ )
@@ -130,6 +137,7 @@ void *IVP_Hash::find( const char *key ) const
 {
 	const int i = hash_index( key );
 	IVP_ASSERT( i >= 0 );
+	// dimhotepus: std:: qualified. <cstring> doesn't guarantee global memcmp.
 	for ( IVP_Hash_Elem *el = elems[i]; el; el = el->next )
 	{
 		if ( !std::memcmp( el->key, key, static_cast< std::size_t >( key_size ) ) )
@@ -176,6 +184,7 @@ void IVP_Hash::remove( const char *key )
 
 int IVP_U_String_Hash::hash_index( const char *key ) const
 {
+	// dimhotepus: Same bucket values as before, via the shared helper.
 	return ivp_hash_bucket( key, std::strlen( key ), size );
 }
 

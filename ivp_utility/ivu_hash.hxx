@@ -3,7 +3,8 @@
 
 class IVP_Hash_Elem;
 
-// dimhotepus: Standard CRC-32 (IEEE 802.3) lookup table, 256 entries.
+// dimhotepus: Declare the exact size so the compiler checks the definition
+// against it. The old unsized declaration hid a corrupted table.
 extern const unsigned int IVP_Hash_crctab[256];
 
 class IVP_Hash
@@ -15,13 +16,14 @@ class IVP_Hash
 	IVP_Hash_Elem **elems;
 
 public:
-	// dimhotepus: Not inline: defined in ivu_hash.cxx.
+	// dimhotepus: Was declared inline but defined only in the .cxx. Other TUs
+	// calling it got undefined symbols (or an ODR mismatch on MSVC).
 	int hash_index( const char *key ) const;
 
 	IVP_Hash( int size, int key_size, void *not_found_value = nullptr );
 	~IVP_Hash();
 
-	// Owns raw memory: copying would double free.
+	// dimhotepus: Class owns raw memory. A copy would double free in the dtor.
 	IVP_Hash( const IVP_Hash & ) = delete;
 	IVP_Hash &operator=( const IVP_Hash & ) = delete;
 
