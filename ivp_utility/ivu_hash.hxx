@@ -3,7 +3,8 @@
 
 class IVP_Hash_Elem;
 
-extern const unsigned int IVP_Hash_crctab[];
+// dimhotepus: Standard CRC-32 (IEEE 802.3) lookup table, 256 entries.
+extern const unsigned int IVP_Hash_crctab[256];
 
 class IVP_Hash
 {
@@ -14,10 +15,16 @@ class IVP_Hash
 	IVP_Hash_Elem **elems;
 
 public:
-	inline int hash_index( const char *key ) const;
+	// dimhotepus: Not inline: defined in ivu_hash.cxx.
+	int hash_index( const char *key ) const;
 
-	IVP_Hash( int size, int key_size, void *not_found_value = 0 );
+	IVP_Hash( int size, int key_size, void *not_found_value = nullptr );
 	~IVP_Hash();
+
+	// Owns raw memory: copying would double free.
+	IVP_Hash( const IVP_Hash & ) = delete;
+	IVP_Hash &operator=( const IVP_Hash & ) = delete;
+
 	void  add( const char *key, void *value );
 	void  remove( const char *key );
 	void *find( const char *key ) const;
@@ -37,7 +44,7 @@ public:
 	{
 		my_hash = hash;
 		index_pos = -1;
-		el = 0;
+		el = nullptr;
 	}
 	void *next_element();
 };
