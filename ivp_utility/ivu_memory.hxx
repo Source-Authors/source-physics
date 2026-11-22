@@ -55,12 +55,18 @@ public:
 	template< typename T >
 	T *get_mem( size_t size )
 	{
+		// dimhotepus: Guard sizeof( T ) * size overflow (would return too small block).
+		if ( size > SIZE_MAX / sizeof( T ) )
+			return nullptr;
 		return static_cast< T * >( get_mem( sizeof( T ) * size ) );
 	}
 	void *get_memc( size_t size );
 	template< typename T >
 	T *get_memc( size_t size )
 	{
+		// dimhotepus: Guard sizeof( T ) * size overflow.
+		if ( size > SIZE_MAX / sizeof( T ) )
+			return nullptr;
 		return static_cast< T * >( get_memc( sizeof( T ) * size ) );
 	}
 	void free_mem();
