@@ -27,26 +27,13 @@ void ivp_byte_swap4( uint &fourbytes )
 #ifdef _WIN32
 	fourbytes = _byteswap_ulong( fourbytes );
 	// dimhotepus: Fast builtin byte swaps.
-#elif defined( __clang__ ) || defined( __GCC__ )
+#elif defined( __clang__ ) || defined( __GNUC__ )
 	fourbytes = __builtin_bswap32( fourbytes );
 #else
-	struct FOURBYTES
-	{
-		union
-		{
-			unsigned char b[4];
-			uint          v;
-		};
-	} in, out;
-
-	in.v = fourbytes;
-
-	out.b[0] = in.b[3];
-	out.b[1] = in.b[2];
-	out.b[2] = in.b[1];
-	out.b[3] = in.b[0];
-
-	fourbytes = out.v;
+	// dimhotepus: Union type punning is UB in C++; shifts are well defined and compilers
+	// recognize them as bswap.
+	fourbytes = ( fourbytes >> 24 ) | ( ( fourbytes >> 8 ) & 0x0000ff00U ) |
+	            ( ( fourbytes << 8 ) & 0x00ff0000U ) | ( fourbytes << 24 );
 #endif
 }
 
@@ -55,24 +42,11 @@ void ivp_byte_swap2( ushort &twobytes )
 #ifdef _WIN32
 	twobytes = _byteswap_ushort( twobytes );
 	// dimhotepus: Fast builtin byte swaps.
-#elif defined( __clang__ ) || defined( __GCC__ )
+#elif defined( __clang__ ) || defined( __GNUC__ )
 	twobytes = __builtin_bswap16( twobytes );
 #else
-	struct TWOBYTES
-	{
-		union
-		{
-			unsigned char b[2];
-			ushort        v;
-		};
-	} in, out;
-
-	in.v = twobytes;
-
-	out.b[0] = in.b[1];
-	out.b[1] = in.b[0];
-
-	twobytes = out.v;
+	// dimhotepus: Well defined shifts instead of union punning.
+	twobytes = static_cast< ushort >( ( twobytes >> 8 ) | ( twobytes << 8 ) );
 #endif
 }
 
