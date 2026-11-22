@@ -291,10 +291,10 @@ void IVP_U_Memory::init_mem()
 	size_of_external_mem = 0;
 #if defined( MEMTEST )
 #else
-	speicherbeginn = 0;
-	speicherende = 0;
-	last_elem = 0;
-	first_elem = NULL;
+	speicherbeginn = nullptr;
+	speicherende = nullptr;
+	last_elem = nullptr;
+	first_elem = nullptr;
 #endif
 }
 
@@ -317,9 +317,9 @@ void IVP_U_Memory::free_mem()
 		}
 		P_FREE( f );
 	}
-	speicherbeginn = 0;
-	speicherende = 0;
-	last_elem = 0;
-	first_elem = 0;
+	speicherbeginn = nullptr;
+	speicherende = nullptr;
+	last_elem = nullptr;
+	first_elem = nullptr;
 #endif
 }

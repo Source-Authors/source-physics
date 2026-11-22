@@ -82,8 +82,8 @@ public:
 
 	// for usage with transactions
 	void init_mem_transaction_usage(
-	char  *external_mem = 0,
-	size_t size = 0 );                       // alloc first block, that block is never freed (except
+		char  *external_mem = nullptr,
+		size_t size = 0 );                   // alloc first block, that block is never freed (except
 											 // whole memory is destroyed)
 	inline void end_memory_transaction();    // free all memory blocks except first
 											 // one, reset memory pointer
@@ -143,7 +143,7 @@ inline void *IVP_U_Memory::get_mem( size_t groesse )
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 #else
 	char *op = speicherbeginn;
