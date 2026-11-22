@@ -797,6 +797,7 @@ IVP_U_Vector< IVP_Real_Object > *objs_to_merge )
 {
 	IVP_Merge_Core merge_all_objs;
 	int            obj_num = objs_to_merge->len();
+	IVP_ASSERT( obj_num <= 0 || obj_num > IVP_MAX_CORE_STACK );
 	// dimhotepus: Prevent underflow/overflow of core_stack.
 	if ( obj_num <= 0 || obj_num > IVP_MAX_CORE_STACK )
 		return;
