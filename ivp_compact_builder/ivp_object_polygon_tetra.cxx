@@ -8,12 +8,9 @@
 #include <ivu_hash.hxx>
 #include <ivu_geometry.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_object_polygon_tetra.hxx"
-#endif
+#include <ivp_object_polygon_tetra.hxx>
 
 #include "ivp_triangle_gen.hxx"
-#include <ivp_object_polygon_tetra.hxx>
 #include <ivp_templates_intern.hxx>
 #include <ivu_min_hash.hxx>
 #include <ivp_tetra_intrude.hxx>

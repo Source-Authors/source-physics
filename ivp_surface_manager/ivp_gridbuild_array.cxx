@@ -7,10 +7,6 @@
 
 #include <ivu_memory.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_gridbuild_array.hxx"
-#endif
-
 #include <ivp_compact_grid.hxx>
 #include <ivp_gridbuild_array.hxx>
 

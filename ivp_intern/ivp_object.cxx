@@ -1,12 +1,10 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_object.hxx"
-#pragma implementation "ivp_real_object.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 #include <cstring>
+
+#include <ivp_object.hxx>
+#include <ivp_real_object.hxx>
 
 #include <ivu_matrix_macros.hxx>
 #include <ivu_float.hxx>

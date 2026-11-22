@@ -12,10 +12,6 @@
 
 #include <ivp_physics.hxx>
 #include <cstring>
-#ifndef WIN32
-#pragma implementation "ivu_active_value.hxx"
-#pragma implementation "ivu_active_value_hash.hxx"
-#endif
 
 #include <ivu_active_value.hxx>
 #include <ivu_active_value_hash.hxx>

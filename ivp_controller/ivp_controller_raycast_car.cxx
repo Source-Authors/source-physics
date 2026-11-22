@@ -7,10 +7,6 @@
  *	Description:
  ********************************************************************************/
 #include <ivp_physics.hxx>
-#ifndef WIN32
-#pragma implementation "ivp_controller_raycast_car.hxx"
-#endif
-
 // includes for API
 
 #include <ivp_material.hxx>

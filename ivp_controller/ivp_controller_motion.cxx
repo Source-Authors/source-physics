@@ -2,11 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_controller_motion.hxx"
-#pragma implementation "ivp_controller_golem.hxx"
-#endif
-
 #include <ivp_controller_motion.hxx>
 #include <ivp_controller_golem.hxx>
 

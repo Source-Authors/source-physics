@@ -5,10 +5,6 @@
 #include <ivp_compact_ledge.hxx>
 #include <ivp_compact_grid.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_surman_grid.hxx"
-#endif
-
 #include <ivp_ray_solver.hxx>
 #include <ivp_surman_grid.hxx>
 #include <ivp_cache_object.hxx>

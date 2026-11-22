@@ -2,9 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_material.hxx"
-#endif
 #include <ivp_material.hxx>
 
 /////// combine both (combined) material props in a contact situation

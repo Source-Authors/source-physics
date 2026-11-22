@@ -5,10 +5,6 @@
 #include <alloca.h>
 #endif
 
-#ifndef WIN32
-#pragma implementation "ivp_multidimensional_interp.hxx"
-#endif
-
 #include "ivp_multidimensional_interp.hxx"
 
 // #define WITH_DEBUG_OUTPUT          1

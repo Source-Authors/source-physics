@@ -1,9 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_physics.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 #include <ivp_debug_manager.hxx> //because of debug psi_synchrone
 

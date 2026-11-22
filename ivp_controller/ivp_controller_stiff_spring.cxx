@@ -1,15 +1,11 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #include <ivp_physics.hxx>
-
-#ifndef WIN32
-#pragma implementation "ivp_controller_stiff_spring.hxx"
-#endif
+#include <ivp_controller_stiff_spring.hxx>
 
 #include <ivp_solver_core_reaction.hxx>
 
 #include <ivp_actuator.hxx>
-#include <ivp_controller_stiff_spring.hxx>
 
 //////////////////////////
 

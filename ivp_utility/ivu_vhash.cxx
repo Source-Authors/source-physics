@@ -4,10 +4,6 @@
 #include <ivu_hash.hxx>
 #include <ivu_vhash.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivu_set.hxx"
-#endif
-
 #include <ivu_set.hxx>
 
 /**

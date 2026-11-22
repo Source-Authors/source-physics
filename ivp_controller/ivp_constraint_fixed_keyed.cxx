@@ -6,9 +6,6 @@
 #include <ivp_cache_object.hxx>
 #include <ivp_template_constraint.hxx>
 #include <ivp_solver_core_reaction.hxx>
-#ifndef WIN32
-#pragma implementation "ivp_constraint_fixed_keyed.hxx"
-#endif
 
 #include <ivp_constraint_fixed_keyed.hxx>
 

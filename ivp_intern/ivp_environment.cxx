@@ -1,15 +1,11 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_environment.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 
+#include "ivp_environment.hxx"
+
+
 #if defined( WIN32 ) || defined( PSXII )
-// #	include <sys\types.h>
-// #	include <sys\stat.h>
-// #	include <windows.h>
 #include <ctime>
 #endif
 

@@ -1,9 +1,6 @@
 // Copyright (C) 2000 Ipion Software GmbH. All rights reserved.
 
 #include <ivp_physics.hxx>
-#ifndef WIN32
-#pragma implementation "ivp_controller_floating.hxx"
-#endif
 #include <ivp_cache_object.hxx>
 #include <ivp_solver_core_reaction.hxx>
 #include <ivp_controller_floating.hxx>

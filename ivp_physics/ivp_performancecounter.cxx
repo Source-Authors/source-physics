@@ -2,9 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_performancecounter.hxx"
-#endif
 #include <ivp_performancecounter.hxx>
 
 #include <chrono>

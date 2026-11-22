@@ -1,12 +1,9 @@
 
 #include <ivp_physics.hxx>
-#ifndef WIN32
-#pragma implementation "ivp_buoyancy_solver.hxx"
-#endif
+#include <ivp_buoyancy_solver.hxx>
 
 #include <ivp_compact_ledge.hxx>
 #include <ivp_cache_object.hxx>
-#include <ivp_buoyancy_solver.hxx>
 #include <ivu_geometry.hxx>
 #include <ivp_compact_ledge_solver.hxx>
 #include <ivp_controller_buoyancy.hxx>

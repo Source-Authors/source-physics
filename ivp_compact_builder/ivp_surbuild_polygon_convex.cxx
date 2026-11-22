@@ -4,9 +4,6 @@
 #include <ivp_object_polygon_tetra.hxx>
 #include <ivu_hash.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_surbuild_polygon_convex.hxx"
-#endif
 // #include <ivp_surman_polygon.hxx>
 #include <ivp_surbuild_polygon_convex.hxx>
 

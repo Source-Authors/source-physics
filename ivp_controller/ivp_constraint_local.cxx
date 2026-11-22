@@ -7,15 +7,12 @@
 #include <alloca.h>
 #endif
 
-#if !defined( WIN32 )
-#pragma implementation "ivp_constraint_local.hxx"
-#endif
+#include <ivp_constraint_local.hxx>
 
 #include <ivp_great_matrix.hxx>
 #include <ivp_core_macros.hxx>
 
 #include <ivp_template_constraint.hxx>
-#include "ivp_constraint_local.hxx"
 
 // if set, constraints pushes at the same point in ws
 // #define PUSH_SAMEPOINT

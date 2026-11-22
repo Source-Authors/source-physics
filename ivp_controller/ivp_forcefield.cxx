@@ -2,10 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_forcefield.hxx"
-#endif
-
 #include <ivp_forcefield.hxx>
 
 void IVP_Forcefield::element_added( IVP_U_Set_Active< IVP_Core > *,

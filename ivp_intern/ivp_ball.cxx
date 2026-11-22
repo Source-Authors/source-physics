@@ -1,10 +1,8 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_ball.hxx"
-#endif
-
 #include <ivp_physics.hxx>
+
+#include "ivp_ball.hxx"
 
 #include <ivp_templates.hxx>
 #include <ivp_listener_object.hxx>

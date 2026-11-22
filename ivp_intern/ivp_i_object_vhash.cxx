@@ -2,10 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_i_object_vhash.hxx"
-#endif
-
 #include <ivp_i_object_vhash.hxx>
 
 IVP_Object_Callback_Table_Hash::~IVP_Object_Callback_Table_Hash()

@@ -2,9 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_calc_next_psi_solver.hxx"
-#endif
 #include <ivu_float.hxx>
 #include <ivp_core_macros.hxx>
 #include <ivp_calc_next_psi_solver.hxx>

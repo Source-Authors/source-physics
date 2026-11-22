@@ -1,12 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_cache_object.hxx"
-#endif
-#ifndef WIN32
-#pragma implementation "ivp_cache_ledge_point.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 #include <ivu_matrix_macros.hxx>
 #include <ivp_compact_ledge.hxx>

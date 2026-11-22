@@ -7,15 +7,12 @@
 #include <alloca.h>
 #endif
 
-#ifndef WIN32
-#pragma implementation "ivp_sim_unit.hxx"
-#endif
+#include <ivp_sim_unit.hxx>
 
 #include <ivp_controller.hxx>
 #include <ivp_mindist_intern.hxx>
 #include <ivp_friction.hxx>
 #include <ivp_core_macros.hxx>
-#include <ivp_sim_unit.hxx>
 #include <ivu_memory.hxx>
 #include <ivp_calc_next_psi_solver.hxx>
 #include <ivp_performancecounter.hxx>

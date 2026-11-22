@@ -1,11 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_hull_manager_macros.hxx"
-#pragma implementation "ivp_listener_hull.hxx"
-#pragma implementation "ivp_hull_manager.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 
 #include <ivu_min_hash.hxx>

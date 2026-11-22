@@ -1,17 +1,14 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_object_attach.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 #include <cstring>
+
+#include <ivp_object_attach.hxx>
 
 #include <ivp_templates.hxx>
 #include <ivp_cache_object.hxx>
 #include <ivp_controller.hxx>
 #include <ivp_calc_next_psi_solver.hxx>
-#include <ivp_object_attach.hxx>
 #include <ivp_hull_manager.hxx>
 #include <ivp_hull_manager_macros.hxx>
 #include <ivp_core_macros.hxx>

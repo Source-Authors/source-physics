@@ -1,8 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivu_min_list.hxx"
-#endif
 #include <ivp_physics.hxx>
 #include "ivu_min_list.hxx"
 

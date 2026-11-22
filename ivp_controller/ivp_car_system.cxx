@@ -9,9 +9,7 @@
 // includes for API
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_car_system.hxx"
-#endif
+#include <ivp_car_system.hxx>
 
 #include <ivp_material.hxx>
 #include <ivp_actuator.hxx>
@@ -19,7 +17,6 @@
 #include <ivp_template_constraint.hxx>
 #include <ivp_constraint_car.hxx>
 #include <ivp_sim_unit.hxx>
-#include <ivp_car_system.hxx>
 
 /////////////////////////////////
 

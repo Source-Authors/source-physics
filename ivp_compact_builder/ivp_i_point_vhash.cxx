@@ -7,10 +7,6 @@
 
 #include "ivp_object_polygon_tetra.hxx"
 
-#ifndef WIN32
-#pragma implementation "ivp_i_point_vhash.hxx"
-#endif
-
 #include <ivp_i_point_vhash.hxx>
 
 IVP_point_hash::~IVP_point_hash() {}

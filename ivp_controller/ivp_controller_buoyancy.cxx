@@ -7,12 +7,9 @@
 #include <alloca.h>
 #endif
 
-#ifndef WIN32
-#pragma implementation "ivp_controller_buoyancy.hxx"
-#endif
+#include <ivp_controller_buoyancy.hxx>
 
 #include <ivp_cache_object.hxx>
-#include <ivp_controller_buoyancy.hxx>
 #include <ivp_liquid_surface_descript.hxx>
 #include <ivp_buoyancy_solver.hxx>
 

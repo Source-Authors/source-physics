@@ -1,9 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_liquid_surface_descript.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 #include <ivp_liquid_surface_descript.hxx>
 

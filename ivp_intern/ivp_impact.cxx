@@ -1,11 +1,9 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_contact_situation.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 #include <ivu_memory.hxx>
+
+#include <ivp_contact_situation.hxx>
 
 #include <ivp_compact_ledge.hxx>
 #include <ivp_cache_object.hxx>

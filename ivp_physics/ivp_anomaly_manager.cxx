@@ -2,10 +2,6 @@
 
 // IVP_EXPORT_PUBLIC
 
-#ifndef WIN32
-#pragma implementation "ivp_anomaly_manager.hxx"
-#endif
-
 #include <ivp_physics.hxx>
 
 #include <ivp_anomaly_manager.hxx>

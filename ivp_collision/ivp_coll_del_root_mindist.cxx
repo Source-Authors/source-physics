@@ -1,12 +1,11 @@
-#if !defined( WIN32 )
-#pragma implementation "ivp_collision.hxx"
-#endif
-
 #include <ivp_physics.hxx>
+
 #include <ivp_mindist.hxx>
 #include <ivp_mindist_intern.hxx>
 #include <ivp_compact_ledge.hxx>
 #include <ivp_clustering_longrange.hxx>
+
+#include <ivp_collision.hxx>
 
 void IVP_Collision_Delegator_Root_Mindist::
 object_is_removed_from_collision_detection( IVP_Real_Object *o )

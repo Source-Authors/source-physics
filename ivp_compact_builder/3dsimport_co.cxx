@@ -5,9 +5,6 @@
 
 #include <ivp_physics.hxx>
 #include <cctype>
-#ifndef WIN32
-#pragma implementation "ivp_surbuild_3ds.hxx"
-#endif
 
 #include <ivp_surbuild_3ds.hxx>
 #include <ivu_geometry.hxx>

@@ -5,10 +5,6 @@
 #include <ivp_compact_ledge.hxx>
 #include <ivp_compact_surface.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_surman_polygon.hxx"
-#endif
-
 #include <ivp_surman_polygon.hxx>
 #include <ivp_compact_ledge_solver.hxx>
 

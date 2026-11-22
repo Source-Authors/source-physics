@@ -5,10 +5,7 @@
 #include <ivp_physics.hxx>
 #include <ivp_performancecounter.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_mindist.hxx"
-#pragma implementation "ivp_mindist_intern.hxx"
-#endif
+#include "ivp_mindist.hxx"
 
 #include <ivu_memory.hxx>
 #include <ivp_hull_manager.hxx>

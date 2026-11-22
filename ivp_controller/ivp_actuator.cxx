@@ -1,8 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_actuator.hxx"
-#endif
 #include <ivp_physics.hxx>
 
 #include <ivp_cache_object.hxx>

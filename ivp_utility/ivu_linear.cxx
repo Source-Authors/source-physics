@@ -1,14 +1,5 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivu_linear.hxx"
-#pragma implementation "ivu_linear_software.hxx"
-#pragma implementation "ivu_linear_double.hxx"
-#pragma implementation "ivu_linear_ps2.hxx"
-#pragma implementation "ivu_linear_macros.hxx"
-#pragma implementation "ivu_matrix_macros.hxx"
-#endif
-
 /**** INCLUDES *****/
 #include <ivp_physics.hxx>
 #include <ivu_matrix_macros.hxx>
@@ -22,6 +13,9 @@
 #endif
 
 #include <ivu_float.hxx>
+
+#include <ivu_linear.hxx>
+#include <ivu_linear_macros.hxx>
 
 IVP_DOUBLE get_float()
 {

@@ -9,9 +9,6 @@
 #include <ivp_physics.hxx>
 #include <ivu_hash.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_compact_ledge.hxx"
-#endif
 #include <ivp_compact_ledge.hxx>
 #include <ivp_cache_object.hxx>
 #include <ivp_cache_ledge_point.hxx>

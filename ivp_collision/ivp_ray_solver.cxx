@@ -11,9 +11,7 @@
 #include <ivp_clustering_longrange.hxx>
 #include <ivp_compact_surface.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_ray_solver.hxx"
-#endif
+#include "ivp_ray_solver.hxx"
 
 #include <ivp_ray_solver.hxx>
 

@@ -6,10 +6,6 @@
 
 #include <ivp_actuator_info.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_3d_solver.hxx"
-#endif
-
 #include <ivp_cache_object.hxx>
 #include "ivp_3d_solver.hxx"
 

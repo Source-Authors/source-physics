@@ -1,16 +1,14 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
-#ifndef WIN32
-#pragma implementation "ivp_core.hxx"
-#pragma implementation "ivp_core_macros.hxx"
-#endif
-
 #include <ivp_physics.hxx>
+
+#include <ivp_core.hxx>
+#include <ivp_core_macros.hxx>
+
 #include <ivu_matrix_macros.hxx>
 #include <ivu_float.hxx>
 #include <ivu_memory.hxx>
 
-#include <ivp_core_macros.hxx>
 #include <ivp_sim_unit.hxx>
 #include <ivp_hull_manager.hxx>
 

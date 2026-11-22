@@ -6,11 +6,8 @@
 
 #include <ivu_min_list.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_time.hxx"
-#pragma implementation "ivp_time_event.hxx"
-#endif
 #include <ivp_time.hxx>
+#include <ivp_time_event.hxx>
 
 #if defined( WIN32 ) && !defined( _XBOX )
 #include "wtypes.h"

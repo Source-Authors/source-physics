@@ -7,10 +7,7 @@
 
 #include <ivu_linear.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_i_fpoint_vhash.hxx"
-#endif
-
+#include "ivp_i_fpoint_vhash.hxx"
 #include <ivp_i_fpoint_vhash.hxx>
 
 IVP_I_FPoint_VHash::~IVP_I_FPoint_VHash() {}

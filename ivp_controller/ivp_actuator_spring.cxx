@@ -1,7 +1,7 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #ifndef WIN32
-#pragma implementation "ivp_actuator_spring.hxx"
+#include "ivp_actuator_spring.hxx"
 #endif
 
 #include <ivp_physics.hxx>

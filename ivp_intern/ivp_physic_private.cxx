@@ -2,16 +2,11 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_physic_private.hxx"
-#pragma implementation "ivp_listener_object.hxx"
-#pragma implementation "ivp_listener_collision.hxx"
-#pragma implementation "ivp_controller.hxx"
-#endif
-
+#include <ivp_physic_private.hxx>
 #include <ivp_listener_object.hxx>
 #include <ivp_listener_collision.hxx>
-#include <ivp_physic_private.hxx>
+#include <ivp_controller.hxx>
+
 #include <ivp_i_object_vhash.hxx>
 #include <ivp_i_collision_vhash.hxx>
 #include <ivp_mindist_intern.hxx> //because of Mindist

@@ -2,9 +2,6 @@
 
 #include <ivp_physics.hxx>
 
-#ifndef WIN32
-#pragma implementation "ivp_phantom.hxx"
-#endif
 #include <ivp_phantom.hxx>
 
 #include <ivp_mindist_intern.hxx>
