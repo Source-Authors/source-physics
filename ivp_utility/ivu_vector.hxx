@@ -23,7 +23,131 @@ struct IVP_U_Vector_Base
 template< class T >
 class IVP_U_Vector : public IVP_U_Vector_Base
 {
+private:
+	// Ensures capacity for at least 'count' elements. Does NOT preserve the
+	// current contents, so only use it when they are about to be overwritten.
+	void reserve_discarding( int count )
+	{
+		IVP_ASSERT( count >= 0 && count <= 0xFFFF );
+		if ( count <= memsize )
+			return;
+
+		void **fresh = (void **)p_malloc( count * sizeof( void * ) );
+
+		// Never free the inline buffer of a pre-allocated vector.
+		if ( elems != (void **)( this + 1 ) )
+		{
+			void *old = (void *)elems;
+			P_FREE( old );
+		}
+		elems = fresh;
+		memsize = (unsigned short)count;
+	}
+
+	bool uses_inline_buffer() const { return elems == (void **)( this + 1 ); }
+
+	// Frees the heap buffer (never the inline one) and returns to the empty state.
+	void release_heap_buffer()
+	{
+		if ( elems && !uses_inline_buffer() )
+		{
+			void *old = (void *)elems;
+			P_FREE( old );
+			elems = nullptr;
+			memsize = 0;
+		}
+		n_elems = 0;
+	}
+
 public:
+	// dimhotepus: Add copy.
+	// Copy is always heap-backed and sized exactly to the source.
+	IVP_U_Vector( const IVP_U_Vector &other ) :
+		IVP_U_Vector_Base()
+	{
+		reserve_discarding( other.n_elems );
+		if ( other.n_elems )
+		{
+			memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
+		}
+		n_elems = other.n_elems;
+	}
+
+	// dimhotepus: Add copy.
+	IVP_U_Vector &operator=( const IVP_U_Vector &other )
+	{
+		if ( this == &other )
+			return *this;
+
+		reserve_discarding( other.n_elems );
+		if ( other.n_elems )
+		{
+			memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
+		}
+		n_elems = other.n_elems;
+		return *this;
+	}
+
+	// dimhotepus: Add move.
+	IVP_U_Vector( IVP_U_Vector &&other ) noexcept :
+		IVP_U_Vector_Base()
+	{
+		if ( other.uses_inline_buffer() )
+		{
+			// Can't steal storage that lives inside 'other': copy the pointers.
+			reserve_discarding( other.n_elems );
+			if ( other.n_elems )
+			{
+				memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
+			}
+			n_elems = other.n_elems;
+			other.n_elems = 0; // keeps its inline buffer, now empty
+		}
+		else
+		{
+			elems = other.elems;
+			memsize = other.memsize;
+			n_elems = other.n_elems;
+
+			other.elems = nullptr;
+			other.memsize = 0;
+			other.n_elems = 0;
+		}
+	}
+
+	// dimhotepus: Add move.
+	IVP_U_Vector &operator=( IVP_U_Vector &&other ) noexcept
+	{
+		if ( this == &other )
+			return *this;
+
+		if ( other.uses_inline_buffer() )
+		{
+			// Copy into our own storage (inline or heap), then empty the source.
+			reserve_discarding( other.n_elems );
+			if ( other.n_elems )
+			{
+				memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
+			}
+			n_elems = other.n_elems;
+			other.n_elems = 0;
+		}
+		else
+		{
+			// Drop our heap buffer (if any), then take the source's.
+			release_heap_buffer();
+
+			elems = other.elems;
+			memsize = other.memsize;
+			n_elems = other.n_elems;
+
+			other.elems = nullptr;
+			other.memsize = 0;
+			other.n_elems = 0;
+		}
+		return *this;
+	}
+
 	void ensure_capacity()
 	{
 		if ( n_elems >= memsize )
