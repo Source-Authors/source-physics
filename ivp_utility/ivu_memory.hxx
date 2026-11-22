@@ -39,9 +39,10 @@ class IVP_U_Memory
 	char          *speicherende;
 #endif
 
-	short          transaction_in_use   : 16; // for asserts
-	unsigned short size_of_external_mem : 16; // or 0 if not external mem; used
-											  // for e.g. PS2 scratchpad
+	// dimhotepus: Was 'short : 16' (implementation-defined signedness bitfield) and
+	// 'unsigned short : 16' which silently truncated external memory sizes > 64KB.
+	int         transaction_in_use; // for asserts
+	std::size_t size_of_external_mem; // usable bytes of external first block, or 0 if not external
 
 	void        *speicher_callok( unsigned int groesse );
 	void         free_mem_transaction();
