@@ -195,6 +195,20 @@ void ivp_free_aligned( void *data )
 #endif
 }
 
+#if !defined( MEMTEST )
+// dimhotepus: Usable bytes of the default first/regular block. Was computed in two places differently
+// (neuer_sp_block used BLOCK - sizeof( elem ), block reset used BLOCK), so after
+// end_memory_transaction() allocator could hand out sizeof( p_Memory_Elem ) bytes beyond the block
+// -> heap buffer overflow. Single constant now.
+static constexpr size_t IVU_MEM_DEFAULT_USABLE =
+	IVU_MEMORY_BLOCK_SIZE - sizeof( p_Memory_Elem );
+
+[[nodiscard]] static constexpr inline std::uintptr_t ivu_align_up( std::uintptr_t address )
+{
+	return ( address + IVU_MEM_ALIGN - 1 ) & IVU_MEM_MASK;
+}
+#endif
+
 IVP_U_Memory::~IVP_U_Memory()
 {
 	free_mem();
@@ -207,19 +221,38 @@ void IVP_U_Memory::init_mem_transaction_usage( char *external_mem, size_t size )
 	//}
 #if defined( MEMTEST )
 #else
+	size_of_external_mem = 0;
+
 	if ( external_mem )
 	{
-		size_of_external_mem = size - IVU_MEM_ALIGN; // for header
-		auto *memelem = reinterpret_cast< p_Memory_Elem * >( external_mem );
-		memelem->next = last_elem;
-		last_elem = memelem;
-		auto *tmp = static_cast< char * >( align_to_next_adress( &memelem->data[0] ) );
-		speicherbeginn = tmp;
-		speicherende = tmp + size_of_external_mem;
+		IVP_ASSERT( reinterpret_cast< std::uintptr_t >( external_mem ) % alignof( p_Memory_Elem ) == 0 );
+
+		// dimhotepus: Old: size - IVU_MEM_ALIGN underflowed for small size, and end could be
+		// up to sizeof( void * ) - 1 bytes past external memory (header offset was not accounted).
+		// Compute the real aligned range in integers.
+		const auto base = reinterpret_cast< std::uintptr_t >( external_mem );
+		const auto end = base + size;
+		const auto begin = ivu_align_up( base + offsetof( p_Memory_Elem, data ) );
+
+		if ( size >= offsetof( p_Memory_Elem, data ) && begin < end )
+		{
+			auto *memelem = reinterpret_cast< p_Memory_Elem * >( external_mem );
+			memelem->next = last_elem;
+			last_elem = memelem;
+
+			size_of_external_mem = end - begin;
+			speicherbeginn = reinterpret_cast< char * >( begin );
+			speicherende = reinterpret_cast< char * >( end );
+		}
+		else
+		{
+			// dimhotepus: External memory is too small to use, fall back to heap block.
+			IVP_ASSERT( 0 );
+			neuer_sp_block( 0 );
+		}
 	}
 	else
 	{
-		size_of_external_mem = 0;
 		neuer_sp_block( 0 );
 	}
 	first_elem = last_elem;
@@ -236,6 +269,12 @@ void IVP_U_Memory::free_mem_transaction()
 	mem_vector.clear();
 #else
 	// IVP_ASSERT(first_elem!=NULL); playstation doesn't like this ...
+	// dimhotepus: first_elem is null if init_mem_transaction_usage() was never called (or first
+	// block allocation failed) -> first_elem->data below was null dereference. Remaining blocks
+	// are released by free_mem().
+	if ( !first_elem )
+		return;
+
 	struct p_Memory_Elem *f, *n = nullptr;
 	for ( f = last_elem; f; f = n )
 	{
@@ -249,8 +288,9 @@ void IVP_U_Memory::free_mem_transaction()
 	speicherbeginn =
 	static_cast< char * >( align_to_next_adress( &first_elem->data[0] ) );
 
-	size_t ng =
-	size_of_external_mem ? size_of_external_mem : IVU_MEMORY_BLOCK_SIZE;
+	// dimhotepus: See IVU_MEM_DEFAULT_USABLE, was IVU_MEMORY_BLOCK_SIZE = buffer overflow.
+	const size_t ng =
+	size_of_external_mem ? size_of_external_mem : IVU_MEM_DEFAULT_USABLE;
 
 	speicherende = speicherbeginn + ng;
 	last_elem = first_elem;
@@ -260,22 +300,40 @@ void IVP_U_Memory::free_mem_transaction()
 #if !defined( MEMTEST )
 char *IVP_U_Memory::neuer_sp_block( size_t groesse )
 {
-	size_t ng = IVU_MEMORY_BLOCK_SIZE - sizeof( p_Memory_Elem );
+	size_t ng = IVU_MEM_DEFAULT_USABLE;
+
+	// dimhotepus: Rounding up and adding header could overflow size_t for huge requests -> tiny
+	// block returned as huge. Fail instead.
+	if ( groesse > SIZE_MAX - ( IVU_MEM_ALIGN - 1 ) )
+		return nullptr;
 	groesse += IVU_MEM_ALIGN - 1;
 	groesse &= IVU_MEM_MASK;
-	if ( groesse > ng )
+
+	const bool oversized = groesse > ng;
+	if ( oversized )
 		ng = groesse;
 
-	auto *memelem = static_cast< p_Memory_Elem * >(
-	p_malloc( sizeof( p_Memory_Elem ) + ng + IVU_MEM_ALIGN ) );
+	if ( ng > SIZE_MAX - IVU_MEM_ELEM_OVERHEAD )
+		return nullptr;
+
+	// dimhotepus: Exactly header offset + alignment padding + payload (was sizeof + ALIGN, which
+	// with the odd 0x50 alignment over-allocated and was fragile).
+	auto *memelem = static_cast< p_Memory_Elem * >( p_malloc( IVU_MEM_ELEM_OVERHEAD + ng ) );
 	if ( !memelem )
 		return nullptr;
 
 	memelem->next = last_elem;
 	last_elem = memelem;
 	char *tmp = static_cast< char * >( align_to_next_adress( &memelem->data[0] ) );
-	speicherbeginn = tmp + groesse;
-	speicherende = tmp + ng;
+
+	// dimhotepus: Oversized one-shot block no longer replaces the current bump block, otherwise the
+	// free space left in the current block was wasted after every big allocation. The block is
+	// still in the chain so it is freed normally.
+	if ( !oversized )
+	{
+		speicherbeginn = tmp + groesse;
+		speicherende = tmp + ng;
+	}
 	return tmp;
 }
 #endif
@@ -333,5 +391,7 @@ void IVP_U_Memory::free_mem()
 	speicherende = nullptr;
 	last_elem = nullptr;
 	first_elem = nullptr;
+	// dimhotepus: Stale external size made a later free_mem() think a heap first block is external.
+	size_of_external_mem = 0;
 #endif
 }
