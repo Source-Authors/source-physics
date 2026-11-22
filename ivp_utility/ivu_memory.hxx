@@ -119,10 +119,11 @@ void IVP_U_Memory::end_memory_transaction()
 // warning: dependency with function neuer_sp_block
 inline void *IVP_U_Memory::align_to_next_adress( void *p )
 {
-	hk_uintp address = (hk_uintp)p;
+	// dimhotepus: Do math on uintptr_t, not pointers; mask is already uintptr_t wide.
+	auto address = reinterpret_cast< std::uintptr_t >( p );
 	address += IVU_MEM_ALIGN - 1;
-	address = address & IVU_MEM_MASK;
-	return (void *)address;
+	address &= IVU_MEM_MASK;
+	return reinterpret_cast< void * >( address );
 }
 
 inline void *IVP_U_Memory::get_mem( size_t groesse )
@@ -139,25 +140,24 @@ inline void *IVP_U_Memory::get_mem( size_t groesse )
 		return NULL;
 	}
 #else
-	char *p = speicherbeginn;
-	char *op = p;
-	p += groesse;
-	p = static_cast< char * >( align_to_next_adress( p ) );
+	char *op = speicherbeginn;
 
-	if ( p >= speicherende )
+	// dimhotepus: Old code did 'op + groesse' first: huge size wrapped pointer (UB, passes
+	// the end check, returns too small memory). Check against remaining bytes first, then align.
+	// Semantics are the same as before (exact fit goes to the new block), and the dead debug
+	// IVP_IF( address range ) { op++; op--; } was removed from this hot path.
+	const auto avail = static_cast< size_t >( speicherende - op );
+	if ( groesse < avail )
 	{
-		return this->neuer_sp_block( groesse );
-	}
-	else
-	{
-		speicherbeginn = p;
-		IVP_IF( ( (hk_intp)op > 0x780000 ) && ( (hk_intp)op < 0x792f48 ) )
+		char *p = static_cast< char * >( align_to_next_adress( op + groesse ) );
+		if ( p < speicherende )
 		{
-			op++;
-			op--;
+			speicherbeginn = p;
+			return op;
 		}
-		return op;
 	}
+
+	return this->neuer_sp_block( groesse );
 #endif
 }
 
