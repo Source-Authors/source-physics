@@ -55,7 +55,8 @@ void *p_malloc( size_t size )
 #ifndef GEKKO
 	return malloc( size );
 #else
-	return new char[size];
+	// dimhotepus: Plain new throws; callers expect nullptr on OOM like malloc.
+	return new ( std::nothrow ) char[size];
 #endif
 }
 
