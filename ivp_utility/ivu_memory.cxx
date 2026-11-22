@@ -1,7 +1,14 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #include <ivp_physics.hxx>
+
+#include "ivu_memory.hxx"
+
 #include <cstdlib>
+#include <cstring>
+#include <cstddef>
+#include <cstdint>
+#include <new>  // std::nothrow
 
 #if !defined( __MWERKS__ ) || !defined( __POWERPC__ )
 #ifdef OSX
@@ -10,12 +17,6 @@
 #include <malloc.h>
 #endif
 #endif
-
-#ifndef WIN32
-#pragma implementation "ivu_memory.hxx"
-#endif
-
-#include "ivu_memory.hxx"
 
 // IVP_Environment *ivp_global_env=NULL;
 
