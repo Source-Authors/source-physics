@@ -302,6 +302,9 @@ IVP_Environment::~IVP_Environment()
 
 	environment_manager->environments.remove( this );
 	this->delete_draw_vector_debug();
+
+	// dimhotepus: Reset magic so double destruction will not be done.
+	environment_magic_number = 0;
 }
 
 void IVP_Environment::fire_object_is_removed_from_collision_detection(
