@@ -284,7 +284,9 @@ void *IVP_U_Memory::get_memc( size_t groesse )
 {
 	//	if (groesse & 0x7) *(int *)0 = 0;
 	void *neubeginn = get_mem( groesse );
-	memset( neubeginn, 0, groesse );
+	// dimhotepus: get_mem returns nullptr on OOM (or 0 size under MEMTEST), memset( nullptr ) is UB/crash.
+	if ( neubeginn )
+		memset( neubeginn, 0, groesse );
 	return neubeginn;
 }
 
