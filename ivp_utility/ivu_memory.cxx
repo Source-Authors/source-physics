@@ -105,47 +105,74 @@ struct IVP_Aligned_Memory
 	void *back_link;
 };
 
+// dimhotepus: Normalize alignment: must be power of two, and at least pointer size, because we store a
+// void* right before the returned block. With alignment 1..4 on 64-bit that slot was misaligned
+// (UB; faults on strict-alignment targets).
+[[nodiscard]] static inline size_t ivp_effective_alignment( unsigned short alignment )
+{
+	IVP_ASSERT( alignment != 0 && ( alignment & ( alignment - 1 ) ) == 0 );
+	return alignment < alignof( void * ) ? alignof( void * ) : alignment;
+}
+
+#if !defined( SUN__ )
+// dimhotepus: ivp_malloc_aligned and ivp_calloc_aligned had copy pasted code; share it.
+[[nodiscard]] static void *ivp_aligned_from_raw( void *raw, size_t alignment )
+{
+	static_cast< IVP_Aligned_Memory * >( raw )->magic_number = IVP_MEMORY_MAGIC;
+
+	const std::uintptr_t ret =
+	( reinterpret_cast< std::uintptr_t >( raw ) + alignment +
+	  sizeof( IVP_Aligned_Memory ) - 1 ) &
+	~( static_cast< std::uintptr_t >( alignment ) - 1 );
+
+	reinterpret_cast< void ** >( ret )[-1] = raw;
+	return reinterpret_cast< void * >( ret );
+}
+
+// dimhotepus: Total size with overflow check (size += ... could wrap and return tiny block).
+[[nodiscard]] static bool ivp_aligned_total( size_t size, size_t alignment, size_t &total )
+{
+	const size_t extra = alignment + sizeof( IVP_Aligned_Memory );
+	if ( size > SIZE_MAX - extra )
+		return false;
+	total = size + extra;
+	return true;
+}
+#endif
+
 void *ivp_malloc_aligned( size_t size, unsigned short alignment )
 {
 #if defined( SUN__ )
 	return memalign( alignment, size );
 #else
-	size += alignment + sizeof( IVP_Aligned_Memory );
+	const size_t align = ivp_effective_alignment( alignment );
+	size_t       total;
+	if ( !ivp_aligned_total( size, align, total ) )
+		return nullptr;
 
-	auto *data = static_cast< IVP_Aligned_Memory * >( p_malloc( size ) );
-	if ( data )
-	{
-		data->magic_number = IVP_MEMORY_MAGIC;
-
-		void *ret = (void *)( ( ( (hk_uintp)data ) + alignment +
-		                        sizeof( IVP_Aligned_Memory ) - 1 ) &
-		                      ( -static_cast< hk_intp >( alignment ) ) );
-		( (void **)ret )[-1] = (void *)data;
-		return ret;
-	}
-
-	return nullptr;
+	void *data = p_malloc( total );
+	return data ? ivp_aligned_from_raw( data, align ) : nullptr;
 #endif
 }
 
 void *IVP_CDECL ivp_calloc_aligned( size_t size, unsigned short alignment )
 {
-	size += alignment + sizeof( IVP_Aligned_Memory );
-
-	auto *data = static_cast< IVP_Aligned_Memory * >( p_malloc( size ) );
+#if defined( SUN__ )
+	// dimhotepus: Was no SUN__ branch: memory had header but ivp_free_aligned on SUN__ does plain
+	// free() -> heap corruption. Keep both sides consistent.
+	void *data = memalign( alignment, size );
 	if ( data )
-	{
 		memset( data, 0, size );
-		data->magic_number = IVP_MEMORY_MAGIC;
+	return data;
+#else
+	const size_t align = ivp_effective_alignment( alignment );
+	size_t       total;
+	if ( !ivp_aligned_total( size, align, total ) )
+		return nullptr;
 
-		void *ret = (void *)( ( ( (hk_uintp)data ) + alignment +
-		                        sizeof( IVP_Aligned_Memory ) - 1 ) &
-		                      ( -static_cast< hk_intp >( alignment ) ) );
-		( (void **)ret )[-1] = (void *)data;
-		return ret;
-	}
-
-	return nullptr;
+	void *data = p_calloc( 1, total );
+	return data ? ivp_aligned_from_raw( data, align ) : nullptr;
+#endif
 }
 
 void ivp_free_aligned( void *data )
@@ -153,6 +180,10 @@ void ivp_free_aligned( void *data )
 #if defined( SUN__ )
 	p_free( data );
 #else
+	// dimhotepus: free( nullptr ) is legal, but data[-1] of nullptr crashed.
+	if ( !data )
+		return;
+
 	auto *am = static_cast< IVP_Aligned_Memory * >( ( (void **)data )[-1] );
 
 	IVP_ASSERT( am->magic_number == IVP_MEMORY_MAGIC );
