@@ -230,6 +230,11 @@ void IVP_Environment::set_delta_PSI_time( IVP_DOUBLE psi_time )
 {
 	IVP_ASSERT( psi_time >= IVP_MIN_DELTA_PSI_TIME );
 	IVP_ASSERT( psi_time <= IVP_MAX_DELTA_PSI_TIME );
+
+	// dimhotepus: Reject bad time steps.
+	if ( !( psi_time >= IVP_MIN_DELTA_PSI_TIME && psi_time <= IVP_MAX_DELTA_PSI_TIME ) )
+		return;
+
 	delta_PSI_time = psi_time;
 	inv_delta_PSI_time = 1.0f / delta_PSI_time;
 	// dimhotepus: Recompute dependent integrated_energy_damp when timestep changes.
