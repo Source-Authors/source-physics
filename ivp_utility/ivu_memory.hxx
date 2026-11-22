@@ -51,6 +51,11 @@ class IVP_U_Memory
 public:
 	IVP_U_Memory();
 	~IVP_U_Memory();
+
+	// dimhotepus: Class owns raw blocks; implicit copy would double free.
+	IVP_U_Memory( const IVP_U_Memory & ) = delete;
+	IVP_U_Memory &operator=( const IVP_U_Memory & ) = delete;
+
 	void  init_mem();
 	void *get_mem( size_t size );
 	template< typename T >
