@@ -324,7 +324,8 @@ void IVP_U_Memory::free_mem()
 		{
 			break;
 		}
-		P_FREE( f );
+		// dimhotepus: P_FREE macro -> p_free, consistent with the rest of file and GEKKO delete[].
+		p_free( f );
 	}
 	speicherbeginn = nullptr;
 	speicherende = nullptr;
