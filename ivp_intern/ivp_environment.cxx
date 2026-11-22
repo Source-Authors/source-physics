@@ -845,7 +845,20 @@ IVP_U_Vector< IVP_Real_Object > *objs_to_merge )
 
 	for ( i = 0; i < obj_num; i++ )
 	{
-		delete merge_all_objs.cores[i];
+		bool seen = false;
+		// dimhotepus: Ensure if two objects share the core we do not delete it twice.
+		for ( int j = 0; j < i; j++ )
+		{
+			if ( merge_all_objs.cores[j] == merge_all_objs.cores[i] )
+			{
+				seen = true;
+				break;
+			}
+		}
+		if ( !seen )
+		{
+			delete merge_all_objs.cores[i];
+		}
 	}
 	P_FREE( merge_all_objs.cores );
 }
