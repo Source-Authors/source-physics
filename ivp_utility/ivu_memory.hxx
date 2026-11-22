@@ -28,6 +28,8 @@ struct p_Memory_Elem
 	char                  data[4]; //-V112
 };
 
+// NOTE (thread safety): IVP_U_Memory is NOT thread safe by design (it is a per-environment bump
+// allocator, locking would cost on the hot path). Use one instance per thread or lock externally.
 class IVP_U_Memory
 {
 #ifdef MEMTEST
