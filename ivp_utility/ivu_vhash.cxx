@@ -1,10 +1,10 @@
 // Copyright (C) Ipion Software GmbH 1999-2000. All rights reserved.
 
 #include <ivp_physics.hxx>
+#include <cstddef>
+#include <type_traits>
 #include <ivu_hash.hxx>
 #include <ivu_vhash.hxx>
-
-#include <ivu_set.hxx>
 
 /**
  * @brief Check value is power of two.
@@ -18,25 +18,39 @@ template< typename T, std::enable_if_t< std::is_integral_v< T > && !std::is_same
 	return value > 0 && ( value & ( value - 1 ) ) == 0;
 }
 
+namespace
+{
+// dimhotepus: Shared zeroed allocation for both hash classes. Sizes go through
+// size_t and the result is checked.
+template< typename T >
+[[nodiscard]] T *ivp_vhash_alloc( int count )
+{
+	IVP_ASSERT( count > 0 );
+	T *p = reinterpret_cast< T * >( p_calloc( static_cast< std::size_t >( count ), sizeof( T ) ) );
+	IVP_ASSERT( p != nullptr );
+	return p;
+}
+} // namespace
+
 IVP_VHash::IVP_VHash( int size_i )
 {
 	IVP_ASSERT( IsPowerOfTwo( size_i ) ); // size must be 2**x
 
 	size_mm = size_i - 1;
 	nelems = 0;
-	dont_free = IVP_FALSE;
-	elems = (IVP_VHash_Elem *)p_calloc( size_i, sizeof( IVP_VHash_Elem ) );
+	dont_free = 0;
+	elems = ivp_vhash_alloc< IVP_VHash_Elem >( size_i );
 }
 
 void IVP_VHash::activate( int size_i )
 {
-	IVP_ASSERT( elems == NULL );
+	IVP_ASSERT( elems == nullptr );
 	IVP_ASSERT( IsPowerOfTwo( size_i ) ); // size must be 2**x
 
 	size_mm = size_i - 1;
 	nelems = 0;
-	dont_free = IVP_FALSE;
-	elems = (IVP_VHash_Elem *)p_calloc( size_i, sizeof( IVP_VHash_Elem ) );
+	dont_free = 0;
+	elems = ivp_vhash_alloc< IVP_VHash_Elem >( size_i );
 }
 
 void IVP_VHash::deactivate()
@@ -46,11 +60,19 @@ void IVP_VHash::deactivate()
 	{
 		P_FREE( elems );
 	}
+	// dimhotepus: Also forget borrowed (external) memory. Otherwise elems
+	// dangled and activate() failed its elems == nullptr assert.
+	elems = nullptr;
+	dont_free = 0;
 	size_mm = -1;
 }
 
 void IVP_VHash::garbage_collection( int preferred_size )
 {
+	// dimhotepus: A deactivated hash (size_mm == -1) has nothing to shrink.
+	// It used to call rehash( 0 ).
+	if ( !elems )
+		return;
 	if ( preferred_size < n_elems() )
 		return;
 	int new_size = size_mm + 1;
@@ -67,7 +89,7 @@ IVP_VHash::IVP_VHash( IVP_VHash_Elem *static_elems, int size_i )
 
 	size_mm = size_i - 1;
 	nelems = 0;
-	dont_free = IVP_TRUE;
+	dont_free = 1;
 	elems = static_elems;
 }
 
@@ -89,31 +111,36 @@ void IVP_VHash::untouch_all()
 
 void IVP_VHash::rehash( int new_size )
 {
+	IVP_ASSERT( IsPowerOfTwo( new_size ) );
+
 	IVP_VHash_Elem *old_elems = elems;
 	int             old_size = size_mm + 1;
 
 	// get new elements
 	size_mm = new_size - 1;
-	elems = (IVP_VHash_Elem *)p_calloc( new_size, sizeof( IVP_VHash_Elem ) );
+	elems = ivp_vhash_alloc< IVP_VHash_Elem >( new_size );
+
+	// dimhotepus: Count from zero while re-adding. nelems kept the old count and
+	// add_elem() re-checks the load factor from it, so a shrink (garbage
+	// collection) could trigger a recursive rehash that doubled the table again.
+	nelems = 0;
 
 	IVP_VHash_Elem *e = old_elems;
-	int             old_nelems = nelems;
 	for ( int i = old_size - 1; i >= 0; i-- )
 	{
 		if ( e->elem )
 		{
-			this->add_elem( e->elem, e->hash_index ); // keeps touch bit,
+			this->add_elem( e->elem, static_cast< int >( e->hash_index ) ); // keeps touch bit,
 		}
 		e++;
 	}
-	nelems = old_nelems;
 
 	if ( !dont_free )
 	{
 		P_FREE( old_elems );
 	}
-	dont_free = IVP_FALSE;
-};
+	dont_free = 0;
+}
 
 // keeps touch bit
 void IVP_VHash::add_elem( const void *elem, int hash_index )
@@ -143,15 +170,15 @@ void IVP_VHash::add_elem( const void *elem, int hash_index )
 			continue;
 
 		const void *h_e = e->elem;
-		int         h_i = e->hash_index;
+		int         h_i = static_cast< int >( e->hash_index );
 		e->elem = elem;
-		e->hash_index = hash_index;
+		e->hash_index = static_cast< unsigned int >( hash_index );
 		elem = h_e;
 		hash_index = h_i;
 		index = e_index;
 	}
 	elems[pos].elem = elem;
-	elems[pos].hash_index = hash_index;
+	elems[pos].hash_index = static_cast< unsigned int >( hash_index );
 	IVP_IF( 0 )
 	{
 		check();
@@ -168,8 +195,11 @@ void *IVP_VHash::remove_elem( const void *elem, unsigned int hash_index )
 	for ( ;; pos = ( pos + 1 ) & size_mm )
 	{
 		e = &elems[pos];
-		if ( e->elem == 0 )
-			CORE; // return 0;
+		// dimhotepus: Was "CORE; // return 0;", which raised SIGINT in every
+		// build when the element was not in the hash. Report "not found" like
+		// find_elem() does.
+		if ( e->elem == nullptr )
+			return nullptr;
 		if ( ( e->hash_index | IVP_VHASH_TOUCH_BIT ) != hash_index )
 			continue;
 		if ( compare( e->elem, elem ) == IVP_TRUE )
@@ -207,11 +237,11 @@ void *IVP_VHash::remove_elem( const void *elem, unsigned int hash_index )
 			}
 			else if ( ideal_pos ==
 			          ideal_pos_of_last_element )
-			{   // further checks needed: are we
+			{ // further checks needed: are we
 				// at the start or at the end of
 				// the hash ??
 				if ( ideal_pos <= pos )
-				{   // element is not wrapped -> we are at the end
+				{ // element is not wrapped -> we are at the end
 					// of the hash table
 					if ( ideal_pos > last_pos )
 						continue; // no way to shift elements left to their ideal position
@@ -232,7 +262,7 @@ void *IVP_VHash::remove_elem( const void *elem, unsigned int hash_index )
 		elems[last_pos] = *en; // shift elem
 		last_pos = pos;
 	}
-	elems[last_pos].elem = 0;       // remove elem
+	elems[last_pos].elem = nullptr; // remove elem
 	elems[last_pos].hash_index = 0; // untouch elem
 	IVP_IF( 0 )
 	{
@@ -240,7 +270,7 @@ void *IVP_VHash::remove_elem( const void *elem, unsigned int hash_index )
 		IVP_ASSERT( !find_elem( elem, hash_index ) );
 	}
 
-	return (void *)elem;
+	return const_cast< void * >( elem );
 }
 
 void IVP_VHash::check()
@@ -274,6 +304,7 @@ void IVP_VHash::check()
 		}
 		last_index = index;
 	}
+	IVP_USE( last_index );
 }
 
 void *IVP_VHash::find_elem( const void *elem, unsigned int hash_index ) const
@@ -293,7 +324,7 @@ void *IVP_VHash::find_elem( const void *elem, unsigned int hash_index ) const
 			continue;
 		}
 		// now elem is found, return it
-		return (void *)e->elem;
+		return const_cast< void * >( e->elem );
 	}
 
 	// search by hand
@@ -311,7 +342,7 @@ void *IVP_VHash::find_elem( const void *elem, unsigned int hash_index ) const
 			CORE;
 		}
 	}
-	return 0; // not found
+	return nullptr; // not found
 }
 
 void *IVP_VHash::touch_element( const void *elem, unsigned int hash_index )
@@ -329,19 +360,18 @@ void *IVP_VHash::touch_element( const void *elem, unsigned int hash_index )
 			continue;
 		// now elem is found, return it
 		e->hash_index |= IVP_VHASH_TOUCH_BIT;
-		return (void *)e->elem;
+		return const_cast< void * >( e->elem );
 	}
-	return 0; // not found
+	return nullptr; // not found
 }
 
 void IVP_VHash::print() const
 {
-	int i;
 	ivp_message( "%i:", len() );
-	for ( i = 0; i <= size_mm; i++ )
+	for ( int i = 0; i <= size_mm; i++ )
 	{
-		ivp_message( " %i:%zX:%X  ", elems[i].hash_index & size_mm,
-		             (hk_intp)elems[i].elem, elems[i].hash_index );
+		ivp_message( " %i:%zX:%X  ", static_cast< int >( elems[i].hash_index & size_mm ),
+		             reinterpret_cast< std::size_t >( elems[i].elem ), elems[i].hash_index );
 	}
 	ivp_message( "\n" );
 }
@@ -359,9 +389,8 @@ IVP_VHash_Store::IVP_VHash_Store( int size_i )
 	size = size_i;
 	size_mm = size_i - 1;
 	nelems = 0;
-	dont_free = 0;
-	elems_store =
-	(IVP_VHash_Store_Elem *)p_calloc( size_i, sizeof( IVP_VHash_Store_Elem ) );
+	dont_free = nullptr;
+	elems_store = ivp_vhash_alloc< IVP_VHash_Store_Elem >( size_i );
 }
 
 IVP_VHash_Store::IVP_VHash_Store( IVP_VHash_Store_Elem *static_elems,
@@ -386,8 +415,7 @@ IVP_VHash_Store::~IVP_VHash_Store()
 
 void IVP_VHash_Store::untouch_all()
 {
-	int i;
-	for ( i = size - 1; i >= 0; i-- )
+	for ( int i = size - 1; i >= 0; i-- )
 	{
 		elems_store[i].hash_index &= ( IVP_VHASH_TOUCH_BIT - 1 );
 	}
@@ -395,32 +423,40 @@ void IVP_VHash_Store::untouch_all()
 
 void IVP_VHash_Store::rehash( int new_size )
 {
+	IVP_ASSERT( IsPowerOfTwo( new_size ) );
+
 	IVP_VHash_Store_Elem *old_elems = elems_store;
 	int                   old_size = size;
 
 	// get new elements
 	size = new_size;
 	size_mm = new_size - 1;
-	elems_store =
-	(IVP_VHash_Store_Elem *)p_calloc( new_size, sizeof( IVP_VHash_Store_Elem ) );
+	elems_store = ivp_vhash_alloc< IVP_VHash_Store_Elem >( new_size );
+
+	// dimhotepus: Count from zero while re-adding, see IVP_VHash::rehash.
+	nelems = 0;
 
 	IVP_VHash_Store_Elem *e = old_elems;
-	int                   old_nelems = nelems;
 	for ( int i = old_size - 1; i >= 0; i-- )
 	{
-		if ( e->elem )
+		// dimhotepus: Was "if ( e->elem )". Emptiness is key_elem everywhere now,
+		// so a nullptr value survives a rehash.
+		if ( e->key_elem )
 		{
-			this->add_elem( e->key_elem, e->elem, e->hash_index ); // keeps touch bit,
+			this->add_elem( e->key_elem, e->elem, static_cast< int >( e->hash_index ) ); // keeps touch bit,
 		}
 		e++;
 	}
-	nelems = old_nelems;
 
 	if ( old_elems != dont_free )
 	{
 		P_FREE( old_elems );
 	}
-};
+	// dimhotepus: The new array is heap memory. Without this, a later free
+	// compared against the old external pointer, which is already harmless, but
+	// leaving it set was misleading.
+	dont_free = nullptr;
+}
 
 void IVP_VHash_Store::add_elem( void *key_elem, void *elem )
 {
@@ -457,10 +493,10 @@ void IVP_VHash_Store::add_elem( void *key_elem, void *elem, int hash_index )
 
 		void *h_ke = e->key_elem;
 		void *h_e = e->elem;
-		int   h_i = e->hash_index;
+		int   h_i = static_cast< int >( e->hash_index );
 		e->key_elem = key_elem;
 		e->elem = elem;
-		e->hash_index = hash_index;
+		e->hash_index = static_cast< unsigned int >( hash_index );
 		key_elem = h_ke;
 		elem = h_e;
 		hash_index = h_i;
@@ -468,7 +504,7 @@ void IVP_VHash_Store::add_elem( void *key_elem, void *elem, int hash_index )
 	}
 	elems_store[pos].key_elem = key_elem;
 	elems_store[pos].elem = elem;
-	elems_store[pos].hash_index = hash_index;
+	elems_store[pos].hash_index = static_cast< unsigned int >( hash_index );
 	IVP_IF( 0 )
 	{
 		check();
@@ -478,20 +514,25 @@ void IVP_VHash_Store::add_elem( void *key_elem, void *elem, int hash_index )
 void *IVP_VHash_Store::remove_elem( void *key_elem )
 {
 	int hash_val = void_pointer_to_index( key_elem );
-	return remove_elem( key_elem, hash_val );
+	return remove_elem( key_elem, static_cast< unsigned int >( hash_val ) );
 }
 
 void *IVP_VHash_Store::remove_elem( void *key_elem, unsigned int hash_index )
 {
 	int index = hash_index & size_mm;
 	int pos = index;
+	int searched_so_far = 0;
 
 	// 1. search elem
 	IVP_VHash_Store_Elem *e;
 	for ( ;; pos = ( pos + 1 ) & size_mm )
 	{
 		e = &elems_store[pos];
-		IVP_ASSERT( e->elem ); // was e->key_elem
+		// dimhotepus: The old code only asserted here (and on e->elem, not
+		// key_elem). In release builds a missing key looped forever. Report
+		// "not found" instead, bounded by the table size.
+		if ( !e->key_elem || searched_so_far++ >= size )
+			return nullptr;
 		if ( ( e->hash_index | IVP_VHASH_TOUCH_BIT ) != hash_index )
 			continue;
 		if ( compare_store_hash( e->key_elem, key_elem ) == IVP_TRUE )
@@ -531,11 +572,11 @@ void *IVP_VHash_Store::remove_elem( void *key_elem, unsigned int hash_index )
 			}
 			else if ( ideal_pos ==
 			          ideal_pos_of_last_element )
-			{   // further checks needed: are we
+			{ // further checks needed: are we
 				// at the start or at the end of
 				// the hash ??
 				if ( ideal_pos <= pos )
-				{   // element is not wrapped -> we are at the end
+				{ // element is not wrapped -> we are at the end
 					// of the hash table
 					if ( ideal_pos > last_pos )
 						continue; // no way to shift elements left to their ideal position
@@ -556,7 +597,10 @@ void *IVP_VHash_Store::remove_elem( void *key_elem, unsigned int hash_index )
 		elems_store[last_pos] = *en; // shift elem
 		last_pos = pos;
 	}
-	elems_store[last_pos].key_elem = 0;   // remove elem
+	elems_store[last_pos].key_elem = nullptr; // remove elem
+	// dimhotepus: Clear the value too. The slot used to keep a stale elem, which
+	// is why find_elem() needed its searched_so_far bound.
+	elems_store[last_pos].elem = nullptr;
 	elems_store[last_pos].hash_index = 0; // untouch elem
 	IVP_IF( 0 )
 	{
@@ -580,7 +624,7 @@ void IVP_VHash_Store::check() const
 
 	for ( pos = 0; pos < size; pos++ )
 	{ // search till first null or exact
-		IVP_VHash_Store_Elem *en = &elems_store[pos];
+		const IVP_VHash_Store_Elem *en = &elems_store[pos];
 		if ( !en->key_elem )
 			continue;
 		int index = en->hash_index & size_mm;
@@ -598,11 +642,12 @@ void IVP_VHash_Store::check() const
 		}
 		last_index = index;
 	}
+	IVP_USE( last_index );
 }
 
 void *IVP_VHash_Store::find_elem( void *key_elem )
 {
-	unsigned int hash_index = void_pointer_to_index( key_elem );
+	unsigned int hash_index = static_cast< unsigned int >( void_pointer_to_index( key_elem ) );
 	return find_elem( key_elem, hash_index );
 }
 
@@ -618,8 +663,11 @@ void *IVP_VHash_Store::find_elem( void *key_elem, unsigned int hash_index )
 			break;
 		searched_so_far++;
 		IVP_VHash_Store_Elem *e = &elems_store[pos];
-		if ( !e->elem )
-			break; // was e->key_elem
+		// dimhotepus: Was "!e->elem // was e->key_elem". An empty slot is one with
+		// no key, which is what add_elem / remove_elem / check use. Testing elem
+		// missed entries whose stored value is nullptr.
+		if ( !e->key_elem )
+			break;
 		if ( ( e->hash_index | IVP_VHASH_TOUCH_BIT ) != hash_index )
 			continue;
 		if ( compare_store_hash( e->key_elem, key_elem ) == IVP_FALSE )
@@ -645,12 +693,12 @@ void *IVP_VHash_Store::find_elem( void *key_elem, unsigned int hash_index )
 			CORE;
 		}
 	}
-	return 0; // not found
+	return nullptr; // not found
 }
 
 void IVP_VHash_Store::change_elem( void *key_elem, void *new_value )
 {
-	unsigned int hash_index = void_pointer_to_index( key_elem );
+	unsigned int hash_index = static_cast< unsigned int >( void_pointer_to_index( key_elem ) );
 	int          pos = hash_index & size_mm;
 	int          searched_so_far = 0;
 
@@ -661,20 +709,20 @@ void IVP_VHash_Store::change_elem( void *key_elem, void *new_value )
 			break;
 		searched_so_far++;
 		IVP_VHash_Store_Elem *e = &elems_store[pos];
-		if ( !e->elem )
-			break; // was e->key_elem
+		// dimhotepus: key_elem, see find_elem.
+		if ( !e->key_elem )
+			break;
 		if ( ( e->hash_index | IVP_VHASH_TOUCH_BIT ) != hash_index )
 			continue;
 		if ( compare_store_hash( e->key_elem, key_elem ) == IVP_FALSE )
 		{
 			continue;
 		}
-		// now elem is found, return it
+		// now elem is found, replace its value
 		e->elem = new_value;
 		return;
 	}
 	IVP_ASSERT( 0 == 1 );
-	return; // not found
 }
 
 void *IVP_VHash_Store::touch_element( void *key_elem, unsigned int hash_index )
@@ -694,7 +742,7 @@ void *IVP_VHash_Store::touch_element( void *key_elem, unsigned int hash_index )
 		e->hash_index |= IVP_VHASH_TOUCH_BIT;
 		return e->elem; // maybe it is e->key_elem ??
 	}
-	return 0; // not found
+	return nullptr; // not found
 }
 
 void IVP_VHash_Store::print() const
@@ -702,8 +750,10 @@ void IVP_VHash_Store::print() const
 	ivp_message( "%i:", size );
 	for ( int i = 0; i < size; i++ )
 	{
-		ivp_message( " %i:%zX:%zX:%X  ", elems_store[i].hash_index & size_mm,
-		             (hk_intp)elems_store[i].key_elem, (hk_intp)elems_store[i].elem,
+		ivp_message( " %i:%zX:%zX:%X  ",
+		             static_cast< int >( elems_store[i].hash_index & size_mm ),
+		             reinterpret_cast< std::size_t >( elems_store[i].key_elem ),
+		             reinterpret_cast< std::size_t >( elems_store[i].elem ),
 		             elems_store[i].hash_index );
 	}
 	ivp_message( "\n" );

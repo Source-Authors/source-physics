@@ -5,6 +5,11 @@
 #ifndef _IVP_VHASH_INCLUDED
 #define _IVP_VHASH_INCLUDED
 
+#include <cstddef>
+#include <cstdint>
+// dimhotepus: Declares IVP_Hash_crctab[256]. The header used an unsized extern.
+#include <ivu_hash.hxx>
+
 #define IVP_VHASH_TOUCH_BIT 0x80000000
 
 /********************************************************************************
@@ -24,8 +29,6 @@ struct IVP_VHash_Elem
 	const void  *elem;
 };
 
-extern const unsigned int IVP_Hash_crctab[];
-
 class IVP_VHash
 {
 private:
@@ -33,8 +36,10 @@ private:
 
 protected:
 	int          size_mm; // size - 1, used for masking index
-	unsigned int nelems    : 24;
-	IVP_BOOL     dont_free : 8; // indicating external memory
+	unsigned int nelems : 24;
+	// dimhotepus: IVP_BOOL -> unsigned int. Bit-fields of different types are not
+	// packed together by MSVC, which made the object bigger than intended.
+	unsigned int dont_free : 8; // indicating external memory
 
 	IVP_VHash_Elem *elems;
 
@@ -45,6 +50,10 @@ protected:
 	virtual IVP_BOOL compare( const void *elem0, const void *elem1 ) const = 0;
 
 public:
+	// dimhotepus: Owns (or borrows) the element array. A copy would double free.
+	IVP_VHash( const IVP_VHash & ) = delete;
+	IVP_VHash &operator=( const IVP_VHash & ) = delete;
+
 	// useable index calculation, result is [0,0xfffffff]
 	static inline int hash_index( const char *data, hk_intp size );
 	// useable index calculation when size == 4 , result is [0,0xfffffff]
@@ -54,8 +63,9 @@ public:
 	void add_elem( const void *elem, int hash_index );
 
 	/* try to find and remove an element equals to elem, returns the element or
-   * null elements left of elem are untouched
-   */
+	 * null (dimhotepus: also when it is not in the hash). Elements left of elem
+	 * are untouched.
+	 */
 	void *remove_elem( const void *elem, unsigned int hash_index );
 
 	/* try to find an element equals to elem, *********/
@@ -69,9 +79,9 @@ public:
 	void deactivate();                   // remove elems memory (assert no elems used)
 	void activate( int preferred_size ); // allocate memory
 
-	int      len() const { return size_mm + 1; } // size of hash array
-	int      n_elems() const { return nelems; }  // elems in hash
-	void    *element_at( int i ) const { return (void *)elems[i].elem; }
+	int      len() const { return size_mm + 1; }                // size of hash array
+	int      n_elems() const { return static_cast< int >( nelems ); } // elems in hash
+	void    *element_at( int i ) const { return const_cast< void * >( elems[i].elem ); }
 	IVP_BOOL is_element_touched( int i ) const
 	{
 		return (IVP_BOOL)( elems[i].hash_index >= IVP_VHASH_TOUCH_BIT );
@@ -89,21 +99,26 @@ public:
 // basic function for calculating the hash_index
 inline int IVP_VHash::hash_index( const char *key, hk_intp key_size )
 {
-	unsigned int index{ 0xffffffffU }; //-V112
-	for ( hk_intp i = key_size - 1; i >= 0; i-- )
+	// dimhotepus: Same CRC as before (key_size bytes, in order), on uint32_t and
+	// with an index loop instead of a moving pointer.
+	const unsigned char *data = reinterpret_cast< const unsigned char * >( key );
+	std::uint32_t        index = 0xffffffffU; //-V112
+	for ( hk_intp i = 0; i < key_size; i++ )
 	{
-		unsigned int c = *( (const unsigned char *)( key++ ) );
-		index = IVP_Hash_crctab[( index ^ c ) & 0xff] ^ ( index >> 8 );
+		index = IVP_Hash_crctab[( index ^ data[i] ) & 0xffU] ^ ( index >> 8 );
 	}
-	return index | IVP_VHASH_TOUCH_BIT; // set touch bit
-};
+	return static_cast< int >( index | IVP_VHASH_TOUCH_BIT ); // set touch bit
+}
 
 // basic function for calculating the hash_index of key is a hk_intp
 inline int IVP_VHash::fast_hash_index( hk_intp key )
 {
-	constexpr int keyBits = sizeof( key ) * 4;
-	int           index = static_cast< int >( ( ( key * 1001 ) >> keyBits ) + key * 75 ); //-V112
-	return index | IVP_VHASH_TOUCH_BIT;                                                   // set touch bit
+	// dimhotepus: Unsigned arithmetic. The old signed key * 1001 / key * 75
+	// overflowed (UB) for large 64-bit addresses. Same bits for non-negative keys.
+	constexpr unsigned keyBits = sizeof( key ) * 4;
+	const hk_uintp     k = static_cast< hk_uintp >( key );
+	const hk_uintp     mixed = ( ( k * 1001u ) >> keyBits ) + k * 75u; //-V112
+	return static_cast< int >( static_cast< std::uint32_t >( mixed ) | IVP_VHASH_TOUCH_BIT );
 }
 
 struct IVP_VHash_Store_Elem
@@ -147,7 +162,8 @@ public:
 	void change_elem( void *key_elem, void *store_elem );
 
 	// Try to find and remove an element equals to key_elem, returns the element
-	// or null elements left of elem are untouched.
+	// or null (dimhotepus: also when not found, it used to loop forever in
+	// release builds). Elements left of elem are untouched.
 	void *remove_elem( void *key_elem );
 	void *remove_elem( void *key_elem, unsigned int hash_index );
 
@@ -160,7 +176,8 @@ public:
 
 	int      len() const { return size; }
 	int      n_elems() const { return nelems; }
-	void    *element_at( int i ) { return elems_store[i].elem; }
+	// dimhotepus: const, it doesn't modify the hash.
+	void    *element_at( int i ) const { return elems_store[i].elem; }
 	IVP_BOOL is_element_touched( int i ) const
 	{
 		return (IVP_BOOL)( elems_store[i].hash_index >= IVP_VHASH_TOUCH_BIT );
@@ -169,10 +186,14 @@ public:
 	void print() const;
 	void check() const; // check internal consistency
 
-	IVP_VHash_Store( int size ); // assert(size = 2**x)
+	explicit IVP_VHash_Store( int size ); // assert(size = 2**x)
 	IVP_VHash_Store( IVP_VHash_Store_Elem *static_elems,
 	                 int                   size ); // assert(size = 2**x)
 	~IVP_VHash_Store();
+
+	// dimhotepus: Owns (or borrows) the element array. A copy would double free.
+	IVP_VHash_Store( const IVP_VHash_Store & ) = delete;
+	IVP_VHash_Store &operator=( const IVP_VHash_Store & ) = delete;
 };
 
 // overflow of hash is handled by shifting elems to higher positions in hash,
@@ -182,25 +203,26 @@ public:
 // basic function for calculating the hash_index
 inline int IVP_VHash_Store::hash_index_store( const char *key, int key_size )
 {
-	unsigned int index{ 0xffffffffU }; //-V112
-	for ( int i = key_size - 1; i >= 0; i-- )
+	const unsigned char *data = reinterpret_cast< const unsigned char * >( key );
+	std::uint32_t        index = 0xffffffffU; //-V112
+	for ( int i = 0; i < key_size; i++ )
 	{
-		unsigned int c = *( (const unsigned char *)( key++ ) );
-		index = IVP_Hash_crctab[( index ^ c ) & 0xff] ^ ( index >> 8 );
+		index = IVP_Hash_crctab[( index ^ data[i] ) & 0xffU] ^ ( index >> 8 );
 	}
-	return index | IVP_VHASH_TOUCH_BIT; // set touch bit
-};
+	return static_cast< int >( index | IVP_VHASH_TOUCH_BIT ); // set touch bit
+}
 
 inline int IVP_VHash_Store::void_pointer_to_index( void *p )
 {
-	return hash_index_store( (const char *)&p, sizeof( p ) );
-};
+	// Reading the pointer's bytes through char is always legal.
+	return hash_index_store( reinterpret_cast< const char * >( &p ), sizeof( p ) );
+}
 
 inline IVP_BOOL IVP_VHash_Store::compare_store_hash( void *pointer0,
                                                      void *pointer1 )
 {
 	return (IVP_BOOL)( pointer0 == pointer1 );
-};
+}
 
 // For threadsave usage
 template< typename T >
@@ -213,7 +235,7 @@ public:
 
 	T *get_next_element( IVP_VHash *vec )
 	{
-		while ( 1 )
+		while ( true )
 		{
 			if ( index < 0 )
 				return nullptr;
