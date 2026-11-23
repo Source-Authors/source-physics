@@ -3,16 +3,26 @@
 #include <ivp_physics.hxx>
 #include "ivu_min_list.hxx"
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <limits>
+
 IVP_U_Min_List::IVP_U_Min_List( int start_size )
 {
-	// If this assertion triggers, it's going to overflow...
-	if ( start_size > IVP_U_MINLIST_MAX_ALLOCATION )
-		start_size = IVP_U_MINLIST_MAX_ALLOCATION;
+	// dimhotepus: The old code only clamped the upper bound. start_size <= 0
+	// made elems[malloced_size - 1] below underflow. Clamp to [1, MAX]. The old
+	// comment claimed an assertion here, but it was a silent clamp.
+	unsigned int initial = start_size < 1 ? 1u : static_cast< unsigned int >( start_size );
+	if ( initial > IVP_U_MINLIST_MAX_ALLOCATION )
+		initial = IVP_U_MINLIST_MAX_ALLOCATION;
 
-	malloced_size = start_size;
+	malloced_size = initial;
 	counter = 0;
-	elems = (IVP_U_Min_List_Element *)p_malloc( sizeof( IVP_U_Min_List_Element ) *
-	                                            malloced_size );
+	elems = static_cast< IVP_U_Min_List_Element * >(
+		p_malloc( sizeof( IVP_U_Min_List_Element ) * malloced_size ) );
+	IVP_ASSERT( elems != nullptr );
+
 	unsigned int i = 0;
 	free_list = i;
 	for ( ; i < malloced_size; i++ )
@@ -53,17 +63,26 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 	}
 	else
 	{
-		// If this assertion triggers, it's going to overflow...
-		IVP_ASSERT( malloced_size != IVP_U_MINLIST_MAX_ALLOCATION );
+		// dimhotepus: The old code only asserted here. In release builds, at
+		// capacity, the clamped "new" size equaled the old one, return_index
+		// became malloced_size (out of range) and the last live element's next
+		// link was overwritten. Fail loudly instead of corrupting the heap.
+		if ( malloced_size >= IVP_U_MINLIST_MAX_ALLOCATION )
+		{
+			std::fprintf( stderr, "IVP_U_Min_List: out of capacity (%u elements)\n",
+			              malloced_size );
+			IVP_ASSERT( false );
+			std::abort();
+		}
 
 		// Clamp allocation to IVP_U_MINLIST_MAX_ALLOCATION
-		// dimhotepus: int -> unisigned int.
+		// dimhotepus: int -> unsigned int.
 		unsigned int nNewMallocSize = malloced_size * 2 + 1;
 		if ( nNewMallocSize > IVP_U_MINLIST_MAX_ALLOCATION )
 			nNewMallocSize = IVP_U_MINLIST_MAX_ALLOCATION;
 
 #ifndef NDEBUG
-		// dimhotepus: int -> unisigned int.
+		// dimhotepus: int -> unsigned int.
 		static unsigned int g_ErrorCount = 0;
 		if ( g_ErrorCount < 3u )
 		{
@@ -78,29 +97,43 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 		}
 #endif
 
-		unsigned int            i;
-		IVP_U_Min_List_Element *new_elems = (IVP_U_Min_List_Element *)p_malloc(
-		sizeof( IVP_U_Min_List_Element ) * ( nNewMallocSize + 1 ) );
+		// dimhotepus: Allocate exactly nNewMallocSize. The old "+ 1" spare
+		// element only hid the out-of-range return_index at capacity.
+		IVP_U_Min_List_Element *new_elems = static_cast< IVP_U_Min_List_Element * >(
+		p_malloc( sizeof( IVP_U_Min_List_Element ) * nNewMallocSize ) );
+		IVP_ASSERT( new_elems != nullptr );
 
-		for ( i = 0; i < malloced_size; i++ )
-		{
-			new_elems[i] = elems[i];
-		}
+		// dimhotepus: Elements are trivially copyable (static_assert in the
+		// header), so one memcpy replaces the element-by-element loop.
+		std::memcpy( new_elems, elems, sizeof( IVP_U_Min_List_Element ) * malloced_size );
 
+		const unsigned int old_size = malloced_size;
 		malloced_size = nNewMallocSize;
 
 		P_FREE( elems );
 		elems = new_elems;
-		return_index = i;
-		e = &elems[i++];
-		free_list = i;
 
-		for ( ; i < malloced_size; i++ )
+		return_index = old_size;
+		e = &elems[old_size];
+
+		// dimhotepus: Only link new free slots if there are any. The old code
+		// set free_list = old_size + 1 unconditionally, which is out of range when
+		// the new array has exactly one new slot, and then clobbered
+		// elems[malloced_size - 1].next.
+		unsigned int i = old_size + 1;
+		if ( i < malloced_size )
 		{
-			elems[i].next = i + 1;
+			free_list = i;
+			for ( ; i < malloced_size; i++ )
+			{
+				elems[i].next = i + 1;
+			}
+			elems[malloced_size - 1].next = IVP_U_MINLIST_UNUSED;
 		}
-
-		elems[malloced_size - 1].next = IVP_U_MINLIST_UNUSED;
+		else
+		{
+			free_list = IVP_U_MINLIST_UNUSED;
+		}
 	}
 
 	e->element = elem;
@@ -110,7 +143,11 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 	e->long_next = IVP_U_MINLIST_LONG_UNUSED;
 #endif
 
-	if ( value <= min_value )
+	// dimhotepus: Added "first_element == UNUSED". min_value starts at
+	// IVP_U_MINLIST_MAXVALUE (1e10) but the assert above allows values up to
+	// P_FLOAT_MAX (1e16). A bigger value added to an empty list skipped this fast
+	// path and then used elems[UNUSED] in release builds.
+	if ( first_element == IVP_U_MINLIST_UNUSED || value <= min_value )
 	{
 		// quick insert first element
 		min_value = value;
@@ -135,12 +172,12 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 	IVP_ASSERT( first_element != IVP_U_MINLIST_UNUSED );
 	// find place to insert element, we know at least one exists
 
-	// dimhotepus: int -> unisigned int.
+	// dimhotepus: int -> unsigned int.
 	unsigned int lastj = first_element;
 
 #ifdef IVP_U_MINLIST_USELONG
 	// lastj is the last element after we want to insert
-	// dimhotepus: int -> unisigned int.
+	// dimhotepus: int -> unsigned int.
 	unsigned int lo = first_long;
 	unsigned int max_cmp_len = 3;
 	while ( lo != IVP_U_MINLIST_UNUSED )
@@ -156,17 +193,18 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 		lo = flong->long_next;
 	}
 
-	// dimhotepus: int -> unisigned int.
+	// dimhotepus: int -> unsigned int.
 	unsigned int firstj_after = lastj;
 	unsigned int count_cmp = 0;
 #endif
 
-	IVP_U_Min_List_Element *f = &elems[lastj];
-	// dimhotepus: int -> unisigned int.
-	unsigned int j;
-	for ( j = f->next; j != IVP_U_MINLIST_UNUSED; j = f->next )
+	// dimhotepus: Replaced "goto end" with straight-line code. Same links are
+	// written: e goes between lastj (last element with a smaller value) and j
+	// (first element not smaller, or UNUSED at the end of the list).
+	unsigned int j = elems[lastj].next;
+	while ( j != IVP_U_MINLIST_UNUSED )
 	{
-		f = &elems[j];
+		const IVP_U_Min_List_Element *f = &elems[j];
 
 #ifdef IVP_U_MINLIST_USELONG
 		count_cmp++;
@@ -174,21 +212,20 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 		if ( value > f->value )
 		{
 			lastj = j;
+			j = f->next;
 			continue;
 		}
-		IVP_U_Min_List_Element *l = &elems[lastj];
-		e->next = l->next;
-		elems[j].prev = return_index;
-		e->prev = lastj;
-		l->next = return_index;
-		goto end;
+		break;
 	}
-	// insert after the last element f
+
 	e->next = j;
 	e->prev = lastj;
-	f->next = return_index;
+	elems[lastj].next = return_index;
+	if ( j != IVP_U_MINLIST_UNUSED )
+	{
+		elems[j].prev = return_index;
+	}
 
-end:
 #ifdef IVP_U_MINLIST_USELONG
 	// insert long jmp
 	if ( count_cmp > max_cmp_len )
@@ -242,6 +279,7 @@ end:
 void IVP_U_Min_List::remove_minlist_elem( IVP_U_MINLIST_INDEX index )
 {
 	IVP_ASSERT( index < malloced_size );
+	IVP_ASSERT( counter > 0 );
 
 	IVP_U_Min_List_Element *e = &elems[index];
 	unsigned int            prev = e->prev;
@@ -304,12 +342,21 @@ void IVP_U_Min_List::remove_minlist_elem( IVP_U_MINLIST_INDEX index )
 
 void IVP_U_Min_List::check()
 {
+	// dimhotepus: Was "last_val = 0", which made the sortedness assert fail for
+	// negative values. Start at the lowest float instead.
+	constexpr IVP_U_MINLIST_FIXED_POINT lowest =
+	-std::numeric_limits< IVP_U_MINLIST_FIXED_POINT >::max();
+
 	{
-		IVP_U_MINLIST_FIXED_POINT last_val = 0;
+		IVP_U_MINLIST_FIXED_POINT last_val = lowest;
+		// dimhotepus: Bound the walk, so a corrupted (cyclic) list asserts
+		// instead of looping forever.
+		unsigned int steps = 0;
 		for ( unsigned int i = first_element; i != IVP_U_MINLIST_UNUSED;
 		      i = elems[i].next )
 		{
 			IVP_ASSERT( i < malloced_size );
+			IVP_ASSERT( ++steps <= malloced_size );
 
 			IVP_U_Min_List_Element *e = &elems[i];
 			IVP_ASSERT( last_val <= e->value );
@@ -329,15 +376,19 @@ void IVP_U_Min_List::check()
 				IVP_ASSERT( elems[e->next].prev == i );
 			}
 		}
+		IVP_USE( last_val );
+		IVP_USE( steps );
 	}
 
 #ifdef IVP_U_MINLIST_USELONG
 	{
-		IVP_U_MINLIST_FIXED_POINT last_val = 0;
+		IVP_U_MINLIST_FIXED_POINT last_val = lowest;
+		unsigned int              steps = 0;
 		for ( unsigned int i = first_long; i != IVP_U_MINLIST_UNUSED;
 		      i = elems[i].long_next )
 		{
 			IVP_ASSERT( i < malloced_size );
+			IVP_ASSERT( ++steps <= malloced_size );
 
 			IVP_U_Min_List_Element *e = &elems[i];
 			IVP_ASSERT( last_val <= e->value );
@@ -357,6 +408,8 @@ void IVP_U_Min_List::check()
 				IVP_ASSERT( elems[e->long_next].long_prev == i );
 			}
 		}
+		IVP_USE( last_val );
+		IVP_USE( steps );
 	}
 #endif
 }
