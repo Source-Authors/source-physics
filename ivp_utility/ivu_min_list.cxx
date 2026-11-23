@@ -8,6 +8,8 @@
 #include <cstring>
 #include <limits>
 
+#include <atomic>
+
 IVP_U_Min_List::IVP_U_Min_List( int start_size )
 {
 	// dimhotepus: The old code only clamped the upper bound. start_size <= 0
@@ -83,17 +85,19 @@ IVP_U_MINLIST_INDEX IVP_U_Min_List::add( void                     *elem,
 
 #ifndef NDEBUG
 		// dimhotepus: int -> unsigned int.
-		static unsigned int g_ErrorCount = 0;
-		if ( g_ErrorCount < 3u )
+		// dimhotepus: Atomic, so concurrent growth in threaded debug builds is not a
+		// data race on this diagnostic counter.
+		static std::atomic_uint g_ErrorCount{ 0 };
+		// dimhotepus: Claim a warning slot with one atomic op. The old load-then-
+		// increment pair could let several threads pass the < 3 check together and
+		// over-print. Relaxed order is enough for a pure counter.
+		if ( nNewMallocSize > 2000u &&
+		     g_ErrorCount.fetch_add( 1u, std::memory_order_relaxed ) < 3u )
 		{
-			if ( nNewMallocSize > 2000u )
-			{
-				ivp_message(
-				"Warning! Large min_list array size (%u)! Could indicate long "
-				"sweeps\n",
-				nNewMallocSize );
-				++g_ErrorCount;
-			}
+			ivp_message(
+			"Warning! Large min_list array size (%u)! Could indicate long "
+			"sweeps\n",
+			nNewMallocSize );
 		}
 #endif
 
