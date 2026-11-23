@@ -11,10 +11,41 @@
 // values when it is necessary. It is used e.g. for IVP_Actuator_Forces.
 
 #include <ivp_physics.hxx>
-#include <cstring>
-
 #include <ivu_active_value.hxx>
 #include <ivu_active_value_hash.hxx>
+
+#include <climits>
+#include <cstddef>
+#include <cstring>
+
+namespace
+{
+// dimhotepus: (int)double is UB for NaN and out-of-range values. Saturate
+// instead, NaN -> 0.
+[[nodiscard]] inline int ivp_active_double_to_int( IVP_DOUBLE v )
+{
+	if ( !( v > static_cast< IVP_DOUBLE >( INT_MIN ) ) )
+		return v != v ? 0 : INT_MIN;
+	if ( v >= static_cast< IVP_DOUBLE >( INT_MAX ) )
+		return INT_MAX;
+	return static_cast< int >( v );
+}
+
+// dimhotepus: The "name is a number" test was copy-pasted in two functions.
+[[nodiscard]] inline bool ivp_active_name_is_number( const char *n )
+{
+	int pos = 0;
+	if ( n[pos] == '-' )
+		pos++; // for negative sign
+	if ( n[pos] == '.' )
+		pos++; // for omitted leading zero
+	return n[pos] >= '0' && n[pos] <= '9';
+}
+} // namespace
+
+// ----------------------------------------------------------------------------
+// IVP_Active_Value_Hash
+// ----------------------------------------------------------------------------
 
 IVP_Active_Value_Hash::~IVP_Active_Value_Hash()
 {
@@ -32,7 +63,11 @@ IVP_Active_Value_Hash::~IVP_Active_Value_Hash()
 int IVP_Active_Value_Hash::object_to_index( IVP_U_Active_Value *av )
 {
 	const char *name = av->get_name();
-	return hash_index( name, strlen( name ) );
+	// dimhotepus: std::strlen( nullptr ) is UB. A null name hashes as "".
+	if ( !name )
+		name = "";
+	// dimhotepus: hash_index takes hk_intp, no narrowing to int.
+	return hash_index( name, static_cast< hk_intp >( std::strlen( name ) ) );
 }
 
 IVP_BOOL IVP_Active_Value_Hash::compare( const void *elem0,
@@ -43,12 +78,45 @@ IVP_BOOL IVP_Active_Value_Hash::compare( const void *elem0,
 
 	const char *name0 = av0->get_name();
 	const char *name1 = av1->get_name();
+	// dimhotepus: Null names (the manager's probe value) never reach strcmp.
+	if ( !name0 || !name1 )
+		return name0 == name1 ? IVP_TRUE : IVP_FALSE;
 	if ( p_strcmp( name0, name1 ) == 0 )
 		return IVP_TRUE;
 	return IVP_FALSE;
 }
 
-int IVP_U_Active_Float::change_meter = -1;
+void IVP_Active_Value_Hash::add_active_value( IVP_U_Active_Value *av )
+{
+	add_elem( av, object_to_index( av ) );
+	av->add_reference();
+}
+
+bool IVP_Active_Value_Hash::remove_active_value( IVP_U_Active_Value *av )
+{
+	IVP_U_Active_Value *av_out =
+	(IVP_U_Active_Value *)remove_elem( av, object_to_index( av ) );
+	// dimhotepus: The old code dereferenced av_out unconditionally, which
+	// crashed when nothing was found.
+	if ( !av_out )
+		return false;
+	av_out->remove_reference(); // may delete av_out
+	return true;
+}
+
+IVP_U_Active_Value *IVP_Active_Value_Hash::find_active_value( IVP_U_Active_Value *av )
+{
+	return (IVP_U_Active_Value *)find_elem( av, object_to_index( av ) );
+}
+
+// ----------------------------------------------------------------------------
+// IVP_U_Active_Value_Manager
+// ----------------------------------------------------------------------------
+
+// dimhotepus: Was int change_meter = -1. Unsigned so the per-set increment can
+// wrap without UB. The value (0xFFFFFFFF) and the first increment to 0 behave
+// exactly as -1 -> 0 did.
+unsigned int IVP_U_Active_Float::change_meter = static_cast< unsigned int >( -1 );
 
 IVP_U_Active_Value_Manager::IVP_U_Active_Value_Manager(
 IVP_BOOL delete_on_env_delete_in )
@@ -57,8 +125,10 @@ IVP_BOOL delete_on_env_delete_in )
 	// init name hash
 	this->floats_name_hash = new IVP_Active_Value_Hash( IVP_U_MOD_NAME_HASH_SIZE );
 	this->ints_name_hash = new IVP_Active_Value_Hash( IVP_U_MOD_NAME_HASH_SIZE );
-	this->search_active_value = new IVP_U_Active_Value( NULL );
-	this->mod_current_time = NULL;
+	this->search_active_value = new IVP_U_Active_Value( nullptr );
+	this->mod_current_time = nullptr;
+	// Note: virtual call in a constructor. Overrides in derived managers are not
+	// reached from here.
 	this->init_active_values_generic();
 }
 
@@ -67,11 +137,25 @@ IVP_U_Active_Value_Manager::~IVP_U_Active_Value_Manager()
 	P_DELETE( this->floats_name_hash ); // removes references two
 	P_DELETE( this->ints_name_hash );
 	P_DELETE( this->search_active_value );
+	// dimhotepus: The hash just released (and probably deleted) this value.
+	this->mod_current_time = nullptr;
+}
+
+IVP_U_Active_Value *IVP_U_Active_Value_Manager::find_named(
+IVP_Active_Value_Hash *hash, const char *name )
+{
+	if ( !name )
+		return nullptr;
+	// The probe value borrows the caller's string for the lookup only.
+	search_active_value->name = name; // bad hack, thats ok
+	IVP_U_Active_Value *found = hash->find_active_value( search_active_value );
+	search_active_value->name = nullptr;
+	return found;
 }
 
 void IVP_U_Active_Value_Manager::init_active_values_generic()
 {
-	this->mod_current_time = new IVP_U_Active_Terminal_Double(
+	auto *time = new IVP_U_Active_Terminal_Double(
 	IVP_ACTIVE_FLOAT_CURRENT_TIME_NAME, 0.0f );
 	auto *null = new IVP_U_Active_Terminal_Double( "double_null", 0.0f );
 	// dimhotepus: Do not leak insert fails.
@@ -79,14 +163,25 @@ void IVP_U_Active_Value_Manager::init_active_values_generic()
 	{
 		delete null;
 	}
-	this->insert_active_float( mod_current_time );
+	// dimhotepus: This insert was unchecked and mod_current_time was assigned
+	// before it. If it failed (init called twice), the new value leaked and
+	// mod_current_time pointed at an unowned object.
+	if ( this->insert_active_float( time ) )
+	{
+		this->mod_current_time = time;
+	}
+	else
+	{
+		delete time;
+	}
 }
 
 // dimhotepus: void -> bool.
 bool IVP_U_Active_Value_Manager::insert_active_float( IVP_U_Active_Float *mod )
 {
 	const char *name = mod->get_name();
-	if ( p_strlen( name ) == 0 )
+	// dimhotepus: p_strlen( nullptr ) is UB for a nameless value.
+	if ( !name || !*name )
 	{
 		ivp_message(
 		"insert_active_float: tried to insert active_IVP_FLOAT without "
@@ -94,8 +189,7 @@ bool IVP_U_Active_Value_Manager::insert_active_float( IVP_U_Active_Float *mod )
 		return false;
 	}
 
-	auto *found = (IVP_U_Active_Float *)floats_name_hash->find_active_value( mod );
-	if ( found )
+	if ( find_named( floats_name_hash, name ) )
 	{
 		ivp_message( "insert_active_float: name '%s' already exists in name_hash!\n",
 		             name );
@@ -108,29 +202,30 @@ bool IVP_U_Active_Value_Manager::insert_active_float( IVP_U_Active_Float *mod )
 	return true;
 }
 
-void IVP_U_Active_Value_Manager::insert_active_int( IVP_U_Active_Int *mod )
+bool IVP_U_Active_Value_Manager::insert_active_int( IVP_U_Active_Int *mod )
 {
 	const char *name = mod->get_name();
-	if ( p_strlen( name ) == 0 )
+	if ( !name || !*name )
 	{
 		ivp_message(
 		"insert_active_int: tried to insert active_int without name!\n" );
-		return;
+		return false;
 	}
 
-	IVP_U_Active_Int *found =
-	(IVP_U_Active_Int *)ints_name_hash->find_active_value( mod );
-	if ( found )
+	if ( find_named( ints_name_hash, name ) )
 	{
 		ivp_message( "insert_active_int: name '%s' already exists in name_hash!\n",
 		             name );
-		return;
+		return false;
 	}
 
+	// dimhotepus: Removed the extra mod->add_reference(). add_active_value
+	// already takes the hash's reference, and the hash destructor releases
+	// exactly one. The extra one made int values leak. Floats never had it.
 	ints_name_hash->add_active_value( mod );
-	mod->add_reference();
 
 	mod->l_mod_manager = this; // provide backlink
+	return true;
 }
 
 void IVP_U_Active_Value_Manager::remove_active_float( IVP_U_Active_Float *mod )
@@ -201,140 +296,135 @@ IVP_U_Active_Float *IVP_U_Active_Value_Manager::get_active_float_by_name(
 const char *i_name )
 {
 	if ( !i_name )
-		return 0;
+		return nullptr;
 	// check module hash first
-	search_active_value->name = i_name; // bad hack, thats ok
-
-	IVP_U_Active_Float *mod =
-	(IVP_U_Active_Float *)floats_name_hash->find_active_value(
-	search_active_value );
-
-	search_active_value->name = NULL;
-
-	if ( mod )
+	if ( auto *mod = static_cast< IVP_U_Active_Float * >( find_named( floats_name_hash, i_name ) ) )
 		return mod;
 
 	// if module name is a number, generate terminal active_floats with
 	// that (IVP_DOUBLE) value on the fly.
-	int pos = 0;
-	if ( i_name[pos] == '-' )
-		pos++; // for negative sign
-	if ( i_name[pos] == '.' )
-		pos++; // for omitted leading zero
-	if ( i_name[pos] >= '0' && i_name[pos] <= '9' )
+	if ( ivp_active_name_is_number( i_name ) )
 	{
-		mod = new IVP_U_Active_Terminal_Double( i_name, p_atof( i_name ) );
-		this->insert_active_float( mod );
+		auto *mod = new IVP_U_Active_Terminal_Double( i_name, p_atof( i_name ) );
+		// dimhotepus: Do not leak or return an unowned value if insert fails.
+		if ( !this->insert_active_float( mod ) )
+		{
+			delete mod;
+			return nullptr;
+		}
 		return mod;
 	}
-	return NULL;
+	return nullptr;
 }
 
 IVP_U_Active_Int *IVP_U_Active_Value_Manager::get_active_int_by_name(
 const char *i_name )
 {
 	if ( !i_name )
-		return 0;
+		return nullptr;
 	// check module hash first
-	search_active_value->name = i_name; // bad hack, thats ok
-
-	IVP_U_Active_Int *mod = (IVP_U_Active_Int *)ints_name_hash->find_active_value(
-	search_active_value );
-	search_active_value->name = NULL;
-
-	if ( mod )
+	if ( auto *mod = static_cast< IVP_U_Active_Int * >( find_named( ints_name_hash, i_name ) ) )
 		return mod;
 
-	// if module name is a number, generate terminal active_floats with
-	// that (IVP_DOUBLE) value on the fly.
-	int pos = 0;
-	if ( i_name[pos] == '-' )
-		pos++; // for negative sign
-	if ( i_name[pos] == '.' )
-		pos++; // for omitted leading zero
-	if ( i_name[pos] >= '0' && i_name[pos] <= '9' )
+	// if module name is a number, generate terminal active_ints with
+	// that int value on the fly.
+	if ( ivp_active_name_is_number( i_name ) )
 	{
-		mod = new IVP_U_Active_Terminal_Int( i_name, p_atoi( i_name ) );
-		this->insert_active_int( mod );
+		auto *mod = new IVP_U_Active_Terminal_Int( i_name, p_atoi( i_name ) );
+		if ( !this->insert_active_int( mod ) )
+		{
+			delete mod;
+			return nullptr;
+		}
 		return mod;
 	}
-	return NULL;
+	return nullptr;
 }
 
 IVP_U_Active_Float *IVP_U_Active_Value_Manager::install_active_float(
 const char *i_name, IVP_DOUBLE value )
 {
-	// check module hash first
-	search_active_value->name = i_name; // bad hack, thats ok
-	IVP_U_Active_Float *mod =
-	(IVP_U_Active_Float *)floats_name_hash->find_active_value(
-	search_active_value );
-	search_active_value->name = NULL;
+	// dimhotepus: A null or empty name can never be inserted. Previously the new
+	// value was created, the insert failed, and the unowned value was returned.
+	if ( !i_name || !*i_name )
+		return nullptr;
 
-	if ( mod )
+	// check module hash first
+	if ( auto *mod = static_cast< IVP_U_Active_Float * >( find_named( floats_name_hash, i_name ) ) )
 		return mod;
 
-	IVP_U_Active_Terminal_Double *atd =
-	new IVP_U_Active_Terminal_Double( i_name, value );
-	this->insert_active_float( atd );
+	auto *atd = new IVP_U_Active_Terminal_Double( i_name, value );
+	if ( !this->insert_active_float( atd ) )
+	{
+		delete atd;
+		return nullptr;
+	}
 	return atd;
 }
 
 IVP_U_Active_Terminal_Double *IVP_U_Active_Value_Manager::create_active_float(
 const char *i_name, IVP_DOUBLE value )
 {
+	if ( !i_name || !*i_name )
+		return nullptr;
+
 	// check module hash first
-	search_active_value->name = i_name; // bad hack, thats ok
-	IVP_U_Active_Float *mod =
-	(IVP_U_Active_Float *)floats_name_hash->find_active_value(
-	search_active_value );
-	search_active_value->name = NULL;
+	if ( find_named( floats_name_hash, i_name ) )
+		return nullptr;
 
-	if ( mod )
-		return NULL;
-
-	IVP_U_Active_Terminal_Double *atd =
-	new IVP_U_Active_Terminal_Double( i_name, value );
-	this->insert_active_float( atd );
+	auto *atd = new IVP_U_Active_Terminal_Double( i_name, value );
+	if ( !this->insert_active_float( atd ) )
+	{
+		delete atd;
+		return nullptr;
+	}
 	return atd;
 }
 
 IVP_U_Active_Terminal_Int *IVP_U_Active_Value_Manager::create_active_int(
 const char *i_name, int value )
 {
-	// check module hash first
-	search_active_value->name = i_name; // bad hack, thats ok
-	IVP_U_Active_Int *mod = (IVP_U_Active_Int *)ints_name_hash->find_active_value(
-	search_active_value );
-	search_active_value->name = NULL;
-	if ( mod )
-		return NULL;
+	if ( !i_name || !*i_name )
+		return nullptr;
 
-	IVP_U_Active_Terminal_Int *atd = new IVP_U_Active_Terminal_Int( i_name, value );
-	this->insert_active_int( atd );
+	// check module hash first
+	if ( find_named( ints_name_hash, i_name ) )
+		return nullptr;
+
+	auto *atd = new IVP_U_Active_Terminal_Int( i_name, value );
+	if ( !this->insert_active_int( atd ) )
+	{
+		delete atd;
+		return nullptr;
+	}
 	return atd;
 }
 
 IVP_U_Active_Int *IVP_U_Active_Value_Manager::install_active_int(
 const char *i_name, int value )
 {
+	if ( !i_name || !*i_name )
+		return nullptr;
+
 	// check module hash first
-	search_active_value->name = i_name; // bad hack, thats ok
-	IVP_U_Active_Int *mod = (IVP_U_Active_Int *)ints_name_hash->find_active_value(
-	search_active_value );
-	search_active_value->name = NULL;
-	if ( mod )
+	if ( auto *mod = static_cast< IVP_U_Active_Int * >( find_named( ints_name_hash, i_name ) ) )
 		return mod;
 
-	IVP_U_Active_Terminal_Int *atd = new IVP_U_Active_Terminal_Int( i_name, value );
-	this->insert_active_int( atd );
+	auto *atd = new IVP_U_Active_Terminal_Int( i_name, value );
+	if ( !this->insert_active_int( atd ) )
+	{
+		delete atd;
+		return nullptr;
+	}
 	return atd;
 }
 
 //////////////
 IVP_U_Active_Value::IVP_U_Active_Value( const char *name_ )
 {
-	name = p_strdup( name_ );
+	// dimhotepus: The manager's probe value is created with a null name, and
+	// p_strdup( nullptr ) is not guaranteed to be safe.
+	name = name_ ? p_strdup( name_ ) : nullptr;
 	reference_count = 0;
 }
 
@@ -348,8 +438,8 @@ IVP_U_Active_Float::IVP_U_Active_Float( const char *i_name ) :
 	IVP_U_Active_Value( i_name )
 {
 	// memclear not allowed because of virt. functions
-	this->last_update = 0;      // should be updated
-	this->l_mod_manager = NULL; // link is done by manager
+	this->last_update = 0;         // should be updated
+	this->l_mod_manager = nullptr; // link is done by manager
 	this->double_value = 0.0f;
 }
 
@@ -357,8 +447,8 @@ IVP_U_Active_Int::IVP_U_Active_Int( const char *i_name ) :
 	IVP_U_Active_Value( i_name )
 {
 	// memclear not allowed because of virt. functions
-	this->last_update = 0;      // should be updated
-	this->l_mod_manager = NULL; // link is done by manager
+	this->last_update = 0;         // should be updated
+	this->l_mod_manager = nullptr; // link is done by manager
 	this->int_value = 0;
 }
 
@@ -368,7 +458,6 @@ IVP_U_Active_Float::~IVP_U_Active_Float()
 	//     name_hash->remove(this->name);
 	// }
 	// must be done by hand (or by manager), no arg supported by destructor !
-	return;
 }
 
 IVP_U_Active_Int::~IVP_U_Active_Int()
@@ -392,7 +481,7 @@ void IVP_U_Active_Float::update_derived()
 
 void IVP_U_Active_Int::update_derived()
 {
-	// update all active_float_listener which depend on my value
+	// update all active_int_listener which depend on my value
 
 	for ( int i = derived_mods.len() - 1; i >= 0; i-- )
 	{
@@ -412,9 +501,9 @@ IVP_U_Active_Float_Listener *derived_active_IVP_FLOAT )
 void IVP_U_Active_Float::remove_dependency(
 IVP_U_Active_Float_Listener *derived_active_IVP_FLOAT )
 {
-	// add update callback
+	// remove update callback
 	this->derived_mods.remove( derived_active_IVP_FLOAT );
-	this->remove_reference();
+	this->remove_reference(); // may delete this: do not touch members after
 }
 
 void IVP_U_Active_Int::add_dependency(
@@ -428,9 +517,9 @@ IVP_U_Active_Int_Listener *derived_active_int )
 void IVP_U_Active_Int::remove_dependency(
 IVP_U_Active_Int_Listener *derived_active_int )
 {
-	// add update callback
+	// remove update callback
 	this->derived_mods.remove( derived_active_int );
-	this->remove_reference();
+	this->remove_reference(); // may delete this: do not touch members after
 }
 
 /**** BASIC VALUES ********************/
@@ -477,7 +566,7 @@ void IVP_U_Active_Terminal_Double::set_double( IVP_DOUBLE new_value,
                                                IVP_BOOL   delayed_update )
 {
 	this->double_value = new_value;
-	this->change_meter++;
+	IVP_U_Active_Float::change_meter++;
 	if ( delayed_update && l_mod_manager )
 	{
 		l_mod_manager->delay_active_float( this );
@@ -544,7 +633,6 @@ IVP_U_Active_Sine::IVP_U_Active_Sine( const char         *i_name,
 IVP_U_Active_Sine::~IVP_U_Active_Sine()
 {
 	this->time_mod->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Sine::active_float_changed( IVP_U_Active_Float * )
@@ -595,7 +683,6 @@ IVP_U_Active_Square::IVP_U_Active_Square( const char         *i_name,
 IVP_U_Active_Square::~IVP_U_Active_Square()
 {
 	time_mod->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Square::active_float_changed( IVP_U_Active_Float * )
@@ -605,7 +692,8 @@ void IVP_U_Active_Square::active_float_changed( IVP_U_Active_Float * )
 	last_update = change_meter;
 
 	IVP_DOUBLE time = time_mod->give_double_value();
-	int        h = (int)( time * frequence ) & 1;
+	// dimhotepus: Saturating conversion. (int)double is UB for NaN / huge values.
+	int        h = ivp_active_double_to_int( time * frequence ) & 1;
 	IVP_DOUBLE new_val = ( h ) ? high_val : low_val;
 
 	if ( !hk_Math::almost_equal( new_val, this->double_value ) )
@@ -632,6 +720,9 @@ IVP_U_Active_Pulse::IVP_U_Active_Pulse( const char         *i_name,
                                         IVP_DOUBLE i_high_val ) :
 	IVP_U_Active_Float( i_name )
 {
+	// dimhotepus: m2 is a modulus. Zero (or negative) made "% m2" divide by zero.
+	IVP_ASSERT( i_m2 > 0 );
+
 	this->time_mod = i_time_mod;
 
 	time_mod->add_dependency( this );
@@ -648,7 +739,6 @@ IVP_U_Active_Pulse::IVP_U_Active_Pulse( const char         *i_name,
 IVP_U_Active_Pulse::~IVP_U_Active_Pulse()
 {
 	time_mod->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Pulse::active_float_changed( IVP_U_Active_Float * )
@@ -658,7 +748,9 @@ void IVP_U_Active_Pulse::active_float_changed( IVP_U_Active_Float * )
 	last_update = change_meter;
 
 	IVP_DOUBLE time = time_mod->give_double_value();
-	int        val = (int)( time * frequence * m2 ) % m2;
+	// dimhotepus: Release builds skip the assert, so guard the modulus too.
+	// Saturating conversion, see Square.
+	const int  val = m2 > 0 ? ivp_active_double_to_int( time * frequence * m2 ) % m2 : m1;
 	IVP_DOUBLE new_val = ( val < m1 ) ? high_val : low_val;
 
 	if ( !hk_Math::almost_equal( new_val, this->double_value ) )
@@ -699,7 +791,6 @@ IVP_U_Active_Add::~IVP_U_Active_Add()
 {
 	mod0->remove_dependency( this );
 	mod1->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Add::active_float_changed( IVP_U_Active_Float * )
@@ -710,7 +801,7 @@ void IVP_U_Active_Add::active_float_changed( IVP_U_Active_Float * )
 
 	IVP_DOUBLE new_val = mod0->give_double_value() + mod1->give_double_value();
 
-	if ( !hk_Math::almost_equal( new_val, this->give_double_value() ) )
+	if ( !hk_Math::almost_equal( new_val, this->double_value ) )
 	{
 		this->double_value = new_val;
 		this->update_derived();
@@ -746,7 +837,6 @@ IVP_U_Active_Sub::~IVP_U_Active_Sub()
 {
 	mod0->remove_dependency( this );
 	mod1->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Sub::active_float_changed( IVP_U_Active_Float * )
@@ -789,14 +879,14 @@ IVP_U_Active_Add_Multiple::IVP_U_Active_Add_Multiple( const char         *i_name
 	mod0->add_dependency( this );
 	mod1->add_dependency( this );
 
-	this->active_float_changed( (IVP_U_Active_Float *)this );
+	// dimhotepus: Dropped the redundant (IVP_U_Active_Float *) cast of this.
+	this->active_float_changed( this );
 }
 
 IVP_U_Active_Add_Multiple::~IVP_U_Active_Add_Multiple()
 {
 	mod0->remove_dependency( this );
 	mod1->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Add_Multiple::active_float_changed( IVP_U_Active_Float * )
@@ -841,14 +931,13 @@ IVP_U_Active_Mult::IVP_U_Active_Mult( const char         *i_name,
 	mod0->add_dependency( this );
 	mod1->add_dependency( this );
 
-	this->active_float_changed( (IVP_U_Active_Float *)this );
+	this->active_float_changed( this );
 }
 
 IVP_U_Active_Mult::~IVP_U_Active_Mult()
 {
 	mod0->remove_dependency( this );
 	mod1->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Mult::active_float_changed( IVP_U_Active_Float * )
@@ -898,13 +987,12 @@ IVP_U_Active_Limit::IVP_U_Active_Limit( const char         *i_name,
 
 	mod->add_dependency( this );
 
-	this->active_float_changed( (IVP_U_Active_Float *)this );
+	this->active_float_changed( this );
 }
 
 IVP_U_Active_Limit::~IVP_U_Active_Limit()
 {
 	mod->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Limit::active_float_changed( IVP_U_Active_Float * )
@@ -953,7 +1041,11 @@ IVP_U_Active_Float *i_mod_low_val, IVP_U_Active_Float *i_mod_high_val ) :
 	mod_low_val->add_dependency( this );
 	mod_high_val->add_dependency( this );
 
-	this->active_float_changed( (IVP_U_Active_Float *)this );
+	// dimhotepus: Was (IVP_U_Active_Float *)this. This class derives from
+	// IVP_U_Active_Int, not IVP_U_Active_Float, so that cast produced a pointer
+	// to nothing valid. The argument is unused, so pass nullptr like
+	// IVP_U_Active_Switch::active_int_changed does.
+	this->active_float_changed( nullptr );
 }
 
 IVP_U_Active_Test_Range::~IVP_U_Active_Test_Range()
@@ -961,7 +1053,6 @@ IVP_U_Active_Test_Range::~IVP_U_Active_Test_Range()
 	mod_test->remove_dependency( this );
 	mod_low_val->remove_dependency( this );
 	mod_high_val->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Test_Range::active_float_changed( IVP_U_Active_Float * )
@@ -1018,7 +1109,6 @@ IVP_U_Active_Switch::~IVP_U_Active_Switch()
 	mod_cond->remove_dependency( this );
 	mod_true->remove_dependency( this );
 	mod_false->remove_dependency( this );
-	return;
 }
 
 void IVP_U_Active_Switch::active_float_changed( IVP_U_Active_Float * )
@@ -1027,16 +1117,11 @@ void IVP_U_Active_Switch::active_float_changed( IVP_U_Active_Float * )
 		return; // already valid
 	last_update = IVP_U_Active_Float::change_meter;
 
-	IVP_DOUBLE new_val;
-	IVP_DOUBLE cond_val = mod_cond->give_int_value();
-	if ( !hk_Math::almost_zero( cond_val ) )
-	{
-		new_val = mod_true->give_double_value();
-	}
-	else
-	{
-		new_val = mod_false->give_double_value();
-	}
+	// dimhotepus: The condition is an int. Compare it directly instead of
+	// converting to double for almost_zero.
+	const IVP_DOUBLE new_val = mod_cond->give_int_value() != 0
+	                           ? mod_true->give_double_value()
+	                           : mod_false->give_double_value();
 
 	if ( !hk_Math::almost_equal( new_val, this->double_value ) )
 	{
@@ -1047,7 +1132,7 @@ void IVP_U_Active_Switch::active_float_changed( IVP_U_Active_Float * )
 
 void IVP_U_Active_Switch::active_int_changed( IVP_U_Active_Int * )
 {
-	active_float_changed( NULL );
+	active_float_changed( nullptr );
 }
 
 int IVP_U_Active_Switch::print()

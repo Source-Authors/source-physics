@@ -44,9 +44,18 @@ private:
 	IVP_U_Active_Terminal_Double *mod_current_time;
 	IVP_U_Active_Value           *search_active_value;
 
+	// dimhotepus: One place for the "temporarily rename the probe value and
+	// look it up" trick that was copy-pasted in six functions. Returns nullptr
+	// for a null name (the hash would call strlen on it).
+	IVP_U_Active_Value *find_named( IVP_Active_Value_Hash *hash, const char *name );
+
 public:
 	IVP_U_Active_Value_Manager( IVP_BOOL delete_on_env_delete );
 	virtual ~IVP_U_Active_Value_Manager();
+
+	// dimhotepus: Owns the hashes and the probe value. A copy would double free.
+	IVP_U_Active_Value_Manager( const IVP_U_Active_Value_Manager & ) = delete;
+	IVP_U_Active_Value_Manager &operator=( const IVP_U_Active_Value_Manager & ) = delete;
 
 	virtual void environment_will_be_deleted( IVP_Environment * )
 	{
@@ -62,18 +71,20 @@ public:
 	virtual void remove_active_float(
 	IVP_U_Active_Float *mod ); // remove from name_hash
 
-	virtual void insert_active_int( IVP_U_Active_Int *mod ); // add to name_hash
+	// dimhotepus: void -> bool, same as insert_active_float, so callers can
+	// tell when the insert was rejected and free the value.
+	virtual bool insert_active_int( IVP_U_Active_Int *mod ); // add to name_hash
 	virtual void remove_active_int(
 	IVP_U_Active_Int *mod ); // remove from name_hash
 
 	virtual void delay_active_float(
 	IVP_U_Active_Float_Delayed
 	*mod ); // put into delay_active_IVP_FLOAT queue, so update can be
-			// executed later (next PSI)
+	        // executed later (next PSI)
 	virtual void delay_active_int(
 	IVP_U_Active_Int_Delayed
 	*mod ); // put into delay_active_IVP_FLOAT queue, so update can be
-			// executed later (next PSI)
+	        // executed later (next PSI)
 
 	virtual void update_delayed_active_values();
 
@@ -82,10 +93,10 @@ public:
 	virtual void refresh_psi_active_values( IVP_Environment *env );
 
 	/********************************************************************************
-   *	Name:	       	install_active_float
-   *	Description:	searches for active float, returns active IVP_FLOAT if
-   *already present, otherwise creates it
-   ********************************************************************************/
+	 *	Name:	       	install_active_float
+	 *	Description:	searches for active float, returns active IVP_FLOAT if
+	 *already present, otherwise creates it
+	 ********************************************************************************/
 	virtual IVP_U_Active_Float           *install_active_float( const char *i_name,
 	                                                            IVP_DOUBLE  value );
 	virtual IVP_U_Active_Terminal_Double *create_active_float( const char *i_name,
@@ -113,6 +124,12 @@ class IVP_U_Active_Float_Listener
 public:
 	virtual void active_float_changed(
 	IVP_U_Active_Float *calling_active_IVP_FLOAT ) = 0;
+
+protected:
+	// dimhotepus: Interface with virtual functions but no virtual destructor.
+	// Protected and non-virtual forbids deleting through this interface, which
+	// would be UB.
+	~IVP_U_Active_Float_Listener() = default;
 };
 
 ///////////////
@@ -129,18 +146,30 @@ class IVP_U_Active_Int_Listener
 
 public:
 	virtual void active_int_changed( IVP_U_Active_Int *calling_active_int ) = 0;
+
+protected:
+	// dimhotepus: See IVP_U_Active_Float_Listener.
+	~IVP_U_Active_Int_Listener() = default;
 };
 
 class IVP_U_Active_Int_Delayed
 {
 public:
 	virtual void update_int() = 0;
+
+protected:
+	// dimhotepus: See IVP_U_Active_Float_Listener.
+	~IVP_U_Active_Int_Delayed() = default;
 };
 
 class IVP_U_Active_Float_Delayed
 {
 public:
 	virtual void update_float() = 0;
+
+protected:
+	// dimhotepus: See IVP_U_Active_Float_Listener.
+	~IVP_U_Active_Float_Delayed() = default;
 };
 
 ///////////////
@@ -158,12 +187,21 @@ public:
 	void add_reference() { reference_count++; }
 	void remove_reference()
 	{
-		reference_count--;
-		if ( !reference_count )
+		// dimhotepus: Was "reference_count--; if ( !reference_count )". An extra
+		// remove drove the count negative, so the object was never freed. Assert
+		// and test the decremented value.
+		IVP_ASSERT( reference_count > 0 );
+		if ( --reference_count == 0 )
 			delete this;
 	}
 	virtual ~IVP_U_Active_Value();
-	IVP_U_Active_Value( const char *name_ );
+	// dimhotepus: explicit, and a null name is allowed (the manager's probe
+	// value has none).
+	explicit IVP_U_Active_Value( const char *name_ );
+
+	// dimhotepus: Reference counted and owns its name. A copy would double free.
+	IVP_U_Active_Value( const IVP_U_Active_Value & ) = delete;
+	IVP_U_Active_Value &operator=( const IVP_U_Active_Value & ) = delete;
 
 	const char *get_name() const { return name; }
 };
@@ -181,18 +219,22 @@ private:
 protected:
 	IVP_U_Active_Value_Manager *l_mod_manager; // backlink
 public:
-	int        last_update;  // contains value of change_meter at last update
-	IVP_DOUBLE double_value; // for IVP_U_MOD_TYPE_DOUBLE active_floats
-	void       update_derived();
+	// dimhotepus: int -> unsigned int. change_meter is incremented on every set,
+	// and signed overflow is UB. Unsigned wraps, with the same equality
+	// semantics as before.
+	unsigned int last_update;  // contains value of change_meter at last update
+	IVP_DOUBLE   double_value; // for IVP_U_MOD_TYPE_DOUBLE active_floats
+	void         update_derived();
 
 public:
-	IVP_U_Active_Float( const char *name );
+	explicit IVP_U_Active_Float( const char *name );
 	virtual ~IVP_U_Active_Float();
 
-	static int change_meter;
+	// dimhotepus: Shared global, not thread-safe (same as before).
+	static unsigned int change_meter;
 
-	IVP_DOUBLE give_double_value() { return double_value; }
-	IVP_FLOAT  get_float_value() { return (IVP_FLOAT)double_value; }
+	IVP_DOUBLE give_double_value() const { return double_value; }
+	IVP_FLOAT  get_float_value() const { return static_cast< IVP_FLOAT >( double_value ); }
 
 	void add_dependency( IVP_U_Active_Float_Listener *derived_active_IVP_FLOAT );
 	void remove_dependency( IVP_U_Active_Float_Listener *derived_active_IVP_FLOAT );
@@ -215,20 +257,21 @@ private:
 protected:
 	IVP_U_Active_Value_Manager *l_mod_manager; // backlink
 public:
-	int last_update; // contains value of change_meter at last update
-	int int_value;   // for IVP_U_MOD_TYPE_INT active_ints
+	// dimhotepus: int -> unsigned int, see IVP_U_Active_Float::last_update.
+	unsigned int last_update; // contains value of change_meter at last update
+	int          int_value;   // for IVP_U_MOD_TYPE_INT active_ints
 
 	void update_derived();
 
 public:
-	int give_int_value() { return int_value; }
+	int give_int_value() const { return int_value; }
 
 	void add_dependency( IVP_U_Active_Int_Listener *derived_active_int );
 	void remove_dependency( IVP_U_Active_Int_Listener *derived_active_int );
 
 	virtual int print() = 0;
 
-	IVP_U_Active_Int( const char *name );
+	explicit IVP_U_Active_Int( const char *name );
 	virtual ~IVP_U_Active_Int();
 };
 
@@ -247,8 +290,8 @@ private:
 public:
 	IVP_U_Active_Terminal_Double( const char *name, IVP_DOUBLE value );
 
-	void update_float()
-	override; // tell dependent classes that something has changed
+	// tell dependent classes that something has changed
+	void         update_float() override;
 	virtual void set_double( IVP_DOUBLE new_value, IVP_BOOL delayed = IVP_FALSE );
 	int          print() override;
 };
@@ -284,7 +327,7 @@ public:
 	IVP_U_Active_Sine( const char *name, IVP_U_Active_Float *time_mode,
 	                   IVP_DOUBLE freq, IVP_DOUBLE amp, IVP_DOUBLE null_level,
 	                   IVP_DOUBLE time_shift );
-	~IVP_U_Active_Sine();
+	~IVP_U_Active_Sine() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -301,7 +344,7 @@ private:
 public:
 	IVP_U_Active_Square( const char *name, IVP_U_Active_Float *time_mod,
 	                     IVP_DOUBLE freq, IVP_DOUBLE low_val, IVP_DOUBLE high_val );
-	~IVP_U_Active_Square();
+	~IVP_U_Active_Square() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -322,7 +365,7 @@ public:
 	                    IVP_DOUBLE freq,
 	                    int        m1, // m1 out of m2 defines interval proportion
 	                    int m2, IVP_DOUBLE low_val, IVP_DOUBLE high_val );
-	~IVP_U_Active_Pulse();
+	~IVP_U_Active_Pulse() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -342,7 +385,7 @@ private:
 public:
 	IVP_U_Active_Add( const char *name, IVP_U_Active_Float *mod0,
 	                  IVP_U_Active_Float *mod1 );
-	~IVP_U_Active_Add();
+	~IVP_U_Active_Add() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -358,7 +401,7 @@ private:
 public:
 	IVP_U_Active_Sub( const char *name, IVP_U_Active_Float *mod0,
 	                  IVP_U_Active_Float *mod1 );
-	~IVP_U_Active_Sub();
+	~IVP_U_Active_Sub() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -375,7 +418,7 @@ private:
 public:
 	IVP_U_Active_Add_Multiple( const char *name, IVP_U_Active_Float *mod0,
 	                           IVP_U_Active_Float *mod1, IVP_DOUBLE factor );
-	~IVP_U_Active_Add_Multiple();
+	~IVP_U_Active_Add_Multiple() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -391,7 +434,7 @@ private:
 public:
 	IVP_U_Active_Mult( const char *name, IVP_U_Active_Float *mod0,
 	                   IVP_U_Active_Float *mod1 );
-	~IVP_U_Active_Mult();
+	~IVP_U_Active_Mult() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -412,7 +455,7 @@ private:
 public:
 	IVP_U_Active_Limit( const char *name, IVP_U_Active_Float *mod,
 	                    IVP_DOUBLE low_val, IVP_DOUBLE high_val );
-	~IVP_U_Active_Limit();
+	~IVP_U_Active_Limit() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -439,7 +482,7 @@ public:
 	IVP_U_Active_Test_Range( const char *name, IVP_U_Active_Float *mod_test,
 	                         IVP_U_Active_Float *mod_low_val,
 	                         IVP_U_Active_Float *mod_high_val );
-	~IVP_U_Active_Test_Range();
+	~IVP_U_Active_Test_Range() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	int  print() override;
@@ -447,7 +490,7 @@ public:
 
 class IVP_U_Active_Switch : public IVP_U_Active_Float, public IVP_U_Active_Float_Listener, public IVP_U_Active_Int_Listener
 {
-	// if mod_cond==1 returns mod_true, else mod_false
+	// if mod_cond is non-zero returns mod_true, else mod_false
 
 	// returns DOUBLE value
 	// depends on INT module!
@@ -461,7 +504,7 @@ public:
 	IVP_U_Active_Switch( const char *name, IVP_U_Active_Int *mod_cond,
 	                     IVP_U_Active_Float *mod_true,
 	                     IVP_U_Active_Float *mod_false );
-	~IVP_U_Active_Switch();
+	~IVP_U_Active_Switch() override;
 
 	void active_float_changed( IVP_U_Active_Float *calling_mod ) override;
 	void active_int_changed( IVP_U_Active_Int *calling_mod ) override;
