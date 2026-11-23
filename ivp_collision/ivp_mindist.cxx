@@ -36,6 +36,8 @@
 #include <ivp_universe_manager.hxx>
 #include <ivp_surman_polygon.hxx>
 
+#include <cstdint>
+
 // #include <../IVP_INTERN/ivp_friction.hxx> //for debugging
 #include <ivp_friction.hxx> //for debugging @@CB
 
@@ -352,21 +354,38 @@ public:
 
 class IVP_MM_CMP
 {
-public:
-	static inline hk_intp calc_hash_index( IVP_MM_CMP_Key *o )
+	// dimhotepus: Single definition of the hash, so the key and collision
+	// overloads can't drift apart (a mismatch silently breaks lookups).
+	// Unsigned arithmetic: the old signed "ptr * 75" and "1023 * ( x >> 8 )"
+	// overflowed (UB) on large 64-bit addresses, and ">>" on a negative hk_intp
+	// (32-bit pointers above 2 GB) is implementation-defined. The bucket index is
+	// unchanged, because the caller masks with a power-of-two size <= 2^16 and
+	// the shift only differs in the high bits.
+	static hk_intp hash_ledges( const IVP_Compact_Ledge *ledge0,
+	                            const IVP_Compact_Ledge *ledge1 ) noexcept
 	{
-		hk_intp x = (hk_intp)o->ledge[0] ^ ( hk_intp( o->ledge[1] ) * 75 );
-		return x + 1023 * ( x >> 8 );
+		const std::uintptr_t a = reinterpret_cast< std::uintptr_t >( ledge0 );
+		const std::uintptr_t b = reinterpret_cast< std::uintptr_t >( ledge1 );
+		const std::uintptr_t x = a ^ ( b * 75u );
+		return static_cast< hk_intp >( x + 1023u * ( x >> 8 ) );
+	}
+
+public:
+	// dimhotepus: Static-only utility, nothing to instantiate.
+	IVP_MM_CMP() = delete;
+
+	static inline hk_intp calc_hash_index( IVP_MM_CMP_Key *o ) noexcept
+	{
+		return hash_ledges( o->ledge[0], o->ledge[1] );
 	}
 
 	// calc hash index of c, con is a reference
 	static inline hk_intp calc_hash_index( IVP_Collision *c,
-	                                       IVP_MM_CMP_Key * /*ref_key*/ )
+	                                       IVP_MM_CMP_Key * /*ref_key, unused*/ )
 	{
 		const IVP_Compact_Ledge *ledge[2];
 		c->get_ledges( ledge );
-		hk_intp x = (hk_intp)ledge[0] ^ ( hk_intp( ledge[1] ) * 75 );
-		return x + 1023 * ( x >> 8 );
+		return hash_ledges( ledge[0], ledge[1] );
 	}
 
 	static inline IVP_BOOL are_equal( IVP_Collision *c, IVP_MM_CMP_Key *search )
@@ -375,7 +394,9 @@ public:
 		c->get_ledges( ledge );
 		if ( ledge[0] == search->ledge[0] && ledge[1] == search->ledge[1] )
 		{
-#ifdef DEBUG
+			// dimhotepus: Was #ifdef DEBUG, but IVP_ASSERT is keyed on NDEBUG. A
+			// build defining neither had asserts enabled and these checks skipped.
+#ifndef NDEBUG
 			IVP_Real_Object *object[2];
 			c->get_objects( object );
 			IVP_ASSERT( object[0] == search->object[0] );
@@ -737,11 +758,26 @@ IVP_Mindist *new_mindist )
 
 class IVP_OO_CMP
 {
-public:
-	static inline hk_intp calc_hash_index( IVP_Real_Object *o )
+	// dimhotepus: Single definition of the mix, so both overloads always hash the
+	// same "other object" identically (a mismatch silently breaks lookups).
+	// Unsigned arithmetic: the old signed "1023 * ( x >> 8 )" overflowed (UB) for
+	// large 64-bit addresses, and ">>" on a negative hk_intp (32-bit pointers
+	// above 2 GB) is implementation-defined. The bucket index is unchanged: the
+	// caller masks with a power-of-two size, and the shift only differs in the
+	// high bits.
+	static constexpr hk_intp mix( std::uintptr_t x ) noexcept
 	{
-		hk_intp x = (hk_intp)o;
-		return x + 1023 * ( x >> 8 );
+		return static_cast< hk_intp >( x + 1023u * ( x >> 8 ) );
+	}
+
+public:
+	// dimhotepus: Static-only utility, nothing to instantiate.
+	IVP_OO_CMP() = delete;
+
+	// Hash of the "other" object, the key being searched for.
+	static inline hk_intp calc_hash_index( IVP_Real_Object *o ) noexcept
+	{
+		return mix( reinterpret_cast< std::uintptr_t >( o ) );
 	}
 
 	// calc hash index of c, con is a reference
@@ -750,21 +786,23 @@ public:
 	{
 		IVP_Real_Object *objects[2];
 		c->get_objects( objects );
-		hk_intp x = hk_intp( objects[0] ) ^ hk_intp( objects[1] ) ^
-		hk_intp( con ); // take other object (trick to avoid if)
 		IVP_ASSERT( objects[0] == con || objects[1] == con );
-		return x + 1023 * ( x >> 8 );
+
+		// take other object (trick to avoid if): con cancels out of the XOR, so
+		// this equals the one-argument hash of the other object. Only valid when
+		// con is one of the two objects. If it is not, lookups for this
+		// collision fail.
+		const std::uintptr_t x = reinterpret_cast< std::uintptr_t >( objects[0] ) ^
+		reinterpret_cast< std::uintptr_t >( objects[1] ) ^
+		reinterpret_cast< std::uintptr_t >( con );
+		return mix( x );
 	}
 
 	static inline IVP_BOOL are_equal( IVP_Collision *c, IVP_Real_Object *search )
 	{
 		IVP_Real_Object *objects[2];
 		c->get_objects( objects );
-		if ( objects[0] == search )
-			return IVP_TRUE;
-		if ( objects[1] == search )
-			return IVP_TRUE;
-		return IVP_FALSE;
+		return ( objects[0] == search || objects[1] == search ) ? IVP_TRUE : IVP_FALSE;
 	}
 };
 
