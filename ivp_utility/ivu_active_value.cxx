@@ -14,6 +14,7 @@
 #include <ivu_active_value.hxx>
 #include <ivu_active_value_hash.hxx>
 
+#include <limits>
 #include <climits>
 #include <cstddef>
 #include <cstring>
@@ -40,6 +41,18 @@ namespace
 	if ( n[pos] == '.' )
 		pos++; // for omitted leading zero
 	return n[pos] >= '0' && n[pos] <= '9';
+}
+
+// dimhotepus: Snapshot the meter once. The old code read the (now concurrently
+// changing) global twice, so the compare and the stored stamp could differ.
+// Returns true if the caller must recompute. Works for Float and Int values.
+[[nodiscard]] inline bool ivp_active_needs_update( unsigned int &last_update )
+{
+	const unsigned int meter = IVP_U_Active_Float::load_change_meter();
+	if ( last_update == meter )
+		return false; // already valid
+	last_update = meter;
+	return true;
 }
 } // namespace
 
@@ -116,7 +129,9 @@ IVP_U_Active_Value *IVP_Active_Value_Hash::find_active_value( IVP_U_Active_Value
 // dimhotepus: Was int change_meter = -1. Unsigned so the per-set increment can
 // wrap without UB. The value (0xFFFFFFFF) and the first increment to 0 behave
 // exactly as -1 -> 0 did.
-unsigned int IVP_U_Active_Float::change_meter = static_cast< unsigned int >( -1 );
+// dimhotepus: Atomic. Starts at UINT_MAX (the old -1), so the first bump gives 0
+// as before.
+std::atomic< unsigned int > IVP_U_Active_Float::change_meter{ std::numeric_limits< unsigned int >::max() };
 
 IVP_U_Active_Value_Manager::IVP_U_Active_Value_Manager(
 IVP_BOOL delete_on_env_delete_in )
@@ -566,7 +581,7 @@ void IVP_U_Active_Terminal_Double::set_double( IVP_DOUBLE new_value,
                                                IVP_BOOL   delayed_update )
 {
 	this->double_value = new_value;
-	IVP_U_Active_Float::change_meter++;
+	IVP_U_Active_Float::bump_change_meter();
 	if ( delayed_update && l_mod_manager )
 	{
 		l_mod_manager->delay_active_float( this );
@@ -589,7 +604,7 @@ void IVP_U_Active_Terminal_Int::set_int( int      new_value,
                                          IVP_BOOL delayed_update )
 {
 	this->int_value = new_value;
-	IVP_U_Active_Float::change_meter++;
+	IVP_U_Active_Float::bump_change_meter();
 
 	if ( delayed_update && l_mod_manager )
 	{
@@ -687,7 +702,7 @@ IVP_U_Active_Square::~IVP_U_Active_Square()
 
 void IVP_U_Active_Square::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 
@@ -743,7 +758,7 @@ IVP_U_Active_Pulse::~IVP_U_Active_Pulse()
 
 void IVP_U_Active_Pulse::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 
@@ -795,7 +810,7 @@ IVP_U_Active_Add::~IVP_U_Active_Add()
 
 void IVP_U_Active_Add::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 
@@ -841,7 +856,7 @@ IVP_U_Active_Sub::~IVP_U_Active_Sub()
 
 void IVP_U_Active_Sub::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 
@@ -891,7 +906,7 @@ IVP_U_Active_Add_Multiple::~IVP_U_Active_Add_Multiple()
 
 void IVP_U_Active_Add_Multiple::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 
@@ -942,7 +957,7 @@ IVP_U_Active_Mult::~IVP_U_Active_Mult()
 
 void IVP_U_Active_Mult::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 
@@ -997,7 +1012,7 @@ IVP_U_Active_Limit::~IVP_U_Active_Limit()
 
 void IVP_U_Active_Limit::active_float_changed( IVP_U_Active_Float * )
 {
-	if ( last_update == change_meter )
+	if ( !ivp_active_needs_update( last_update ) )
 		return; // already valid
 	last_update = change_meter;
 

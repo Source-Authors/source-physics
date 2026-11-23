@@ -10,6 +10,8 @@
 #ifndef _IVP_ACTIVE_VALUES_INCLUDED
 #define _IVP_ACTIVE_VALUES_INCLUDED
 
+#include <atomic>
+
 class IVP_U_Active_Value;
 class IVP_U_String_Hash;
 class IVP_U_Active_Float;
@@ -229,9 +231,24 @@ public:
 public:
 	explicit IVP_U_Active_Float( const char *name );
 	virtual ~IVP_U_Active_Float();
+public:
+	// dimhotepus: std::atomic. The meter is shared by every manager and
+	// incremented on every set_*(). With environments on different threads a
+	// plain unsigned int was a data race (UB). Still public and still usable as
+	// `change_meter++` / `== change_meter` from other files (atomic operators),
+	// but prefer the two helpers below.
+	static std::atomic< unsigned int > change_meter;
 
-	// dimhotepus: Shared global, not thread-safe (same as before).
-	static unsigned int change_meter;
+	// dimhotepus: Acquire pairs with the release in bump_change_meter(): a thread
+	// that sees the new stamp also sees the value written before the bump.
+	static unsigned int load_change_meter() noexcept
+	{
+		return change_meter.load( std::memory_order_acquire );
+	}
+	static void bump_change_meter() noexcept
+	{
+		change_meter.fetch_add( 1u, std::memory_order_release );
+	}
 
 	IVP_DOUBLE give_double_value() const { return double_value; }
 	IVP_FLOAT  get_float_value() const { return static_cast< IVP_FLOAT >( double_value ); }
