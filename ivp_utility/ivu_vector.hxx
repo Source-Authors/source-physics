@@ -12,12 +12,37 @@
  *                 elements are inserted
  ********************************************************************************/
 
+#include <algorithm> // std::swap, std::reverse
+#include <cstddef>
+#include <cstring>  // std::memcpy, std::memmove
+#include <utility>
+
+// dimhotepus: Branch hint for the cold grow path. __builtin_expect exists only
+// on GCC/Clang (Linux, macOS, clang-cl), MSVC gets a no-op to stay portable.
+#if defined( __GNUC__ ) || defined( __clang__ )
+#define IVP_VECTOR_UNLIKELY( x ) __builtin_expect( !!( x ), 0 )
+#else
+#define IVP_VECTOR_UNLIKELY( x ) ( x )
+#endif
+
 struct IVP_U_Vector_Base
 {
 	unsigned short memsize{ 0 };
 	unsigned short n_elems{ 0 };
 	void         **elems{ nullptr };
-	void           increment_mem();
+
+	// dimhotepus: Out of line on purpose, keeps the hot add() path small.
+	void increment_mem();
+
+protected:
+	// dimhotepus: Single place for the "buffer lives right behind the object"
+	// check. It was open-coded 4 times (clear, uses_inline_buffer,
+	// reserve_discarding, increment_mem), easy to get out of sync.
+	// True when elems points to the preallocated buffer, which must never be freed.
+	bool is_inline_storage() const
+	{
+		return elems == reinterpret_cast< void *const * >( this + 1 );
+	}
 };
 
 template< class T >
@@ -32,31 +57,43 @@ private:
 		if ( count <= memsize )
 			return;
 
-		void **fresh = (void **)p_malloc( count * sizeof( void * ) );
+		// dimhotepus: Cast to size_t before multiply, defined type on 32-bit
+		// (x86) and 64-bit (x86-64, arm64) targets.
+		void **fresh = (void **)p_malloc( (size_t)count * sizeof( void * ) );
 
 		// Never free the inline buffer of a pre-allocated vector.
-		if ( elems != (void **)( this + 1 ) )
+		// dimhotepus: Also skip nullptr, empty vectors have no buffer to free.
+		if ( elems && !is_inline_storage() )
 		{
 			void *old = (void *)elems;
-			P_FREE( old );
+			p_free( old );
 		}
 		elems = fresh;
 		memsize = (unsigned short)count;
 	}
 
-	bool uses_inline_buffer() const { return elems == (void **)( this + 1 ); }
-
-	// Frees the heap buffer (never the inline one) and returns to the empty state.
-	void release_heap_buffer()
+	// dimhotepus: Copy pointers from other, shared by copy and move paths.
+	// Was duplicated 4 times. Capacity is reserved without preserving contents.
+	void assign_from( const IVP_U_Vector &other )
 	{
-		if ( elems && !uses_inline_buffer() )
+		reserve_discarding( other.n_elems );
+		if ( other.n_elems )
 		{
-			void *old = (void *)elems;
-			P_FREE( old );
-			elems = nullptr;
-			memsize = 0;
+			std::memcpy( elems, other.elems, (size_t)other.n_elems * sizeof( void * ) );
 		}
-		n_elems = 0;
+		n_elems = other.n_elems;
+	}
+
+	// dimhotepus: Steal heap storage of other, shared by move ctor and move assign.
+	void steal_heap_storage( IVP_U_Vector &other )
+	{
+		elems = other.elems;
+		memsize = other.memsize;
+		n_elems = other.n_elems;
+
+		other.elems = nullptr;
+		other.memsize = 0;
+		other.n_elems = 0;
 	}
 
 public:
@@ -65,12 +102,7 @@ public:
 	IVP_U_Vector( const IVP_U_Vector &other ) :
 		IVP_U_Vector_Base()
 	{
-		reserve_discarding( other.n_elems );
-		if ( other.n_elems )
-		{
-			memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
-		}
-		n_elems = other.n_elems;
+		assign_from( other );
 	}
 
 	// dimhotepus: Add copy.
@@ -79,12 +111,7 @@ public:
 		if ( this == &other )
 			return *this;
 
-		reserve_discarding( other.n_elems );
-		if ( other.n_elems )
-		{
-			memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
-		}
-		n_elems = other.n_elems;
+		assign_from( other );
 		return *this;
 	}
 
@@ -92,26 +119,15 @@ public:
 	IVP_U_Vector( IVP_U_Vector &&other ) noexcept :
 		IVP_U_Vector_Base()
 	{
-		if ( other.uses_inline_buffer() )
+		if ( other.is_inline_storage() )
 		{
 			// Can't steal storage that lives inside 'other': copy the pointers.
-			reserve_discarding( other.n_elems );
-			if ( other.n_elems )
-			{
-				memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
-			}
-			n_elems = other.n_elems;
+			assign_from( other );
 			other.n_elems = 0; // keeps its inline buffer, now empty
 		}
 		else
 		{
-			elems = other.elems;
-			memsize = other.memsize;
-			n_elems = other.n_elems;
-
-			other.elems = nullptr;
-			other.memsize = 0;
-			other.n_elems = 0;
+			steal_heap_storage( other );
 		}
 	}
 
@@ -121,36 +137,28 @@ public:
 		if ( this == &other )
 			return *this;
 
-		if ( other.uses_inline_buffer() )
+		if ( other.is_inline_storage() )
 		{
 			// Copy into our own storage (inline or heap), then empty the source.
-			reserve_discarding( other.n_elems );
-			if ( other.n_elems )
-			{
-				memcpy( elems, other.elems, other.n_elems * sizeof( void * ) );
-			}
-			n_elems = other.n_elems;
+			assign_from( other );
 			other.n_elems = 0;
 		}
 		else
 		{
 			// Drop our heap buffer (if any), then take the source's.
-			release_heap_buffer();
-
-			elems = other.elems;
-			memsize = other.memsize;
-			n_elems = other.n_elems;
-
-			other.elems = nullptr;
-			other.memsize = 0;
-			other.n_elems = 0;
+			// dimhotepus: clear() does exactly what the removed
+			// release_heap_buffer() did, one copy of the logic is enough.
+			clear();
+			steal_heap_storage( other );
 		}
 		return *this;
 	}
 
 	void ensure_capacity()
 	{
-		if ( n_elems >= memsize )
+		// dimhotepus: Growing is rare, tell the compiler so the fast path
+		// is laid out as fall-through.
+		if ( IVP_VECTOR_UNLIKELY( n_elems >= memsize ) )
 		{
 			this->increment_mem();
 		}
@@ -160,6 +168,11 @@ protected:
 	//  special vector with preallocated elems
 	IVP_U_Vector( void **ielems, int size )
 	{
+		// dimhotepus: The this + 1 trick is valid only if derived class adds
+		// nothing to the base layout. Catch layout drift at compile time on
+		// all targets instead of corrupting memory at runtime.
+		static_assert( sizeof( IVP_U_Vector< T > ) == sizeof( IVP_U_Vector_Base ),
+		               "Preallocated storage layout relies on no extra members" );
 		IVP_ASSERT( ielems == (void **)( this + 1 ) );
 		IVP_ASSERT( size >= 0 && size <= 0xFFFF );
 		elems = ielems;
@@ -168,28 +181,27 @@ protected:
 	}
 
 public:
-	IVP_U_Vector( int size = 0 )
+	// dimhotepus: Add explicit. Prevents silent int -> vector conversions.
+	explicit IVP_U_Vector( int size = 0 )
 	{
 		IVP_ASSERT( size >= 0 && size <= 0xFFFF );
 		memsize = (unsigned short)size;
 		n_elems = 0;
-		if ( size )
-		{ // will be optimized by most compilers
-			elems = (void **)p_malloc( size * sizeof( void * ) );
-		}
-		else
-		{
-			elems = nullptr;
-		}
+		// dimhotepus: Allocate from the stored memsize, not from 'size'. In
+		// release the two differed for size > 0xFFFF (truncation), leaving
+		// memsize == 0 with a live allocation.
+		elems = memsize ? (void **)p_malloc( (size_t)memsize * sizeof( void * ) ) : nullptr;
 	}
 
 	void clear()
 	{
-		if ( elems != (void **)( this + 1 ) )
+		// dimhotepus: Use shared helper instead of open-coded this + 1 compare.
+		if ( !is_inline_storage() )
 		{
 			void *dummy = (void *)elems;
 			P_FREE( dummy );
-			elems = 0;
+			// dimhotepus: Use nullptr instead of 0 for pointer.
+			elems = nullptr;
 			memsize = 0;
 		}
 		n_elems = 0;
@@ -201,15 +213,17 @@ public:
 
 	int len() const { return n_elems; }
 
-	int index_of( T *elem )
+	// dimhotepus: Make const (does not modify state) and take const T *, so it
+	// can be called from const methods and with const pointers.
+	// Returns index or -1. Searches from the back.
+	int index_of( const T *elem ) const
 	{
-		int i;
-		for ( i = n_elems - 1; i >= 0; i-- )
+		for ( int i = n_elems - 1; i >= 0; i-- )
 		{
 			if ( elems[i] == elem )
-				break;
+				return i;
 		}
-		return i;
+		return -1;
 	}
 
 	int add( T *elem )
@@ -222,7 +236,8 @@ public:
 
 	int install( T *elem )
 	{
-		int old_index = index_of( elem );
+		// dimhotepus: const, value is never modified.
+		const int old_index = index_of( elem );
 		if ( old_index != -1 )
 			return old_index;
 		ensure_capacity();
@@ -234,10 +249,9 @@ public:
 	{
 		IVP_ASSERT( ( index1 >= 0 ) && ( index1 < n_elems ) );
 		IVP_ASSERT( ( index2 >= 0 ) && ( index2 < n_elems ) );
-		void *buffer = elems[index1];
-		elems[index1] = elems[index2];
-		elems[index2] = buffer;
-		return;
+		// dimhotepus: std::swap instead of manual temp, same codegen. Removed
+		// useless trailing return.
+		std::swap( elems[index1], elems[index2] );
 	}
 
 	void insert_after( int index, T *elem )
@@ -245,37 +259,39 @@ public:
 		IVP_ASSERT( ( index >= 0 ) && ( index < n_elems ) );
 		index++;
 		ensure_capacity();
-		int j = n_elems;
-		while ( j > index )
+		// dimhotepus: One memmove instead of element-by-element shift, libc
+		// version uses SIMD and is much faster for long tails. Skipped when
+		// appending at the end (nothing to move).
+		const int tail = n_elems - index;
+		if ( tail > 0 )
 		{
-			elems[j] = elems[j - 1];
-			--j;
+			std::memmove( elems + index + 1, elems + index, (size_t)tail * sizeof( void * ) );
 		}
 		elems[index] = (void *)elem;
 		n_elems++;
 	}
 
+	// dimhotepus: Keeps element order, O(n).
 	void remove_at( int index )
 	{
 		IVP_ASSERT( ( index >= 0 ) && ( index < n_elems ) );
-		int j = index;
-		while ( j < n_elems - 1 )
+		// dimhotepus: One memmove instead of element-by-element loop.
+		const int tail = n_elems - index - 1;
+		if ( tail > 0 )
 		{
-			elems[j] = elems[j + 1];
-			j++;
+			std::memmove( elems + index, elems + index + 1, (size_t)tail * sizeof( void * ) );
 		}
 		n_elems--;
 	}
 
 	void reverse()
 	{
-		for ( int i = 0; i < ( this->n_elems / 2 ); i++ )
-		{
-			this->swap_elems( i, this->n_elems - 1 - i );
-		}
-		return;
+		// dimhotepus: std::reverse instead of n/2 calls to swap_elems with
+		// their per-call asserts. Safe for empty vectors (nullptr, nullptr).
+		std::reverse( elems, elems + n_elems );
 	}
 
+	// dimhotepus: O(1), does NOT keep order.
 	void remove_at_and_allow_resort( int index )
 	{
 		IVP_ASSERT( ( index >= 0 ) && ( index < n_elems ) );
@@ -285,7 +301,7 @@ public:
 
 	void remove_allow_resort( T *elem )
 	{
-		int index = this->index_of( elem );
+		const int index = this->index_of( elem );
 		IVP_ASSERT( index >= 0 );
 		// dimhotepus: Prevent out of bounds in Release.
 		if ( index < 0 )
@@ -297,17 +313,14 @@ public:
 
 	void remove( T *elem )
 	{
-		int index = this->index_of( elem );
+		const int index = this->index_of( elem );
 		IVP_ASSERT( index >= 0 );
 		// dimhotepus: Prevent out of bounds in Release.
 		if ( index < 0 )
 			return;
 
-		n_elems--;
-		if ( index < n_elems )
-		{
-			memmove( &elems[index], &elems[index + 1], ( n_elems - index ) * sizeof( void * ) );
-		}
+		// dimhotepus: Reuse remove_at (memmove) instead of a second copy of it.
+		remove_at( index );
 	}
 
 	T *element_at( int index ) const
@@ -325,16 +338,15 @@ class IVP_U_Vector_Enumerator
 
 public:
 	// dimhotepus: Add explicit.
-	explicit inline IVP_U_Vector_Enumerator( IVP_U_Vector< T > *vec )
+	explicit IVP_U_Vector_Enumerator( IVP_U_Vector< T > * /*vec*/ ) :
+		index( 0 )
 	{
-		index = 0; // vec->n_elems-1;
 	}
 
 	T *get_next_element( IVP_U_Vector< T > *vec )
 	{
 		if ( index >= vec->n_elems )
 			return nullptr;
-		// if (index < 0) return NULL;
 		// dimhotepus: Fix enumeration [0..length).
 		return vec->element_at( index++ );
 	}
@@ -343,7 +355,10 @@ public:
 // vector of cores with 2 default elements already alloced
 class IVP_Vector_of_Cores_2 : public IVP_U_Vector< class IVP_Core >
 {
-	IVP_Core *elem_buffer[2];
+	// dimhotepus: void * instead of IVP_Core *. The slots are accessed through
+	// void ** (elems), reading IVP_Core * objects through void * lvalues violates
+	// strict aliasing. Same size and alignment, so the this + 1 layout is unchanged.
+	void *elem_buffer[2];
 
 public:
 	IVP_Vector_of_Cores_2() :
