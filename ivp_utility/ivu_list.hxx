@@ -5,6 +5,8 @@
 #ifndef _P_LIST_INCLUDED
 #define _P_LIST_INCLUDED
 
+#include <cstdint>  // std::intptr_t
+
 /* list header, list elements should have:
    next, prev
    */
@@ -12,9 +14,25 @@
 template< class T >
 class P_List
 {
+	// dimhotepus: One named place for the "removed" marker instead of two
+	// C-style (T *)-1 casts. Same all-ones value on x86, x86-64 and arm64.
+	static T *removed_marker()
+	{
+		return reinterpret_cast< T * >( static_cast< std::intptr_t >( -1 ) );
+	}
+
 public:
-	T  *first;
-	int len;
+	// dimhotepus: Default member initializers, no constructor path can leave
+	// them uninitialized.
+	T  *first{ nullptr };
+	int len{ 0 };
+
+	P_List() = default;
+
+	// dimhotepus: Two headers sharing the same first element corrupt each other
+	// on remove(), so copying a list header is never correct.
+	P_List( const P_List & ) = delete;
+	P_List &operator=( const P_List & ) = delete;
 
 	void insert( T *elem )
 	{
@@ -24,61 +42,49 @@ public:
 		{
 			first->prev = elem;
 		}
-		elem->prev = 0;
+		// dimhotepus: nullptr instead of 0.
+		elem->prev = nullptr;
 		first = elem;
 		len++;
 	}
 
 	void remove( T *elem )
 	{
-		T *e = elem;
-		T *h;
-		IVP_ASSERT( e->next != (T *)-1 );
-		if ( ( h = e->prev ) )
+		IVP_ASSERT( elem->next != removed_marker() );
+		IVP_ASSERT( len > 0 );
+
+		// dimhotepus: IVP_ASSERT is compiled out in release. Removing an element
+		// twice followed the marker as a real pointer and corrupted the list, and
+		// drove len negative.
+		if ( elem->next == removed_marker() )
+			return;
+
+		// dimhotepus: Read prev / next once. The old code reloaded them after
+		// stores through other T pointers, which the compiler must assume alias.
+		T *const prev = elem->prev;
+		T *const next = elem->next;
+
+		if ( prev )
 		{
-			h->next = e->next;
+			prev->next = next;
 		}
 		else
 		{
-			first = e->next;
+			first = next;
 		}
-		if ( ( h = e->next ) )
+		if ( next )
 		{
-			h->prev = e->prev;
+			next->prev = prev;
 		}
-		e->next = (T *)-1; // invalid flag !!
+
+		elem->next = removed_marker(); // invalid flag !!
 		len--;
 		// elem->next = 0;
 	}
-
-	P_List()
-	{
-		first = 0;
-		len = 0;
-	}
 };
 
-/* list header, list elements should have:
-   next
-   */
-
-/* template<class T> class P_Simple_List {
-public:
-    T *first;
-
-    void insert(T *elem){
-        elem->next = this->first;
-        first = elem;
-    };
-
-    void remove_first(){
-        register T *e = elem;
-        register T *h;
-        first = e->next;
-        if (h = e->next){
-            h->prev = e->prev;
-        }
-    }
-}; */
+// dimhotepus: Removed the commented-out P_Simple_List. It used 'register'
+// (removed in C++17), referenced an undefined 'elem' in remove_first() and read
+// 'prev' on a type documented as having only 'next'.
 
 #endif
