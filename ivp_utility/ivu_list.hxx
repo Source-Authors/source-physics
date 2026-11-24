@@ -5,7 +5,16 @@
 #ifndef _P_LIST_INCLUDED
 #define _P_LIST_INCLUDED
 
-#include <cstdint>  // std::intptr_t
+// dimhotepus: Explicit include for std::intptr_t, do not rely on the PCH.
+#include <cstdint>
+
+// dimhotepus: Debug-only O(n) misuse detection (double insert, remove of a
+// foreign element, reinsert without reset, broken links). Enabled in debug
+// builds, define IVP_PLIST_NO_DEBUG_CHECKS to opt out when debug builds get too
+// slow on very long lists. Release builds never pay for it.
+#if !defined( IVP_PLIST_NO_DEBUG_CHECKS ) && ( defined( _DEBUG ) || !defined( NDEBUG ) )
+#define IVP_PLIST_DEBUG_CHECKS 1
+#endif
 
 /* list header, list elements should have:
    next, prev
@@ -34,8 +43,54 @@ public:
 	P_List( const P_List & ) = delete;
 	P_List &operator=( const P_List & ) = delete;
 
+	// dimhotepus: O(n) membership test, meant for asserts. Bounded by len so a
+	// cyclic (corrupted) list ends instead of hanging, and stops at the removed
+	// marker instead of dereferencing it.
+	bool contains( const T *elem ) const
+	{
+		int steps = 0;
+		for ( const T *e = first; e && steps <= len; e = e->next, ++steps )
+		{
+			if ( e == elem )
+				return true;
+			if ( e->next == removed_marker() )
+				return false;
+		}
+		return false;
+	}
+
+	// dimhotepus: O(n) consistency check, meant for asserts. Verifies prev links,
+	// that no linked element carries the removed marker, and that the number of
+	// reachable elements equals len (also catches cycles).
+	bool validate_links() const
+	{
+		int      count = 0;
+		const T *prev = nullptr;
+		for ( const T *e = first; e; e = e->next )
+		{
+			if ( e->prev != prev )
+				return false;
+			if ( ++count > len )
+				return false;
+			if ( e->next == removed_marker() )
+				return false;
+			prev = e;
+		}
+		return count == len;
+	}
+
 	void insert( T *elem )
 	{
+#ifdef IVP_PLIST_DEBUG_CHECKS
+		// dimhotepus: Catch corruption from an earlier operation here, close to
+		// the cause, not at some random later access.
+		IVP_ASSERT( validate_links() );
+		// dimhotepus: Separate from the !next check below so the failure points
+		// at the real mistake: element was removed, reset next to nullptr first.
+		IVP_ASSERT( elem->next != removed_marker() );
+		// dimhotepus: Double insert makes the list cyclic and loses elements.
+		IVP_ASSERT( !contains( elem ) );
+#endif
 		IVP_ASSERT( !elem->next );
 		elem->next = this->first;
 		if ( first )
@@ -50,6 +105,13 @@ public:
 
 	void remove( T *elem )
 	{
+#ifdef IVP_PLIST_DEBUG_CHECKS
+		IVP_ASSERT( validate_links() );
+		// dimhotepus: Removing a never inserted element (next == prev == nullptr)
+		// looks like a one-element list and would reset first to nullptr, losing
+		// the whole list. Same for an element that lives in another list.
+		IVP_ASSERT( elem->next == removed_marker() || contains( elem ) );
+#endif
 		IVP_ASSERT( elem->next != removed_marker() );
 		IVP_ASSERT( len > 0 );
 
@@ -78,6 +140,12 @@ public:
 		}
 
 		elem->next = removed_marker(); // invalid flag !!
+#ifdef IVP_PLIST_DEBUG_CHECKS
+		// dimhotepus: Poison the stale link in debug only (one extra store we do
+		// not want on the release hot path). A later use of prev now fails
+		// visibly with a null dereference instead of silently walking a live list.
+		elem->prev = nullptr;
+#endif
 		len--;
 		// elem->next = 0;
 	}
