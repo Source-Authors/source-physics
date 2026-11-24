@@ -1,5 +1,17 @@
 // IVP_EXPORT_PUBLIC
 
+#include <cstddef> // std::ptrdiff_t
+#include <cstdio>  // FILE
+
+// dimhotepus: Let GCC / Clang check format strings of our printf-like
+// functions (-Wformat). MSVC gets a no-op to stay portable.
+#if defined( __GNUC__ ) || defined( __clang__ )
+#define IVP_PRINTF_LIKE( fmt_index, first_arg ) \
+	__attribute__( ( format( printf, fmt_index, first_arg ) ) )
+#else
+#define IVP_PRINTF_LIKE( fmt_index, first_arg )
+#endif
+
 #define IVP_WHITESPACE " \t,;\n"
 
 class P_String
@@ -17,15 +29,15 @@ public:
           less/greater than right string */
 };
 
-extern IVP_ERROR_STRING p_export_error( const char *templat, ... );
+extern IVP_ERROR_STRING p_export_error( const char *templat, ... ) IVP_PRINTF_LIKE( 1, 2 );
 extern IVP_ERROR_STRING p_get_error();
 extern void             p_print_error();
-extern void             ivp_message( const char *templat, ... );
-extern void             p_error_message();
-extern void             p_error_message( const char *templat, ... );
-extern char            *p_make_string( const char *templat, ... );
-extern char            *p_make_string_fast( const char *templat,
-                                            ... ); // doesn't check overflow
+extern void             ivp_message( const char *templat, ... ) IVP_PRINTF_LIKE( 1, 2 );
+extern char            *p_make_string( const char *templat, ... ) IVP_PRINTF_LIKE( 1, 2 );
+// dimhotepus: Comment was wrong, it never skipped the overflow check. Both
+// functions now size the result exactly and never truncate.
+extern char *p_make_string_fast( const char *templat,
+                                 ... ) IVP_PRINTF_LIKE( 1, 2 );
 
 int            p_strcmp( const char *s1, const char *s2 );
 std::ptrdiff_t p_strlen( const char *s );
@@ -36,10 +48,10 @@ IVP_DOUBLE     p_get_float();
 char          *p_get_string();
 char          *p_str_tok( char *str, const char *delimiter );
 
-int        p_atoi( const char *value ); // converts ascii to int
+int        p_atoi( const char *value ); // converts ascii to int, clamps on overflow
 IVP_DOUBLE p_atof( const char *s );
 
-#ifdef WIN32
+#ifdef _WIN32
 int  strcasecmp( const char *a, const char *b );
 void replace_slash( const char *in, char *out );
 // dimhotepus: long long instead of long for 64 bits.

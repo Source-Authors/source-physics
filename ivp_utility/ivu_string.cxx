@@ -2,34 +2,88 @@
 
 #include <ivp_physics.hxx>
 
-#include <cstdlib>
+#include <climits> // INT_MAX / INT_MIN
 #include <cstdarg>
+#include <cstdio>  // vsnprintf, fputs, FILE
+#include <cstdlib>
 #include <cstring>
+#include <iterator>  // std::size
 
-#include <cctype>
-#include <array> // std::size
+#ifdef _WIN32
+// dimhotepus: Moved up from the middle of the file.
+#include <ctime>
 
-#if !defined( __MWERKS__ ) || !defined( __POWERPC__ )
-#ifdef OSX
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
-#endif
-#ifdef WIN32
 extern "C"
 __declspec( dllimport ) void __stdcall
 OutputDebugStringA( const char * );
 #endif
 
+namespace
+{
+// dimhotepus: Locale-independent ASCII upper-casing.
+[[nodiscard]] inline char ascii_upper( char c )
+{
+	return ( c >= 'a' && c <= 'z' ) ? static_cast< char >( c - 'a' + 'A' ) : c;
+}
+
+// dimhotepus: Single place for "OutputDebugString on Windows, stderr elsewhere".
+void emit_message( const char *text )
+{
+#ifdef _WIN32
+	OutputDebugStringA( text );
+#else
+	fputs( text, stderr );
+#endif
+}
+
+// dimhotepus: Format into an exactly sized heap string. Replaces the 10000 byte
+// stack buffer + p_strdup copy (two copies, silent truncation) used by
+// p_make_string, p_make_string_fast and p_export_error. va_copy is needed
+// because the first vsnprintf consumes args.
+char *make_string_v( const char *templat, va_list args )
+{
+	va_list measure;
+	va_copy( measure, args );
+	const int len = vsnprintf( nullptr, 0, templat, measure );
+	va_end( measure );
+
+	if ( len < 0 ) // encoding error in the format
+		return nullptr;
+
+	const size_t size = (size_t)len + 1;
+	char        *out = (char *)p_malloc( size );
+	vsnprintf( out, size, templat, args );
+	return out;
+}
+
+// dimhotepus: Error message was one process-wide global. Two threads calling
+// p_export_error() raced on free + assign (double free / use after free).
+// Now each thread owns its message. The destructor frees it at thread exit,
+// a plain thread_local char * would leak one buffer per thread.
+struct Error_Buffer
+{
+	char *text{ nullptr };
+
+	Error_Buffer() = default;
+	Error_Buffer( const Error_Buffer & ) = delete;
+	Error_Buffer &operator=( const Error_Buffer & ) = delete;
+
+	~Error_Buffer() { P_FREE( text ); }
+};
+
+thread_local Error_Buffer error_buffer;
+
+} // namespace
+
 void P_String::uppercase( char *str )
 {
-	char c;
-	while ( ( c = *str ) )
+	// dimhotepus: Null guard, was a crash.
+	if ( !str )
+		return;
+
+	for ( ; *str; str++ )
 	{
-		if ( ( c <= 'z' ) && ( c >= 'a' ) )
-			*str = c - 'a' + 'A';
-		str++;
+		*str = ascii_upper( *str );
 	}
 }
 
@@ -41,103 +95,43 @@ const char *P_String::find_string( const char *str, const char *key,
                 = 1	-> a==A
                 = 2	-> a==A && a==?
   */
-	if ( str == nullptr )
+	// dimhotepus: key == nullptr crashed, treat like str == nullptr.
+	if ( str == nullptr || key == nullptr )
 		return nullptr;
 
-	const char *p1, *p2;
-	char        b;
-	switch ( upper_case )
+	// dimhotepus: The four copy-pasted loops differed only in the compare.
+	// Same mapping as before: 0 exact, 1 ignore case, 2 '?' wildcard in key,
+	// anything else ignore case + wildcard (old "default" branch).
+	const bool ignore_case = upper_case != 0 && upper_case != 2;
+	const bool wildcard = upper_case != 0 && upper_case != 1;
+
+	// dimhotepus: Exact match is exactly strstr (empty key returns str too),
+	// and libc implementations are far faster than a naive loop.
+	if ( !ignore_case && !wildcard )
+		return strstr( str, key );
+
+	for ( ;; ++str )
 	{
-	case 1:
-		for ( p1 = str, p2 = key; *p1; )
-		{
-			if ( !( b = *p2 ) )
-			{
-				return str;
-			}
+		const char *p1 = str;
+		const char *p2 = key;
 
-			if ( toupper( static_cast< unsigned char >( *p1 ) ) == toupper( static_cast< unsigned char >( b ) ) )
-			{
-				p1++;
-				p2++;
-			}
-			else
-			{
-				p2 = key;
-				p1 = ( ++str );
-			}
-		}
-		if ( !*p2 )
-			return str;
-		break;
-	case 0:
-		for ( p1 = str, p2 = key; *p1; )
+		for ( ; *p2; ++p1, ++p2 )
 		{
-			if ( !( b = *p2 ) )
-			{
-				return str;
-			}
+			const char a = *p1;
+			const char b = *p2;
 
-			if ( b == *p1 )
-			{
-				p1++;
-				p2++;
-			}
-			else
-			{
-				p2 = key;
-				p1 = ( ++str );
-			}
-		}
-		if ( !*p2 )
-			return str;
-		break;
-	case 2:
-		for ( p1 = str, p2 = key; *p1; )
-		{
-			if ( !( b = *p2 ) )
-			{
-				return str;
-			}
+			// Text exhausted before key: no later start can match either.
+			if ( !a )
+				return nullptr;
 
-			if ( b == *p1 || ( b == '?' ) )
-			{
-				p1++;
-				p2++;
-			}
-			else
-			{
-				p2 = key;
-				p1 = ( ++str );
-			}
+			const bool equal = ignore_case ? ascii_upper( a ) == ascii_upper( b ) : a == b;
+			if ( !equal && !( wildcard && b == '?' ) )
+				break;
 		}
-		if ( !*p2 )
-			return str;
-		break;
-	default:
-		for ( p1 = str, p2 = key; *p1; )
-		{
-			if ( !( b = *p2 ) )
-			{
-				return str;
-			}
 
-			if ( toupper( static_cast< unsigned char >( *p1 ) ) == toupper( static_cast< unsigned char >( b ) ) || ( b == '?' ) )
-			{
-				p1++;
-				p2++;
-			}
-			else
-			{
-				p2 = key;
-				p1 = ( ++str );
-			}
-		}
-		if ( !*p2 )
+		if ( !*p2 ) // whole key matched (also covers an empty key)
 			return str;
-		break;
 	}
-	return nullptr;
 }
 
 int P_String::string_cmp( const char *str, const char *search,
@@ -148,25 +142,28 @@ int P_String::string_cmp( const char *str, const char *search,
 /*	returns 0 if strings are equal -1 or +1 if left strings is
         less/greater than right string */
 {
-	const char *p1, *p2;
-	char        a, b, *d;
-	IVP_INT32   i;
+	// dimhotepus: search == nullptr crashed.
+	if ( !str || !search )
+		return -1;
+
+	const char *p1 = str;
+	const char *p2 = search;
 	char        fsbuf[256];
 
-	p1 = str;
-	if ( !p1 )
-		return -1;
-	p2 = search;
-	while ( 1 )
+	for ( ;; )
 	{
-		a = *p1;
-		b = *p2;
+		const char a = *p1;
+		char       b = *p2;
+
 		if ( b == '*' )
 		{
 			if ( !p2[1] )
 				return 0; /* last character is wildcard */
-			i = 0;
-			d = fsbuf;
+
+			// dimhotepus: size_t instead of IVP_INT32, it is compared with and
+			// added to size_t / pointers below.
+			size_t i = 0;
+			char  *d = fsbuf;
 			for ( p2++; ( b = *p2 ) && ( b != '*' ); )
 			{
 				*( d++ ) = b;
@@ -175,76 +172,45 @@ int P_String::string_cmp( const char *str, const char *search,
 				if ( i > 250 )
 					break;
 			}
+
 			if ( *p2 != '*' )
 			{
-				p1 += strlen( p1 ) - i; /* check the end of the string */
-				if ( p1 < str )
-					return -1; /* neither less or greater */
+				// dimhotepus: Old code did p1 += strlen( p1 ) - i and tested
+				// p1 < str afterwards. Forming a pointer before the array is UB,
+				// and the test used the string start instead of the current
+				// position, so the segment could overlap text already matched
+				// ("abc" matched "ab*bc"). Compare lengths first.
+				const size_t rest = strlen( p1 );
+				if ( rest < i )
+					return -1;  /* neither less or greater */
+				p1 += rest - i; /* check the end of the string */
 				p2 -= i;
 			}
 			else
 			{
 				*d = 0;
-				p1 = find_string( p1, fsbuf, upper_case + 2 );
+				p1 = find_string( p1, fsbuf, (int)upper_case + 2 );
 				if ( !p1 )
 					return -1;
 				p1 += i;
 			}
 			continue;
 		}
-		else
+
+		if ( !a )
+			return b;
+		if ( !b )
+			return a;
+		if ( b != '?' )
 		{
-			if ( !a )
-				return b;
-			if ( !b )
-				return a;
-			if ( b != '?' )
-			{
-				if ( upper_case )
-				{
-					if ( toupper( static_cast< unsigned char >( a ) ) != toupper( static_cast< unsigned char >( b ) ) )
-						return 1;
-				}
-				else
-				{
-					if ( a != b )
-						return 1;
-				}
-			}
+			if ( upper_case ? ascii_upper( a ) != ascii_upper( b ) : a != b )
+				return 1;
 		}
+
 		p1++;
 		p2++;
 	}
-	return 0; /* just to satisfy the compiler */
-}
-
-char *gbs_add_path( char *path, char *name )
-{
-	if ( !name )
-		return name;
-	if ( !path )
-		return nullptr;
-	if ( *name == '/' )
-		return name;
-
-	hk_intp found = 0;
-	hk_intp len = strlen( path );
-	for ( hk_intp i = 0; i < len; i++ )
-	{
-		if ( path[i] == '/' )
-			found = i + 1;
-	}
-	len = found + strlen( name );
-	char *erg = (char *)p_calloc( sizeof( char ), (size_t)( len + 1 ) );
-	for ( hk_intp i = 0; i < found; i++ )
-	{
-		erg[i] = path[i];
-	}
-	for ( hk_intp i = found; i < len; i++ )
-	{
-		erg[i] = name[i - found];
-	}
-	return erg;
+	// dimhotepus: Removed unreachable "return 0"
 }
 
 /********************************************************************************************
@@ -253,44 +219,41 @@ char *gbs_add_path( char *path, char *name )
 
 char *GBS_remove_escape( char *com ) /* \ is the escape charakter */
 {
-	char *result, *s, *d;
-	char  ch;
-
-	s = d = result = p_strdup( com );
+	char *result = p_strdup( com );
 	// dimhotepus: Handle p_strdup failure.
-	if ( !s )
+	if ( !result )
 		return nullptr;
 
-	while ( ( ch = *( s++ ) ) )
+	// dimhotepus: Rewritten as one flat loop (was nested switches with a
+	// stray ';' and an s-- / break trick). Works in place on the copy, output is
+	// never longer than input so d never passes s.
+	const char *s = result;
+	char       *d = result;
+
+	while ( char ch = *s++ )
 	{
-		switch ( ch )
+		if ( ch == '\\' )
 		{
-		case '\\':
-			ch = *( s++ );
-			if ( !ch )
-			{
-				s--;
+			ch = *s++;
+			if ( !ch ) // trailing backslash is dropped, same as before
 				break;
-			};
+
 			switch ( ch )
 			{
 			case 'n':
-				*( d++ ) = '\n';
+				ch = '\n';
 				break;
 			case 't':
-				*( d++ ) = '\t';
+				ch = '\t';
 				break;
 			case '0':
-				*( d++ ) = '\0';
+				ch = '\0';
 				break;
 			default:
-				*( d++ ) = ch;
 				break;
 			}
-			break;
-		default:
-			*( d++ ) = ch;
 		}
+		*d++ = ch;
 	}
 	*d = '\0';
 	return result;
@@ -301,8 +264,8 @@ char *p_strdup( const char *s )
 	// kann auch NULLen
 	if ( s )
 	{
-		size_t len = strlen( s ) + 1;
-		char  *s2 = (char *)p_malloc( len );
+		const size_t len = strlen( s ) + 1;
+		char        *s2 = (char *)p_malloc( len );
 		memcpy( s2, s, len );
 		return s2;
 	}
@@ -310,45 +273,40 @@ char *p_strdup( const char *s )
 	return nullptr;
 }
 
-#define MAX_MAKE_STRING_LEN 10000
-
 char *p_make_string_fast( const char *templat, ... )
 {
 	// returns an allocated string with format like ivp_message
 	// NULL-Strings and empty strings allowed
-	// Check for overflow
-
 	if ( !templat )
 		return nullptr;
 
-	char    buffer[MAX_MAKE_STRING_LEN];
+	// dimhotepus: Was a byte-for-byte copy of p_make_string with the same
+	// 10000 byte truncating buffer, although the header claimed "doesn't check
+	// overflow". Both now share make_string_v, no truncation and no copy.
 	va_list parg;
 	va_start( parg, templat ); //-V2019 //-V2018
-	vsnprintf( buffer, std::size( buffer ), templat, parg );
+	char *result = make_string_v( templat, parg );
 	va_end( parg );
-	return p_strdup( buffer );
+	return result;
 }
 
 char *p_make_string( const char *templat, ... )
-{ //-V524
+{
+	//-V524
 	// returns an allocated string with format like ivp_message
 	// NULL-Strings and empty strings allowed
-	// Check for overflow
-
 	if ( !templat )
 		return nullptr;
 
-	char    buffer[MAX_MAKE_STRING_LEN];
 	va_list parg;
 	va_start( parg, templat ); //-V2019 //-V2018
-	vsnprintf( buffer, std::size( buffer ), templat, parg );
+	char *result = make_string_v( templat, parg );
 	va_end( parg );
-	return p_strdup( buffer );
+	return result;
 }
 
 // dimhotepus: Reduce error buffer size 10000 -> 2048 as it is enough.
 #define MAX_ERROR_BUFFER_LEN 2048
-char *p_error_buffer = nullptr;
 
 IVP_ERROR_STRING p_export_error( const char *templat, ... )
 {
@@ -356,59 +314,69 @@ IVP_ERROR_STRING p_export_error( const char *templat, ... )
 		return nullptr;
 
 	// for general error management... z.B. p_error_message()
-	char    buffer[MAX_ERROR_BUFFER_LEN];
 	va_list parg;
 
+	// dimhotepus: Format BEFORE freeing the old message. If a caller passes
+	// p_get_error() (or a pointer into it) as an argument, the old order read
+	// freed memory. Also drops the fixed 2048 byte truncating buffer.
 	va_start( parg, templat ); //-V2019 //-V2018
-	vsnprintf( buffer, std::size( buffer ), templat, parg );
+	char *message = make_string_v( templat, parg );
 	va_end( parg );
 
-	P_FREE( p_error_buffer );
-	p_error_buffer = p_strdup( buffer );
-	return p_error_buffer;
-}
-
-void ivp_message( const char *fmt, ... )
-{
-	// for general error management... z.B. p_error_message()
-	char    buffer_tmp[MAX_ERROR_BUFFER_LEN];
-	va_list args;
-
-	va_start( args, fmt ); //-V2019 //-V2018
-	vsnprintf( buffer_tmp, std::size( buffer_tmp ), fmt, args );
-	va_end( args );
-
-	char buffer_out[MAX_ERROR_BUFFER_LEN];
-	snprintf( buffer_out, std::size( buffer_out ), "[havok] %s", buffer_tmp );
-
-#ifdef WIN32
-	OutputDebugStringA( buffer_out );
-#else
-	fprintf( stderr, "%s", buffer_out );
-#endif
+	// dimhotepus: Per-thread buffer, no lock needed.
+	P_FREE( error_buffer.text );
+	error_buffer.text = message;
+	return error_buffer.text;
 }
 
 IVP_ERROR_STRING p_get_error()
 {
-	return p_error_buffer;
+	// dimhotepus: Returns the calling thread's last error. Valid until the next
+	// p_export_error() on the same thread.
+	return error_buffer.text;
+}
+
+void ivp_message( const char *fmt, ... )
+{
+	// dimhotepus: Null format is UB in vsnprintf.
+	if ( !fmt )
+		return;
+
+	// for general error management...
+	// dimhotepus: Format once, directly behind the prefix. Was two 2 KB buffers,
+	// vsnprintf into the first, snprintf( "[havok] %s" ) into the second.
+	static constexpr char   prefix[] = "[havok] ";
+	static constexpr size_t prefix_len = sizeof( prefix ) - 1;
+
+	char buffer[MAX_ERROR_BUFFER_LEN];
+	memcpy( buffer, prefix, prefix_len );
+
+	va_list args;
+	va_start( args, fmt ); //-V2019 //-V2018
+	vsnprintf( buffer + prefix_len, std::size( buffer ) - prefix_len, fmt, args );
+	va_end( args );
+
+	emit_message( buffer );
 }
 
 void p_print_error()
 {
-	char buffer_out[MAX_ERROR_BUFFER_LEN];
-	snprintf( buffer_out, std::size( buffer_out ), "[havok] %s", p_get_error() );
+	// dimhotepus: p_get_error() is nullptr until the first error, passing it to
+	// "%s" is UB (crash on non-glibc libcs).
+	const char *error = p_get_error();
 
-#ifdef WIN32
-	OutputDebugStringA( buffer_out );
-#else
-	fprintf( stderr, "%s", buffer_out );
-#endif
+	char buffer_out[MAX_ERROR_BUFFER_LEN];
+	snprintf( buffer_out, std::size( buffer_out ), "[havok] %s", error ? error : "(null)" );
+
+	emit_message( buffer_out );
 }
 
 char *p_read_first_token( FILE *fp )
 {
+	// NOTE: static buffer, result is valid until the next call. Not thread safe.
 	static char buffer[1024];
-	while ( fgets( buffer, 1000, fp ) )
+	// dimhotepus: sizeof instead of magic 1000 that disagreed with the buffer size.
+	while ( fgets( buffer, (int)sizeof( buffer ), fp ) )
 	{
 		if ( buffer[0] == '#' )
 			continue; // Comment
@@ -422,34 +390,33 @@ char *p_read_first_token( FILE *fp )
 
 char *p_get_string()
 {
-	char *s = p_str_tok( 0, "\n" );
+	// dimhotepus: nullptr instead of 0.
+	char *s = p_str_tok( nullptr, "\n" );
 	return p_strdup( s );
 }
 
 char *p_get_next_token()
 {
-	return p_str_tok( 0, IVP_WHITESPACE );
+	// dimhotepus: nullptr instead of 0.
+	return p_str_tok( nullptr, IVP_WHITESPACE );
 }
 
 int p_get_num()
 {
-	return atoi( p_str_tok( nullptr, IVP_WHITESPACE ) );
+	// dimhotepus: atoi( nullptr ) crashed when no token was left. p_atoi is
+	// null safe and returns 0, same as p_get_float does for a missing token.
+	return p_atoi( p_str_tok( nullptr, IVP_WHITESPACE ) );
 }
 
 IVP_DOUBLE p_get_float()
 {
-	char *str = p_str_tok( nullptr, IVP_WHITESPACE );
-	if ( !str )
-		return 0.0f;
-	// dimhotepus: atof -> strtof
-	return IVP_DOUBLE( strtof( str, nullptr ) );
+	// dimhotepus: p_atof already handles nullptr, drop the duplicated parsing.
+	return p_atof( p_str_tok( nullptr, IVP_WHITESPACE ) );
 }
 
 std::ptrdiff_t p_strlen( const char *s )
 {
-	if ( !s || s[0] == 0 )
-		return 0;
-	return strlen( s );
+	return s && s[0] ? (std::ptrdiff_t)strlen( s ) : 0;
 }
 
 int p_strcmp( const char *s1, const char *s2 )
@@ -471,41 +438,45 @@ char *p_str_tok( char *a, const char *deli )
 	// Windows will always append a '0d'; maybe correct this with deli
 	if ( !temp )
 		return nullptr;
-	int i = 0;
-	while ( temp[i] )
-	{
-		if ( temp[i] == 13 )
-		{
-			temp[i] = '\0';
-		}
-		i++;
-	}
+
+	// dimhotepus: Truncate at the first CR. The old loop replaced every CR but
+	// stopped at the first one it wrote (it tests temp[i] for NUL), so this is
+	// identical, with strchr instead of a byte loop.
+	if ( char *cr = strchr( temp, '\r' ) )
+		*cr = '\0';
 	return temp;
 }
 
 IVP_DOUBLE p_atof( const char *s )
 {
 	if ( !s )
-		return 0.0f;
-	// dimhotepus: atof -> strtof
-	return IVP_DOUBLE( strtof( s, nullptr ) );
-};
+		return 0.0;
+	// dimhotepus: strtod, not strtof. IVP_DOUBLE is double (float only with
+	// IVP_NO_DOUBLE), strtof rounded to float first and lost ~9 digits
+	// ( "0.1" -> 0.10000000149 ). Also removed stray ';' after the body.
+	return (IVP_DOUBLE)strtod( s, nullptr );
+}
 
 int p_atoi( const char *s )
 {
 	if ( !s )
 		return 0;
-	return atoi( s );
+	// dimhotepus: atoi is UB on overflow. strtoll + clamp is defined on all
+	// targets (long is 32 bit on Windows, 64 bit on Linux / macOS).
+	const long long v = strtoll( s, nullptr, 10 );
+	if ( v > INT_MAX )
+		return INT_MAX;
+	if ( v < INT_MIN )
+		return INT_MIN;
+	return (int)v;
 }
 
-#ifdef WIN32
-#include <ctime>
-
+#ifdef _WIN32
 // dimhotepus: long long instead of long for 64 bits.
 long long p_get_time()
 { // returns seconds since 1970
-	time_t t;
-	return time( &t );
+	// dimhotepus: time( nullptr ) instead of an unused time_t local.
+	return (long long)time( nullptr );
 }
 
 // there's no strcasecmp on Windows !?!
@@ -514,6 +485,7 @@ long long p_get_time()
 int strcasecmp( const char *a, const char *b )
 {
 	// chris, Sept 2000
-	return stricmp( a, b );
+	// dimhotepus: _stricmp, the unprefixed stricmp is a deprecated POSIX name.
+	return _stricmp( a, b );
 }
 #endif
