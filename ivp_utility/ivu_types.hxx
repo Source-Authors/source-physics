@@ -297,6 +297,16 @@ void IVP_CDECL  ivp_free_aligned( void *data );
 void IVP_CDECL ivp_byte_swap4( uint &fourbytes );
 void IVP_CDECL ivp_byte_swap2( ushort &twobytes );
 
+// dimhotepus: Byte swap a float in place without type punning (UB through uint& casts:
+// strict aliasing violation, miscompiled at -O2 on GCC/Clang).
+inline void ivp_byte_swap4_float( float &f )
+{
+	uint bits;
+	std::memcpy( &bits, &f, sizeof( bits ) );
+	ivp_byte_swap4( bits );
+	std::memcpy( &f, &bits, sizeof( f ) );
+}
+
 char *p_strdup( const char *s );
 
 extern void ivp_memory_check( void *a );
@@ -342,7 +352,7 @@ extern void ivp_memory_check( void *a );
 template< typename T >
 inline void P_MEM_CLEAR( T *a )
 {
-	memset( a, 0, sizeof( T ) );
+	std::memset( static_cast< void * >( a ), 0, sizeof( T ) );
 }
 
 // dimhotepus: Macro -> template function.
@@ -350,15 +360,17 @@ inline void P_MEM_CLEAR( T *a )
 template< typename T >
 [[deprecated( "Horrible hack, do not use" )]] inline void P_MEM_CLEAR_M4( T *a )
 {
-	memset( (unsigned char *)a + sizeof( void * ), 0, sizeof( T ) - sizeof( void * ) );
+	std::memset( reinterpret_cast< unsigned char * >( a ) + sizeof( void * ), 0,
+	            sizeof( T ) - sizeof( void * ) );
 }
 
 // dimhotepus: Macro -> template function.
-template< typename T, size_t size >
-inline void P_MEM_CLEAR_ARRAY( T ( &clss )[size], size_t elems )
+template< typename T, std::size_t size >
+inline void P_MEM_CLEAR_ARRAY( T ( &clss )[size], std::size_t elems )
 {
-	HK_ASSERT( size >= elems );
-	memset( clss, 0, sizeof( T ) * min( size, elems ) );
+	// dimhotepus: HK_ASSERT -> IVP_ASSERT
+	IVP_ASSERT( size >= elems );
+	std::memset( static_cast< void * >( clss ), 0, sizeof( T ) * std::min( size, elems ) );
 }
 
 // used for division checking
@@ -393,6 +405,7 @@ constexpr inline float P_MIN_EDGE_LEN{ 0.01f };
 constexpr inline float P_RES_EPS{ /*P_MAX_WORLD_DOUBLE*/ 10000.0f * P_FLOAT_RES };
 
 void      ivp_srand( int seed );
+int       ivp_srand_read(); // dimhotepus: current generator state (was defined in ivu_types.cxx but never declared)
 IVP_FLOAT ivp_rand(); // returns [0 .. 1]
 
 #if defined( PSXII )
