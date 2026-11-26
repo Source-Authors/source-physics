@@ -4,27 +4,16 @@
 
 #include "ivu_memory.hxx"
 
-#include <cstdlib>
-#include <cstring>
 #include <cstddef>
 #include <cstdint>
-#include <new>  // std::nothrow
-
-#if !defined( __MWERKS__ ) || !defined( __POWERPC__ )
-#ifdef OSX
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
-#endif
-
-// IVP_Environment *ivp_global_env=NULL;
+#include <cstdlib> // malloc / calloc / realloc / free, _byteswap_* on MSVC
+#include <cstring>
 
 void ivp_memory_check( [[maybe_unused]] void *a ) {}
 
 void ivp_byte_swap4( uint &fourbytes )
 {
-#ifdef _WIN32
+#if defined( _WIN32 )
 	fourbytes = _byteswap_ulong( fourbytes );
 	// dimhotepus: Fast builtin byte swaps.
 #elif defined( __clang__ ) || defined( __GNUC__ )
@@ -39,7 +28,7 @@ void ivp_byte_swap4( uint &fourbytes )
 
 void ivp_byte_swap2( ushort &twobytes )
 {
-#ifdef _WIN32
+#if defined( _WIN32 )
 	twobytes = _byteswap_ushort( twobytes );
 	// dimhotepus: Fast builtin byte swaps.
 #elif defined( __clang__ ) || defined( __GNUC__ )
@@ -50,51 +39,30 @@ void ivp_byte_swap2( ushort &twobytes )
 #endif
 }
 
-void *p_malloc( size_t size )
+// GEKKO / SUN__ branches removed: Win/Lin/Mac on x86, x86-64 and arm64 only.
+void *p_malloc( std::size_t size )
 {
-#ifndef GEKKO
-	return malloc( size );
-#else
-	// dimhotepus: Plain new throws; callers expect nullptr on OOM like malloc.
-	return new ( std::nothrow ) char[size];
-#endif
+	return std::malloc( size );
 }
 
-char *p_calloc( size_t nelem, size_t size )
+char *p_calloc( std::size_t nelem, std::size_t size )
 {
-	// dimhotepus: nelem * size could overflow and give too small zeroed block.
+	// dimhotepus: nelem * size could overflow and give a too small zeroed block.
 	if ( size && nelem > SIZE_MAX / size )
 		return nullptr;
 
-#ifndef GEKKO
-	// dimhotepus: calloc gets pre-zeroed pages from OS for big blocks, avoids malloc + memset.
-	return static_cast< char * >( calloc( nelem, size ) );
-#else
-	const size_t s = nelem * size;
-	char        *sp = new ( std::nothrow ) char[s];
-	if ( sp )
-		memset( sp, 0, s );
-	return sp;
-#endif
+	// dimhotepus: calloc gets pre-zeroed pages from the OS for big blocks, avoids malloc + memset.
+	return static_cast< char * >( std::calloc( nelem, size ) );
 }
 
-void *p_realloc( void *memblock, size_t size )
+void *p_realloc( void *memblock, std::size_t size )
 {
-#ifndef GEKKO
-	return realloc( memblock, size );
-#else
-	IVP_ASSERT( 0 );
-	return 0;
-#endif
+	return std::realloc( memblock, size );
 }
 
 void p_free( void *data )
 {
-#ifndef GEKKO
-	free( data );
-#else
-	delete[] static_cast< char * >( data );
-#endif
+	std::free( data );
 }
 
 constexpr inline uint IVP_MEMORY_MAGIC{ 0x65981234U };
@@ -105,18 +73,28 @@ struct IVP_Aligned_Memory
 	void *back_link;
 };
 
-// dimhotepus: Normalize alignment: must be power of two, and at least pointer size, because we store a
-// void* right before the returned block. With alignment 1..4 on 64-bit that slot was misaligned
-// (UB; faults on strict-alignment targets).
-[[nodiscard]] static inline size_t ivp_effective_alignment( unsigned short alignment )
+// dimhotepus: Normalize alignment: must be a power of two and at least pointer size, because a void* is
+// stored right before the returned block.
+// Fix: the power-of-two requirement was only IVP_ASSERTed. In release a value such as 0x50 (the
+// old IVU_MEM_ALIGN on 64-bit) produced a wrong mask: misaligned result and a back_link slot that
+// could overlap the header. Round up to the next power of two instead.
+[[nodiscard]] static constexpr inline std::size_t ivp_effective_alignment( unsigned short alignment )
 {
 	IVP_ASSERT( alignment != 0 && ( alignment & ( alignment - 1 ) ) == 0 );
-	return alignment < alignof( void * ) ? alignof( void * ) : alignment;
+
+	std::size_t a = alignment < alignof( void * ) ? alignof( void * ) : alignment;
+	if ( a & ( a - 1 ) )
+	{
+		std::size_t p = 1;
+		while ( p < a )
+			p <<= 1;
+		a = p;
+	}
+	return a;
 }
 
-#if !defined( SUN__ )
-// dimhotepus: ivp_malloc_aligned and ivp_calloc_aligned had copy pasted code; share it.
-[[nodiscard]] static void *ivp_aligned_from_raw( void *raw, size_t alignment )
+// dimhotepus: ivp_malloc_aligned and ivp_calloc_aligned share this.
+[[nodiscard]] static void *ivp_aligned_from_raw( void *raw, std::size_t alignment )
 {
 	static_cast< IVP_Aligned_Memory * >( raw )->magic_number = IVP_MEMORY_MAGIC;
 
@@ -129,62 +107,45 @@ struct IVP_Aligned_Memory
 	return reinterpret_cast< void * >( ret );
 }
 
-// dimhotepus: Total size with overflow check (size += ... could wrap and return tiny block).
-[[nodiscard]] static bool ivp_aligned_total( size_t size, size_t alignment, size_t &total )
+// dimhotepus: Total size with overflow check (size += ... could wrap and return a tiny block).
+[[nodiscard]] static bool ivp_aligned_total( std::size_t size, std::size_t alignment, std::size_t &total )
 {
-	const size_t extra = alignment + sizeof( IVP_Aligned_Memory );
+	const std::size_t extra = alignment + sizeof( IVP_Aligned_Memory );
 	if ( size > SIZE_MAX - extra )
 		return false;
 	total = size + extra;
 	return true;
 }
-#endif
 
-void *ivp_malloc_aligned( size_t size, unsigned short alignment )
+void *ivp_malloc_aligned( std::size_t size, unsigned short alignment )
 {
-#if defined( SUN__ )
-	return memalign( alignment, size );
-#else
-	const size_t align = ivp_effective_alignment( alignment );
-	size_t       total;
+	const std::size_t align = ivp_effective_alignment( alignment );
+	std::size_t       total;
 	if ( !ivp_aligned_total( size, align, total ) )
 		return nullptr;
 
 	void *data = p_malloc( total );
 	return data ? ivp_aligned_from_raw( data, align ) : nullptr;
-#endif
 }
 
-void *IVP_CDECL ivp_calloc_aligned( size_t size, unsigned short alignment )
+void *IVP_CDECL ivp_calloc_aligned( std::size_t size, unsigned short alignment )
 {
-#if defined( SUN__ )
-	// dimhotepus: Was no SUN__ branch: memory had header but ivp_free_aligned on SUN__ does plain
-	// free() -> heap corruption. Keep both sides consistent.
-	void *data = memalign( alignment, size );
-	if ( data )
-		memset( data, 0, size );
-	return data;
-#else
-	const size_t align = ivp_effective_alignment( alignment );
-	size_t       total;
+	const std::size_t align = ivp_effective_alignment( alignment );
+	std::size_t       total;
 	if ( !ivp_aligned_total( size, align, total ) )
 		return nullptr;
 
 	void *data = p_calloc( 1, total );
 	return data ? ivp_aligned_from_raw( data, align ) : nullptr;
-#endif
 }
 
 void ivp_free_aligned( void *data )
 {
-#if defined( SUN__ )
-	p_free( data );
-#else
 	// dimhotepus: free( nullptr ) is legal, but data[-1] of nullptr crashed.
 	if ( !data )
 		return;
 
-	auto *am = static_cast< IVP_Aligned_Memory * >( ( (void **)data )[-1] );
+	auto *am = static_cast< IVP_Aligned_Memory * >( reinterpret_cast< void ** >( data )[-1] );
 
 	IVP_ASSERT( am->magic_number == IVP_MEMORY_MAGIC );
 	IVP_IF( 1 )
@@ -192,15 +153,13 @@ void ivp_free_aligned( void *data )
 		am->magic_number = 0;
 	}
 	p_free( am );
-#endif
 }
 
 #if !defined( MEMTEST )
-// dimhotepus: Usable bytes of the default first/regular block. Was computed in two places differently
-// (neuer_sp_block used BLOCK - sizeof( elem ), block reset used BLOCK), so after
-// end_memory_transaction() allocator could hand out sizeof( p_Memory_Elem ) bytes beyond the block
-// -> heap buffer overflow. Single constant now.
-static constexpr size_t IVU_MEM_DEFAULT_USABLE =
+// dimhotepus: Usable bytes of the default first / regular block. Single constant: the first block and the
+// block reset in free_mem_transaction() must agree, otherwise the allocator can hand out
+// sizeof( p_Memory_Elem ) bytes beyond the block.
+static constexpr std::size_t IVU_MEM_DEFAULT_USABLE =
 	IVU_MEMORY_BLOCK_SIZE - sizeof( p_Memory_Elem );
 
 [[nodiscard]] static constexpr inline std::uintptr_t ivu_align_up( std::uintptr_t address )
@@ -214,44 +173,51 @@ IVP_U_Memory::~IVP_U_Memory()
 	free_mem();
 }
 
-void IVP_U_Memory::init_mem_transaction_usage( char *external_mem, size_t size )
+void IVP_U_Memory::init_mem_transaction_usage( char *external_mem, std::size_t size )
 {
-	// IVP_IF(1) {
 	transaction_in_use = 0;
-	//}
 #if defined( MEMTEST )
+	(void)external_mem;
+	(void)size;
 #else
 	size_of_external_mem = 0;
 
+	bool use_external = false;
 	if ( external_mem )
 	{
-		IVP_ASSERT( reinterpret_cast< std::uintptr_t >( external_mem ) % alignof( p_Memory_Elem ) == 0 );
+		// dimhotepus: The alignment of the caller's buffer was only IVP_ASSERTed. In release a
+		// misaligned buffer made the first store to memelem->next misaligned (UB, traps on
+		// strict-alignment targets). Align the start up and give up the few skipped bytes.
+		const auto elem_align = static_cast< std::uintptr_t >( alignof( p_Memory_Elem ) );
+		const auto raw_base = reinterpret_cast< std::uintptr_t >( external_mem );
 
-		// dimhotepus: Old: size - IVU_MEM_ALIGN underflowed for small size, and end could be
-		// up to sizeof( void * ) - 1 bytes past external memory (header offset was not accounted).
-		// Compute the real aligned range in integers.
-		const auto base = reinterpret_cast< std::uintptr_t >( external_mem );
-		const auto end = base + size;
-		const auto begin = ivu_align_up( base + offsetof( p_Memory_Elem, data ) );
-
-		if ( size >= offsetof( p_Memory_Elem, data ) && begin < end )
+		if ( size <= UINTPTR_MAX - raw_base ) // base + size must not wrap
 		{
-			auto *memelem = reinterpret_cast< p_Memory_Elem * >( external_mem );
-			memelem->next = last_elem;
-			last_elem = memelem;
+			const auto end = raw_base + size;
+			const auto base = ( raw_base + elem_align - 1 ) & ~( elem_align - 1 );
 
-			size_of_external_mem = end - begin;
-			speicherbeginn = reinterpret_cast< char * >( begin );
-			speicherende = reinterpret_cast< char * >( end );
+			if ( base < end && end - base >= offsetof( p_Memory_Elem, data ) )
+			{
+				const auto begin = ivu_align_up( base + offsetof( p_Memory_Elem, data ) );
+				if ( begin < end )
+				{
+					auto *memelem = reinterpret_cast< p_Memory_Elem * >( base );
+					memelem->next = last_elem;
+					last_elem = memelem;
+
+					size_of_external_mem = end - begin;
+					speicherbeginn = reinterpret_cast< char * >( begin );
+					speicherende = reinterpret_cast< char * >( end );
+					use_external = true;
+				}
+			}
 		}
-		else
-		{
-			// dimhotepus: External memory is too small to use, fall back to heap block.
-			IVP_ASSERT( 0 );
-			neuer_sp_block( 0 );
-		}
+
+		// dimhotepus: External memory is too small (or wraps the address space): fall back to a heap block.
+		IVP_ASSERT( use_external );
 	}
-	else
+
+	if ( !use_external )
 	{
 		neuer_sp_block( 0 );
 	}
@@ -268,10 +234,8 @@ void IVP_U_Memory::free_mem_transaction()
 	}
 	mem_vector.clear();
 #else
-	// IVP_ASSERT(first_elem!=NULL); playstation doesn't like this ...
-	// dimhotepus: first_elem is null if init_mem_transaction_usage() was never called (or first
-	// block allocation failed) -> first_elem->data below was null dereference. Remaining blocks
-	// are released by free_mem().
+	// dimhotepus: first_elem is null if init_mem_transaction_usage() was never called (or
+	// the first block allocation failed). Remaining blocks are released by free_mem().
 	if ( !first_elem )
 		return;
 
@@ -289,7 +253,7 @@ void IVP_U_Memory::free_mem_transaction()
 	static_cast< char * >( align_to_next_adress( &first_elem->data[0] ) );
 
 	// dimhotepus: See IVU_MEM_DEFAULT_USABLE, was IVU_MEMORY_BLOCK_SIZE = buffer overflow.
-	const size_t ng =
+	const std::size_t ng =
 	size_of_external_mem ? size_of_external_mem : IVU_MEM_DEFAULT_USABLE;
 
 	speicherende = speicherbeginn + ng;
@@ -298,11 +262,11 @@ void IVP_U_Memory::free_mem_transaction()
 }
 
 #if !defined( MEMTEST )
-char *IVP_U_Memory::neuer_sp_block( size_t groesse )
+char *IVP_U_Memory::neuer_sp_block( std::size_t groesse )
 {
-	size_t ng = IVU_MEM_DEFAULT_USABLE;
+	std::size_t ng = IVU_MEM_DEFAULT_USABLE;
 
-	// dimhotepus: Rounding up and adding header could overflow size_t for huge requests -> tiny
+	// dimhotepus: Rounding up and adding the header could overflow size_t for huge requests -> tiny
 	// block returned as huge. Fail instead.
 	if ( groesse > SIZE_MAX - ( IVU_MEM_ALIGN - 1 ) )
 		return nullptr;
@@ -316,8 +280,7 @@ char *IVP_U_Memory::neuer_sp_block( size_t groesse )
 	if ( ng > SIZE_MAX - IVU_MEM_ELEM_OVERHEAD )
 		return nullptr;
 
-	// dimhotepus: Exactly header offset + alignment padding + payload (was sizeof + ALIGN, which
-	// with the odd 0x50 alignment over-allocated and was fragile).
+	// dimhotepus: Exactly header offset + alignment padding + payload.
 	auto *memelem = static_cast< p_Memory_Elem * >( p_malloc( IVU_MEM_ELEM_OVERHEAD + ng ) );
 	if ( !memelem )
 		return nullptr;
@@ -326,8 +289,8 @@ char *IVP_U_Memory::neuer_sp_block( size_t groesse )
 	last_elem = memelem;
 	char *tmp = static_cast< char * >( align_to_next_adress( &memelem->data[0] ) );
 
-	// dimhotepus: Oversized one-shot block no longer replaces the current bump block, otherwise the
-	// free space left in the current block was wasted after every big allocation. The block is
+	// dimhotepus: Oversized one-shot block does not replace the current bump block, otherwise the
+	// free space left in the current block would be wasted after every big allocation. The block is
 	// still in the chain so it is freed normally.
 	if ( !oversized )
 	{
@@ -338,13 +301,12 @@ char *IVP_U_Memory::neuer_sp_block( size_t groesse )
 }
 #endif
 
-void *IVP_U_Memory::get_memc( size_t groesse )
+void *IVP_U_Memory::get_memc( std::size_t groesse )
 {
-	//	if (groesse & 0x7) *(int *)0 = 0;
 	void *neubeginn = get_mem( groesse );
-	// dimhotepus: get_mem returns nullptr on OOM (or 0 size under MEMTEST), memset( nullptr ) is UB/crash.
+	// dimhotepus: get_mem returns nullptr on OOM (or 0 size under MEMTEST), memset( nullptr ) is UB.
 	if ( neubeginn )
-		memset( neubeginn, 0, groesse );
+		std::memset( neubeginn, 0, groesse );
 	return neubeginn;
 }
 
@@ -355,11 +317,9 @@ IVP_U_Memory::IVP_U_Memory()
 
 void IVP_U_Memory::init_mem()
 {
-	transaction_in_use =
-	3; // for transactions: first start init_mem_transaction_usage
+	transaction_in_use = 3; // for transactions: first start init_mem_transaction_usage
 	size_of_external_mem = 0;
-#if defined( MEMTEST )
-#else
+#if !defined( MEMTEST )
 	speicherbeginn = nullptr;
 	speicherende = nullptr;
 	last_elem = nullptr;
@@ -384,7 +344,7 @@ void IVP_U_Memory::free_mem()
 		{
 			break;
 		}
-		// dimhotepus: P_FREE macro -> p_free, consistent with the rest of file and GEKKO delete[].
+		// dimhotepus: P_FREE macro -> p_free
 		p_free( f );
 	}
 	speicherbeginn = nullptr;
